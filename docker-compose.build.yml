@@ -1,4 +1,4 @@
-# run me with: docker-compose -f docker-compose.build.yml up
+# run me with: docker-compose -f docker-compose.build.yml up --build
 
 version: '3.8'
 
@@ -44,13 +44,14 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - dbcarnets
-      
+
   apigateway:
     build: 
       context: .
       dockerfile: ./ApiGateway/ApiGateway.API/Dockerfile
     environment:
-      - ASPNETCORE_URLS=http://+;https://+
+      # - ASPNETCORE_URLS=http://+;https://+
+      - ASPNETCORE_URLS=http://+
     ports:
       - "8080:80"
       - "8082:443"

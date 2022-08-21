@@ -30,15 +30,12 @@ var app = builder.Build();
 
 app.UseCors(CorsAllPolicy);
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerForOcelotUI(opt =>
 {
-    app.UseSwagger();
-    app.UseSwaggerForOcelotUI(opt =>
-    {
-        opt.PathToSwaggerGenerator = "/swagger/docs";
-    });
-}
+    opt.PathToSwaggerGenerator = "/swagger/docs";
+});
+
 await app.UseOcelot();
 
 app.UseHttpsRedirection();
