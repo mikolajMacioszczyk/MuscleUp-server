@@ -44,8 +44,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - dbcarnets
-
-   apigateway:
+      
+  apigateway:
     build: 
       context: .
       dockerfile: ./ApiGateway/ApiGateway.API/Dockerfile
