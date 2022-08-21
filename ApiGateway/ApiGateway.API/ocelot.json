@@ -1,0 +1,107 @@
+﻿{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/Auth/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostPorts": [
+        {
+          "Host": "auth",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Auth/{everything}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
+      "SwaggerKey": "auth"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Auth",
+      "DownstreamScheme": "http",
+      "DownstreamHostPorts": [
+        {
+          "Host": "auth",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Auth",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/Carnets/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostPorts": [
+        {
+          "Host": "carnets",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Carnets/{everything}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
+      "SwaggerKey": "carnets"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Carnets",
+      "DownstreamScheme": "http",
+      "DownstreamHostPorts": [
+        {
+          "Host": "carnets",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Carnets",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/Groups/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostPorts": [
+        {
+          "Host": "groups",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Groups/{everything}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
+      "SwaggerKey": "groups"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Groups",
+      "DownstreamScheme": "http",
+      "DownstreamHostPorts": [
+        {
+          "Host": "groups",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Groups",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/Content/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostPorts": [
+        {
+          "Host": "content",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Content/{everything}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
+      "SwaggerKey": "content"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Content",
+      "DownstreamScheme": "http",
+      "DownstreamHostPorts": [
+        {
+          "Host": "content",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Content",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    }
+  ]
+}
