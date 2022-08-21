@@ -1,0 +1,59 @@
+# run me with: docker-compose -f docker-compose.build.yml up
+
+version: '3.8'
+
+services:
+  dbauth:
+    image: postgres:14.5
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=Pa55w0rd
+
+  dbgroups:
+    image: postgres:14.5
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=Pa55w0rd
+
+  dbcarnets:
+    image: postgres:14.5
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=Pa55w0rd
+
+  dbcontent:
+    image: postgres:14.5
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=Pa55w0rd
+
+  auth:
+    build: 
+      context: .
+      dockerfile: ./Auth/Auth.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - dbauth
+
+  carnets:
+    build: 
+      context: .
+      dockerfile: ./Carnets/Carnets.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - dbcarnets
+
+   apigateway:
+    build: 
+      context: .
+      dockerfile: ./ApiGateway/ApiGateway.API/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+;https://+
+    ports:
+      - "8080:80"
+      - "8082:443"
+    depends_on:
+      - auth
+      - carnets
