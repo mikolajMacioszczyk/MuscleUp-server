@@ -50,8 +50,7 @@ services:
       context: .
       dockerfile: ./ApiGateway/ApiGateway.API/Dockerfile
     environment:
-      # - ASPNETCORE_URLS=http://+;https://+
-      - ASPNETCORE_URLS=http://+
+      - ASPNETCORE_URLS=http://+;https://+
     ports:
       - "8080:80"
       - "8082:443"

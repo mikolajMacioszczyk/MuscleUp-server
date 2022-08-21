@@ -19,4 +19,8 @@ RUN dotnet publish "ApiGateway.API.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password=password
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/etc/ssl/aspnetapp.pfx
 ENTRYPOINT ["dotnet", "ApiGateway.API.dll"]
+
+COPY ./ApiGateway/ApiGateway.API/SSL/aspnetapp.pfx /etc/ssl/
