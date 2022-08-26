@@ -75,3 +75,4 @@ services:
     depends_on:
       - auth
       - carnets
+      - fitnessclubs
