@@ -39,6 +39,7 @@ services:
     build: 
       context: .
       dockerfile: ./Auth/Auth.API/Dockerfile
+    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings:DefaultConnection=Server=dbauth;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
@@ -49,6 +50,7 @@ services:
     build: 
       context: .
       dockerfile: ./Carnets/Carnets.API/Dockerfile
+    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings:DefaultConnection=Server=dbcarnets;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
@@ -59,8 +61,10 @@ services:
     build: 
       context: .
       dockerfile: ./FitnessClubs/FitnessClubs.API/Dockerfile
+    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings:DefaultConnection=Server=dbfitnessclubs;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;
     depends_on:
       - dbfitnessclubs
 
@@ -68,6 +72,7 @@ services:
     build: 
       context: .
       dockerfile: ./ApiGateway/ApiGateway.API/Dockerfile
+    restart: always
     environment:
       - ASPNETCORE_URLS=http://+;https://+
     ports:

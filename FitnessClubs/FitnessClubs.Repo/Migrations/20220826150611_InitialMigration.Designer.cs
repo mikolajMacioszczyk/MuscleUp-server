@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FitnessClubs.Repo.Migrations
 {
-    [DbContext(typeof(FintessClubsDbContext))]
+    [DbContext(typeof(FitnessClubsDbContext))]
     [Migration("20220826150611_InitialMigration")]
     partial class InitialMigration
     {

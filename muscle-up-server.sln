@@ -25,11 +25,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway.API", "ApiGatewa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FitnessClubs", "FitnessClubs", "{042DE66E-F1A2-462E-AFC7-A4A4E754F726}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitnessClubs.API", "FitnessClubs\FitnessClubs.API\FitnessClubs.API.csproj", "{D6C9BF20-AA3E-4B97-85BC-055F17D8C3F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitnessClubs.API", "FitnessClubs\FitnessClubs.API\FitnessClubs.API.csproj", "{D6C9BF20-AA3E-4B97-85BC-055F17D8C3F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitnessClubs.Domain", "FitnessClubs\FitnessClubs.Domain\FitnessClubs.Domain.csproj", "{1944A1B2-DA2C-4CC4-BD2B-EEC2CB796F14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitnessClubs.Domain", "FitnessClubs\FitnessClubs.Domain\FitnessClubs.Domain.csproj", "{1944A1B2-DA2C-4CC4-BD2B-EEC2CB796F14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitnessClubs.Repo", "FitnessClubs\FitnessClubs.Repo\FitnessClubs.Repo.csproj", "{8BCDACBF-2620-4E13-BD20-BDDBBF44A6D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitnessClubs.Repo", "FitnessClubs\FitnessClubs.Repo\FitnessClubs.Repo.csproj", "{8BCDACBF-2620-4E13-BD20-BDDBBF44A6D4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{8175CB57-8763-48CE-A151-A5393927CDAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common\Common.csproj", "{EA89D849-ABF4-4A64-8C89-5F77A3AE3F32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +81,10 @@ Global
 		{8BCDACBF-2620-4E13-BD20-BDDBBF44A6D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BCDACBF-2620-4E13-BD20-BDDBBF44A6D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BCDACBF-2620-4E13-BD20-BDDBBF44A6D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA89D849-ABF4-4A64-8C89-5F77A3AE3F32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA89D849-ABF4-4A64-8C89-5F77A3AE3F32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA89D849-ABF4-4A64-8C89-5F77A3AE3F32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA89D849-ABF4-4A64-8C89-5F77A3AE3F32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +100,7 @@ Global
 		{D6C9BF20-AA3E-4B97-85BC-055F17D8C3F0} = {042DE66E-F1A2-462E-AFC7-A4A4E754F726}
 		{1944A1B2-DA2C-4CC4-BD2B-EEC2CB796F14} = {042DE66E-F1A2-462E-AFC7-A4A4E754F726}
 		{8BCDACBF-2620-4E13-BD20-BDDBBF44A6D4} = {042DE66E-F1A2-462E-AFC7-A4A4E754F726}
+		{EA89D849-ABF4-4A64-8C89-5F77A3AE3F32} = {8175CB57-8763-48CE-A151-A5393927CDAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {398E0023-B10D-45E3-945A-C471D1217562}

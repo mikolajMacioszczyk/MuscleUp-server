@@ -8,6 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["FitnessClubs/FitnessClubs.API/FitnessClubs.API.csproj", "FitnessClubs/FitnessClubs.API/"]
+COPY ["Common/Common/Common.csproj", "Common/Common/"]
 COPY ["FitnessClubs/FitnessClubs.Repo/FitnessClubs.Repo.csproj", "FitnessClubs/FitnessClubs.Repo/"]
 COPY ["FitnessClubs/FitnessClubs.Domain/FitnessClubs.Domain.csproj", "FitnessClubs/FitnessClubs.Domain/"]
 RUN dotnet restore "FitnessClubs/FitnessClubs.API/FitnessClubs.API.csproj"

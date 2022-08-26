@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FitnessClubs.Repo
 {
-    public class FintessClubsDbContext : DbContext
+    public class FitnessClubsDbContext : DbContext
     {
-        public FintessClubsDbContext(DbContextOptions<FintessClubsDbContext> options) : base(options)
+        public FitnessClubsDbContext(DbContextOptions<FitnessClubsDbContext> options) : base(options)
         { }
 
         public DbSet<FitnessClub> FitnessClubs { get; set; }
