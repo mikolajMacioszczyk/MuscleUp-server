@@ -51,6 +51,7 @@ services:
       dockerfile: ./Carnets/Carnets.API/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings:DefaultConnection=Server=dbcarnets;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
     depends_on:
       - dbcarnets
 
