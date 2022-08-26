@@ -27,4 +27,8 @@
     <ProjectReference Include="..\FitnessClubs.Repo\FitnessClubs.Repo.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
