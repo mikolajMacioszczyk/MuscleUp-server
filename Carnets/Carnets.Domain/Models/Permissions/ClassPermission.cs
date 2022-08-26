@@ -11,7 +11,6 @@ namespace Carnets.Domain.Models
         public Permission Permission { get; set; }
 
         [Required]
-        // TODO: Update Documentatino: varchar(30)
         [MaxLength(30)]
         public string PermissionName { get; set; }
     }

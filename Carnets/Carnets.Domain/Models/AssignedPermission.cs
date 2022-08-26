@@ -5,7 +5,6 @@ namespace Carnets.Domain.Models
 {
     public class AssignedPermission
     {
-        // TODO: Temporary. Combained key with Permission
         [Key]
         [ForeignKey("GympassType")]
         public string GympassTypeId { get; set; }

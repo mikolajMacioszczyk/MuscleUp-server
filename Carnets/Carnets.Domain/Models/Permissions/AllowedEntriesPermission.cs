@@ -17,7 +17,6 @@ namespace Carnets.Domain.Models
         [Range(0, int.MaxValue)]
         public int AllowedEntriesCooldown { get; set; }
 
-        // TODO: Update documentation
         public CooldownType CooldownType { get; set; }
     }
 }
