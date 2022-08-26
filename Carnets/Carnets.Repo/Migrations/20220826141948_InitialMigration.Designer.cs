@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Carnets.Repo.Migrations
 {
     [DbContext(typeof(CarnetsDbContext))]
-    [Migration("20220821163437_InitialMigration")]
+    [Migration("20220826141948_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,10 +49,9 @@ namespace Carnets.Repo.Migrations
                         .HasColumnType("character varying(30)");
 
                     b.Property<string>("PermissionId")
-                        .IsRequired()
                         .HasColumnType("character varying(30)");
 
-                    b.HasKey("GympassTypeId");
+                    b.HasKey("GympassTypeId", "PermissionId");
 
                     b.HasIndex("PermissionId");
 
@@ -70,6 +69,9 @@ namespace Carnets.Repo.Migrations
                         .HasColumnType("character varying(30)");
 
                     b.HasKey("PermissionId");
+
+                    b.HasIndex("PermissionName")
+                        .IsUnique();
 
                     b.ToTable("ClassPermissions");
                 });
@@ -160,6 +162,9 @@ namespace Carnets.Repo.Migrations
                     b.HasKey("SubscriptionId");
 
                     b.HasIndex("GympassId");
+
+                    b.HasIndex("StripeCustomerId")
+                        .IsUnique();
 
                     b.ToTable("Subscriptions");
                 });

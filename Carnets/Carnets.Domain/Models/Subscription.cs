@@ -13,7 +13,6 @@ namespace Carnets.Domain.Models
 
         [Required]
         [MaxLength(30)]
-        // TODO: Unique
         public string StripeCustomerId { get; set; }
 
         [Required]

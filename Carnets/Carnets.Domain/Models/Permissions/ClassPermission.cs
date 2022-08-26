@@ -13,7 +13,6 @@ namespace Carnets.Domain.Models
         [Required]
         // TODO: Update Documentatino: varchar(30)
         [MaxLength(30)]
-        // TODO: Unique
         public string PermissionName { get; set; }
     }
 }

@@ -16,5 +16,21 @@ namespace Carnets.Repo
         public DbSet<ClassPermission> ClassPermissions { get; set; }
         public DbSet<TimePermissionEntry> TimePermissionEntries { get; set; }
         public DbSet<AssignedPermission> AssignedPermissions { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<AssignedPermission>()
+                .HasKey(a => new { a.GympassTypeId, a.PermissionId });
+
+            modelBuilder.Entity<ClassPermission>()
+                .HasIndex(c => c.PermissionName)
+                .IsUnique();
+
+            modelBuilder.Entity<Subscription>()
+                .HasIndex(s => s.StripeCustomerId)
+                .IsUnique();
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

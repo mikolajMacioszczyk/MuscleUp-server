@@ -47,10 +47,9 @@ namespace Carnets.Repo.Migrations
                         .HasColumnType("character varying(30)");
 
                     b.Property<string>("PermissionId")
-                        .IsRequired()
                         .HasColumnType("character varying(30)");
 
-                    b.HasKey("GympassTypeId");
+                    b.HasKey("GympassTypeId", "PermissionId");
 
                     b.HasIndex("PermissionId");
 
@@ -68,6 +67,9 @@ namespace Carnets.Repo.Migrations
                         .HasColumnType("character varying(30)");
 
                     b.HasKey("PermissionId");
+
+                    b.HasIndex("PermissionName")
+                        .IsUnique();
 
                     b.ToTable("ClassPermissions");
                 });
@@ -158,6 +160,9 @@ namespace Carnets.Repo.Migrations
                     b.HasKey("SubscriptionId");
 
                     b.HasIndex("GympassId");
+
+                    b.HasIndex("StripeCustomerId")
+                        .IsUnique();
 
                     b.ToTable("Subscriptions");
                 });

@@ -84,7 +84,7 @@ namespace Carnets.Repo.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AssignedPermissions", x => x.GympassTypeId);
+                    table.PrimaryKey("PK_AssignedPermissions", x => new { x.GympassTypeId, x.PermissionId });
                     table.ForeignKey(
                         name: "FK_AssignedPermissions_GympassTypes_GympassTypeId",
                         column: x => x.GympassTypeId,
@@ -162,6 +162,12 @@ namespace Carnets.Repo.Migrations
                 column: "PermissionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ClassPermissions_PermissionName",
+                table: "ClassPermissions",
+                column: "PermissionName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Gympasses_GympassTypeId",
                 table: "Gympasses",
                 column: "GympassTypeId");
@@ -170,6 +176,12 @@ namespace Carnets.Repo.Migrations
                 name: "IX_Subscriptions_GympassId",
                 table: "Subscriptions",
                 column: "GympassId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_StripeCustomerId",
+                table: "Subscriptions",
+                column: "StripeCustomerId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
