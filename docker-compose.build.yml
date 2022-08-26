@@ -23,6 +23,12 @@ services:
     environment:
       - POSTGRES_PASSWORD=Pa55w0rd
 
+  dbfitnessclubs:
+    image: postgres:14.5
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=Pa55w0rd
+
   dbcontent:
     image: postgres:14.5
     restart: always
@@ -47,6 +53,15 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - dbcarnets
+
+  fitnessclubs:
+    build: 
+      context: .
+      dockerfile: ./FitnessClubs/FitnessClubs.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - dbfitnessclubs
 
   apigateway:
     build: 
