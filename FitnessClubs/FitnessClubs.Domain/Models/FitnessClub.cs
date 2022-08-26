@@ -10,7 +10,6 @@ namespace FitnessClubs.Domain.Models
 
         [Required]
         [StringLength(100)]
-        // TODO: Unique
         public string FitnessClubName { get; set; }
 
         [Required]
