@@ -6,12 +6,15 @@ namespace Common.API
 {
     public static class ProgramHelper
     {
-        public static void AddBasicApiServices(IServiceCollection services)
+        public static void AddBasicApiServices<TProgram>(IServiceCollection services)
         {
             services.AddControllers();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+            
+            services.AddAutoMapper(typeof(TProgram));
         }
 
         public static void AddDbContext<TDbContext>(IServiceCollection services, IConfiguration configuration)
