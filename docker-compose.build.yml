@@ -3,37 +3,13 @@
 version: '3.8'
 
 services:
-  dbauth:
+  postgres:
     image: postgres:14.5
     restart: always
     environment:
       - POSTGRES_PASSWORD=Pa55w0rd
     ports:
       - "5432:5432"
-
-  dbgroups:
-    image: postgres:14.5
-    restart: always
-    environment:
-      - POSTGRES_PASSWORD=Pa55w0rd
-
-  dbcarnets:
-    image: postgres:14.5
-    restart: always
-    environment:
-      - POSTGRES_PASSWORD=Pa55w0rd
-
-  dbfitnessclubs:
-    image: postgres:14.5
-    restart: always
-    environment:
-      - POSTGRES_PASSWORD=Pa55w0rd
-
-  dbcontent:
-    image: postgres:14.5
-    restart: always
-    environment:
-      - POSTGRES_PASSWORD=Pa55w0rd
 
   auth:
     build: 
@@ -42,9 +18,9 @@ services:
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings:DefaultConnection=Server=dbauth;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
+      - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
     depends_on:
-      - dbauth
+      - postgres
 
   carnets:
     build: 
@@ -53,9 +29,9 @@ services:
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings:DefaultConnection=Server=dbcarnets;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
+      - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
     depends_on:
-      - dbcarnets
+      - postgres
 
   fitnessclubs:
     build: 
@@ -64,9 +40,9 @@ services:
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings:DefaultConnection=Server=dbfitnessclubs;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;
+      - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;
     depends_on:
-      - dbfitnessclubs
+      - postgres
 
   apigateway:
     build: 
