@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Carnets.Repo.Migrations
 {
     [DbContext(typeof(CarnetsDbContext))]
-    [Migration("20220826141948_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20220830180758_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -119,6 +119,12 @@ namespace Carnets.Repo.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("ValidityPeriodInSeconds")
+                        .HasColumnType("integer");
 
                     b.HasKey("GympassTypeId");
 

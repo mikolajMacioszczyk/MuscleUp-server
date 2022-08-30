@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Carnets.Repo.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +14,9 @@ namespace Carnets.Repo.Migrations
                 columns: table => new
                 {
                     GympassTypeId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    GympassTypeName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    GympassTypeName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false),
+                    ValidityPeriodInSeconds = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

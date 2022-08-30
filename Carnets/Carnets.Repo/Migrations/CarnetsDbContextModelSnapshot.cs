@@ -118,6 +118,12 @@ namespace Carnets.Repo.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("ValidityPeriodInSeconds")
+                        .HasColumnType("integer");
+
                     b.HasKey("GympassTypeId");
 
                     b.ToTable("GympassTypes");
