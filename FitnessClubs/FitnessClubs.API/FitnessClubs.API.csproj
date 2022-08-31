@@ -4,12 +4,13 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>90503931-812d-4330-8a61-b5f8a2b7e93a</UserSecretsId>
+    <UserSecretsId>0d72017f-0719-42c2-b3cd-691e1ed433d7</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8">
       <PrivateAssets>all</PrivateAssets>
@@ -23,7 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Common\Common.csproj" />
-    <ProjectReference Include="..\Carnets.Repo\Carnets.Repo.csproj" />
+    <ProjectReference Include="..\FitnessClubs.Repo\FitnessClubs.Repo.csproj" />
   </ItemGroup>
 
   <ItemGroup>

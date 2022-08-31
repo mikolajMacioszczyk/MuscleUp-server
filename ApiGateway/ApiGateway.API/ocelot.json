@@ -50,6 +50,32 @@
       ],
       "UpstreamPathTemplate": "/api/Carnets",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/FitnessClubs/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "fitnessclubs",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/FitnessClubs/{everything}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
+      "SwaggerKey": "fitnessclubs"
+    },
+    {
+      "DownstreamPathTemplate": "/api/FitnessClubs",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "fitnessclubs",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/FitnessClubs",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     }
   ]
 }

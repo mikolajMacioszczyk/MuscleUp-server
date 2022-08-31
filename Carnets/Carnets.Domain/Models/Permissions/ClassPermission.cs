@@ -1,0 +1,17 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Carnets.Domain.Models
+{
+    public class ClassPermission
+    {
+        [Key]
+        [ForeignKey("Permission")]
+        public string PermissionId { get; set; }
+        public Permission Permission { get; set; }
+
+        [Required]
+        [MaxLength(30)]
+        public string PermissionName { get; set; }
+    }
+}
