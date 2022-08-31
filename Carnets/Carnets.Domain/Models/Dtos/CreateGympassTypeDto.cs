@@ -1,13 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Carnets.Domain.Models
+namespace Carnets.Domain.Models.Dtos
 {
-    public class GympassType
+    public class CreateGympassTypeDto
     {
-        [Key]
-        [MaxLength(30)]
-        public string GympassTypeId { get; set; }
-
         [Required]
         [MaxLength(100)]
         public string GympassTypeName { get; set; }

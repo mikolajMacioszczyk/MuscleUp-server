@@ -15,10 +15,6 @@ namespace Carnets.Domain.Models
         [Required]
         public GympassType GympassType { get; set; }
 
-        [Required]
-        [MaxLength(30)]
-        public string FitnessClubId { get; set; }
-
         public DateTime ValidityDate { get; set; }
 
         public DateTime ActivationDate { get; set; }

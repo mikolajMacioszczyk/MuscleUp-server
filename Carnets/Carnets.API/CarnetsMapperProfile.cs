@@ -1,10 +1,15 @@
-﻿namespace Carnets.API
+﻿using AutoMapper;
+using Carnets.Domain.Models;
+using Carnets.Domain.Models.Dtos;
+
+namespace Carnets.API
 {
-    public class CarnetsMapperProfile
+    public class CarnetsMapperProfile : Profile
     {
         public CarnetsMapperProfile()
         {
-            // mappings
+            CreateMap<GympassType, GympassTypeDto>();
+            CreateMap<CreateGympassTypeDto, GympassType>();
         }
     }
 }

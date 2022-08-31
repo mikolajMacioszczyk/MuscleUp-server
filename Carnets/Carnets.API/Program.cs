@@ -1,4 +1,6 @@
+using Carnets.Domain.Interfaces;
 using Carnets.Repo;
+using Carnets.Repo.Repositories;
 using Common.API;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 ProgramHelper.AddBasicApiServices<Program>(builder.Services);
 
 ProgramHelper.AddDbContext<CarnetsDbContext>(builder.Services, builder.Configuration);
+
+builder.Services.AddScoped<IGympassTypeRepository, GympassTypeRepository>();
 
 var app = builder.Build();
 
