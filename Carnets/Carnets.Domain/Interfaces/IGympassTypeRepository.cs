@@ -8,5 +8,7 @@ namespace Carnets.Domain.Interfaces
         Task<GympassType> GetGympassById(string gympassId);
 
         Task<Result<GympassType>> CreateGympassType(GympassType gympassType);
+
+        Task<Result<GympassType>> UpdateGympassType(GympassType gympassType);
     }
 }

@@ -21,5 +21,10 @@ namespace Carnets.Domain.Models
 
         [Range(0, int.MaxValue)]
         public int ValidityPeriodInSeconds { get; set; }
+
+        public bool IsActive { get; set; }
+
+        [Range(0, int.MaxValue)]
+        public int Version { get; set; }
     }
 }

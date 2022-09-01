@@ -10,6 +10,7 @@ namespace Carnets.API
         {
             CreateMap<GympassType, GympassTypeDto>();
             CreateMap<CreateGympassTypeDto, GympassType>();
+            CreateMap<UpdateGympassTypeDto, GympassType>();
         }
     }
 }

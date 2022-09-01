@@ -51,5 +51,19 @@ namespace Carnets.Repo.Repositories
 
             return new Result<GympassType>(gympassType);
         }
+
+        public async Task<Result<GympassType>> UpdateGympassType(GympassType gympassType)
+        {
+            var gympassFromDb = await GetGympassById(gympassType.GympassTypeId);
+            if (gympassFromDb is null)
+            {
+                return new Result<GympassType>(Common.CommonConsts.NOT_FOUND);
+            }
+
+            gympassFromDb.Price = gympassType.Price;
+            gympassFromDb.ValidityPeriodInSeconds = gympassType.ValidityPeriodInSeconds;
+            // new version
+            return
+        }
     }
 }

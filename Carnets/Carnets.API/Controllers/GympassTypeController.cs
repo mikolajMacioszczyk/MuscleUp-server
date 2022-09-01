@@ -42,5 +42,21 @@ namespace Carnets.API.Controllers
 
             return BadRequest(createResult.ErrorCombined);
         }
+
+        [HttpPut("{gympassTypeId}")]
+        public async Task<ActionResult<GympassTypeDto>> UpdateGympassTypeById([FromRoute] string gympassTypeId, [FromBody] UpdateGympassTypeDto model)
+        {
+            var gympassType = _mapper.Map<GympassType>(model);
+            gympassType.GympassTypeId = gympassTypeId;
+
+            var updateResult = await _gympassTypeRepository.UpdateGympassType(_mapper.Map<GympassType>(model));
+
+            if (updateResult.IsSuccess)
+            {
+                return Ok(_mapper.Map<GympassTypeDto>(updateResult.Value));
+            }
+
+            return BadRequest(updateResult.ErrorCombined);
+        }
     }
 }
