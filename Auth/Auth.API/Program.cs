@@ -1,10 +1,10 @@
-using Common.API;
+using Common.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-ProgramHelper.AddBasicApiServices<Program>(builder.Services);
+builder.Services.AddBasicApiServices<Program>();
 
 var app = builder.Build();
 
@@ -14,6 +14,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionMiddleware();
 
 app.UseHttpsRedirection();
 
