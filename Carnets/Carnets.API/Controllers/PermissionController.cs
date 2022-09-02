@@ -26,19 +26,45 @@ namespace Carnets.API.Controllers
             _timePermissionRepository = timePermissionRepository;
         }
 
+        #region AllowedEntries
+
         [HttpGet("allowedEntries/{permissionId}")]
-        public async Task<ActionResult<AllowedEntriesPermissionDto>> GetAllowedEntriesPermission(string permissionId) =>
+        public async Task<ActionResult<AllowedEntriesPermissionDto>> GetAllowedEntriesPermission([FromRoute] string permissionId) =>
             await GetPermission<AllowedEntriesPermission, AllowedEntriesPermissionDto>(permissionId, _allowedEntriesPermissionRepository);
 
+        [HttpDelete("allowedEntries/{permissionId}")]
+        public async Task<ActionResult> DeleteAllowedEntriesPermission([FromRoute] string permissionId) =>
+            await DeletePermission(permissionId, _allowedEntriesPermissionRepository);
+
+        #endregion
+
+        #region ClassPermission
+
         [HttpGet("class/{permissionId}")]
-        public async Task<ActionResult<ClassPermissionDto>> GetClassPermission(string permissionId) =>
+        public async Task<ActionResult<ClassPermissionDto>> GetClassPermission([FromRoute] string permissionId) =>
             await GetPermission<ClassPermission, ClassPermissionDto>(permissionId, _classPermissionRepository);
 
+        [HttpDelete("class/{permissionId}")]
+        public async Task<ActionResult> DeleteClassPermission([FromRoute] string permissionId) =>
+           await DeletePermission(permissionId, _classPermissionRepository);
+
+        #endregion
+
+        #region TimePermissionEntry
+
         [HttpGet("timeEntry/{permissionId}")]
-        public async Task<ActionResult<TimePermissionEntryDto>> GetTimeEntryPermission(string permissionId) =>
+        public async Task<ActionResult<TimePermissionEntryDto>> GetTimeEntryPermission([FromRoute] string permissionId) =>
             await GetPermission<TimePermissionEntry, TimePermissionEntryDto>(permissionId, _timePermissionRepository);
 
-        private async Task<ActionResult> GetPermission<TPermission, TPermissionDto>(string permissionId, 
+        [HttpDelete("timeEntry/{permissionId}")]
+        public async Task<ActionResult> DeleteTimeEntryPermission([FromRoute] string permissionId) =>
+           await DeletePermission(permissionId, _timePermissionRepository);
+
+        #endregion
+
+        #region Helpers
+
+        private async Task<ActionResult> GetPermission<TPermission, TPermissionDto>(string permissionId,
             IPermissionRepository<TPermission> permissionRepository)
             where TPermission : PermissionBase
         {
@@ -49,5 +75,25 @@ namespace Carnets.API.Controllers
             }
             return NotFound();
         }
+
+        public async Task<ActionResult> DeletePermission<TPermission>([FromRoute] string permissionId,
+            IPermissionRepository<TPermission> permissionRepository)
+            where TPermission : PermissionBase
+        {
+            var deleteResult = await permissionRepository.DeletePermission(permissionId);
+
+            if (deleteResult.IsSuccess)
+            {
+                return Ok();
+            }
+            else if (deleteResult.Errors?.Any(e => e.Equals(Common.CommonConsts.NOT_FOUND)) ?? false)
+            {
+                return NotFound();
+            }
+
+            return BadRequest(deleteResult.ErrorCombined);
+        }
+
+        #endregion
     }
 }
