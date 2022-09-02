@@ -1,4 +1,5 @@
 using Carnets.Domain.Interfaces;
+using Carnets.Domain.Models;
 using Carnets.Repo;
 using Carnets.Repo.Repositories;
 using Common.API;
@@ -12,6 +13,7 @@ ProgramHelper.AddBasicApiServices<Program>(builder.Services);
 ProgramHelper.AddDbContext<CarnetsDbContext>(builder.Services, builder.Configuration);
 
 builder.Services.AddScoped<IGympassTypeRepository, GympassTypeRepository>();
+builder.Services.AddScoped<IPermissionRepository<AllowedEntriesPermission>, AllowedEntriesPermissionRepository>();
 
 var app = builder.Build();
 
