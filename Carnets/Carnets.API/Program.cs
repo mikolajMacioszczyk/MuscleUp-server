@@ -1,13 +1,13 @@
 using Carnets.Repo;
-using Common.API;
+using Common.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-ProgramHelper.AddBasicApiServices<Program>(builder.Services);
+builder.Services.AddBasicApiServices<Program>();
 
-ProgramHelper.AddDbContext<CarnetsDbContext>(builder.Services, builder.Configuration);
+ProgramExtensions.AddDbContext<CarnetsDbContext>(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
@@ -18,7 +18,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-await ProgramHelper.MigrateDatabase<CarnetsDbContext>(app.Services);
+app.UseExceptionMiddleware();
+
+await app.Services.MigrateDatabase<CarnetsDbContext>();
 
 app.UseHttpsRedirection();
 

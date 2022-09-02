@@ -1,13 +1,13 @@
-using Common.API;
+using Common.Extensions;
 using FitnessClubs.Repo;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-ProgramHelper.AddBasicApiServices<Program>(builder.Services);
+builder.Services.AddBasicApiServices<Program>();
 
-ProgramHelper.AddDbContext<FitnessClubsDbContext>(builder.Services, builder.Configuration);
+ProgramExtensions.AddDbContext<FitnessClubsDbContext>(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
@@ -18,7 +18,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-await ProgramHelper.MigrateDatabase<FitnessClubsDbContext>(app.Services);
+app.UseExceptionMiddleware();
+
+await app.Services.MigrateDatabase<FitnessClubsDbContext>();
 
 app.UseHttpsRedirection();
 
