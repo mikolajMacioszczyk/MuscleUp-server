@@ -26,5 +26,6 @@ namespace Carnets.Domain.Models
 
         [Range(0, int.MaxValue)]
         public int Version { get; set; }
+
     }
 }

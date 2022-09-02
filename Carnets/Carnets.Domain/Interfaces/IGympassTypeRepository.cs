@@ -10,5 +10,7 @@ namespace Carnets.Domain.Interfaces
         Task<Result<GympassType>> CreateGympassType(GympassType gympassType);
 
         Task<Result<GympassType>> UpdateGympassType(GympassType gympassType);
+
+        Task<IEnumerable<GympassType>> GetAllActiveGympassTypes();
     }
 }

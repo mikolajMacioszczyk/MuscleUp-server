@@ -9,5 +9,9 @@
         public double Price { get; set; }
 
         public int ValidityPeriodInSeconds { get; set; }
+
+        public bool IsActive { get; set; }
+
+        public int Version { get; set; }
     }
 }

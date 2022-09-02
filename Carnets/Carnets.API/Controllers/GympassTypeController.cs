@@ -30,6 +30,14 @@ namespace Carnets.API.Controllers
             return Ok(_mapper.Map<GympassTypeDto>(gympassType));
         }
 
+        [HttpGet("active")]
+        public async Task<ActionResult<IEnumerable<GympassTypeDto>>> GetActiveGympassTypes()
+        {
+            var gympassTypes = await _gympassTypeRepository.GetAllActiveGympassTypes();
+            
+            return Ok(_mapper.Map<IEnumerable<GympassTypeDto>>(gympassTypes));
+        }
+
         [HttpPost()]
         public async Task<ActionResult<GympassTypeDto>> CreateGympassTypeById([FromBody] CreateGympassTypeDto model)
         {
@@ -54,6 +62,10 @@ namespace Carnets.API.Controllers
             if (updateResult.IsSuccess)
             {
                 return Ok(_mapper.Map<GympassTypeDto>(updateResult.Value));
+            }
+            else if (updateResult.Errors?.Any(e => e.Equals(Common.CommonConsts.NOT_FOUND)) ?? false)
+            {
+                return NotFound();
             }
 
             return BadRequest(updateResult.ErrorCombined);

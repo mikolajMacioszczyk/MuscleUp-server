@@ -24,27 +24,32 @@ namespace Carnets.Repo.Repositories
             return await _context.GympassTypes.FirstOrDefaultAsync(g => g.GympassTypeId == gympassId);
         }
 
-        private async Task<GympassType?> GetGympassTypeByNameAndFitnessClub(string name, string fitnessClubId)
+        private async Task<GympassType?> GetActiveGympassTypeByNameAndFitnessClub(string name, string fitnessClubId)
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrEmpty(fitnessClubId))
             {
                 return null;
             }
 
-            return await _context.GympassTypes.FirstOrDefaultAsync(g => 
-                g.GympassTypeName == name && g.FitnessClubId == fitnessClubId);
+            return await _context.GympassTypes
+                .Where(g => g.GympassTypeName == name && g.FitnessClubId == fitnessClubId)
+                .FirstOrDefaultAsync(g => g.IsActive);
         }
 
         public async Task<Result<GympassType>> CreateGympassType(GympassType gympassType)
         {
             var isUnique = (
-                await GetGympassTypeByNameAndFitnessClub(gympassType.GympassTypeName, gympassType.FitnessClubId)
+                await GetActiveGympassTypeByNameAndFitnessClub(gympassType.GympassTypeName, gympassType.FitnessClubId)
                 ) is null;
             
             if (!isUnique)
             {
                 return new Result<GympassType>($"GympassType with name {gympassType.GympassTypeName} already exists");
             }
+
+            gympassType.GympassTypeId = Guid.NewGuid().ToString();
+            gympassType.IsActive = true;
+            gympassType.Version = 1;
 
             await _context.GympassTypes.AddAsync(gympassType);
             await _context.SaveChangesAsync();
@@ -60,10 +65,36 @@ namespace Carnets.Repo.Repositories
                 return new Result<GympassType>(Common.CommonConsts.NOT_FOUND);
             }
 
-            gympassFromDb.Price = gympassType.Price;
-            gympassFromDb.ValidityPeriodInSeconds = gympassType.ValidityPeriodInSeconds;
-            // new version
-            return
+            if (!gympassType.IsActive)
+            {
+                return new Result<GympassType>("Operation not allowed. An inactive gympass type cannot be changed.");
+            }
+
+            var updated = new GympassType()
+            {
+                GympassTypeId = Guid.NewGuid().ToString(),
+                GympassTypeName = gympassFromDb.GympassTypeName,
+                FitnessClubId = gympassFromDb.FitnessClubId,
+                IsActive = true,
+                Version = gympassFromDb.Version + 1
+            };
+
+            // set previous version inactive
+            gympassType.IsActive = false;
+
+            // update domain properties
+            updated.Price = gympassType.Price;
+            updated.ValidityPeriodInSeconds = gympassType.ValidityPeriodInSeconds;
+
+            await _context.GympassTypes.AddAsync(updated);
+            await _context.SaveChangesAsync();
+
+            return new Result<GympassType>(updated);
+        }
+
+        public async Task<IEnumerable<GympassType>> GetAllActiveGympassTypes()
+        {
+            return await _context.GympassTypes.Where(g => g.IsActive).ToListAsync();
         }
     }
 }
