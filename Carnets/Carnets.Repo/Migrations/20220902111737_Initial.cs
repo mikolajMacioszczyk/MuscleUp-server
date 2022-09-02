@@ -15,8 +15,11 @@ namespace Carnets.Repo.Migrations
                 {
                     GympassTypeId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     GympassTypeName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    FitnessClubId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     Price = table.Column<double>(type: "double precision", nullable: false),
-                    ValidityPeriodInSeconds = table.Column<int>(type: "integer", nullable: false)
+                    ValidityPeriodInSeconds = table.Column<int>(type: "integer", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    Version = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,7 +45,6 @@ namespace Carnets.Repo.Migrations
                     GympassId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     UserId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     GympassTypeId = table.Column<string>(type: "character varying(30)", nullable: false),
-                    FitnessClubId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     ValidityDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ActivationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
