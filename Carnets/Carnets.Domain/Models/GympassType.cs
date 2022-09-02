@@ -5,7 +5,7 @@ namespace Carnets.Domain.Models
     public class GympassType
     {
         [Key]
-        [MaxLength(30)]
+        [MaxLength(36)]
         public string GympassTypeId { get; set; }
 
         [Required]
@@ -13,7 +13,7 @@ namespace Carnets.Domain.Models
         public string GympassTypeName { get; set; }
 
         [Required]
-        [MaxLength(30)]
+        [MaxLength(36)]
         public string FitnessClubId { get; set; }
 
         [Range(0, double.MaxValue)]

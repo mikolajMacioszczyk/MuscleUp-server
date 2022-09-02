@@ -70,7 +70,7 @@ namespace Carnets.Repo.Repositories
                 return new Result<GympassType>(Common.CommonConsts.NOT_FOUND);
             }
 
-            if (!gympassType.IsActive)
+            if (!gympassFromDb.IsActive)
             {
                 return new Result<GympassType>("Operation not permitted. An inactive gympass type cannot be changed.");
             }
@@ -85,7 +85,7 @@ namespace Carnets.Repo.Repositories
             };
 
             // set previous version inactive
-            gympassType.IsActive = false;
+            gympassFromDb.IsActive = false;
 
             // update domain properties
             updated.Price = gympassType.Price;

@@ -5,11 +5,11 @@ namespace Carnets.Domain.Models
     public class Gympass
     {
         [Key]
-        [MaxLength(30)]
+        [MaxLength(36)]
         public string GympassId { get; set; }
 
         [Required]
-        [MaxLength(30)]
+        [MaxLength(36)]
         public string UserId { get; set; }
 
         [Required]

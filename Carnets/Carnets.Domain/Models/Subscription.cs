@@ -5,7 +5,7 @@ namespace Carnets.Domain.Models
     public class Subscription
     {
         [Key]
-        [MaxLength(30)]
+        [MaxLength(36)]
         public string SubscriptionId { get; set; }
 
         [Required]

@@ -25,9 +25,9 @@ namespace Carnets.API.Controllers
             var gympassType = await _gympassTypeRepository.GetGympassById(gympassTypeId);
             if (gympassType != null)
             {
-                return NotFound();
+                return Ok(_mapper.Map<GympassTypeDto>(gympassType));
             }
-            return Ok(_mapper.Map<GympassTypeDto>(gympassType));
+            return NotFound();
         }
 
         [HttpGet("active")]
@@ -57,7 +57,7 @@ namespace Carnets.API.Controllers
             var gympassType = _mapper.Map<GympassType>(model);
             gympassType.GympassTypeId = gympassTypeId;
 
-            var updateResult = await _gympassTypeRepository.UpdateGympassType(_mapper.Map<GympassType>(model));
+            var updateResult = await _gympassTypeRepository.UpdateGympassType(gympassType);
 
             if (updateResult.IsSuccess)
             {
