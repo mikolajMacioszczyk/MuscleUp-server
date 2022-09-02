@@ -1,15 +1,11 @@
 ﻿using Carnets.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Carnets.Domain.Models
 {
-    public class AllowedEntriesPermission
+    public class AllowedEntriesPermission : PermissionBase
     {
-        [Key]
-        [ForeignKey("Permission")]
-        public string PermissionId { get; set; }
-        public Permission Permission { get; set; }
+        public override PermissionType PermissionType => PermissionType.AllowedEntriesPermission;
 
         [Range(0, int.MaxValue)]
         public int AllowedEntries { get; set; }

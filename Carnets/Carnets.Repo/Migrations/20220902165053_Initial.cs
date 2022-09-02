@@ -13,9 +13,9 @@ namespace Carnets.Repo.Migrations
                 name: "GympassTypes",
                 columns: table => new
                 {
-                    GympassTypeId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    GympassTypeId = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
                     GympassTypeName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    FitnessClubId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    FitnessClubId = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
                     Price = table.Column<double>(type: "double precision", nullable: false),
                     ValidityPeriodInSeconds = table.Column<int>(type: "integer", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
@@ -27,24 +27,30 @@ namespace Carnets.Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Permissions",
+                name: "PermissionBase",
                 columns: table => new
                 {
-                    PermissionId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    PermissionType = table.Column<byte>(type: "smallint", nullable: false)
+                    PermissionId = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    AllowedEntries = table.Column<int>(type: "integer", nullable: true),
+                    AllowedEntriesCooldown = table.Column<int>(type: "integer", nullable: true),
+                    CooldownType = table.Column<byte>(type: "smallint", nullable: true),
+                    PermissionName = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
+                    EnableEntryFrom = table.Column<byte>(type: "smallint", nullable: true),
+                    EnableEntryTo = table.Column<byte>(type: "smallint", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Permissions", x => x.PermissionId);
+                    table.PrimaryKey("PK_PermissionBase", x => x.PermissionId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Gympasses",
                 columns: table => new
                 {
-                    GympassId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    UserId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    GympassTypeId = table.Column<string>(type: "character varying(30)", nullable: false),
+                    GympassId = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
+                    UserId = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
+                    GympassTypeId = table.Column<string>(type: "character varying(36)", nullable: false),
                     ValidityDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ActivationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -60,31 +66,11 @@ namespace Carnets.Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AllowedEntriesPermissions",
-                columns: table => new
-                {
-                    PermissionId = table.Column<string>(type: "character varying(30)", nullable: false),
-                    AllowedEntries = table.Column<int>(type: "integer", nullable: false),
-                    AllowedEntriesCooldown = table.Column<int>(type: "integer", nullable: false),
-                    CooldownType = table.Column<byte>(type: "smallint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AllowedEntriesPermissions", x => x.PermissionId);
-                    table.ForeignKey(
-                        name: "FK_AllowedEntriesPermissions_Permissions_PermissionId",
-                        column: x => x.PermissionId,
-                        principalTable: "Permissions",
-                        principalColumn: "PermissionId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AssignedPermissions",
                 columns: table => new
                 {
-                    GympassTypeId = table.Column<string>(type: "character varying(30)", nullable: false),
-                    PermissionId = table.Column<string>(type: "character varying(30)", nullable: false)
+                    GympassTypeId = table.Column<string>(type: "character varying(36)", nullable: false),
+                    PermissionId = table.Column<string>(type: "character varying(36)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,46 +82,9 @@ namespace Carnets.Repo.Migrations
                         principalColumn: "GympassTypeId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AssignedPermissions_Permissions_PermissionId",
+                        name: "FK_AssignedPermissions_PermissionBase_PermissionId",
                         column: x => x.PermissionId,
-                        principalTable: "Permissions",
-                        principalColumn: "PermissionId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ClassPermissions",
-                columns: table => new
-                {
-                    PermissionId = table.Column<string>(type: "character varying(30)", nullable: false),
-                    PermissionName = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClassPermissions", x => x.PermissionId);
-                    table.ForeignKey(
-                        name: "FK_ClassPermissions_Permissions_PermissionId",
-                        column: x => x.PermissionId,
-                        principalTable: "Permissions",
-                        principalColumn: "PermissionId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TimePermissionEntries",
-                columns: table => new
-                {
-                    PermissionId = table.Column<string>(type: "character varying(30)", nullable: false),
-                    EnableEntryFrom = table.Column<byte>(type: "smallint", nullable: false),
-                    EnableEntryTo = table.Column<byte>(type: "smallint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TimePermissionEntries", x => x.PermissionId);
-                    table.ForeignKey(
-                        name: "FK_TimePermissionEntries_Permissions_PermissionId",
-                        column: x => x.PermissionId,
-                        principalTable: "Permissions",
+                        principalTable: "PermissionBase",
                         principalColumn: "PermissionId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -144,8 +93,8 @@ namespace Carnets.Repo.Migrations
                 name: "Subscriptions",
                 columns: table => new
                 {
-                    SubscriptionId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    GympassId = table.Column<string>(type: "character varying(30)", nullable: false),
+                    SubscriptionId = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
+                    GympassId = table.Column<string>(type: "character varying(36)", nullable: false),
                     StripeCustomerId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     StripePaymentmethodId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false)
                 },
@@ -166,15 +115,15 @@ namespace Carnets.Repo.Migrations
                 column: "PermissionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClassPermissions_PermissionName",
-                table: "ClassPermissions",
-                column: "PermissionName",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Gympasses_GympassTypeId",
                 table: "Gympasses",
                 column: "GympassTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PermissionBase_PermissionName",
+                table: "PermissionBase",
+                column: "PermissionName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Subscriptions_GympassId",
@@ -191,25 +140,16 @@ namespace Carnets.Repo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AllowedEntriesPermissions");
-
-            migrationBuilder.DropTable(
                 name: "AssignedPermissions");
-
-            migrationBuilder.DropTable(
-                name: "ClassPermissions");
 
             migrationBuilder.DropTable(
                 name: "Subscriptions");
 
             migrationBuilder.DropTable(
-                name: "TimePermissionEntries");
+                name: "PermissionBase");
 
             migrationBuilder.DropTable(
                 name: "Gympasses");
-
-            migrationBuilder.DropTable(
-                name: "Permissions");
 
             migrationBuilder.DropTable(
                 name: "GympassTypes");
