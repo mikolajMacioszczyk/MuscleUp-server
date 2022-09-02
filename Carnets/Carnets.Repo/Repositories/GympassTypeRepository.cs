@@ -24,6 +24,11 @@ namespace Carnets.Repo.Repositories
             return await _context.GympassTypes.FirstOrDefaultAsync(g => g.GympassTypeId == gympassId);
         }
 
+        public async Task<IEnumerable<GympassType>> GetAllActiveGympassTypes()
+        {
+            return await _context.GympassTypes.Where(g => g.IsActive).ToListAsync();
+        }
+
         private async Task<GympassType?> GetActiveGympassTypeByNameAndFitnessClub(string name, string fitnessClubId)
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrEmpty(fitnessClubId))
@@ -67,7 +72,7 @@ namespace Carnets.Repo.Repositories
 
             if (!gympassType.IsActive)
             {
-                return new Result<GympassType>("Operation not allowed. An inactive gympass type cannot be changed.");
+                return new Result<GympassType>("Operation not permitted. An inactive gympass type cannot be changed.");
             }
 
             var updated = new GympassType()
@@ -87,14 +92,69 @@ namespace Carnets.Repo.Repositories
             updated.ValidityPeriodInSeconds = gympassType.ValidityPeriodInSeconds;
 
             await _context.GympassTypes.AddAsync(updated);
+
+            // todo: link permission
+            var linkedAssignedPermissions = await GetAllGympassTypeAssignedPermissions(gympassType.GympassTypeId);
+            foreach (var oldAssignedPermission in linkedAssignedPermissions)
+            {
+                var newAssignedPermission = new AssignedPermission
+                {
+                    Permission = oldAssignedPermission.Permission,
+                    PermissionId = oldAssignedPermission.PermissionId,
+                    GympassType = updated,
+                    GympassTypeId = updated.GympassTypeId
+                };
+
+                await _context.AssignedPermissions.AddAsync(newAssignedPermission);
+            }
+
             await _context.SaveChangesAsync();
 
             return new Result<GympassType>(updated);
         }
 
-        public async Task<IEnumerable<GympassType>> GetAllActiveGympassTypes()
+        public async Task<Result<bool>> DeleteGympassType(string gympassTypeId)
         {
-            return await _context.GympassTypes.Where(g => g.IsActive).ToListAsync();
+            var gympassFromDb = await GetGympassById(gympassTypeId);
+            if (gympassFromDb is null)
+            {
+                return new Result<bool>(Common.CommonConsts.NOT_FOUND);
+            }
+
+            var linkedGympasses = await GetAllGympassesWithType(gympassTypeId);
+
+            if (linkedGympasses.Any())
+            {
+                return new Result<bool>("Operation not permitted. Cannot delete GympassType with linked Gympasses");
+            }
+
+            var linkedAssignedPermissions = await GetAllGympassTypeAssignedPermissions(gympassTypeId);
+
+            foreach (var assignedPermission in linkedAssignedPermissions)
+            {
+                _context.AssignedPermissions.Remove(assignedPermission);
+            }
+
+            _context.GympassTypes.Remove(gympassFromDb);
+            await _context.SaveChangesAsync();
+
+            return new Result<bool>(true);
+        }
+
+        private async Task<IEnumerable<Gympass>> GetAllGympassesWithType(string gympassTypeId)
+        {
+            return await _context.Gympasses.Include(g => g.GympassType)
+                .Where(g => g.GympassType.GympassTypeId == gympassTypeId)
+                .ToListAsync();
+        }
+
+        private async Task<IEnumerable<AssignedPermission>> GetAllGympassTypeAssignedPermissions(string gympassTypeId)
+        {
+            return await _context.AssignedPermissions
+                .Include(p => p.GympassType)
+                .Include(p => p.Permission)
+                .Where(p => p.GympassTypeId == gympassTypeId)
+                .ToListAsync();
         }
     }
 }

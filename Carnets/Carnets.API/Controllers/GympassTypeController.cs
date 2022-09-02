@@ -70,5 +70,22 @@ namespace Carnets.API.Controllers
 
             return BadRequest(updateResult.ErrorCombined);
         }
+
+        [HttpDelete("{gympassTypeId}")]
+        public async Task<ActionResult> DeleteGympassType([FromRoute] string gympassTypeId)
+        {
+            var deleteResult = await _gympassTypeRepository.DeleteGympassType(gympassTypeId);
+
+            if (deleteResult.IsSuccess)
+            {
+                return Ok();
+            }
+            else if (deleteResult.Errors?.Any(e => e.Equals(Common.CommonConsts.NOT_FOUND)) ?? false)
+            {
+                return NotFound();
+            }
+
+            return BadRequest(deleteResult.ErrorCombined);
+        }
     }
 }
