@@ -27,34 +27,25 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("allowedEntries/{permissionId}")]
-        public async Task<ActionResult<AllowedEntriesPermissionDto>> GetAllowedEntriesPermission(string permissionId)
-        {
-            var permission = await _allowedEntriesPermissionRepository.GetPermissionById(permissionId);
-            if (permission != null)
-            {
-                return Ok(_mapper.Map<AllowedEntriesPermissionDto>(permission));
-            }
-            return NotFound();
-        }
+        public async Task<ActionResult<AllowedEntriesPermissionDto>> GetAllowedEntriesPermission(string permissionId) =>
+            await GetPermission<AllowedEntriesPermission, AllowedEntriesPermissionDto>(permissionId, _allowedEntriesPermissionRepository);
 
         [HttpGet("class/{permissionId}")]
-        public async Task<ActionResult<ClassPermissionDto>> GetClassPermission(string permissionId)
-        {
-            var permission = await _classPermissionRepository.GetPermissionById(permissionId);
-            if (permission != null)
-            {
-                return Ok(_mapper.Map<ClassPermissionDto>(permission));
-            }
-            return NotFound();
-        }
+        public async Task<ActionResult<ClassPermissionDto>> GetClassPermission(string permissionId) =>
+            await GetPermission<ClassPermission, ClassPermissionDto>(permissionId, _classPermissionRepository);
 
         [HttpGet("timeEntry/{permissionId}")]
-        public async Task<ActionResult<TimePermissionEntryDto>> GetTimeEntryPermission(string permissionId)
+        public async Task<ActionResult<TimePermissionEntryDto>> GetTimeEntryPermission(string permissionId) =>
+            await GetPermission<TimePermissionEntry, TimePermissionEntryDto>(permissionId, _timePermissionRepository);
+
+        private async Task<ActionResult> GetPermission<TPermission, TPermissionDto>(string permissionId, 
+            IPermissionRepository<TPermission> permissionRepository)
+            where TPermission : PermissionBase
         {
-            var permission = await _timePermissionRepository.GetPermissionById(permissionId);
+            var permission = await permissionRepository.GetPermissionById(permissionId);
             if (permission != null)
             {
-                return Ok(_mapper.Map<TimePermissionEntryDto>(permission));
+                return Ok(_mapper.Map<TPermissionDto>(permission));
             }
             return NotFound();
         }
