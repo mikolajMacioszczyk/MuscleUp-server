@@ -13,10 +13,12 @@ namespace Carnets.API
             CreateMap<CreateGympassTypeDto, GympassType>();
             CreateMap<UpdateGympassTypeDto, GympassType>();
 
-            // AllowedEntriesPermission
+            // Permission
             CreateMap<AllowedEntriesPermission, AllowedEntriesPermissionDto>()
                 .ForMember(a => a.CooldownType, 
                 opt => opt.MapFrom(src => src.CooldownType.ToString()));
+            CreateMap<ClassPermission, ClassPermissionDto>();
+            CreateMap<TimePermissionEntry, TimePermissionEntryDto>();
         }
     }
 }
