@@ -1,5 +1,6 @@
 ﻿using Common.Resolvers;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,8 @@ namespace Common.Extensions
 {
     public static class ProgramExtensions
     {
+        #region Configure services
+
         public static void AddBasicApiServices<TProgram>(this IServiceCollection services)
         {
             services.AddControllers()
@@ -25,6 +28,11 @@ namespace Common.Extensions
             services.AddAutoMapper(typeof(TProgram));
         }
 
+        public static void ConfigureRouting(this IServiceCollection services)
+        {
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+        }
+
         public static void AddDbContext<TDbContext>(IServiceCollection services, IConfiguration configuration)
             where TDbContext : DbContext
         {
@@ -32,6 +40,11 @@ namespace Common.Extensions
             services.AddDbContext<TDbContext>(options =>
                 options.UseNpgsql(connectionString));
         }
+
+        #endregion
+
+
+        #region Configure
 
         public static async Task MigrateDatabase<TDbContext>(this IServiceProvider services)
             where TDbContext : DbContext
@@ -54,5 +67,7 @@ namespace Common.Extensions
                 app.UseExceptionMiddleware();
             }
         }
+
+        #endregion
     }
 }
