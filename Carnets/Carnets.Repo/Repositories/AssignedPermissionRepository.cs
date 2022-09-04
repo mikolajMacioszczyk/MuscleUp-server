@@ -34,47 +34,21 @@ namespace Carnets.Repo.Repositories
         // Permission may be granted also to inactive gympass types
         public async Task<Result<AssignedPermission>> GrantPermission(AssignedPermission grantRequest)
         {
-            var allowedEntriesPermissionFromDb = _context.AllowedEntriesPermissions
-                .FirstOrDefaultAsync(p => p.PermissionId == grantRequest.PermissionId);
-
-            var classPermissionFromDb = _context.ClassPermissions
-                .FirstOrDefaultAsync(p => p.PermissionId == grantRequest.PermissionId);
-
-            var timePermissionFromDb = _context.TimePermissionEntries
-                .FirstOrDefaultAsync(p => p.PermissionId == grantRequest.PermissionId);
-
-            var gympassTypeFromDb = _context.GympassTypes
+            var gympassTypeFromDb = await _context.GympassTypes
                 .FirstOrDefaultAsync(g => g.GympassTypeId == grantRequest.GympassTypeId);
 
-            var alreadyGrantedFromDb = _context.AssignedPermissions
-                .FirstOrDefaultAsync(a => a.GympassTypeId == grantRequest.GympassTypeId && a.PermissionId == grantRequest.PermissionId);
+            var permission = await GetPermissionById(grantRequest.PermissionId);
 
-            var allDbRequests = new Task[] { allowedEntriesPermissionFromDb, classPermissionFromDb, timePermissionFromDb, gympassTypeFromDb, alreadyGrantedFromDb };
-
-            await Task.WhenAll(allDbRequests);
-
-            PermissionBase permission = null;
-
-            if (allowedEntriesPermissionFromDb.Result != null)
-            {
-                permission = allowedEntriesPermissionFromDb.Result;
-            }
-            else if (classPermissionFromDb.Result != null)
-            {
-                permission = classPermissionFromDb.Result;
-            }
-            else if (timePermissionFromDb.Result != null)
-            {
-                permission = timePermissionFromDb.Result;
-            }
-
-            if (permission is null || gympassTypeFromDb.Result is null)
+            if (permission is null || gympassTypeFromDb is null)
             {
                 return new Result<AssignedPermission>(Common.CommonConsts.NOT_FOUND);
             }
 
+            var alreadyGrantedFromDb = await _context.AssignedPermissions
+                .FirstOrDefaultAsync(a => a.GympassTypeId == grantRequest.GympassTypeId && a.PermissionId == grantRequest.PermissionId);
+
             // is unique
-            if (alreadyGrantedFromDb.Result != null)
+            if (alreadyGrantedFromDb != null)
             {
                 return new Result<AssignedPermission>("Operation not permitted. Permission has beend already assigned to GympassType");
             }
@@ -99,6 +73,71 @@ namespace Carnets.Repo.Repositories
             _context.AssignedPermissions.Remove(assignedPermissionFromDb);
             await _context.SaveChangesAsync();
             return new Result<bool>(true);
+        }
+
+        public async Task<Result<bool>> RemovePermissionWithAllAssigements(string permissionId)
+        {
+            var permissionFromDb = await GetPermissionById(permissionId);
+
+            if (permissionFromDb is null)
+            {
+                return new Result<bool>(Common.CommonConsts.NOT_FOUND);
+            }
+
+            var assignedPermissions = await _context.AssignedPermissions
+                .Where(p => p.PermissionId == permissionId).ToListAsync();
+
+            foreach (var assignedPermission in assignedPermissions)
+            {
+                _context.AssignedPermissions.Remove(assignedPermission);
+            }
+
+            switch (permissionFromDb.PermissionType)
+            {
+                case Domain.Enums.PermissionType.TimePermissionEntry:
+                    _context.TimePermissionEntries.Remove(permissionFromDb as TimePermissionEntry);
+                    break;
+                case Domain.Enums.PermissionType.AllowedEntriesPermission:
+                    _context.AllowedEntriesPermissions.Remove(permissionFromDb as AllowedEntriesPermission);
+                    break;
+                case Domain.Enums.PermissionType.ClassPermission:
+                    _context.ClassPermissions.Remove(permissionFromDb as ClassPermission);
+                    break;
+            }
+
+            await _context.SaveChangesAsync();
+            return new Result<bool>(true);
+        }
+
+        private async Task<PermissionBase> GetPermissionById(string permissionId)
+        {
+            var allowedEntriesPermissionFromDb = _context.AllowedEntriesPermissions
+                .FirstOrDefaultAsync(p => p.PermissionId == permissionId);
+
+            var classPermissionFromDb = _context.ClassPermissions
+                .FirstOrDefaultAsync(p => p.PermissionId == permissionId);
+
+            var timePermissionFromDb = _context.TimePermissionEntries
+                .FirstOrDefaultAsync(p => p.PermissionId == permissionId);
+
+            var allDbRequests = new Task[] { allowedEntriesPermissionFromDb, classPermissionFromDb, timePermissionFromDb };
+
+            await Task.WhenAll(allDbRequests);
+
+            if (allowedEntriesPermissionFromDb.Result != null)
+            {
+                return allowedEntriesPermissionFromDb.Result;
+            }
+            else if (classPermissionFromDb.Result != null)
+            {
+                return classPermissionFromDb.Result;
+            }
+            else if (timePermissionFromDb.Result != null)
+            {
+                return timePermissionFromDb.Result;
+            }
+
+            return null;
         }
     }
 }

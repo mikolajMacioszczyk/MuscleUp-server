@@ -81,6 +81,23 @@ namespace Carnets.API.Controllers
             return BadRequest(revokeResult.ErrorCombined);
         }
 
+        [HttpDelete("revokeAll/{permissionId}")]
+        public async Task<ActionResult> RemovePermissionWithAllAssigements([FromRoute] string permissionId)
+        {
+            var revokeResult = await _assignedPermissionRepository.RemovePermissionWithAllAssigements(permissionId);
+
+            if (revokeResult.IsSuccess)
+            {
+                return Ok();
+            }
+            else if (revokeResult.Errors?.Any(e => e.Equals(Common.CommonConsts.NOT_FOUND)) ?? false)
+            {
+                return NotFound("Gympass Type or Permission does not exists");
+            }
+
+            return BadRequest(revokeResult.ErrorCombined);
+        }
+
         // TODO: Remove Permission with all assigements
 
         #region AllowedEntries

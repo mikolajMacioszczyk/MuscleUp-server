@@ -11,5 +11,6 @@ namespace Carnets.Domain.Interfaces
 
         Task<Result<bool>> RevokePermission(string permissionId, string gympassTypeId);
 
+        Task<Result<bool>> RemovePermissionWithAllAssigements(string permissionId);
     }
 }
