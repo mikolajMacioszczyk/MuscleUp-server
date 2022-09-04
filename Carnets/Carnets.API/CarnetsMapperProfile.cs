@@ -17,8 +17,13 @@ namespace Carnets.API
             CreateMap<AllowedEntriesPermission, AllowedEntriesPermissionDto>()
                 .ForMember(a => a.CooldownType, 
                 opt => opt.MapFrom(src => src.CooldownType.ToString()));
+            CreateMap<CreateAllowedEntriesPermissionDto, AllowedEntriesPermission>();
+
             CreateMap<ClassPermission, ClassPermissionDto>();
+            CreateMap<CreateClassPermissionDto, ClassPermission>();
+
             CreateMap<TimePermissionEntry, TimePermissionEntryDto>();
+            CreateMap<TimePermissionEntryDto, TimePermissionEntry>();
         }
     }
 }

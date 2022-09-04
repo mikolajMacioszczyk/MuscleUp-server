@@ -17,6 +17,21 @@ namespace Carnets.Repo.Repositories
 
         protected abstract DbSet<TPermission> PermissionDbSet { get; }
 
+        public async Task<TPermission> GetPermissionById(string permissionId)
+        {
+            return await PermissionDbSet.FirstOrDefaultAsync(p => p.PermissionId == permissionId);
+        }
+
+        public virtual async Task<Result<TPermission>> CreatePermission(TPermission newPermission)
+        {
+            newPermission.PermissionId = Guid.NewGuid().ToString();
+
+            await PermissionDbSet.AddAsync(newPermission);
+            await _context.SaveChangesAsync();
+
+            return new Result<TPermission>(newPermission);
+        }
+
         public async Task<Result<bool>> DeletePermission(string permissionId)
         {
             var permissionFromDb = await PermissionDbSet.FirstOrDefaultAsync(x => x.PermissionId == permissionId);
@@ -39,11 +54,6 @@ namespace Carnets.Repo.Repositories
             await _context.SaveChangesAsync();
 
             return new Result<bool>(true);
-        }
-
-        public async Task<TPermission> GetPermissionById(string permissionId)
-        {
-            return await PermissionDbSet.FirstOrDefaultAsync(p => p.PermissionId == permissionId);
         }
     }
 }

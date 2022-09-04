@@ -26,11 +26,22 @@ namespace Carnets.API.Controllers
             _timePermissionRepository = timePermissionRepository;
         }
 
+        // Grant Permission
+        // Revoke Permission
+        // Remove Permission with all assigements
+
         #region AllowedEntries
 
         [HttpGet("allowedEntries/{permissionId}")]
         public async Task<ActionResult<AllowedEntriesPermissionDto>> GetAllowedEntriesPermission([FromRoute] string permissionId) =>
             await GetPermission<AllowedEntriesPermission, AllowedEntriesPermissionDto>(permissionId, _allowedEntriesPermissionRepository);
+
+        [HttpPost("allowedEntries")]
+        public async Task<ActionResult<AllowedEntriesPermissionDto>> CreateAllowedEntriesPermission([FromBody] CreateAllowedEntriesPermissionDto model)
+        {
+            var permission = _mapper.Map<AllowedEntriesPermission>(model);
+            return await CreatePermission<AllowedEntriesPermission, AllowedEntriesPermissionDto>(permission, _allowedEntriesPermissionRepository);
+        }
 
         [HttpDelete("allowedEntries/{permissionId}")]
         public async Task<ActionResult> DeleteAllowedEntriesPermission([FromRoute] string permissionId) =>
@@ -44,6 +55,13 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult<ClassPermissionDto>> GetClassPermission([FromRoute] string permissionId) =>
             await GetPermission<ClassPermission, ClassPermissionDto>(permissionId, _classPermissionRepository);
 
+        [HttpPost("class")]
+        public async Task<ActionResult<ClassPermissionDto>> CreateClassPermission([FromBody] CreateClassPermissionDto model)
+        {
+            var permission = _mapper.Map<ClassPermission>(model);
+            return await CreatePermission<ClassPermission, ClassPermissionDto>(permission, _classPermissionRepository);
+        }
+
         [HttpDelete("class/{permissionId}")]
         public async Task<ActionResult> DeleteClassPermission([FromRoute] string permissionId) =>
            await DeletePermission(permissionId, _classPermissionRepository);
@@ -55,6 +73,13 @@ namespace Carnets.API.Controllers
         [HttpGet("timeEntry/{permissionId}")]
         public async Task<ActionResult<TimePermissionEntryDto>> GetTimeEntryPermission([FromRoute] string permissionId) =>
             await GetPermission<TimePermissionEntry, TimePermissionEntryDto>(permissionId, _timePermissionRepository);
+
+        [HttpPost("timeEntry")]
+        public async Task<ActionResult<TimePermissionEntryDto>> CreateTimeEntryPermission([FromBody] CreateTimePermissionEntryDto model)
+        {
+            var permission = _mapper.Map<TimePermissionEntry>(model);
+            return await CreatePermission<TimePermissionEntry, TimePermissionEntryDto>(permission, _timePermissionRepository);
+        }
 
         [HttpDelete("timeEntry/{permissionId}")]
         public async Task<ActionResult> DeleteTimeEntryPermission([FromRoute] string permissionId) =>
@@ -74,6 +99,20 @@ namespace Carnets.API.Controllers
                 return Ok(_mapper.Map<TPermissionDto>(permission));
             }
             return NotFound();
+        }
+
+        private async Task<ActionResult> CreatePermission<TPermission, TPermissionDto>(TPermission model,
+            IPermissionRepository<TPermission> permissionRepository)
+            where TPermission : PermissionBase
+        {
+            var createResult = await permissionRepository.CreatePermission(model);
+
+            if (createResult.IsSuccess)
+            {
+                return Ok(_mapper.Map<TPermissionDto>(createResult.Value));
+            }
+
+            return BadRequest(createResult.ErrorCombined);
         }
 
         public async Task<ActionResult> DeletePermission<TPermission>([FromRoute] string permissionId,
