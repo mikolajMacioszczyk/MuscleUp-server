@@ -16,6 +16,7 @@ builder.Services.AddScoped<IGympassTypeRepository, GympassTypeRepository>();
 builder.Services.AddScoped<IPermissionRepository<AllowedEntriesPermission>, AllowedEntriesPermissionRepository>();
 builder.Services.AddScoped<IPermissionRepository<ClassPermission>, ClassPermissionRepository>();
 builder.Services.AddScoped<IPermissionRepository<TimePermissionEntry>, TimePermissionEntryRepository>();
+builder.Services.AddScoped<IAssignedPermissionRepository, AssignedPermissionRepository>();
 
 var app = builder.Build();
 

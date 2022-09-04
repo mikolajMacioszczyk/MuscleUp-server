@@ -13,22 +13,42 @@ namespace Carnets.API.Controllers
         private readonly IPermissionRepository<AllowedEntriesPermission> _allowedEntriesPermissionRepository;
         private readonly IPermissionRepository<ClassPermission> _classPermissionRepository;
         private readonly IPermissionRepository<TimePermissionEntry> _timePermissionRepository;
+        private readonly IAssignedPermissionRepository _assignedPermissionRepository;
         private readonly IMapper _mapper;
 
         public PermissionController(IMapper mapper,
-            IPermissionRepository<AllowedEntriesPermission> allowedEntriesPermissionRepository, 
-            IPermissionRepository<ClassPermission> classPermissionRepository, 
-            IPermissionRepository<TimePermissionEntry> timePermissionRepository)
+            IPermissionRepository<AllowedEntriesPermission> allowedEntriesPermissionRepository,
+            IPermissionRepository<ClassPermission> classPermissionRepository,
+            IPermissionRepository<TimePermissionEntry> timePermissionRepository, 
+            IAssignedPermissionRepository assignedPermissionRepository)
         {
             _allowedEntriesPermissionRepository = allowedEntriesPermissionRepository;
             _mapper = mapper;
             _classPermissionRepository = classPermissionRepository;
             _timePermissionRepository = timePermissionRepository;
+            _assignedPermissionRepository = assignedPermissionRepository;
         }
 
-        // Grant Permission
-        // Revoke Permission
-        // Remove Permission with all assigements
+        [HttpPost("grant")]
+        public async Task<ActionResult> GrantPermission([FromBody] GrantPermissionDto model)
+        {
+            var grantRequest = _mapper.Map<AssignedPermission>(model);
+
+            var grantResult = await _assignedPermissionRepository.GrantPermission(grantRequest);
+            if (grantResult.IsSuccess)
+            {
+                return Ok(grantResult.Value);
+            }
+            else if (grantResult.Errors?.Any(e => e.Equals(Common.CommonConsts.NOT_FOUND)) ?? false)
+            {
+                return NotFound("Gympass Type or Permission does not exists");
+            }
+
+            return BadRequest(grantResult.ErrorCombined);
+        }
+
+        // TODO: Revoke Permission
+        // TODO: Remove Permission with all assigements
 
         #region AllowedEntries
 

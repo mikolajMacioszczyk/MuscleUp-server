@@ -24,6 +24,9 @@ namespace Carnets.API
 
             CreateMap<TimePermissionEntry, TimePermissionEntryDto>();
             CreateMap<TimePermissionEntryDto, TimePermissionEntry>();
+
+            // AssignedPermission
+            CreateMap<GrantPermissionDto, AssignedPermission>();
         }
     }
 }
