@@ -2,7 +2,7 @@
 
 namespace Carnets.Domain.Models.Dtos
 {
-    public class GrantPermissionDto
+    public class GrantRevokePermissionDto
     {
         [Required]
         [MaxLength(36)]

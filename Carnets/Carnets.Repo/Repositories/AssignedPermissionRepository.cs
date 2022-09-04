@@ -14,6 +14,23 @@ namespace Carnets.Repo.Repositories
             _context = context;
         }
 
+        public async Task<Result<IEnumerable<AssignedPermission>>> GetAllGympassPermissions(string gympassTypeId)
+        {
+            var gympass = await _context.GympassTypes.FirstOrDefaultAsync(g => g.GympassTypeId == gympassTypeId);
+            if (gympass is null)
+            {
+                return new Result<IEnumerable<AssignedPermission>>(Common.CommonConsts.NOT_FOUND);
+            }
+
+            var assignedPermission = await _context.AssignedPermissions
+                .Include(p => p.Permission)
+                .Include(p => p.GympassType)
+                .Where(p => p.GympassTypeId == gympassTypeId)
+                .ToListAsync();
+
+            return new Result<IEnumerable<AssignedPermission>>(assignedPermission);
+        }
+
         // Permission may be granted also to inactive gympass types
         public async Task<Result<AssignedPermission>> GrantPermission(AssignedPermission grantRequest)
         {
@@ -67,6 +84,21 @@ namespace Carnets.Repo.Repositories
             
             // ok
             return new Result<AssignedPermission>(grantRequest);
+        }
+
+        public async Task<Result<bool>> RevokePermission(string permissionId, string gympassTypeId)
+        {
+            var assignedPermissionFromDb = await _context.AssignedPermissions
+                .FirstOrDefaultAsync(p => p.PermissionId == permissionId && p.GympassTypeId == gympassTypeId);
+
+            if (assignedPermissionFromDb is null)
+            {
+                return new Result<bool>(Common.CommonConsts.NOT_FOUND);
+            }
+
+            _context.AssignedPermissions.Remove(assignedPermissionFromDb);
+            await _context.SaveChangesAsync();
+            return new Result<bool>(true);
         }
     }
 }
