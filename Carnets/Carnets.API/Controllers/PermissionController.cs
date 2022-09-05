@@ -98,9 +98,11 @@ namespace Carnets.API.Controllers
             return BadRequest(revokeResult.ErrorCombined);
         }
 
-        // TODO: Remove Permission with all assigements
-
         #region AllowedEntries
+
+        [HttpGet("allowedEntries")]
+        public async Task<ActionResult<IEnumerable<AllowedEntriesPermissionDto>>> GetAllAllowedEntriesPermisions() =>
+            await GetAllPermisions<AllowedEntriesPermission, AllowedEntriesPermissionDto>(_allowedEntriesPermissionRepository);
 
         [HttpGet("allowedEntries/{permissionId}")]
         public async Task<ActionResult<AllowedEntriesPermissionDto>> GetAllowedEntriesPermission([FromRoute] string permissionId) =>
@@ -121,6 +123,10 @@ namespace Carnets.API.Controllers
 
         #region ClassPermission
 
+        [HttpGet("class")]
+        public async Task<ActionResult<IEnumerable<ClassPermissionDto>>> GetAllClassPermisions() =>
+           await GetAllPermisions<ClassPermission, ClassPermissionDto>(_classPermissionRepository);
+
         [HttpGet("class/{permissionId}")]
         public async Task<ActionResult<ClassPermissionDto>> GetClassPermission([FromRoute] string permissionId) =>
             await GetPermission<ClassPermission, ClassPermissionDto>(permissionId, _classPermissionRepository);
@@ -140,6 +146,10 @@ namespace Carnets.API.Controllers
 
         #region TimePermissionEntry
 
+        [HttpGet("timeEntry")]
+        public async Task<ActionResult<IEnumerable<TimePermissionEntryDto>>> GetAllTimeEntryPermisions() =>
+           await GetAllPermisions<TimePermissionEntry, TimePermissionEntryDto>(_timePermissionRepository);
+
         [HttpGet("timeEntry/{permissionId}")]
         public async Task<ActionResult<TimePermissionEntryDto>> GetTimeEntryPermission([FromRoute] string permissionId) =>
             await GetPermission<TimePermissionEntry, TimePermissionEntryDto>(permissionId, _timePermissionRepository);
@@ -158,6 +168,13 @@ namespace Carnets.API.Controllers
         #endregion
 
         #region Helpers
+
+        public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllPermisions<TPermission, TPermissionDto>(
+            IPermissionRepository<TPermission> permissionRepository)
+            where TPermission : PermissionBase
+        {
+            return Ok(_mapper.Map<IEnumerable<TPermissionDto>>(await permissionRepository.GetAll()));
+        }
 
         private async Task<ActionResult> GetPermission<TPermission, TPermissionDto>(string permissionId,
             IPermissionRepository<TPermission> permissionRepository)

@@ -111,30 +111,26 @@ namespace Carnets.Repo.Repositories
 
         private async Task<PermissionBase> GetPermissionById(string permissionId)
         {
-            var allowedEntriesPermissionFromDb = _context.AllowedEntriesPermissions
+            var allowedEntriesPermissionFromDb = await _context.AllowedEntriesPermissions
                 .FirstOrDefaultAsync(p => p.PermissionId == permissionId);
 
-            var classPermissionFromDb = _context.ClassPermissions
+            var classPermissionFromDb = await _context.ClassPermissions
                 .FirstOrDefaultAsync(p => p.PermissionId == permissionId);
 
-            var timePermissionFromDb = _context.TimePermissionEntries
+            var timePermissionFromDb = await _context.TimePermissionEntries
                 .FirstOrDefaultAsync(p => p.PermissionId == permissionId);
 
-            var allDbRequests = new Task[] { allowedEntriesPermissionFromDb, classPermissionFromDb, timePermissionFromDb };
-
-            await Task.WhenAll(allDbRequests);
-
-            if (allowedEntriesPermissionFromDb.Result != null)
+            if (allowedEntriesPermissionFromDb != null)
             {
-                return allowedEntriesPermissionFromDb.Result;
+                return allowedEntriesPermissionFromDb;
             }
-            else if (classPermissionFromDb.Result != null)
+            else if (classPermissionFromDb != null)
             {
-                return classPermissionFromDb.Result;
+                return classPermissionFromDb;
             }
-            else if (timePermissionFromDb.Result != null)
+            else if (timePermissionFromDb != null)
             {
-                return timePermissionFromDb.Result;
+                return timePermissionFromDb;
             }
 
             return null;
