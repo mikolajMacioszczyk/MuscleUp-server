@@ -17,6 +17,11 @@ namespace Carnets.Repo.Repositories
 
         protected abstract DbSet<TPermission> PermissionDbSet { get; }
 
+        public async Task<IEnumerable<TPermission>> GetAll()
+        {
+            return await PermissionDbSet.ToListAsync();
+        }
+
         public async Task<TPermission> GetPermissionById(string permissionId)
         {
             return await PermissionDbSet.FirstOrDefaultAsync(p => p.PermissionId == permissionId);
