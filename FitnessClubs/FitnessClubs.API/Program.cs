@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddBasicApiServices<Program>();
+builder.Services.ConfigureRouting();
 
 ProgramExtensions.AddDbContext<FitnessClubsDbContext>(builder.Services, builder.Configuration);
 
