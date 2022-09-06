@@ -8,7 +8,8 @@ namespace Carnets.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AllowedEntriesPermissionController : SpecificPermissionControllerBase<AllowedEntriesPermission, AllowedEntriesPermissionDto>
+    public class AllowedEntriesPermissionController 
+        : SpecificPermissionControllerBase<AllowedEntriesPermission, AllowedEntriesPermissionDto, CreateAllowedEntriesPermissionDto>
     {
         public AllowedEntriesPermissionController(IPermissionRepository<AllowedEntriesPermission> permissionRepository, IMapper mapper) 
             : base(permissionRepository, mapper)

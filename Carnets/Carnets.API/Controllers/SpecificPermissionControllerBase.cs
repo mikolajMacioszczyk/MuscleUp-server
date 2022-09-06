@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Carnets.API.Controllers
 {
-    public abstract class SpecificPermissionControllerBase<TPermission, TPermissionDto> : ControllerBase
+    public abstract class SpecificPermissionControllerBase<TPermission, TPermissionDto, TCreatePermissionDto> : ControllerBase
         where TPermission : PermissionBase
     {
         private readonly IPermissionRepository<TPermission> _permissionRepository;
@@ -17,12 +17,14 @@ namespace Carnets.API.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet()]
         public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllPermisions()
         {
             return Ok(_mapper.Map<IEnumerable<TPermissionDto>>(await _permissionRepository.GetAll()));
         }
 
-        private async Task<ActionResult> GetPermission(string permissionId)
+        [HttpGet("{permissionId}")]
+        public async Task<ActionResult> GetPermission([FromRoute] string permissionId)
         {
             var permission = await _permissionRepository.GetPermissionById(permissionId);
             if (permission != null)
@@ -32,9 +34,11 @@ namespace Carnets.API.Controllers
             return NotFound();
         }
 
-        private async Task<ActionResult> CreatePermission(TPermission model)
+        [HttpPost()]
+        public async Task<ActionResult> CreatePermission([FromBody] TCreatePermissionDto model)
         {
-            var createResult = await _permissionRepository.CreatePermission(model);
+            var permission = _mapper.Map<TPermission>(model);
+            var createResult = await _permissionRepository.CreatePermission(permission);
 
             if (createResult.IsSuccess)
             {
@@ -44,6 +48,7 @@ namespace Carnets.API.Controllers
             return BadRequest(createResult.ErrorCombined);
         }
 
+        [HttpDelete("{permissionId}")]
         public async Task<ActionResult> DeletePermission([FromRoute] string permissionId)
         {
             var deleteResult = await _permissionRepository.DeletePermission(permissionId);
