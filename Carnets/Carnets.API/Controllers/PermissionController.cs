@@ -20,13 +20,13 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("gympassPermissions/{gympassId}")]
-        public async Task<ActionResult<IEnumerable<AssignedPermissionDto>>> GetAllGympassPermissions(string gympassId)
+        public async Task<ActionResult<IEnumerable<PermissionBaseDto>>> GetAllGympassPermissions(string gympassId)
         {
             var permissionsResult = await _assignedPermissionRepository.GetAllGympassPermissions(gympassId);
 
             if (permissionsResult.IsSuccess)
             {
-                return Ok(_mapper.Map<IEnumerable<AssignedPermissionDto>>(permissionsResult.Value));
+                return Ok(_mapper.Map<IEnumerable<PermissionBaseDto>>(permissionsResult.Value));
             }
             else if (permissionsResult.Errors?.Any(e => e.Equals(Common.CommonConsts.NOT_FOUND)) ?? false)
             {

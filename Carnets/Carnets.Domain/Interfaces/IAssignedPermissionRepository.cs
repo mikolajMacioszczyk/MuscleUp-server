@@ -5,7 +5,7 @@ namespace Carnets.Domain.Interfaces
 {
     public interface IAssignedPermissionRepository
     {
-        Task<Result<IEnumerable<AssignedPermission>>> GetAllGympassPermissions(string gympassTypeId);
+        Task<Result<IEnumerable<PermissionBase>>> GetAllGympassPermissions(string gympassTypeId);
 
         Task<Result<AssignedPermission>> GrantPermission(AssignedPermission grantRequest);
 

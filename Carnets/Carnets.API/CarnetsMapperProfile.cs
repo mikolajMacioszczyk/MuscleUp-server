@@ -14,6 +14,8 @@ namespace Carnets.API
             CreateMap<UpdateGympassTypeDto, GympassType>();
 
             // Permission
+            CreateMap<PermissionBase, PermissionBaseDto>();
+
             CreateMap<AllowedEntriesPermission, AllowedEntriesPermissionDto>()
                 .ForMember(a => a.CooldownType, 
                 opt => opt.MapFrom(src => src.CooldownType.ToString()));

@@ -14,21 +14,22 @@ namespace Carnets.Repo.Repositories
             _context = context;
         }
 
-        public async Task<Result<IEnumerable<AssignedPermission>>> GetAllGympassPermissions(string gympassTypeId)
+        public async Task<Result<IEnumerable<PermissionBase>>> GetAllGympassPermissions(string gympassTypeId)
         {
             var gympass = await _context.GympassTypes.FirstOrDefaultAsync(g => g.GympassTypeId == gympassTypeId);
             if (gympass is null)
             {
-                return new Result<IEnumerable<AssignedPermission>>(Common.CommonConsts.NOT_FOUND);
+                return new Result<IEnumerable<PermissionBase>>(Common.CommonConsts.NOT_FOUND);
             }
 
             var assignedPermission = await _context.AssignedPermissions
                 .Include(p => p.Permission)
-                .Include(p => p.GympassType)
                 .Where(p => p.GympassTypeId == gympassTypeId)
                 .ToListAsync();
 
-            return new Result<IEnumerable<AssignedPermission>>(assignedPermission);
+            var gympassPermissions = assignedPermission.Select(a => a.Permission);
+
+            return new Result<IEnumerable<PermissionBase>>(gympassPermissions);
         }
 
         // Permission may be granted also to inactive gympass types
