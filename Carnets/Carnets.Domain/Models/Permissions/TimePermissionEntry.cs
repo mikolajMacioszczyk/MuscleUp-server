@@ -1,14 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Carnets.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Carnets.Domain.Models
 {
-    public class TimePermissionEntry
+    public class TimePermissionEntry : PermissionBase
     {
-        [Key]
-        [ForeignKey("Permission")]
-        public string PermissionId { get; set; }
-        public Permission Permission { get; set; }
+        public override PermissionType PermissionType => PermissionType.TimePermissionEntry;
 
         [Range(0, 24)]
         public byte EnableEntryFrom { get; set; }

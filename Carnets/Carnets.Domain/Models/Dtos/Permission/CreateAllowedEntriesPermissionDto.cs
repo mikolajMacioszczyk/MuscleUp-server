@@ -1,12 +1,10 @@
 ﻿using Carnets.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace Carnets.Domain.Models
+namespace Carnets.Domain.Models.Dtos
 {
-    public class AllowedEntriesPermission : PermissionBase
+    public class CreateAllowedEntriesPermissionDto
     {
-        public override PermissionType PermissionType => PermissionType.AllowedEntriesPermission;
-
         [Range(0, int.MaxValue)]
         public int AllowedEntries { get; set; }
 

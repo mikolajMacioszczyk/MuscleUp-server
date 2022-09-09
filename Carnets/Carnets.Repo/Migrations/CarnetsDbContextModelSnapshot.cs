@@ -22,32 +22,13 @@ namespace Carnets.Repo.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Carnets.Domain.Models.AllowedEntriesPermission", b =>
-                {
-                    b.Property<string>("PermissionId")
-                        .HasColumnType("character varying(30)");
-
-                    b.Property<int>("AllowedEntries")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("AllowedEntriesCooldown")
-                        .HasColumnType("integer");
-
-                    b.Property<byte>("CooldownType")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("PermissionId");
-
-                    b.ToTable("AllowedEntriesPermissions");
-                });
-
             modelBuilder.Entity("Carnets.Domain.Models.AssignedPermission", b =>
                 {
                     b.Property<string>("GympassTypeId")
-                        .HasColumnType("character varying(30)");
+                        .HasColumnType("character varying(36)");
 
                     b.Property<string>("PermissionId")
-                        .HasColumnType("character varying(30)");
+                        .HasColumnType("character varying(36)");
 
                     b.HasKey("GympassTypeId", "PermissionId");
 
@@ -56,46 +37,23 @@ namespace Carnets.Repo.Migrations
                     b.ToTable("AssignedPermissions");
                 });
 
-            modelBuilder.Entity("Carnets.Domain.Models.ClassPermission", b =>
-                {
-                    b.Property<string>("PermissionId")
-                        .HasColumnType("character varying(30)");
-
-                    b.Property<string>("PermissionName")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
-
-                    b.HasKey("PermissionId");
-
-                    b.HasIndex("PermissionName")
-                        .IsUnique();
-
-                    b.ToTable("ClassPermissions");
-                });
-
             modelBuilder.Entity("Carnets.Domain.Models.Gympass", b =>
                 {
                     b.Property<string>("GympassId")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.Property<DateTime>("ActivationDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("FitnessClubId")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
-
                     b.Property<string>("GympassTypeId")
                         .IsRequired()
-                        .HasColumnType("character varying(30)");
+                        .HasColumnType("character varying(36)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.Property<DateTime>("ValidityDate")
                         .HasColumnType("timestamp with time zone");
@@ -110,13 +68,21 @@ namespace Carnets.Repo.Migrations
             modelBuilder.Entity("Carnets.Domain.Models.GympassType", b =>
                 {
                     b.Property<string>("GympassTypeId")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<string>("FitnessClubId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.Property<string>("GympassTypeName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
@@ -124,34 +90,40 @@ namespace Carnets.Repo.Migrations
                     b.Property<int>("ValidityPeriodInSeconds")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Version")
+                        .HasColumnType("integer");
+
                     b.HasKey("GympassTypeId");
 
                     b.ToTable("GympassTypes");
                 });
 
-            modelBuilder.Entity("Carnets.Domain.Models.Permission", b =>
+            modelBuilder.Entity("Carnets.Domain.Models.PermissionBase", b =>
                 {
                     b.Property<string>("PermissionId")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
-                    b.Property<byte>("PermissionType")
-                        .HasColumnType("smallint");
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("PermissionId");
 
-                    b.ToTable("Permissions");
+                    b.ToTable("PermissionBase");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("PermissionBase");
                 });
 
             modelBuilder.Entity("Carnets.Domain.Models.Subscription", b =>
                 {
                     b.Property<string>("SubscriptionId")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
 
                     b.Property<string>("GympassId")
                         .IsRequired()
-                        .HasColumnType("character varying(30)");
+                        .HasColumnType("character varying(36)");
 
                     b.Property<string>("StripeCustomerId")
                         .IsRequired()
@@ -173,10 +145,40 @@ namespace Carnets.Repo.Migrations
                     b.ToTable("Subscriptions");
                 });
 
+            modelBuilder.Entity("Carnets.Domain.Models.AllowedEntriesPermission", b =>
+                {
+                    b.HasBaseType("Carnets.Domain.Models.PermissionBase");
+
+                    b.Property<int>("AllowedEntries")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AllowedEntriesCooldown")
+                        .HasColumnType("integer");
+
+                    b.Property<byte>("CooldownType")
+                        .HasColumnType("smallint");
+
+                    b.HasDiscriminator().HasValue("AllowedEntriesPermission");
+                });
+
+            modelBuilder.Entity("Carnets.Domain.Models.ClassPermission", b =>
+                {
+                    b.HasBaseType("Carnets.Domain.Models.PermissionBase");
+
+                    b.Property<string>("PermissionName")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.HasIndex("PermissionName")
+                        .IsUnique();
+
+                    b.HasDiscriminator().HasValue("ClassPermission");
+                });
+
             modelBuilder.Entity("Carnets.Domain.Models.TimePermissionEntry", b =>
                 {
-                    b.Property<string>("PermissionId")
-                        .HasColumnType("character varying(30)");
+                    b.HasBaseType("Carnets.Domain.Models.PermissionBase");
 
                     b.Property<byte>("EnableEntryFrom")
                         .HasColumnType("smallint");
@@ -184,20 +186,7 @@ namespace Carnets.Repo.Migrations
                     b.Property<byte>("EnableEntryTo")
                         .HasColumnType("smallint");
 
-                    b.HasKey("PermissionId");
-
-                    b.ToTable("TimePermissionEntries");
-                });
-
-            modelBuilder.Entity("Carnets.Domain.Models.AllowedEntriesPermission", b =>
-                {
-                    b.HasOne("Carnets.Domain.Models.Permission", "Permission")
-                        .WithMany()
-                        .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Permission");
+                    b.HasDiscriminator().HasValue("TimePermissionEntry");
                 });
 
             modelBuilder.Entity("Carnets.Domain.Models.AssignedPermission", b =>
@@ -208,24 +197,13 @@ namespace Carnets.Repo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Carnets.Domain.Models.Permission", "Permission")
+                    b.HasOne("Carnets.Domain.Models.PermissionBase", "Permission")
                         .WithMany()
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("GympassType");
-
-                    b.Navigation("Permission");
-                });
-
-            modelBuilder.Entity("Carnets.Domain.Models.ClassPermission", b =>
-                {
-                    b.HasOne("Carnets.Domain.Models.Permission", "Permission")
-                        .WithMany()
-                        .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Permission");
                 });
@@ -250,17 +228,6 @@ namespace Carnets.Repo.Migrations
                         .IsRequired();
 
                     b.Navigation("Gympass");
-                });
-
-            modelBuilder.Entity("Carnets.Domain.Models.TimePermissionEntry", b =>
-                {
-                    b.HasOne("Carnets.Domain.Models.Permission", "Permission")
-                        .WithMany()
-                        .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Permission");
                 });
 #pragma warning restore 612, 618
         }

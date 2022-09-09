@@ -12,6 +12,6 @@ namespace Carnets.Domain.Models
 
         [ForeignKey("Permission")]
         public string PermissionId { get; set; }
-        public Permission Permission { get; set; }
+        public PermissionBase Permission { get; set; }
     }
 }

@@ -1,19 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Carnets.Domain.Models
+namespace Carnets.Domain.Models.Dtos
 {
-    public class GympassType
+    public class CreateGympassTypeDto
     {
-        [Key]
-        [MaxLength(36)]
-        public string GympassTypeId { get; set; }
-
         [Required]
         [MaxLength(100)]
         public string GympassTypeName { get; set; }
 
         [Required]
-        [MaxLength(36)]
+        [MaxLength(30)]
         public string FitnessClubId { get; set; }
 
         [Range(0, double.MaxValue)]
@@ -21,11 +17,5 @@ namespace Carnets.Domain.Models
 
         [Range(0, int.MaxValue)]
         public int ValidityPeriodInSeconds { get; set; }
-
-        public bool IsActive { get; set; }
-
-        [Range(0, int.MaxValue)]
-        public int Version { get; set; }
-
     }
 }

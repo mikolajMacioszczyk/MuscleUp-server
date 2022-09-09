@@ -1,12 +1,9 @@
 ﻿using Carnets.Domain.Enums;
-using System.ComponentModel.DataAnnotations;
 
-namespace Carnets.Domain.Models
+namespace Carnets.Domain.Models.Dtos
 {
-    public class Permission
+    public class PermissionBaseDto
     {
-        [Key]
-        [MaxLength(30)]
         public string PermissionId { get; set; }
 
         public PermissionType PermissionType { get; set; }

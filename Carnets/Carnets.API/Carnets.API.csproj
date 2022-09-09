@@ -26,8 +26,4 @@
     <ProjectReference Include="..\Carnets.Repo\Carnets.Repo.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
