@@ -15,7 +15,7 @@ RUN gradle clean build
 
 # actual container
 FROM openjdk:17-jdk
-ENV ARTIFACT_NAME=groups-0.0.1-SNAPSHOT.jar
+ENV ARTIFACT_NAME=Groups-0.0.1-SNAPSHOT.jar
 ENV APP_HOME=/app/
 
 WORKDIR $APP_HOME
