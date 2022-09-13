@@ -1,5 +1,6 @@
 ﻿using Carnets.Domain.Interfaces;
 using Carnets.Domain.Models;
+using Common.Exceptions;
 using Common.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,12 +34,12 @@ namespace Carnets.Repo.Repositories
         }
 
         // Permission may be granted also to inactive gympass types
-        public async Task<Result<AssignedPermission>> GrantPermission(AssignedPermission grantRequest)
+        public async Task<Result<AssignedPermission>> GrantPermission(AssignedPermission grantRequest, string fitnessClubId)
         {
             var gympassTypeFromDb = await _context.GympassTypes
-                .FirstOrDefaultAsync(g => g.GympassTypeId == grantRequest.GympassTypeId);
+                .FirstOrDefaultAsync(g => g.GympassTypeId == grantRequest.GympassTypeId && g.FitnessClubId == fitnessClubId);
 
-            var permission = await GetPermissionById(grantRequest.PermissionId);
+            var permission = await GetPermissionById(grantRequest.PermissionId, fitnessClubId);
 
             if (permission is null || gympassTypeFromDb is null)
             {
@@ -61,9 +62,11 @@ namespace Carnets.Repo.Repositories
             return new Result<AssignedPermission>(grantRequest);
         }
 
-        public async Task<Result<bool>> RevokePermission(string permissionId, string gympassTypeId)
+        public async Task<Result<bool>> RevokePermission(string permissionId, string gympassTypeId, string fitnessClubId)
         {
             var assignedPermissionFromDb = await _context.AssignedPermissions
+                .Include(p => p.Permission)
+                .Include(p => p.GympassType)
                 .FirstOrDefaultAsync(p => p.PermissionId == permissionId && p.GympassTypeId == gympassTypeId);
 
             if (assignedPermissionFromDb is null)
@@ -71,14 +74,23 @@ namespace Carnets.Repo.Repositories
                 return new Result<bool>(Common.CommonConsts.NOT_FOUND);
             }
 
+            if (assignedPermissionFromDb.Permission.FitnessClubId != fitnessClubId)
+            {
+                throw new BadRequestException("Cannot manage Permission from other FitnessClub");
+            }
+            else if (assignedPermissionFromDb.GympassType.FitnessClubId != fitnessClubId)
+            {
+                throw new BadRequestException("Cannot manage GympassType from other FitnessClub");
+            }
+
             _context.AssignedPermissions.Remove(assignedPermissionFromDb);
             await _context.SaveChangesAsync();
             return new Result<bool>(true);
         }
 
-        public async Task<Result<bool>> RemovePermissionWithAllAssigements(string permissionId)
+        public async Task<Result<bool>> RemovePermissionWithAllAssigements(string permissionId, string fitnessClubId)
         {
-            var permissionFromDb = await GetPermissionById(permissionId);
+            var permissionFromDb = await GetPermissionById(permissionId, fitnessClubId);
 
             if (permissionFromDb is null)
             {
@@ -110,16 +122,16 @@ namespace Carnets.Repo.Repositories
             return new Result<bool>(true);
         }
 
-        private async Task<PermissionBase> GetPermissionById(string permissionId)
+        private async Task<PermissionBase> GetPermissionById(string permissionId, string fitnessClubId)
         {
             var allowedEntriesPermissionFromDb = await _context.AllowedEntriesPermissions
-                .FirstOrDefaultAsync(p => p.PermissionId == permissionId);
+                .FirstOrDefaultAsync(p => p.PermissionId == permissionId && p.FitnessClubId == fitnessClubId);
 
             var classPermissionFromDb = await _context.ClassPermissions
-                .FirstOrDefaultAsync(p => p.PermissionId == permissionId);
+                .FirstOrDefaultAsync(p => p.PermissionId == permissionId && p.FitnessClubId == fitnessClubId);
 
             var timePermissionFromDb = await _context.TimePermissionEntries
-                .FirstOrDefaultAsync(p => p.PermissionId == permissionId);
+                .FirstOrDefaultAsync(p => p.PermissionId == permissionId && p.FitnessClubId == fitnessClubId);
 
             if (allowedEntriesPermissionFromDb != null)
             {

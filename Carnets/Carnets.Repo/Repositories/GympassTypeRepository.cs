@@ -14,19 +14,22 @@ namespace Carnets.Repo.Repositories
             _context = context;
         }
 
-        public async Task<GympassType?> GetGympassById(string gympassId)
+        public async Task<GympassType?> GetGympassById(string gympassId, string fitnessClubId)
         {
             if (string.IsNullOrWhiteSpace(gympassId))
             {
                 return null;
             }
 
-            return await _context.GympassTypes.FirstOrDefaultAsync(g => g.GympassTypeId == gympassId);
+            return await _context.GympassTypes
+                .FirstOrDefaultAsync(g => g.GympassTypeId == gympassId && g.FitnessClubId == fitnessClubId);
         }
 
-        public async Task<IEnumerable<GympassType>> GetAllActiveGympassTypes()
+        public async Task<IEnumerable<GympassType>> GetAllActiveGympassTypes(string fitnessClubId)
         {
-            return await _context.GympassTypes.Where(g => g.IsActive).ToListAsync();
+            return await _context.GympassTypes
+                .Where(g => g.IsActive && g.FitnessClubId == fitnessClubId)
+                .ToListAsync();
         }
 
         private async Task<GympassType?> GetActiveGympassTypeByNameAndFitnessClub(string name, string fitnessClubId)
@@ -62,9 +65,9 @@ namespace Carnets.Repo.Repositories
             return new Result<GympassType>(gympassType);
         }
 
-        public async Task<Result<GympassType>> UpdateGympassType(GympassType gympassType)
+        public async Task<Result<GympassType>> UpdateGympassType(GympassType gympassType, string fitnessClubId)
         {
-            var gympassFromDb = await GetGympassById(gympassType.GympassTypeId);
+            var gympassFromDb = await GetGympassById(gympassType.GympassTypeId, fitnessClubId);
             if (gympassFromDb is null)
             {
                 return new Result<GympassType>(Common.CommonConsts.NOT_FOUND);
@@ -113,9 +116,9 @@ namespace Carnets.Repo.Repositories
             return new Result<GympassType>(updated);
         }
 
-        public async Task<Result<bool>> DeleteGympassType(string gympassTypeId)
+        public async Task<Result<bool>> DeleteGympassType(string gympassTypeId, string fitnessClubId)
         {
-            var gympassFromDb = await GetGympassById(gympassTypeId);
+            var gympassFromDb = await GetGympassById(gympassTypeId, fitnessClubId);
             if (gympassFromDb is null)
             {
                 return new Result<bool>(Common.CommonConsts.NOT_FOUND);

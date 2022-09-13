@@ -11,8 +11,11 @@ namespace Carnets.API.Controllers
     public class TimeEntryPermissionController
         : SpecificPermissionControllerBase<TimePermissionEntry, TimePermissionEntryDto, CreateTimePermissionEntryDto>
     {
-        public TimeEntryPermissionController(IPermissionRepository<TimePermissionEntry> permissionRepository, IMapper mapper)
-            : base(permissionRepository, mapper)
+        public TimeEntryPermissionController(
+            IPermissionRepository<TimePermissionEntry> permissionRepository, 
+            IMapper mapper,
+            IFitnessClubHttpService fitnessClubHttpService)
+            : base(permissionRepository, mapper, fitnessClubHttpService)
         {
         }
     }

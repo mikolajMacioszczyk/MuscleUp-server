@@ -8,10 +8,6 @@ namespace Carnets.Domain.Models.Dtos
         [MaxLength(100)]
         public string GympassTypeName { get; set; }
 
-        [Required]
-        [MaxLength(30)]
-        public string FitnessClubId { get; set; }
-
         [Range(0, double.MaxValue)]
         public double Price { get; set; }
 

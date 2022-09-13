@@ -1,5 +1,6 @@
 using Carnets.Domain.Interfaces;
 using Carnets.Domain.Models;
+using Carnets.Domain.Services;
 using Carnets.Repo;
 using Carnets.Repo.Repositories;
 using Common.Extensions;
@@ -18,6 +19,8 @@ builder.Services.AddScoped<IPermissionRepository<AllowedEntriesPermission>, Allo
 builder.Services.AddScoped<IPermissionRepository<ClassPermission>, ClassPermissionRepository>();
 builder.Services.AddScoped<IPermissionRepository<TimePermissionEntry>, TimePermissionEntryRepository>();
 builder.Services.AddScoped<IAssignedPermissionRepository, AssignedPermissionRepository>();
+builder.Services.AddScoped<IFitnessClubHttpService, FitnessClubHttpService>();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 

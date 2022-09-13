@@ -11,8 +11,11 @@ namespace Carnets.API.Controllers
     public class AllowedEntriesPermissionController 
         : SpecificPermissionControllerBase<AllowedEntriesPermission, AllowedEntriesPermissionDto, CreateAllowedEntriesPermissionDto>
     {
-        public AllowedEntriesPermissionController(IPermissionRepository<AllowedEntriesPermission> permissionRepository, IMapper mapper) 
-            : base(permissionRepository, mapper)
+        public AllowedEntriesPermissionController(
+            IPermissionRepository<AllowedEntriesPermission> permissionRepository, 
+            IMapper mapper,
+            IFitnessClubHttpService fitnessClubHttpService) 
+            : base(permissionRepository, mapper, fitnessClubHttpService)
         {
         }
     }
