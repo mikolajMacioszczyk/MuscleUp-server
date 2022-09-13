@@ -7,10 +7,10 @@ namespace Carnets.Domain.Interfaces
     {
         Task<Result<IEnumerable<PermissionBase>>> GetAllGympassPermissions(string gympassTypeId);
 
-        Task<Result<AssignedPermission>> GrantPermission(AssignedPermission grantRequest);
+        Task<Result<AssignedPermission>> GrantPermission(AssignedPermission grantRequest, string fitnessClubId);
 
-        Task<Result<bool>> RevokePermission(string permissionId, string gympassTypeId);
+        Task<Result<bool>> RevokePermission(string permissionId, string fitnessClubId, string gympassTypeId);
 
-        Task<Result<bool>> RemovePermissionWithAllAssigements(string permissionId);
+        Task<Result<bool>> RemovePermissionWithAllAssigements(string permissionId, string fitnessClubId);
     }
 }

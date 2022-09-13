@@ -17,14 +17,17 @@ namespace Carnets.Repo.Repositories
 
         protected abstract DbSet<TPermission> PermissionDbSet { get; }
 
-        public async Task<IEnumerable<TPermission>> GetAll()
+        public async Task<IEnumerable<TPermission>> GetAll(string fitnessClubId)
         {
-            return await PermissionDbSet.ToListAsync();
+            return await PermissionDbSet
+                .Where(p => p.FitnessClubId == fitnessClubId)
+                .ToListAsync();
         }
 
-        public async Task<TPermission> GetPermissionById(string permissionId)
+        public async Task<TPermission> GetPermissionById(string permissionId, string fitnessClubId)
         {
-            return await PermissionDbSet.FirstOrDefaultAsync(p => p.PermissionId == permissionId);
+            return await PermissionDbSet
+                .FirstOrDefaultAsync(p => p.PermissionId == permissionId && p.FitnessClubId == fitnessClubId);
         }
 
         public virtual async Task<Result<TPermission>> CreatePermission(TPermission newPermission)
@@ -37,9 +40,9 @@ namespace Carnets.Repo.Repositories
             return new Result<TPermission>(newPermission);
         }
 
-        public async Task<Result<bool>> DeletePermission(string permissionId)
+        public async Task<Result<bool>> DeletePermission(string permissionId, string fitnessClubId)
         {
-            var permissionFromDb = await PermissionDbSet.FirstOrDefaultAsync(x => x.PermissionId == permissionId);
+            var permissionFromDb = await GetPermissionById(permissionId, fitnessClubId);
 
             if (permissionFromDb is null)
             {

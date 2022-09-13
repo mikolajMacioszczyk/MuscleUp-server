@@ -8,19 +8,24 @@ namespace Carnets.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    // TODO: Validate with worker's fitness club
     public class PermissionController : ControllerBase
     {
         private readonly IAssignedPermissionRepository _assignedPermissionRepository;
+        private readonly IFitnessClubHttpService _fitnessClubHttpService;
         private readonly IMapper _mapper;
 
-        public PermissionController(IMapper mapper, IAssignedPermissionRepository assignedPermissionRepository)
+        public PermissionController(IMapper mapper, 
+            IAssignedPermissionRepository assignedPermissionRepository, 
+            IFitnessClubHttpService fitnessClubHttpService)
         {
             _mapper = mapper;
             _assignedPermissionRepository = assignedPermissionRepository;
+            _fitnessClubHttpService = fitnessClubHttpService;
         }
 
         [HttpGet("gympassPermissions/{gympassId}")]
-        public async Task<ActionResult<IEnumerable<PermissionBaseDto>>> GetAllGympassPermissions(string gympassId)
+        public async Task<ActionResult<IEnumerable<PermissionBaseDto>>> GetAllGympassPermissions([FromRoute] string gympassId)
         {
             var permissionsResult = await _assignedPermissionRepository.GetAllGympassPermissions(gympassId);
 
@@ -36,12 +41,14 @@ namespace Carnets.API.Controllers
             return BadRequest(permissionsResult.ErrorCombined);
         }
 
-        [HttpPost("grant")]
-        public async Task<ActionResult<AssignedPermissionDto>> GrantPermission([FromBody] GrantRevokePermissionDto model)
+        [HttpPost("grant/{workerId}")]
+        public async Task<ActionResult<AssignedPermissionDto>> GrantPermission([FromRoute] string workerId, [FromBody] GrantRevokePermissionDto model)
         {
+            var fitnessClubResult = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+
             var grantRequest = _mapper.Map<AssignedPermission>(model);
 
-            var grantResult = await _assignedPermissionRepository.GrantPermission(grantRequest);
+            var grantResult = await _assignedPermissionRepository.GrantPermission(grantRequest, fitnessClubResult.Value.FitnessClubId);
             if (grantResult.IsSuccess)
             {
                 return Ok(_mapper.Map<AssignedPermissionDto>(grantResult.Value));
@@ -54,10 +61,13 @@ namespace Carnets.API.Controllers
             return BadRequest(grantResult.ErrorCombined);
         }
 
-        [HttpDelete("revoke")]
-        public async Task<ActionResult> RevokePermission([FromBody] GrantRevokePermissionDto model)
+        [HttpDelete("revoke/{workerId}")]
+        public async Task<ActionResult> RevokePermission([FromRoute] string workerId, [FromBody] GrantRevokePermissionDto model)
         {
-            var revokeResult = await _assignedPermissionRepository.RevokePermission(model.PermissionId, model.GympassTypeId);
+            var fitnessClubResult = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClubId = fitnessClubResult.Value.FitnessClubId;
+
+            var revokeResult = await _assignedPermissionRepository.RevokePermission(model.PermissionId, fitnessClubId, model.GympassTypeId);
 
             if (revokeResult.IsSuccess)
             {
@@ -71,10 +81,13 @@ namespace Carnets.API.Controllers
             return BadRequest(revokeResult.ErrorCombined);
         }
 
-        [HttpDelete("revokeAll/{permissionId}")]
-        public async Task<ActionResult> RemovePermissionWithAllAssigements([FromRoute] string permissionId)
+        [HttpDelete("revokeAll/{permissionId}/{workerId}")]
+        public async Task<ActionResult> RemovePermissionWithAllAssigements([FromRoute] string permissionId, [FromRoute] string workerId)
         {
-            var revokeResult = await _assignedPermissionRepository.RemovePermissionWithAllAssigements(permissionId);
+            var fitnessClubResult = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClubId = fitnessClubResult.Value.FitnessClubId;
+
+            var revokeResult = await _assignedPermissionRepository.RemovePermissionWithAllAssigements(permissionId, fitnessClubId);
 
             if (revokeResult.IsSuccess)
             {

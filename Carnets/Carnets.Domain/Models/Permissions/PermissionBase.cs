@@ -10,5 +10,9 @@ namespace Carnets.Domain.Models
         public string PermissionId { get; set; }
 
         public abstract PermissionType PermissionType { get; }
+
+        [Required]
+        [MaxLength(36)]
+        public string FitnessClubId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Common.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Text;
@@ -22,6 +23,10 @@ namespace Common.Helpers
             {
                 await _next(httpContext);
             }
+            catch (BadRequestException ex)
+            {
+                await HandleBadRequestExceptionAsync(httpContext, ex);
+            }
             catch (Exception ex)
             {
                 await HandleExceptionAsync(httpContext, ex);
@@ -34,6 +39,20 @@ namespace Common.Helpers
             _logger.LogWarning(exception.Message);
 
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            var sb = new StringBuilder();
+
+            BuildResponseContent(exception, context, ref sb);
+
+            await context.Response.WriteAsync(sb.ToString());
+        }
+
+        protected async Task HandleBadRequestExceptionAsync(HttpContext context, BadRequestException exception)
+        {
+            context.Response.ContentType = "application/json";
+            _logger.LogInformation(exception.Message);
+
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
             var sb = new StringBuilder();
 

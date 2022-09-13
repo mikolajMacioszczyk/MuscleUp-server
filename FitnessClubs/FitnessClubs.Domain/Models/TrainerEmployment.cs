@@ -5,10 +5,10 @@ namespace FitnessClubs.Domain.Models
 {
     public class TrainerEmployment
     {
-        [MaxLength(30)]
+        [MaxLength(36)]
         public string UserId { get; set; }
 
-        [MaxLength(30)]
+        [MaxLength(36)]
         [ForeignKey(nameof(FitnessClub))]
         public string FitnessClubId { get; set; }
 

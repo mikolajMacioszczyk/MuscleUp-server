@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FitnessClubs.Domain.Models
+namespace FitnessClubs.Domain.Models.Dtos
 {
-    public class FitnessClub
+    public class CreateFitnessClubDto
     {
-        [Key]
+        [Required]
         [MaxLength(36)]
         public string FitnessClubId { get; set; }
 
