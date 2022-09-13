@@ -76,6 +76,84 @@
       ],
       "UpstreamPathTemplate": "/api/FitnessClubs",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "content",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Content/{everything}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
+      "SwaggerKey": "content"
+    },
+    {
+      "DownstreamPathTemplate": "/",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "content",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Content",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "groups",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Groups/{everything}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
+      "SwaggerKey": "groups"
+    },
+    {
+      "DownstreamPathTemplate": "/",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "groups",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Groups",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "notifications",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Notifications/{everything}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
+      "SwaggerKey": "notifications"
+    },
+    {
+      "DownstreamPathTemplate": "/",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "notifications",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Notifications",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     }
   ]
 }
