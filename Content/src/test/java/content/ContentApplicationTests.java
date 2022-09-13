@@ -1,10 +1,10 @@
-package MuscleUp.Groups;
+package content;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class GroupsApplicationTests {
+class ContentApplicationTests {
 
 	@Test
 	void contextLoads() {

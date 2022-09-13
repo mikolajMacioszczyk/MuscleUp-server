@@ -13,10 +13,14 @@ repositories {
 }
 
 dependencies {
-	//implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	// core
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	//runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	//implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	//runtimeOnly 'org.postgresql:postgresql'
+
+	// additional
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
 }
 
 tasks.named('test') {
