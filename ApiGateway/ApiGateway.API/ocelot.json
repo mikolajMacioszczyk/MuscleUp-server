@@ -84,7 +84,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "content",
-          "Port": 80
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Content/{everything}",
@@ -97,7 +97,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "content",
-          "Port": 80
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Content",
@@ -110,7 +110,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "groups",
-          "Port": 80
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Groups/{everything}",
@@ -123,7 +123,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "groups",
-          "Port": 80
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Groups",
@@ -136,7 +136,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "notifications",
-          "Port": 80
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Notifications/{everything}",
@@ -149,7 +149,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "notifications",
-          "Port": 80
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Notifications",

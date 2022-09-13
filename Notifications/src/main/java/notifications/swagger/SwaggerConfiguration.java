@@ -12,7 +12,7 @@ public class SwaggerConfiguration {
     public GroupedOpenApi publicApi() {
 
         return GroupedOpenApi.builder()
-                .group("Test-controller")
+                .group("swagger.json")
                 .packagesToScan("notifications.exampleController")
                 .pathsToMatch("/test/*")
                 .build();
