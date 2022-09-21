@@ -12,6 +12,9 @@ builder.Services.ConfigureRouting();
 
 ProgramExtensions.AddDbContext<FitnessClubsDbContext>(builder.Services, builder.Configuration);
 
+// Authentication
+builder.Services.AddJwtAuthentication();
+
 // register app services
 builder.Services.AddScoped<IFitnessClubRepository, FitnessClubRepository>();
 builder.Services.AddScoped<IWorkerEmploymentRepository, WorkerEmploymentRepository>();
@@ -31,7 +34,7 @@ await app.Services.MigrateDatabase<FitnessClubsDbContext>();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseJwtAuthentication();
 
 app.MapControllers();
 

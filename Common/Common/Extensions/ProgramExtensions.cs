@@ -1,10 +1,19 @@
-﻿using Common.Resolvers;
+﻿using Common.Consts;
+using Common.Helpers.Middleware;
+using Common.Interfaces;
+using Common.Models;
+using Common.Resolvers;
+using Common.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace Common.Extensions
 {
@@ -23,7 +32,35 @@ namespace Common.Extensions
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(setup =>
+            {
+                // Include 'SecurityScheme' to use JWT Authentication
+                var jwtSecurityScheme = new OpenApiSecurityScheme
+                {
+                    BearerFormat = "JWT",
+                    Name = "JWT Authentication",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+                setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { jwtSecurityScheme, Array.Empty<string>() }
+                });
+
+            });
+
+            services.AddScoped<HttpAuthContext>();
 
             services.AddAutoMapper(typeof(TProgram));
         }
@@ -39,6 +76,31 @@ namespace Common.Extensions
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<TDbContext>(options =>
                 options.UseNpgsql(connectionString));
+        }
+
+        public static void AddJwtAuthentication(this IServiceCollection services)
+        {
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(AuthConsts.JwtSecret)),
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
+
+            services.AddAuthorization();
+            services.AddSingleton<IAuthService, AuthService>();
         }
 
         #endregion
@@ -66,6 +128,13 @@ namespace Common.Extensions
             {
                 app.UseExceptionMiddleware();
             }
+        }
+
+        public static void UseJwtAuthentication(this IApplicationBuilder app)
+        {
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseMiddleware<AuthTokenValidationMiddleware>();
         }
 
         #endregion

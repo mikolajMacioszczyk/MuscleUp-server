@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Common.Enums;
 using FitnessClubs.Domain.Interfaces;
 using FitnessClubs.Domain.Models;
 using FitnessClubs.Domain.Models.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitnessClubs.API.Controllers
@@ -20,12 +22,14 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpGet()]
+        [Authorize(Roles = nameof(RoleType.Worker))]
         public async Task<ActionResult<IEnumerable<WorkerEmploymentDto>>> GetAllEmployments()
         {
             return Ok(_mapper.Map<IEnumerable<WorkerEmploymentDto>>(await _workerEmploymentRepository.GetAllWorkerEmployments()));
         }
 
         [HttpPost()]
+        [Authorize(Roles = nameof(RoleType.Worker))]
         public async Task<ActionResult<WorkerEmploymentDto>> CreateWorkerEmployment(CreateWorkerEmploymentDto model)
         {
             var workerEmployment = _mapper.Map<WorkerEmployment>(model);

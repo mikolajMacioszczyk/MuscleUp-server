@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Common.Enums;
 using Common.Models.Dtos;
 using FitnessClubs.Domain.Interfaces;
 using FitnessClubs.Domain.Models;
 using FitnessClubs.Domain.Models.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitnessClubs.API.Controllers
@@ -21,12 +23,14 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpGet()]
+        [Authorize()]
         public async Task<ActionResult<IEnumerable<FitnessClubDto>>> GetAll()
         {
             return Ok(_mapper.Map<IEnumerable<FitnessClubDto>>(await _fitnessClubRepository.GetAll()));
         }
 
         [HttpGet("{fitnessClubId}")]
+        [Authorize()]
         public async Task<ActionResult<FitnessClubDto>> GetById([FromRoute] string fitnessClubId)
         {
             var result = await _fitnessClubRepository.GetById(fitnessClubId);
@@ -38,6 +42,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpGet("worker/{workerId}")]
+        //[Authorize(Roles = nameof(RoleType.Worker))]
         public async Task<ActionResult<FitnessClubDto>> GetFitnessClubOfWorker([FromRoute] string workerId)
         {
             var getResult = await _fitnessClubRepository.GetFitnessClubOfWorker(workerId);
@@ -49,6 +54,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpPost()]
+        [Authorize(Roles = nameof(RoleType.Administrator))]
         public async Task<ActionResult<FitnessClubDto>> CreateFitnessClub([FromBody] CreateFitnessClubDto model)
         {
             var fitnessClub = _mapper.Map<FitnessClub>(model);
@@ -61,6 +67,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpDelete("{fitnessClubId}")]
+        [Authorize(Roles = nameof(RoleType.Administrator))]
         public async Task<ActionResult> DeleteFitnessClub([FromRoute] string fitnessClubId)
         {
             var deleteResult = await _fitnessClubRepository.Delete(fitnessClubId);

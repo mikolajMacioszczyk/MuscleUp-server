@@ -14,6 +14,9 @@ builder.Services.ConfigureRouting();
 
 ProgramExtensions.AddDbContext<CarnetsDbContext>(builder.Services, builder.Configuration);
 
+// Authentication
+builder.Services.AddJwtAuthentication();
+
 builder.Services.AddScoped<IGympassTypeRepository, GympassTypeRepository>();
 builder.Services.AddScoped<IPermissionRepository<AllowedEntriesPermission>, AllowedEntriesPermissionRepository>();
 builder.Services.AddScoped<IPermissionRepository<ClassPermission>, ClassPermissionRepository>();
@@ -37,7 +40,7 @@ await app.Services.MigrateDatabase<CarnetsDbContext>();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseJwtAuthentication();
 
 app.MapControllers();
 
