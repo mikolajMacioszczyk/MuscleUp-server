@@ -5,14 +5,16 @@ namespace Carnets.Domain.Interfaces
 {
     public interface IGympassTypeRepository
     {
-        Task<GympassType> GetGympassById(string gympassId, string fitnessClubId);
+        Task<GympassType> GetGympassTypeById(string gympassId, bool asTracking);
 
-        Task<IEnumerable<GympassType>> GetAllActiveGympassTypes(string fitnessClubId);
+        Task<IEnumerable<GympassType>> GetAllGympassTypes(string fitnessClubId, bool onlyActive, bool asTracking);
 
         Task<Result<GympassType>> CreateGympassType(GympassType gympassType);
 
-        Task<Result<GympassType>> UpdateGympassType(GympassType gympassType, string fitnessClubId);
+        Task<Result<GympassType>> UpdateGympassType(GympassType gympassType);
 
-        Task<Result<bool>> DeleteGympassType(string gympassTypeId, string fitnessClubId);
+        Task<Result<bool>> DeleteGympassType(string gympassTypeId);
+
+        Task SaveChangesAsync();
     }
 }

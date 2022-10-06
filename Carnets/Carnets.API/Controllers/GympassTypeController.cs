@@ -3,6 +3,7 @@ using Carnets.Domain.Interfaces;
 using Carnets.Domain.Models;
 using Carnets.Domain.Models.Dtos;
 using Common.Enums;
+using Common.Helpers;
 using Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,31 +14,28 @@ namespace Carnets.API.Controllers
     [Route("[controller]")]
     public class GympassTypeController : ControllerBase
     {
-        private readonly IGympassTypeRepository _gympassTypeRepository;
+        private readonly IGympassTypeService _gympassTypeService;
         private readonly IFitnessClubHttpService _fitnessClubHttpService;
         private readonly IMapper _mapper;
         private readonly HttpAuthContext _httpAuthContext;
 
         public GympassTypeController(
-            IGympassTypeRepository gympassTypeRepository, 
+            IGympassTypeService gympassTypeService, 
             IMapper mapper, 
             IFitnessClubHttpService fitnessClubHttpService, 
             HttpAuthContext authContext)
         {
-            _gympassTypeRepository = gympassTypeRepository;
+            _gympassTypeService = gympassTypeService;
             _mapper = mapper;
             _fitnessClubHttpService = fitnessClubHttpService;
             _httpAuthContext = authContext;
         }
 
         [HttpGet("{gympassTypeId}")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [Authorize(Roles = AuthHelper.RoleAll)]
         public async Task<ActionResult<GympassTypeDto>> GetGympassTypeById([FromRoute] string gympassTypeId)
         {
-            var workerId = _httpAuthContext.UserId;
-            var fitnessClubResult = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
-
-            var gympassType = await _gympassTypeRepository.GetGympassById(gympassTypeId, fitnessClubResult.Value.FitnessClubId);
+            var gympassType = await _gympassTypeService.GetGympassTypeById(gympassTypeId);
             if (gympassType != null)
             {
                 return Ok(_mapper.Map<GympassTypeDto>(gympassType));
@@ -45,15 +43,26 @@ namespace Carnets.API.Controllers
             return NotFound();
         }
 
-        [HttpGet("active")]
+        [HttpGet("activeAsWorker")]
         [Authorize(Roles = nameof(RoleType.Worker))]
-        public async Task<ActionResult<IEnumerable<GympassTypeDto>>> GetActiveGympassTypes()
+        public async Task<ActionResult<IEnumerable<GympassTypeDto>>> GetActiveGympassTypesAsWorker()
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClubResult = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
 
-            var gympassTypes = await _gympassTypeRepository.GetAllActiveGympassTypes(fitnessClubResult.Value.FitnessClubId);
+            var gympassTypes = await _gympassTypeService.GetAllGympassTypes(fitnessClub.FitnessClubId, true);
             
+            return Ok(_mapper.Map<IEnumerable<GympassTypeDto>>(gympassTypes));
+        }
+
+        [HttpGet("active/{fitnessClubId}")]
+        [Authorize(Roles = nameof(RoleType.Member) + "," + nameof(RoleType.Administrator))]
+        public async Task<ActionResult<IEnumerable<GympassTypeDto>>> GetActiveGympassTypes([FromRoute] string fitnessClubId)
+        {
+            await _fitnessClubHttpService.EnsureFitnessClubExists(fitnessClubId);
+
+            var gympassTypes = await _gympassTypeService.GetAllGympassTypes(fitnessClubId, true);
+
             return Ok(_mapper.Map<IEnumerable<GympassTypeDto>>(gympassTypes));
         }
 
@@ -62,12 +71,12 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult<GympassTypeDto>> CreateGympassType([FromBody] CreateGympassTypeDto model)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClubResult = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
             
             var gympassType = _mapper.Map<GympassType>(model);
-            gympassType.FitnessClubId = fitnessClubResult.Value.FitnessClubId;
+            gympassType.FitnessClubId = fitnessClub.FitnessClubId;
 
-            var createResult = await _gympassTypeRepository.CreateGympassType(gympassType);
+            var createResult = await _gympassTypeService.CreateGympassType(gympassType);
             
             if (createResult.IsSuccess)
             {
@@ -81,13 +90,10 @@ namespace Carnets.API.Controllers
         [Authorize(Roles = nameof(RoleType.Worker))]
         public async Task<ActionResult<GympassTypeDto>> UpdateGympassTypeById([FromRoute] string gympassTypeId, [FromBody] UpdateGympassTypeDto model)
         {
-            var workerId = _httpAuthContext.UserId;
-            var fitnessClubResult = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
-
             var gympassType = _mapper.Map<GympassType>(model);
             gympassType.GympassTypeId = gympassTypeId;
 
-            var updateResult = await _gympassTypeRepository.UpdateGympassType(gympassType, fitnessClubResult.Value.FitnessClubId);
+            var updateResult = await _gympassTypeService.UpdateGympassType(gympassType);
 
             if (updateResult.IsSuccess)
             {
@@ -105,10 +111,7 @@ namespace Carnets.API.Controllers
         [Authorize(Roles = nameof(RoleType.Worker))]
         public async Task<ActionResult> DeleteGympassType([FromRoute] string gympassTypeId)
         {
-            var workerId = _httpAuthContext.UserId;
-            var fitnessClubResult = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
-
-            var deleteResult = await _gympassTypeRepository.DeleteGympassType(gympassTypeId, fitnessClubResult.Value.FitnessClubId);
+            var deleteResult = await _gympassTypeService.DeleteGympassType(gympassTypeId);
 
             if (deleteResult.IsSuccess)
             {

@@ -5,10 +5,6 @@ namespace FitnessClubs.Domain.Models.Dtos
     public class CreateFitnessClubDto
     {
         [Required]
-        [MaxLength(36)]
-        public string FitnessClubId { get; set; }
-
-        [Required]
         [StringLength(100)]
         public string FitnessClubName { get; set; }
 

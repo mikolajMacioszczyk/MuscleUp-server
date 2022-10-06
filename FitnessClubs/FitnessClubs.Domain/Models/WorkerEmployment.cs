@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FitnessClubs.Domain.Models
 {
+    // TODO: From and isActive
     public class WorkerEmployment
     {
         [MaxLength(36)]

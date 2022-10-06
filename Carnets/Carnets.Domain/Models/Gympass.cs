@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Carnets.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Carnets.Domain.Models
 {
@@ -18,5 +19,10 @@ namespace Carnets.Domain.Models
         public DateTime ValidityDate { get; set; }
 
         public DateTime ActivationDate { get; set; }
+
+        public GympassStatus Status { get; set; }
+
+        [Range(0, int.MaxValue)]
+        public int RemainingValidityPeriodInSeconds { get; set; }
     }
 }

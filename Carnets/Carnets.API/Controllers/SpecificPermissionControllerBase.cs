@@ -11,18 +11,18 @@ namespace Carnets.API.Controllers
     public abstract class SpecificPermissionControllerBase<TPermission, TPermissionDto, TCreatePermissionDto> : ControllerBase
         where TPermission : PermissionBase
     {
-        private readonly IPermissionRepository<TPermission> _permissionRepository;
+        private readonly IPermissionService<TPermission> _permissionService;
         private readonly IFitnessClubHttpService _fitnessClubHttpService;
         private readonly IMapper _mapper;
         private readonly HttpAuthContext _httpAuthContext;
 
         protected SpecificPermissionControllerBase(
-            IPermissionRepository<TPermission> permissionRepository,
+            IPermissionService<TPermission> permissionService,
             IMapper mapper,
             IFitnessClubHttpService fitnessClubHttpService, 
             HttpAuthContext httpAuthContext)
         {
-            _permissionRepository = permissionRepository;
+            _permissionService = permissionService;
             _mapper = mapper;
             _fitnessClubHttpService = fitnessClubHttpService;
             _httpAuthContext = httpAuthContext;
@@ -33,20 +33,24 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllPermisions()
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClubResult = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
-            var fitnessClubId = fitnessClubResult.Value.FitnessClubId;
+            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClubId = fitnessClub.FitnessClubId;
 
-            return Ok(_mapper.Map<IEnumerable<TPermissionDto>>(await _permissionRepository.GetAll(fitnessClubId)));
+            return Ok(_mapper.Map<IEnumerable<TPermissionDto>>(await _permissionService.GetAll(fitnessClubId)));
+        }
+
+        [HttpGet("allAsAdmin/{fitnessClubId}")]
+        [Authorize(Roles = nameof(RoleType.Administrator))]
+        public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllPermisions([FromRoute] string fitnessClubId)
+        {
+            return Ok(_mapper.Map<IEnumerable<TPermissionDto>>(await _permissionService.GetAll(fitnessClubId)));
         }
 
         [HttpGet("{permissionId}")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
-        public async Task<ActionResult> GetPermission([FromRoute] string permissionId)
+        [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
+        public async Task<ActionResult> GetPermissionById([FromRoute] string permissionId)
         {
-            var workerId = _httpAuthContext.UserId;
-            var fitnessClubResult = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
-
-            var permission = await _permissionRepository.GetPermissionById(permissionId, fitnessClubResult.Value.FitnessClubId);
+            var permission = await _permissionService.GetPermissionById(permissionId);
             if (permission != null)
             {
                 return Ok(_mapper.Map<TPermissionDto>(permission));
@@ -59,12 +63,12 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult> CreatePermission([FromBody] TCreatePermissionDto model)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClubResult = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
 
             var permission = _mapper.Map<TPermission>(model);
-            permission.FitnessClubId = fitnessClubResult.Value.FitnessClubId;
+            permission.FitnessClubId = fitnessClub.FitnessClubId;
 
-            var createResult = await _permissionRepository.CreatePermission(permission);
+            var createResult = await _permissionService.CreatePermission(permission);
 
             if (createResult.IsSuccess)
             {
@@ -79,9 +83,9 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult> DeletePermission([FromRoute] string permissionId)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClubResult = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
 
-            var deleteResult = await _permissionRepository.DeletePermission(permissionId, fitnessClubResult.Value.FitnessClubId);
+            var deleteResult = await _permissionService.DeletePermission(permissionId, fitnessClub.FitnessClubId);
 
             if (deleteResult.IsSuccess)
             {

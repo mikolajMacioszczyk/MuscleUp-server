@@ -30,6 +30,21 @@ namespace Carnets.API
             // AssignedPermission
             CreateMap<GrantRevokePermissionDto, AssignedPermission>();
             CreateMap<AssignedPermission, AssignedPermissionDto>();
+
+            // Gympass
+            CreateMap<Gympass, GympassDto>()
+               .ForMember(a => a.GympassTypeName,
+                opt => opt.MapFrom(src => src.GympassType.GympassTypeName))
+               .ForMember(a => a.GympassTypeId,
+                opt => opt.MapFrom(src => src.GympassType.GympassTypeId));
+
+            // Subscription
+            CreateMap<CreateGympassSubscriptionDto, Subscription>();
+            CreateMap<Subscription, SubscriptionDto>()
+                .ForMember(s => s.GympassId,
+                opt => opt.MapFrom(src => src.Gympass.GympassId))
+                .ForMember(s => s.GympassStatus,
+                opt => opt.MapFrom(src => src.Gympass.Status));
         }
     }
 }

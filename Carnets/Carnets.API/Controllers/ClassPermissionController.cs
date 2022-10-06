@@ -13,11 +13,11 @@ namespace Carnets.API.Controllers
         : SpecificPermissionControllerBase<ClassPermission, ClassPermissionDto, CreateClassPermissionDto>
     {
         public ClassPermissionController(
-            IPermissionRepository<ClassPermission> permissionRepository, 
+            IPermissionService<ClassPermission> permissionService, 
             IMapper mapper,
             IFitnessClubHttpService fitnessClubHttpService,
             HttpAuthContext httpAuthContext)
-            : base(permissionRepository, mapper, fitnessClubHttpService, httpAuthContext)
+            : base(permissionService, mapper, fitnessClubHttpService, httpAuthContext)
         {
         }
     }

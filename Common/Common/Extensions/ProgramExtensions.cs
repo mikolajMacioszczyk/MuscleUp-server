@@ -61,8 +61,10 @@ namespace Common.Extensions
             });
 
             services.AddScoped<HttpAuthContext>();
+            services.AddHttpContextAccessor();
 
             services.AddAutoMapper(typeof(TProgram));
+            services.AddHttpClient();
         }
 
         public static void ConfigureRouting(this IServiceCollection services)

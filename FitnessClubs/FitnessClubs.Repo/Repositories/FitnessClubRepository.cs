@@ -14,38 +14,33 @@ namespace FitnessClubs.Repo.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<FitnessClub>> GetAll()
+        public async Task<IEnumerable<FitnessClub>> GetAll(bool asTracking)
         {
-            return await _context.FitnessClubs.ToListAsync();
-        }
+            IQueryable<FitnessClub> query = _context.FitnessClubs;
 
-        public async Task<FitnessClub> GetById(string fitnessClubId)
-        {
-            return await _context.FitnessClubs.FirstOrDefaultAsync(f => f.FitnessClubId == fitnessClubId);
-        }
-
-        public async Task<Result<FitnessClub>> GetFitnessClubOfWorker(string workerId)
-        {
-            var workerEmployment = await _context.WorkerEmployments
-                .Include(e => e.FitnessClub)
-                .FirstOrDefaultAsync(w => w.UserId == workerId);
-
-            if (workerEmployment is null)
+            if (!asTracking)
             {
-                return new Result<FitnessClub>(new string[] { Common.CommonConsts.NOT_FOUND, $"An employee with an id {workerId} is not employed by any fitness club" });
+                query = query.AsNoTracking();
             }
 
-            if (workerEmployment.FitnessClub is null)
+            return await query.ToListAsync();
+        }
+
+        public async Task<FitnessClub> GetById(string fitnessClubId, bool asTracking)
+        {
+            IQueryable<FitnessClub> query = _context.FitnessClubs;
+
+            if (!asTracking)
             {
-                throw new ArgumentNullException(nameof(workerEmployment.FitnessClub));
+                query = query.AsNoTracking();
             }
 
-            return new Result<FitnessClub>(workerEmployment.FitnessClub);
+            return await query.FirstOrDefaultAsync(f => f.FitnessClubId == fitnessClubId);
         }
 
         public async Task<Result<FitnessClub>> Create(FitnessClub fitnessClub)
         {
-            if ((await GetByName(fitnessClub.FitnessClubName)) != null)
+            if ((await GetByName(fitnessClub.FitnessClubName, false)) != null)
             {
                 return new Result<FitnessClub>($"Fitness club with name {fitnessClub.FitnessClubName} already exists");
             }
@@ -53,28 +48,35 @@ namespace FitnessClubs.Repo.Repositories
             fitnessClub.FitnessClubId = Guid.NewGuid().ToString();
 
             await _context.FitnessClubs.AddAsync(fitnessClub);
-            await _context.SaveChangesAsync();
 
             return new Result<FitnessClub>(fitnessClub);
         }
 
         public async Task<Result<bool>> Delete(string fitnessClubId)
         {
-            var fitnessClubFromDb = await GetById(fitnessClubId);
+            var fitnessClubFromDb = await GetById(fitnessClubId, true);
             if (fitnessClubFromDb is null)
             {
                 return new Result<bool>(Common.CommonConsts.NOT_FOUND);
             }
-            // TODO: What if FitnessClub have carnets?
+            // TODO: What if FitnessClub have carnets? => Broker or merge services
             _context.FitnessClubs.Remove(fitnessClubFromDb);
-            await _context.SaveChangesAsync();
 
             return new Result<bool>(true);
         }
 
-        private async Task<FitnessClub> GetByName(string fitnessClubName)
+        private async Task<FitnessClub> GetByName(string fitnessClubName, bool asTracking)
         {
-            return await _context.FitnessClubs.FirstOrDefaultAsync(f => f.FitnessClubName == fitnessClubName);
+            IQueryable<FitnessClub> query = _context.FitnessClubs;
+
+            if (!asTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return await query.FirstOrDefaultAsync(f => f.FitnessClubName == fitnessClubName);
         }
+
+        public Task SaveChangesAsync() => _context.SaveChangesAsync();
     }
 }

@@ -5,12 +5,16 @@ namespace Carnets.Domain.Interfaces
 {
     public interface IAssignedPermissionRepository
     {
-        Task<Result<IEnumerable<PermissionBase>>> GetAllGympassPermissions(string gympassTypeId);
+        Task<AssignedPermission> GetAssignedPermissionById(string gympassTypeId, string permissionId, bool asTracking);
 
-        Task<Result<AssignedPermission>> GrantPermission(AssignedPermission grantRequest, string fitnessClubId);
+        Task<IEnumerable<AssignedPermission>> GetAllByPermission(string permissionId, bool asTracking);
 
-        Task<Result<bool>> RevokePermission(string permissionId, string fitnessClubId, string gympassTypeId);
+        Task<Result<IEnumerable<AssignedPermission>>> GetAllGympassPermissions(string gympassTypeId, bool asTracking);
 
-        Task<Result<bool>> RemovePermissionWithAllAssigements(string permissionId, string fitnessClubId);
+        Task<Result<AssignedPermission>> CreateAssignedPermission(AssignedPermission assignedPermission);
+
+        Task<Result<bool>> RemovePermission(string permissionId, string gympassTypeId, string fitnessClubId);
+
+        Task SaveChangesAsync();
     }
 }

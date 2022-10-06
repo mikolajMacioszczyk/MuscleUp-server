@@ -3,6 +3,7 @@ using Common.Exceptions;
 using Common.Models;
 using Common.Models.Dtos;
 using Common.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
@@ -17,25 +18,41 @@ namespace Carnets.Domain.Services
         public FitnessClubHttpService(
             IHttpClientFactory httpClientFactory, 
             ILogger<HttpServiceBase> logger,
-            IConfiguration configuration) 
-            : base(httpClientFactory, logger)
+            IConfiguration configuration,
+            IHttpContextAccessor contextAccessor) 
+            : base(httpClientFactory, logger, contextAccessor)
         {
             _baseAddress = configuration.GetSection("Api").GetValue<string>("FitnessClubHost");
         }
 
-        public async Task<Result<FitnessClubDto>> GetFitnessClubOfWorker(string workerId)
+        public Task<Result<FitnessClubDto>> GetFitnessClubById(string fitnessClubId)
         {
-            return await SendGetRequestAsync<FitnessClubDto>($"fitnessClub/worker/{workerId}");
+            return SendGetRequestAsync<FitnessClubDto>($"fitnessClub/{fitnessClubId}");
         }
 
-        public async Task<Result<FitnessClubDto>> EnsureWorkerCanManageFitnessClub(string workerId)
+        public Task<Result<FitnessClubDto>> GetFitnessClubOfWorker(string workerId)
+        {
+            return SendGetRequestAsync<FitnessClubDto>($"fitnessClub/worker/{workerId}");
+        }
+
+        public async Task<FitnessClubDto> EnsureWorkerCanManageFitnessClub(string workerId)
         {
             var fitnessClubResult = await GetFitnessClubOfWorker(workerId);
             if (!fitnessClubResult.IsSuccess)
             {
                 throw new BadRequestException("Cannot determine worker's fitness club");
             }
-            return fitnessClubResult;
+            return fitnessClubResult.Value;
+        }
+
+        public async Task<FitnessClubDto> EnsureFitnessClubExists(string fitnessClubId)
+        {
+            var fitnessClubResult = await GetFitnessClubById(fitnessClubId);
+            if (!fitnessClubResult.IsSuccess)
+            {
+                throw new BadRequestException($"Fitness club with id {fitnessClubId} does not exists");
+            }
+            return fitnessClubResult.Value;
         }
     }
 }

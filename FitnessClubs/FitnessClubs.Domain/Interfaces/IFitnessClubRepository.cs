@@ -5,11 +5,10 @@ namespace FitnessClubs.Domain.Interfaces
 {
     public interface IFitnessClubRepository
     {
-        Task<IEnumerable<FitnessClub>> GetAll();
-        Task<FitnessClub> GetById(string fitnessClubId);
-        Task<Result<FitnessClub>> GetFitnessClubOfWorker(string workerId);
+        Task<IEnumerable<FitnessClub>> GetAll(bool asTracking);
+        Task<FitnessClub> GetById(string fitnessClubId, bool asTracking);
         Task<Result<FitnessClub>> Create(FitnessClub fitnessClub);
         Task<Result<bool>> Delete(string fitnessClubId);
-
+        Task SaveChangesAsync();
     }
 }

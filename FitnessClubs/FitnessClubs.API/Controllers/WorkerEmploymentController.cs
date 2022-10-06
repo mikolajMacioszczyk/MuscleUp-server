@@ -21,15 +21,16 @@ namespace FitnessClubs.API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet()]
-        [Authorize(Roles = nameof(RoleType.Worker))]
-        public async Task<ActionResult<IEnumerable<WorkerEmploymentDto>>> GetAllEmployments()
+        [HttpGet("{fitnessClubId}")]
+        [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
+        public async Task<ActionResult<IEnumerable<WorkerEmploymentDto>>> GetAllEmploymentsFromFitnessClub([FromRoute] string fitnessClubId)
         {
-            return Ok(_mapper.Map<IEnumerable<WorkerEmploymentDto>>(await _workerEmploymentRepository.GetAllWorkerEmployments()));
+            var workerEmployment = await _workerEmploymentRepository.GetAllWorkerEmployments(fitnessClubId, false);
+            return Ok(_mapper.Map<IEnumerable<WorkerEmploymentDto>>(workerEmployment));
         }
 
         [HttpPost()]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
         public async Task<ActionResult<WorkerEmploymentDto>> CreateWorkerEmployment(CreateWorkerEmploymentDto model)
         {
             var workerEmployment = _mapper.Map<WorkerEmployment>(model);

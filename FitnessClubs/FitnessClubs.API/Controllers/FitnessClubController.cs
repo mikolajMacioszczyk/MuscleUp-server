@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Common.Enums;
+using Common.Helpers;
 using Common.Models.Dtos;
 using FitnessClubs.Domain.Interfaces;
 using FitnessClubs.Domain.Models;
@@ -13,27 +14,31 @@ namespace FitnessClubs.API.Controllers
     [Route("[controller]")]
     public class FitnessClubController : ControllerBase
     {
-        private readonly IFitnessClubRepository _fitnessClubRepository;
+        private readonly IFitnessClubService _fitnessClubService;
+        private readonly IWorkerEmploymentRepository _workerEmploymentRepository;
         private readonly IMapper _mapper;
 
-        public FitnessClubController(IFitnessClubRepository fitnessClubRepository, IMapper mapper)
+        public FitnessClubController(IMapper mapper,
+            IFitnessClubService fitnessClubService,
+            IWorkerEmploymentRepository workerEmploymentRepository)
         {
-            _fitnessClubRepository = fitnessClubRepository;
+            _fitnessClubService = fitnessClubService;
             _mapper = mapper;
+            _workerEmploymentRepository = workerEmploymentRepository;
         }
 
         [HttpGet()]
-        [Authorize()]
+        [Authorize(Roles = AuthHelper.RoleAll)]
         public async Task<ActionResult<IEnumerable<FitnessClubDto>>> GetAll()
         {
-            return Ok(_mapper.Map<IEnumerable<FitnessClubDto>>(await _fitnessClubRepository.GetAll()));
+            return Ok(_mapper.Map<IEnumerable<FitnessClubDto>>(await _fitnessClubService.GetAll()));
         }
 
         [HttpGet("{fitnessClubId}")]
-        [Authorize()]
+        [Authorize(Roles = AuthHelper.RoleAll)]
         public async Task<ActionResult<FitnessClubDto>> GetById([FromRoute] string fitnessClubId)
         {
-            var result = await _fitnessClubRepository.GetById(fitnessClubId);
+            var result = await _fitnessClubService.GetById(fitnessClubId);
             if (result is null)
             {
                 return NotFound();
@@ -42,10 +47,10 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpGet("worker/{workerId}")]
-        //[Authorize(Roles = nameof(RoleType.Worker))]
+        [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
         public async Task<ActionResult<FitnessClubDto>> GetFitnessClubOfWorker([FromRoute] string workerId)
         {
-            var getResult = await _fitnessClubRepository.GetFitnessClubOfWorker(workerId);
+            var getResult = await _workerEmploymentRepository.GetFitnessClubOfWorker(workerId, false);
             if (getResult.IsSuccess)
             {
                 return Ok(_mapper.Map<FitnessClubDto>(getResult.Value));
@@ -58,7 +63,7 @@ namespace FitnessClubs.API.Controllers
         public async Task<ActionResult<FitnessClubDto>> CreateFitnessClub([FromBody] CreateFitnessClubDto model)
         {
             var fitnessClub = _mapper.Map<FitnessClub>(model);
-            var createResult = await _fitnessClubRepository.Create(fitnessClub);
+            var createResult = await _fitnessClubService.Create(fitnessClub);
             if (createResult.IsSuccess)
             {
                 return Ok(_mapper.Map<FitnessClubDto>(createResult.Value));
@@ -70,7 +75,7 @@ namespace FitnessClubs.API.Controllers
         [Authorize(Roles = nameof(RoleType.Administrator))]
         public async Task<ActionResult> DeleteFitnessClub([FromRoute] string fitnessClubId)
         {
-            var deleteResult = await _fitnessClubRepository.Delete(fitnessClubId);
+            var deleteResult = await _fitnessClubService.Delete(fitnessClubId);
             if (deleteResult.IsSuccess)
             {
                 return NoContent();

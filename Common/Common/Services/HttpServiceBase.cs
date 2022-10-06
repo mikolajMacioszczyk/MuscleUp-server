@@ -1,5 +1,9 @@
-﻿using Common.Models;
+﻿using Common.Consts;
+using Common.Helpers;
+using Common.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using System.Text.Json;
 
 namespace Common.Services
@@ -9,11 +13,13 @@ namespace Common.Services
         protected readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<HttpServiceBase> _logger;
         private HttpClient _httpClient;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        protected HttpServiceBase(IHttpClientFactory httpClientFactory, ILogger<HttpServiceBase> logger)
+        protected HttpServiceBase(IHttpClientFactory httpClientFactory, ILogger<HttpServiceBase> logger, IHttpContextAccessor contextAccessor)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
+            _contextAccessor = contextAccessor;
         }
 
         protected abstract string BaseAddress { get; }
@@ -24,7 +30,15 @@ namespace Common.Services
 
             var cancellationToken = new CancellationToken();
 
-            var response = await _httpClient.GetAsync(path, cancellationToken);
+            var request = new HttpRequestMessage(HttpMethod.Get, path);
+
+            var context = _contextAccessor.HttpContext;
+            if (AuthHelper.HasAuthorizationBarerToken(context.Request))
+            {
+                request.Headers.Add(HeaderNames.Authorization, $"{AuthConsts.BearerPrefix} {AuthHelper.GetJwtString(context.Request)}");
+            }
+
+            var response = await _httpClient.SendAsync(request, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -54,6 +68,10 @@ namespace Common.Services
             {
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 return new Result<T>(errorMessage);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedAccessException($"Unauthorized access to {path}");
             }
             throw new NotImplementedException();
         }

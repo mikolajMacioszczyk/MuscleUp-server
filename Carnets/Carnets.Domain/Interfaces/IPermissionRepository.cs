@@ -5,12 +5,14 @@ namespace Carnets.Domain.Interfaces
 {
     public interface IPermissionRepository<TPermission> where TPermission : PermissionBase
     {
-        Task<IEnumerable<TPermission>> GetAll(string fitnessClubId);
+        Task<IEnumerable<TPermission>> GetAll(string fitnessClubId, bool asTracking);
 
-        Task<TPermission> GetPermissionById(string permissionId, string fitnessClubId);
+        Task<TPermission> GetPermissionById(string permissionId, bool asTracking);
 
         Task<Result<TPermission>> CreatePermission(TPermission newPermission);
 
         Task<Result<bool>> DeletePermission(string permissionId, string fitnessClubId);
+
+        Task SaveChangesAsync();
     }
 }

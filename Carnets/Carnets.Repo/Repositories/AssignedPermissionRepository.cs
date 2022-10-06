@@ -15,39 +15,53 @@ namespace Carnets.Repo.Repositories
             _context = context;
         }
 
-        public async Task<Result<IEnumerable<PermissionBase>>> GetAllGympassPermissions(string gympassTypeId)
+        public async Task<AssignedPermission> GetAssignedPermissionById(string gympassTypeId, string permissionId, bool asTracking)
         {
-            var gympass = await _context.GympassTypes.FirstOrDefaultAsync(g => g.GympassTypeId == gympassTypeId);
-            if (gympass is null)
+            IQueryable<AssignedPermission> query = _context.AssignedPermissions
+                .Include(a => a.Permission)
+                .Include(a => a.GympassType);
+
+            if (!asTracking)
             {
-                return new Result<IEnumerable<PermissionBase>>(Common.CommonConsts.NOT_FOUND);
+                query = query.AsNoTracking();
             }
 
-            var assignedPermission = await _context.AssignedPermissions
-                .Include(p => p.Permission)
-                .Where(p => p.GympassTypeId == gympassTypeId)
-                .ToListAsync();
-
-            var gympassPermissions = assignedPermission.Select(a => a.Permission);
-
-            return new Result<IEnumerable<PermissionBase>>(gympassPermissions);
+            return await query.FirstOrDefaultAsync(a => a.GympassTypeId == gympassTypeId && a.PermissionId == permissionId);
         }
 
-        // Permission may be granted also to inactive gympass types
-        public async Task<Result<AssignedPermission>> GrantPermission(AssignedPermission grantRequest, string fitnessClubId)
+        public async Task<IEnumerable<AssignedPermission>> GetAllByPermission(string permissionId, bool asTracking)
         {
-            var gympassTypeFromDb = await _context.GympassTypes
-                .FirstOrDefaultAsync(g => g.GympassTypeId == grantRequest.GympassTypeId && g.FitnessClubId == fitnessClubId);
+            IQueryable<AssignedPermission> query = _context.AssignedPermissions
+                .Where(a => a.PermissionId == permissionId)
+                .Include(a => a.Permission)
+                .Include(a => a.GympassType);
 
-            var permission = await GetPermissionById(grantRequest.PermissionId, fitnessClubId);
-
-            if (permission is null || gympassTypeFromDb is null)
+            if (!asTracking)
             {
-                return new Result<AssignedPermission>(Common.CommonConsts.NOT_FOUND);
+                query = query.AsNoTracking();
             }
 
-            var alreadyGrantedFromDb = await _context.AssignedPermissions
-                .FirstOrDefaultAsync(a => a.GympassTypeId == grantRequest.GympassTypeId && a.PermissionId == grantRequest.PermissionId);
+            return await query.ToListAsync();
+        }
+
+        public async Task<Result<IEnumerable<AssignedPermission>>> GetAllGympassPermissions(string gympassTypeId, bool asTracking)
+        {
+            var assignedPermissionQuery = _context.AssignedPermissions
+                .Include(p => p.GympassType)
+                .Include(p => p.Permission)
+                .Where(p => p.GympassTypeId == gympassTypeId);
+
+            if (!asTracking)
+            {
+                assignedPermissionQuery = assignedPermissionQuery.AsNoTracking();
+            }
+
+            return new Result<IEnumerable<AssignedPermission>>(await assignedPermissionQuery.ToListAsync());
+        }
+
+        public async Task<Result<AssignedPermission>> CreateAssignedPermission(AssignedPermission assignedPermission)
+        {
+            var alreadyGrantedFromDb = await GetAssignedPermissionById(assignedPermission.GympassTypeId, assignedPermission.PermissionId, false);
 
             // is unique
             if (alreadyGrantedFromDb != null)
@@ -55,19 +69,14 @@ namespace Carnets.Repo.Repositories
                 return new Result<AssignedPermission>("Operation not permitted. Permission has beend already assigned to GympassType");
             }
 
-            await _context.AssignedPermissions.AddAsync(grantRequest);
-            await _context.SaveChangesAsync();
-            
-            // ok
-            return new Result<AssignedPermission>(grantRequest);
+            await _context.AssignedPermissions.AddAsync(assignedPermission);
+
+            return new Result<AssignedPermission>(assignedPermission);
         }
 
-        public async Task<Result<bool>> RevokePermission(string permissionId, string gympassTypeId, string fitnessClubId)
+        public async Task<Result<bool>> RemovePermission(string permissionId, string gympassTypeId, string fitnessClubId)
         {
-            var assignedPermissionFromDb = await _context.AssignedPermissions
-                .Include(p => p.Permission)
-                .Include(p => p.GympassType)
-                .FirstOrDefaultAsync(p => p.PermissionId == permissionId && p.GympassTypeId == gympassTypeId);
+            var assignedPermissionFromDb = await GetAssignedPermissionById(gympassTypeId, permissionId, true);
 
             if (assignedPermissionFromDb is null)
             {
@@ -84,69 +93,10 @@ namespace Carnets.Repo.Repositories
             }
 
             _context.AssignedPermissions.Remove(assignedPermissionFromDb);
-            await _context.SaveChangesAsync();
+            
             return new Result<bool>(true);
         }
 
-        public async Task<Result<bool>> RemovePermissionWithAllAssigements(string permissionId, string fitnessClubId)
-        {
-            var permissionFromDb = await GetPermissionById(permissionId, fitnessClubId);
-
-            if (permissionFromDb is null)
-            {
-                return new Result<bool>(Common.CommonConsts.NOT_FOUND);
-            }
-
-            var assignedPermissions = await _context.AssignedPermissions
-                .Where(p => p.PermissionId == permissionId).ToListAsync();
-
-            foreach (var assignedPermission in assignedPermissions)
-            {
-                _context.AssignedPermissions.Remove(assignedPermission);
-            }
-
-            switch (permissionFromDb.PermissionType)
-            {
-                case Domain.Enums.PermissionType.TimePermissionEntry:
-                    _context.TimePermissionEntries.Remove(permissionFromDb as TimePermissionEntry);
-                    break;
-                case Domain.Enums.PermissionType.AllowedEntriesPermission:
-                    _context.AllowedEntriesPermissions.Remove(permissionFromDb as AllowedEntriesPermission);
-                    break;
-                case Domain.Enums.PermissionType.ClassPermission:
-                    _context.ClassPermissions.Remove(permissionFromDb as ClassPermission);
-                    break;
-            }
-
-            await _context.SaveChangesAsync();
-            return new Result<bool>(true);
-        }
-
-        private async Task<PermissionBase> GetPermissionById(string permissionId, string fitnessClubId)
-        {
-            var allowedEntriesPermissionFromDb = await _context.AllowedEntriesPermissions
-                .FirstOrDefaultAsync(p => p.PermissionId == permissionId && p.FitnessClubId == fitnessClubId);
-
-            var classPermissionFromDb = await _context.ClassPermissions
-                .FirstOrDefaultAsync(p => p.PermissionId == permissionId && p.FitnessClubId == fitnessClubId);
-
-            var timePermissionFromDb = await _context.TimePermissionEntries
-                .FirstOrDefaultAsync(p => p.PermissionId == permissionId && p.FitnessClubId == fitnessClubId);
-
-            if (allowedEntriesPermissionFromDb != null)
-            {
-                return allowedEntriesPermissionFromDb;
-            }
-            else if (classPermissionFromDb != null)
-            {
-                return classPermissionFromDb;
-            }
-            else if (timePermissionFromDb != null)
-            {
-                return timePermissionFromDb;
-            }
-
-            return null;
-        }
+        public Task SaveChangesAsync() => _context.SaveChangesAsync();
     }
 }

@@ -1,5 +1,4 @@
-﻿using Carnets.Domain.Interfaces;
-using Carnets.Domain.Models;
+﻿using Carnets.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Carnets.Repo.Repositories

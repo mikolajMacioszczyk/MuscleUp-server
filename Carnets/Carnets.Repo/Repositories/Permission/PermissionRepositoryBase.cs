@@ -1,5 +1,6 @@
 ﻿using Carnets.Domain.Interfaces;
 using Carnets.Domain.Models;
+using Common.Exceptions;
 using Common.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,17 +18,29 @@ namespace Carnets.Repo.Repositories
 
         protected abstract DbSet<TPermission> PermissionDbSet { get; }
 
-        public async Task<IEnumerable<TPermission>> GetAll(string fitnessClubId)
+        public async Task<IEnumerable<TPermission>> GetAll(string fitnessClubId, bool asTracking)
         {
-            return await PermissionDbSet
-                .Where(p => p.FitnessClubId == fitnessClubId)
-                .ToListAsync();
+            var query = PermissionDbSet
+                .Where(p => p.FitnessClubId == fitnessClubId);
+
+            if (!asTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return await query.ToListAsync();
         }
 
-        public async Task<TPermission> GetPermissionById(string permissionId, string fitnessClubId)
+        public async Task<TPermission> GetPermissionById(string permissionId, bool asTracking)
         {
-            return await PermissionDbSet
-                .FirstOrDefaultAsync(p => p.PermissionId == permissionId && p.FitnessClubId == fitnessClubId);
+            IQueryable<TPermission> query = PermissionDbSet;
+
+            if (!asTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return await query.FirstOrDefaultAsync(p => p.PermissionId == permissionId);
         }
 
         public virtual async Task<Result<TPermission>> CreatePermission(TPermission newPermission)
@@ -42,26 +55,23 @@ namespace Carnets.Repo.Repositories
 
         public async Task<Result<bool>> DeletePermission(string permissionId, string fitnessClubId)
         {
-            var permissionFromDb = await GetPermissionById(permissionId, fitnessClubId);
+            var permissionFromDb = await GetPermissionById(permissionId, true);
 
             if (permissionFromDb is null)
             {
                 return new Result<bool>(Common.CommonConsts.NOT_FOUND);
             }
 
-            var linkedAssignedPermissions = await _context.AssignedPermissions
-                .Where(a => a.PermissionId == permissionId)
-                .ToListAsync();
-
-            if (linkedAssignedPermissions.Any())
+            if (permissionFromDb.FitnessClubId != fitnessClubId)
             {
-                return new Result<bool>("Operation not permitted. Cannot delete Permission with linked AssignedPermissions");
+                throw new BadRequestException("Cannot manage permission");
             }
 
             PermissionDbSet.Remove(permissionFromDb);
-            await _context.SaveChangesAsync();
-
+            
             return new Result<bool>(true);
         }
+
+        public Task SaveChangesAsync() => _context.SaveChangesAsync();
     }
 }

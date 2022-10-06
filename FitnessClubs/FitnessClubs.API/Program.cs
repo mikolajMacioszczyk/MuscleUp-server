@@ -1,5 +1,6 @@
 using Common.Extensions;
 using FitnessClubs.Domain.Interfaces;
+using FitnessClubs.Domain.Services;
 using FitnessClubs.Repo;
 using FitnessClubs.Repo.Repositories;
 
@@ -17,7 +18,9 @@ builder.Services.AddJwtAuthentication();
 
 // register app services
 builder.Services.AddScoped<IFitnessClubRepository, FitnessClubRepository>();
+builder.Services.AddScoped<IFitnessClubService, FitnessClubService>();
 builder.Services.AddScoped<IWorkerEmploymentRepository, WorkerEmploymentRepository>();
+builder.Services.AddScoped<IWorkerEmploymentService, WorkerEmploymentService>();
 
 var app = builder.Build();
 

@@ -50,6 +50,12 @@ namespace Carnets.Repo.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(36)");
 
+                    b.Property<int>("RemainingValidityPeriodInSeconds")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasMaxLength(36)
