@@ -55,7 +55,9 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment:
-      - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;
+      - DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - DATASOURCE_USERNAME=postgres
+      - DATASOURCE_PASSWORD=Pa55w0rd
     depends_on:
       - postgres
 
@@ -65,7 +67,9 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment:
-      - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;
+      - DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - DATASOURCE_USERNAME=postgres
+      - DATASOURCE_PASSWORD=Pa55w0rd
     depends_on:
       - postgres
 
@@ -75,7 +79,9 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment:
-      - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;
+      - DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - DATASOURCE_USERNAME=postgres
+      - DATASOURCE_PASSWORD=Pa55w0rd
     depends_on:
       - postgres
 
