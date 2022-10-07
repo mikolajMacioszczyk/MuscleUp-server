@@ -11,7 +11,7 @@ namespace Carnets.Repo.Repositories
     {
         protected readonly CarnetsDbContext _context;
 
-        protected PermissionRepositoryBase(CarnetsDbContext? context)
+        protected PermissionRepositoryBase(CarnetsDbContext context)
         {
             _context = context;
         }

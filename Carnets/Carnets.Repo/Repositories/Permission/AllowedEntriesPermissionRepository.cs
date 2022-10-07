@@ -5,7 +5,7 @@ namespace Carnets.Repo.Repositories
 {
     public class AllowedEntriesPermissionRepository : PermissionRepositoryBase<AllowedEntriesPermission>
     {
-        public AllowedEntriesPermissionRepository(CarnetsDbContext? context) : base(context)
+        public AllowedEntriesPermissionRepository(CarnetsDbContext context) : base(context)
         { }
 
         protected override DbSet<AllowedEntriesPermission> PermissionDbSet => _context.AllowedEntriesPermissions;

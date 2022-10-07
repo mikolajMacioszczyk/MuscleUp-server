@@ -14,7 +14,7 @@ namespace Carnets.Repo.Repositories
             _context = context;
         }
 
-        public async Task<GympassType?> GetGympassTypeById(string gympassId, bool asTracking)
+        public async Task<GympassType> GetGympassTypeById(string gympassId, bool asTracking)
         {
             IQueryable<GympassType> query = _context.GympassTypes;
 
@@ -44,7 +44,7 @@ namespace Carnets.Repo.Repositories
             return await query.ToListAsync();
         }
 
-        private async Task<GympassType?> GetActiveGympassTypeByNameAndFitnessClub(string name, string fitnessClubId, bool asTracking)
+        private async Task<GympassType> GetActiveGympassTypeByNameAndFitnessClub(string name, string fitnessClubId, bool asTracking)
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrEmpty(fitnessClubId))
             {

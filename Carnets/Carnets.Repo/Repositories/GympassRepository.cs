@@ -89,7 +89,7 @@ namespace Carnets.Repo.Repositories
             return new Result<Gympass>(created);
         }
 
-        public async Task<Result<Gympass>> UpdateGympass(Gympass updated)
+        public Task<Result<Gympass>> UpdateGympass(Gympass updated)
         {
             if (updated == null)
             {
@@ -98,7 +98,7 @@ namespace Carnets.Repo.Repositories
 
             _context.Entry(updated).State = EntityState.Modified;
 
-            return new Result<Gympass>(updated);
+            return Task.FromResult(new Result<Gympass>(updated));
         }
 
         public Task SaveChangesAsync() => _context.SaveChangesAsync();
