@@ -109,6 +109,8 @@ namespace Carnets.Repo.Repositories
 
             // update domain properties
             updated.Price = gympassType.Price;
+            updated.EnableEntryFromInMinutes = gympassType.EnableEntryFromInMinutes;
+            updated.EnableEntryToInMinutes = gympassType.EnableEntryToInMinutes;
             updated.ValidityPeriodInSeconds = gympassType.ValidityPeriodInSeconds;
 
             await _context.GympassTypes.AddAsync(updated);

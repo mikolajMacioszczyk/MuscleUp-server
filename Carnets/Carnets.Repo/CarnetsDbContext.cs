@@ -13,7 +13,6 @@ namespace Carnets.Repo
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<AllowedEntriesPermission> AllowedEntriesPermissions { get; set; }
         public DbSet<ClassPermission> ClassPermissions { get; set; }
-        public DbSet<TimePermissionEntry> TimePermissionEntries { get; set; }
         public DbSet<AssignedPermission> AssignedPermissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -8,6 +8,10 @@
 
         public double Price { get; set; }
 
+        public int EnableEntryFromInMinutes { get; set; }
+
+        public int EnableEntryToInMinutes { get; set; }
+
         public int ValidityPeriodInSeconds { get; set; }
 
         public bool IsActive { get; set; }

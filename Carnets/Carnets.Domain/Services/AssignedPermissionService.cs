@@ -10,20 +10,17 @@ namespace Carnets.Domain.Services
         private readonly IGympassTypeRepository _gympassTypeRepository;
         private readonly IPermissionRepository<AllowedEntriesPermission> _allowedEntriesPermissionRepository;
         private readonly IPermissionRepository<ClassPermission> _classPermissionRepository;
-        private readonly IPermissionRepository<TimePermissionEntry> _timeEntryPermissionRepository;
 
         public AssignedPermissionService(
             IAssignedPermissionRepository assignedPermissionRepository,
             IGympassTypeRepository gympassTypeRepository, 
             IPermissionRepository<AllowedEntriesPermission> allowedEntriesPermissionRepository, 
-            IPermissionRepository<ClassPermission> classPermissionRepository, 
-            IPermissionRepository<TimePermissionEntry> timeEntryPermissionRepository)
+            IPermissionRepository<ClassPermission> classPermissionRepository)
         {
             _assignedPermissionRepository = assignedPermissionRepository;
             _gympassTypeRepository = gympassTypeRepository;
             _allowedEntriesPermissionRepository = allowedEntriesPermissionRepository;
             _classPermissionRepository = classPermissionRepository;
-            _timeEntryPermissionRepository = timeEntryPermissionRepository;
         }
 
         public Task<IEnumerable<AssignedPermission>> GetAllByPermission(string permissionId) =>
@@ -106,10 +103,6 @@ namespace Carnets.Domain.Services
 
             switch (permissionFromDb.PermissionType)
             {
-                case Enums.PermissionType.TimePermissionEntry:
-                    await _timeEntryPermissionRepository.DeletePermission(permissionId, fitnessClubId);
-                    await _timeEntryPermissionRepository.SaveChangesAsync();
-                    break;
                 case Enums.PermissionType.AllowedEntriesPermission:
                     await _allowedEntriesPermissionRepository.DeletePermission(permissionId, fitnessClubId);
                     await _allowedEntriesPermissionRepository.SaveChangesAsync();
@@ -133,8 +126,6 @@ namespace Carnets.Domain.Services
 
             var classPermissionFromDb = await _classPermissionRepository.GetPermissionById(permissionId, asTracking);
 
-            var timePermissionFromDb = await _timeEntryPermissionRepository.GetPermissionById(permissionId, asTracking);
-
             PermissionBase resultPermission = null;
 
             if (allowedEntriesPermissionFromDb != null)
@@ -144,10 +135,6 @@ namespace Carnets.Domain.Services
             else if (classPermissionFromDb != null)
             {
                 resultPermission = classPermissionFromDb;
-            }
-            else if (timePermissionFromDb != null)
-            {
-                resultPermission = timePermissionFromDb;
             }
 
             if (resultPermission?.FitnessClubId != fitnessClubId)
