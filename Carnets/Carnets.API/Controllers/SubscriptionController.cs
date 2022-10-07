@@ -33,7 +33,7 @@ namespace Carnets.API.Controllers
             _subscriptionService = subscriptionService;
         }
 
-        [HttpGet("byGympass/{gympassId}")]
+        [HttpGet("by-gympass/{gympassId}")]
         [Authorize(Roles = nameof(RoleType.Member))]
         public async Task<ActionResult<SubscriptionDto>> GetAllGympassSubscriptions([FromRoute] string gympassId)
         {
@@ -44,7 +44,7 @@ namespace Carnets.API.Controllers
             return Ok(subscriptions);
         }
 
-        [HttpGet("byGympassAsWorker/{gympassId}/{memberId}")]
+        [HttpGet("by-gympass-as-worker/{gympassId}/{memberId}")]
         [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
         public async Task<ActionResult<SubscriptionDto>> GetAllGympassSubscriptions([FromRoute] string gympassId, [FromRoute] string memberId)
         {
@@ -53,7 +53,7 @@ namespace Carnets.API.Controllers
             return Ok(subscriptions);
         }
 
-        [HttpGet("byMember")]
+        [HttpGet("by-member")]
         [Authorize(Roles = nameof(RoleType.Member))]
         public async Task<ActionResult<SubscriptionDto>> GetAllMemberSubscriptions()
         {
@@ -64,7 +64,7 @@ namespace Carnets.API.Controllers
             return Ok(subscriptions);
         }
 
-        [HttpGet("byMemberAsWorker/{memberId}")]
+        [HttpGet("by-member-as-worker/{memberId}")]
         [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
         public async Task<ActionResult<SubscriptionDto>> GetAllMemberSubscriptions([FromRoute] string memberId)
         {
@@ -108,7 +108,7 @@ namespace Carnets.API.Controllers
             return BadRequest(payResult.ErrorCombined);
         }
 
-        [HttpPost("asWorker")]
+        [HttpPost("as-worker")]
         [Authorize(Roles = nameof(RoleType.Worker))]
         public async Task<ActionResult<SubscriptionDto>> CreateGympassWithSubscriptionAsWorker([FromBody] CreateGympassSubscriptionDto model)
         {

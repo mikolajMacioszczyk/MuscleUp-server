@@ -38,7 +38,7 @@ namespace Carnets.API.Controllers
             return Ok(_mapper.Map<IEnumerable<GympassDto>>(gympasses));
         }
 
-        [HttpGet("fromFitnessClub")]
+        [HttpGet("from-fitness-club")]
         [Authorize(Roles = nameof(RoleType.Worker))]
         public async Task<ActionResult<IEnumerable<GympassDto>>> GetAllFromFitnessClub()
         {
@@ -94,7 +94,7 @@ namespace Carnets.API.Controllers
             return BadRequest(result.ErrorCombined);
         }
 
-        [HttpPut("cancelAsWorker/{gympassId}")]
+        [HttpPut("cancel-as-worker/{gympassId}")]
         [Authorize(Roles = nameof(RoleType.Worker))]
         public async Task<ActionResult<GympassDto>> CancelGympassAsWorker([FromRoute] string gympassId)
         {

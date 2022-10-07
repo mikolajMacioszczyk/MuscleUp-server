@@ -30,7 +30,7 @@ namespace Carnets.API.Controllers
             _httpAuthContext = httpAuthContext;
         }
 
-        [HttpGet("gympassPermissions/{gympassTypeId}")]
+        [HttpGet("gympass-permissions/{gympassTypeId}")]
         [Authorize(Roles = AuthHelper.RoleAll)]
         public async Task<ActionResult<IEnumerable<PermissionBaseDto>>> GetAllGympassPermissions([FromRoute] string gympassTypeId)
         {
@@ -92,7 +92,7 @@ namespace Carnets.API.Controllers
             return BadRequest(revokeResult.ErrorCombined);
         }
 
-        [HttpDelete("revokeAll/{permissionId}")]
+        [HttpDelete("revoke-all/{permissionId}")]
         [Authorize(Roles = nameof(RoleType.Worker))]
         public async Task<ActionResult> RemovePermissionWithAllAssigements([FromRoute] string permissionId)
         {

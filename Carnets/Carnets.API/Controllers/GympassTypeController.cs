@@ -43,7 +43,7 @@ namespace Carnets.API.Controllers
             return NotFound();
         }
 
-        [HttpGet("activeAsWorker")]
+        [HttpGet("active-as-worker")]
         [Authorize(Roles = nameof(RoleType.Worker))]
         public async Task<ActionResult<IEnumerable<GympassTypeDto>>> GetActiveGympassTypesAsWorker()
         {

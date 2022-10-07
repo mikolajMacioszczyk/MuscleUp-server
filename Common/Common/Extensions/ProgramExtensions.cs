@@ -6,6 +6,7 @@ using Common.Resolvers;
 using Common.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +24,10 @@ namespace Common.Extensions
 
         public static void AddBasicApiServices<TProgram>(this IServiceCollection services)
         {
-            services.AddControllers()
+            services.AddControllers(options =>
+                {
+                    options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+                })
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver = new IgnoreJsonPropertyAttributeContractResolver();

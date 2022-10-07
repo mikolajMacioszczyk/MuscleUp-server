@@ -9,7 +9,7 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/Auth/{everything}",
+      "UpstreamPathTemplate": "/api/auth/{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
       "SwaggerKey": "auth"
     },
@@ -22,7 +22,7 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/Auth",
+      "UpstreamPathTemplate": "/api/auth",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
 
@@ -35,7 +35,7 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/Carnets/{everything}",
+      "UpstreamPathTemplate": "/api/carnets/{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
       "SwaggerKey": "carnets"
     },
@@ -48,7 +48,7 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/Carnets",
+      "UpstreamPathTemplate": "/api/carnets",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
 
@@ -61,7 +61,7 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/FitnessClubs/{everything}",
+      "UpstreamPathTemplate": "/api/fitness-clubs/{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
       "SwaggerKey": "fitnessclubs"
     },
@@ -74,7 +74,7 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/FitnessClubs",
+      "UpstreamPathTemplate": "/api/fitness-clubs",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     }
   ]

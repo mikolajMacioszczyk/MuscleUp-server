@@ -37,14 +37,14 @@ namespace Auth.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("loginWithRefreshToken")]
+        [HttpPost("login-with-refresh-token")]
         public async Task<ActionResult<AuthResponse>> LoginWithRefreshToken()
         {
             bool rememberMe = false;
             return Ok(await _accountHttpManager.LoginWithRefreshToken(rememberMe, HttpContext.GetUserAgent()));
         }
 
-        [HttpPost("changePassword")]
+        [HttpPost("change-password")]
         [Authorize(Roles = AuthHelper.RoleAllExceptAdmin)]
         public async Task<ActionResult<AuthResponse>> ChangePassword([FromBody] ChangePasswordRequestDto request)
         {
@@ -52,7 +52,7 @@ namespace Auth.API.Controllers
         }
 
         [Authorize(Roles = AuthHelper.RoleAll)]
-        [HttpGet("Logout")]
+        [HttpGet("logout")]
         public async Task<IActionResult> Logout()
         {
             await _accountHttpManager.Logout();

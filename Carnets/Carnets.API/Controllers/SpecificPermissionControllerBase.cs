@@ -39,7 +39,7 @@ namespace Carnets.API.Controllers
             return Ok(_mapper.Map<IEnumerable<TPermissionDto>>(await _permissionService.GetAll(fitnessClubId)));
         }
 
-        [HttpGet("allAsAdmin/{fitnessClubId}")]
+        [HttpGet("all-as-admin/{fitnessClubId}")]
         [Authorize(Roles = nameof(RoleType.Administrator))]
         public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllPermisions([FromRoute] string fitnessClubId)
         {
