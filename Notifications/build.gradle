@@ -20,7 +20,8 @@ dependencies {
 	//runtimeOnly 'org.postgresql:postgresql'
 
 	// additional
-	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11' // swagger
+	implementation group: 'org.liquibase', name: 'liquibase-core', version: '4.9.1' // liquibase
 	//implementation 'org.springframework.boot:spring-boot-starter-quartz'
 }
 
