@@ -1,0 +1,23 @@
+# run me with: docker-compose -f docker-compose.local.yml up
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14.5
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=Pa55w0rd
+    ports:
+      - "5432:5432"
+
+  auth:
+    build: 
+      context: .
+      dockerfile: ./Auth/Auth.API/Dockerfile
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
+    depends_on:
+      - postgres
