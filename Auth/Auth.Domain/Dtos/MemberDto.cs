@@ -6,6 +6,6 @@ namespace Auth.Domain.Dtos
     {
         public double Height { get; set; }
         public double Weight { get; set; }
-        public override RoleType UserRole => RoleType.Member;
+        public override RoleType Role => RoleType.Member;
     }
 }

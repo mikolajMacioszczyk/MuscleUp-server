@@ -19,6 +19,6 @@ namespace Auth.Domain.Dtos
 
         public GenderType Gender { get; set; }
 
-        public abstract RoleType UserRole { get; }
+        public abstract RoleType Role { get; }
     }
 }

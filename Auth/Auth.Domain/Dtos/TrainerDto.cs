@@ -4,6 +4,6 @@ namespace Auth.Domain.Dtos
 {
     public class TrainerDto : UserDto
     {
-        public override RoleType UserRole => RoleType.Trainer;
+        public override RoleType Role => RoleType.Trainer;
     }
 }
