@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 using System.Text;
 
 namespace Common.Extensions
@@ -31,7 +32,10 @@ namespace Common.Extensions
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver = new IgnoreJsonPropertyAttributeContractResolver();
-                    options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                    options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter()
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy()
+                    });
                 });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

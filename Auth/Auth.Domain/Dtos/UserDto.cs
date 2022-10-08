@@ -1,4 +1,7 @@
-﻿namespace Auth.Domain.Dtos
+﻿using Auth.Domain.Enums;
+using Common.Enums;
+
+namespace Auth.Domain.Dtos
 {
     public abstract class UserDto
     {
@@ -13,5 +16,9 @@
         public DateTime BirthDate { get; set; }
 
         public DateTime RegisteredDate { get; set; }
+
+        public GenderType Gender { get; set; }
+
+        public abstract RoleType UserRole { get; }
     }
 }
