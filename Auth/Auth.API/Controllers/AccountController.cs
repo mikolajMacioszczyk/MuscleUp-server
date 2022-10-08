@@ -57,7 +57,7 @@ namespace Auth.API.Controllers
         {
             await _accountHttpManager.Logout();
 
-            return Ok();
+            return NoContent();
         }
     }
 }
