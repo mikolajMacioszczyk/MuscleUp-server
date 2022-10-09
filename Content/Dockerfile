@@ -1,3 +1,6 @@
+# build with: docker build -t ghcr.io/muscle-up-app/content:muscleUpDev -f Dockerfile .
+# push with: docker push ghcr.io/muscle-up-app/content:muscleUpDev
+
 FROM gradle:7.5-jdk17-jammy AS TEMP_BUILD_IMAGE
 ENV APP_HOME=/app/
 WORKDIR $APP_HOME

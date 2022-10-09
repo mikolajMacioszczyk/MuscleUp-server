@@ -1,5 +1,8 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
+# build with: docker build -t ghcr.io/muscle-up-app/auth:muscleUpDev -f Auth/Auth.API/Dockerfile .
+# push with: docker push ghcr.io/muscle-up-app/auth:muscleUpDev
+
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
