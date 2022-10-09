@@ -5,12 +5,12 @@ namespace FitnessClubs.Domain.Interfaces
 {
     public interface IWorkerEmploymentService
     {
-        Task<WorkerEmployment> GetWorkerEmploymentById(string fitnessClubId, string workerId);
-
-        Task<IEnumerable<WorkerEmployment>> GetAllWorkerEmployments(string fitnessClubId);
+        Task<IEnumerable<WorkerEmployment>> GetAllWorkerEmployments(string fitnessClubId, bool onlyActive);
 
         Task<Result<FitnessClub>> GetFitnessClubOfWorker(string workerId);
 
         Task<Result<WorkerEmployment>> CreateWorkerEmployment(WorkerEmployment workerEmployment);
+
+        Task<Result<WorkerEmployment>> TerminateWorkerEmployment(string workerEmploymentId);
     }
 }

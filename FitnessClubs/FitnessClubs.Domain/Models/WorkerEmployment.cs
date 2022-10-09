@@ -3,9 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FitnessClubs.Domain.Models
 {
-    // TODO: From and isActive
     public class WorkerEmployment
     {
+        [Key]
+        [MaxLength(36)]
+        public string WorkerEmploymentId { get; set; }
+
         [MaxLength(36)]
         public string UserId { get; set; }
 
@@ -14,5 +17,11 @@ namespace FitnessClubs.Domain.Models
         public string FitnessClubId { get; set; }
 
         public FitnessClub FitnessClub { get; set; }
+
+        public DateTime EmployedFrom { get; set; }
+
+        public DateTime? EmployedTo { get; set; }
+
+        public bool IsActive => !EmployedTo.HasValue;
     }
 }

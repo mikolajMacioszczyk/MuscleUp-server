@@ -15,14 +15,11 @@ namespace FitnessClubs.Domain.Services
             _fitnessClubRepository = fitnessClubRepository;
         }
 
-        public Task<IEnumerable<WorkerEmployment>> GetAllWorkerEmployments(string fitnessClubId) =>
-            _repository.GetAllWorkerEmployments(fitnessClubId, false);
+        public Task<IEnumerable<WorkerEmployment>> GetAllWorkerEmployments(string fitnessClubId, bool includeInactive) =>
+            _repository.GetAllWorkerEmployments(fitnessClubId, includeInactive, false);
 
         public Task<Result<FitnessClub>> GetFitnessClubOfWorker(string workerId) =>
             _repository.GetFitnessClubOfWorker(workerId, false);
-
-        public Task<WorkerEmployment> GetWorkerEmploymentById(string fitnessClubId, string workerId) =>
-            _repository.GetWorkerEmploymentById(fitnessClubId, workerId, false);
 
         public async Task<Result<WorkerEmployment>> CreateWorkerEmployment(WorkerEmployment workerEmployment)
         {
@@ -45,6 +42,19 @@ namespace FitnessClubs.Domain.Services
             }
 
             return createResult;
+        }
+
+        public async Task<Result<WorkerEmployment>> TerminateWorkerEmployment(string workerEmploymentId)
+        {
+            var terminateResult = await _repository.TerminateWorkerEmployment(workerEmploymentId);
+
+            if (terminateResult.IsSuccess)
+            {
+                // TODO: Use broker to deactivate worker account
+                await _repository.SaveChangesAsync();
+            }
+
+            return terminateResult;
         }
     }
 }

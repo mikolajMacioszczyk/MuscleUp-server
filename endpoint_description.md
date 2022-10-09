@@ -120,6 +120,7 @@
 | ------- | ------------------------------- | ------- | ------------------------------- |
 | api/fitness-clubs/worker-employment/{fitnessClubId} | Worker, Admin | GET | returns all WorkerEmployments from FitnessClub |
 | api/fitness-clubs/worker-employment | Worker, Admin | POST | creates WorkerEmployment |
+| api/fitness-clubs/worker-employment/{workerEmploymentId} | Worker, Admin | PUT | sets an end date for employment, making it inactive |
 
 # Groups
 
