@@ -51,26 +51,27 @@ namespace FitnessClubs.Repo.Repositories
         {
             IQueryable<WorkerEmployment> query = _context.WorkerEmployments
                 .Include(w => w.FitnessClub)
-                .Where(w => w.EmployedTo.HasValue);
+                .Where(w => w.UserId == workerId);
 
             if (!asTracking)
             {
                 query = query.AsNoTracking();
             }
 
-            var workerEmployment = await query.FirstOrDefaultAsync(w => w.UserId == workerId);
+            var workerEmployments = await query.ToListAsync();
+            var activeEmployment = workerEmployments.FirstOrDefault(e => e.IsActive);
 
-            if (workerEmployment is null)
+            if (activeEmployment is null)
             {
                 return new Result<FitnessClub>(new string[] { Common.CommonConsts.NOT_FOUND, $"An employee with an id {workerId} is not employed by any fitness club" });
             }
 
-            if (workerEmployment.FitnessClub is null)
+            if (activeEmployment.FitnessClub is null)
             {
-                throw new ArgumentNullException(nameof(workerEmployment.FitnessClub));
+                throw new ArgumentNullException(nameof(activeEmployment.FitnessClub));
             }
 
-            return new Result<FitnessClub>(workerEmployment.FitnessClub);
+            return new Result<FitnessClub>(activeEmployment.FitnessClub);
         }
 
         public async Task<Result<WorkerEmployment>> CreateWorkerEmployment(WorkerEmployment workerEmployment)
