@@ -52,12 +52,12 @@ namespace Auth.API.Controllers
         }
 
         [Authorize(Roles = AuthHelper.RoleAll)]
-        [HttpGet("logout")]
+        [HttpPut("logout")]
         public async Task<IActionResult> Logout()
         {
             await _accountHttpManager.Logout();
 
-            return Ok();
+            return NoContent();
         }
     }
 }

@@ -19,9 +19,6 @@ namespace FitnessClubs.Repo
             modelBuilder.Entity<TrainerEmployment>()
                 .HasKey(t => new { t.UserId, t.FitnessClubId });
 
-            modelBuilder.Entity<WorkerEmployment>()
-                .HasKey(w => new { w.UserId, w.FitnessClubId });
-
             modelBuilder.Entity<FitnessClub>()
                 .HasIndex(f => f.FitnessClubName)
                 .IsUnique();

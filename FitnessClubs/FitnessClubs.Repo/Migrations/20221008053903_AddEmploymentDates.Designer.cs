@@ -3,6 +3,7 @@ using System;
 using FitnessClubs.Repo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitnessClubs.Repo.Migrations
 {
     [DbContext(typeof(FitnessClubsDbContext))]
-    partial class FintessClubsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221008053903_AddEmploymentDates")]
+    partial class AddEmploymentDates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,7 +67,11 @@ namespace FitnessClubs.Repo.Migrations
 
             modelBuilder.Entity("FitnessClubs.Domain.Models.WorkerEmployment", b =>
                 {
-                    b.Property<string>("WorkerEmploymentId")
+                    b.Property<string>("UserId")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<string>("FitnessClubId")
                         .HasMaxLength(36)
                         .HasColumnType("character varying(36)");
 
@@ -75,15 +81,7 @@ namespace FitnessClubs.Repo.Migrations
                     b.Property<DateTime?>("EmployedTo")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("FitnessClubId")
-                        .HasMaxLength(36)
-                        .HasColumnType("character varying(36)");
-
-                    b.Property<string>("UserId")
-                        .HasMaxLength(36)
-                        .HasColumnType("character varying(36)");
-
-                    b.HasKey("WorkerEmploymentId");
+                    b.HasKey("UserId", "FitnessClubId");
 
                     b.HasIndex("FitnessClubId");
 
@@ -105,7 +103,9 @@ namespace FitnessClubs.Repo.Migrations
                 {
                     b.HasOne("FitnessClubs.Domain.Models.FitnessClub", "FitnessClub")
                         .WithMany()
-                        .HasForeignKey("FitnessClubId");
+                        .HasForeignKey("FitnessClubId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("FitnessClub");
                 });

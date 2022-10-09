@@ -12,10 +12,10 @@
 ## Account
 | Endpoint Name | Who can | Method type | Purpose |
 | ------- | ------------------------------- | ------- | ------------------------------- |
-| api/auth/account/logout | LoggedIn | GET | Revocation of access and refresh token before the standard time has elapsed |
 | api/auth/account/login | Guest | POST | logging in to get access and refresh token |
-| api/auth/account/login-with-refresh-token | LoggedIn  | POST | extension of the login validity time, generates new tokens |
+| api/auth/account/login-with-refresh-token | All  | POST | extension of the login validity time, generates new tokens |
 | api/auth/account/chanage-password | LoggedIn | POST | changes user password |
+| api/auth/account/logout | LoggedIn | PUT | Revocation of access and refresh token before the standard time has elapsed |
 
 ## Member
 | Endpoint Name | Who can | Method type | Purpose |
@@ -120,6 +120,7 @@
 | ------- | ------------------------------- | ------- | ------------------------------- |
 | api/fitness-clubs/worker-employment/{fitnessClubId} | Worker, Admin | GET | returns all WorkerEmployments from FitnessClub |
 | api/fitness-clubs/worker-employment | Worker, Admin | POST | creates WorkerEmployment |
+| api/fitness-clubs/worker-employment/{workerEmploymentId} | Worker, Admin | PUT | sets an end date for employment, making it inactive |
 
 # Groups
 

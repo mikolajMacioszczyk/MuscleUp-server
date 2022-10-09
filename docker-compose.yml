@@ -1,0 +1,84 @@
+# run me with: docker-compose up
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14.5
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 'Pa55w0rd'
+
+  auth:
+    image: ghcr.io/muscle-up-app/auth:muscleUpDev
+    restart: always
+    environment:
+      ASPNETCORE_ENVIRONMENT: 'Development'
+      ConnectionStrings__DefaultConnection: 'Server=postgres;Port=5432;Database=Auth;User Id=postgres;Password=Pa55w0rd;'
+    depends_on:
+      - postgres
+
+  carnets:
+    image: ghcr.io/muscle-up-app/carnets:muscleUpDev
+    restart: always
+    environment:
+      ASPNETCORE_ENVIRONMENT: 'Development'
+      ConnectionStrings__DefaultConnection: 'Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;'
+      Api__FitnessClubHost: 'http://fitnessclubs/'
+    depends_on:
+      - postgres
+
+  fitnessclubs:
+    image: ghcr.io/muscle-up-app/fitnessclubs:muscleUpDev
+    restart: always
+    environment:
+      ASPNETCORE_ENVIRONMENT: 'Development'
+      ConnectionStrings__DefaultConnection: 'Server=postgres;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;'
+    depends_on:
+      - postgres
+
+  content:
+    image: ghcr.io/muscle-up-app/content:muscleUpDev
+    restart: always
+    environment:
+      DATASOURCE_PORT: 'db:5432'
+      DATASOURCE_USERNAME: 'postgres'
+      DATASOURCE_PASSWORD: 'Pa55w0rd'
+    depends_on:
+      - postgres
+
+  groups:
+    image: ghcr.io/muscle-up-app/groups:muscleUpDev
+    restart: always
+    environment:
+      DATASOURCE_PORT: 'db:5432'
+      DATASOURCE_USERNAME: 'postgres'
+      DATASOURCE_PASSWORD: 'Pa55w0rd'
+    depends_on:
+      - postgres
+
+  notifications:
+    image: ghcr.io/muscle-up-app/notifications:muscleUpDev
+    restart: always
+    environment:
+      DATASOURCE_PORT: 'db:5432'
+      DATASOURCE_USERNAME: 'postgres'
+      DATASOURCE_PASSWORD: 'Pa55w0rd'
+    depends_on:
+      - postgres
+
+  apigateway:
+    image: ghcr.io/muscle-up-app/apigateway:muscleUpDev
+    restart: always
+    environment:
+      ASPNETCORE_URLS: 'http://+;https://+'
+    ports:
+      - "81:80"
+      - "80:443"
+    depends_on:
+      - auth
+      - carnets
+      - fitnessclubs
+      - content
+      - groups
+      - notifications

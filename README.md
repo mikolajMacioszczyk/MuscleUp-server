@@ -28,9 +28,11 @@ docker client must be installed and running on host machine
 
 In order to start the development:
 
-1. Go to project root folder
-2. Run docker-compose -f docker-compose.build.yml up --build command to build and run all services
-3. (Optional, if you want to debug locally) Run interestning project - it should already be configured by default to work with other microservices.
+1.  Go to project root folder
+2.  Run: 
+    - `docker-compose up` to use containers from registry  
+    - `docker-compose -f docker-compose.build.yml up --build` command to build and run all services
+3.  (Optional, if you want to debug locally) Run interestning project - it should already be configured by default to work with other microservices.
 
 ## Deployment
 

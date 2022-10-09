@@ -27,12 +27,12 @@ namespace Carnets.Domain.Services
 
         public Task<Result<FitnessClubDto>> GetFitnessClubById(string fitnessClubId)
         {
-            return SendGetRequestAsync<FitnessClubDto>($"fitnessClub/{fitnessClubId}");
+            return SendGetRequestAsync<FitnessClubDto>($"fitness-club/{fitnessClubId}");
         }
 
         public Task<Result<FitnessClubDto>> GetFitnessClubOfWorker(string workerId)
         {
-            return SendGetRequestAsync<FitnessClubDto>($"fitnessClub/worker/{workerId}");
+            return SendGetRequestAsync<FitnessClubDto>($"fitness-club/worker/{workerId}");
         }
 
         public async Task<FitnessClubDto> EnsureWorkerCanManageFitnessClub(string workerId)

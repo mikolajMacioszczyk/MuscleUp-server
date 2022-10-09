@@ -29,8 +29,6 @@ services:
       context: .
       dockerfile: ./Carnets/Carnets.API/Dockerfile
     restart: always
-    ports:
-      - "9001:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
@@ -43,8 +41,6 @@ services:
       context: .
       dockerfile: ./FitnessClubs/FitnessClubs.API/Dockerfile
     restart: always
-    ports:
-      - "9999:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;
