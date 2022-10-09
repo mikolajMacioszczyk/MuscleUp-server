@@ -41,6 +41,15 @@ public class Group extends AbstractEntity {
     }
 
 
+    public void update(String name, Long maxParticipants) {
+
+        Assert.notNull(name, "name must not be null");
+        Assert.notNull(maxParticipants, "maxParticipants must not be null");
+
+        this.name = name;
+        this.maxParticipants = maxParticipants;
+    }
+
     @Override
     public Long getId() {
         return id;

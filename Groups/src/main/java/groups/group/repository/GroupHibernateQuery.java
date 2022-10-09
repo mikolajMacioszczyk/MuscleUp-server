@@ -6,9 +6,13 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 @Primary
 @Repository
@@ -27,6 +31,18 @@ public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implement
         this.groupNameDtoFactory = new GroupNameDtoFactory();
     }
 
+
+    @Override
+    public Optional<GroupFullDto> findGroupById(Long id) {
+
+        Assert.notNull(id, "id must not be null");
+
+        Group group = getById(id);
+
+        return isNull(group)?
+                Optional.empty() :
+                Optional.of(groupFullDtoFactory.create(group));
+    }
 
     @Override
     public List<GroupFullDto> getAllGroups() {
