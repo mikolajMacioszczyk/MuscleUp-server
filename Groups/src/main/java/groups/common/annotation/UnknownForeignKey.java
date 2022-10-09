@@ -5,11 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.SOURCE)
-public @interface MustExist {
+public @interface UnknownForeignKey {
 
-    Reason[] reason() default Reason.OTHER;
-
-    String description() default "";
 }
