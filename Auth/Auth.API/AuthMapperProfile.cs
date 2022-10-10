@@ -15,7 +15,8 @@ namespace Auth.API
                 .ForMember(m => m.LastName, c => c.MapFrom(src => src.User.LastName))
                 .ForMember(m => m.Email, c => c.MapFrom(src => src.User.Email))
                 .ForMember(m => m.BirthDate, c => c.MapFrom(src => src.User.BirthDate))
-                .ForMember(m => m.RegisteredDate, c => c.MapFrom(src => src.User.RegisterDate));
+                .ForMember(m => m.RegisteredDate, c => c.MapFrom(src => src.User.RegisterDate))
+                .ForMember(m => m.Gender, c => c.MapFrom(src => src.User.Gender));
             CreateMap<UpdateMemberDto, Member>();
 
             CreateMap<Trainer, TrainerDto>()
@@ -23,7 +24,8 @@ namespace Auth.API
                 .ForMember(m => m.LastName, c => c.MapFrom(src => src.User.LastName))
                 .ForMember(m => m.Email, c => c.MapFrom(src => src.User.Email))
                 .ForMember(m => m.BirthDate, c => c.MapFrom(src => src.User.BirthDate))
-                .ForMember(m => m.RegisteredDate, c => c.MapFrom(src => src.User.RegisterDate));
+                .ForMember(m => m.RegisteredDate, c => c.MapFrom(src => src.User.RegisterDate))
+                .ForMember(m => m.Gender, c => c.MapFrom(src => src.User.Gender));
             CreateMap<UpdateTrainerDto, Trainer>();
 
             CreateMap<Worker, WorkerDto>()
@@ -31,7 +33,8 @@ namespace Auth.API
                 .ForMember(m => m.LastName, c => c.MapFrom(src => src.User.LastName))
                 .ForMember(m => m.Email, c => c.MapFrom(src => src.User.Email))
                 .ForMember(m => m.BirthDate, c => c.MapFrom(src => src.User.BirthDate))
-                .ForMember(m => m.RegisteredDate, c => c.MapFrom(src => src.User.RegisterDate));
+                .ForMember(m => m.RegisteredDate, c => c.MapFrom(src => src.User.RegisterDate))
+                .ForMember(m => m.Gender, c => c.MapFrom(src => src.User.Gender));
             CreateMap<UpdateWorkerDto, Worker>();
         }
     }
