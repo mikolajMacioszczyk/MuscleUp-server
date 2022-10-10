@@ -36,7 +36,7 @@ public class GroupService {
                 groupFullDto.getMaxParticipants()
         );
 
-        return groupRepository.saveOrUpdate(group);
+        return groupRepository.update(group);
     }
 
     public Long saveGroup(GroupFullDto groupFullDto) {
@@ -45,7 +45,7 @@ public class GroupService {
 
         Group group = groupFactory.create(groupFullDto);
 
-        return groupRepository.saveOrUpdate(group);
+        return groupRepository.save(group);
     }
 
     public void deleteGroup(Long idToRemove) {

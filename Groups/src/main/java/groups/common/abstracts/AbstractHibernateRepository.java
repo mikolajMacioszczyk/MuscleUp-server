@@ -35,13 +35,25 @@ public abstract class AbstractHibernateRepository<T extends AbstractEntity> {
     }
 
     @Transactional
-    public Long saveOrUpdate(T entity) {
+    public Long save(T entity) {
 
         Assert.notNull(entity, "entity must not be null");
 
         Session session = getSession();
 
-        session.saveOrUpdate(clazz.getName(), entity);
+        session.save(clazz.getName(), entity);
+
+        return entity.getId();
+    }
+
+    @Transactional
+    public Long update(T entity) {
+
+        Assert.notNull(entity, "entity must not be null");
+
+        Session session = getSession();
+
+        session.update(clazz.getName(), entity);
 
         return entity.getId();
     }

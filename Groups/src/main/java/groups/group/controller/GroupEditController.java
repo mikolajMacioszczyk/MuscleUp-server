@@ -46,8 +46,12 @@ class GroupEditController {
     @DeleteMapping("/delete/{id}")
     protected ResponseEntity<HttpStatus> deleteGroup(@PathVariable("id") Long id) {
 
-        groupService.deleteGroup(id);
+        if (groupValidator.isCorrectToDelete(id)) {
 
-        return new ResponseEntity<>(HttpStatus.OK);
+            groupService.deleteGroup(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

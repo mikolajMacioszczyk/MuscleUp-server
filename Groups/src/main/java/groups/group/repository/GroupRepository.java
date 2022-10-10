@@ -6,7 +6,9 @@ public interface GroupRepository {
 
     Group getById(Long id);
 
-    Long saveOrUpdate(Group group);
+    Long save(Group group);
+
+    Long update(Group group);
 
     void delete(Long id);
 }

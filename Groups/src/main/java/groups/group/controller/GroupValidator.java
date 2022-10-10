@@ -31,6 +31,11 @@ public class GroupValidator {
         return doesIdExist(groupFullDto.getId());
     }
 
+    boolean isCorrectToDelete(Long id) {
+
+        return groupQuery.findGroupById(id).isPresent();
+    }
+
     private boolean doesIdExist(Long id) {
 
         return groupQuery.findGroupById(id).isPresent();
