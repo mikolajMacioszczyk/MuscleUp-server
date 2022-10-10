@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Auth.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Auth.Domain.Dtos
 {
@@ -27,6 +28,6 @@ namespace Auth.Domain.Dtos
 
         public DateTime BirthDate { get; set; }
 
-        public string Gender { get; set; }
+        public GenderType Gender { get; set; }
     }
 }

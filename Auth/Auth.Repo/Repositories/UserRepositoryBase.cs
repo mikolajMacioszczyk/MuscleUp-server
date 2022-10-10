@@ -1,5 +1,4 @@
 ﻿using Auth.Domain.Dtos;
-using Auth.Domain.Enums;
 using Auth.Domain.Models;
 using Common.Enums;
 using Microsoft.AspNetCore.Identity;
@@ -52,7 +51,7 @@ namespace Auth.Repo.Repositories
                 LastName = registerDto.LastName,
                 BirthDate = registerDto.BirthDate,
                 RegisterDate = DateTime.UtcNow,
-                Gender = (GenderType)Enum.Parse(typeof(GenderType), registerDto.Gender)
+                Gender = registerDto.Gender
             };
 
             await _userStore.SetUserNameAsync(user, registerDto.Email, CancellationToken.None);
