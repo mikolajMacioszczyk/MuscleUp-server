@@ -1,19 +1,19 @@
-# build with: docker build -t ghcr.io/muscle-up-app/groups:muscleUpDev -f Dockerfile .
+# build with: docker build -t ghcr.io/muscle-up-app/groups:muscleUpDev -f Groups/Dockerfile .
 # push with: docker push ghcr.io/muscle-up-app/groups:muscleUpDev
 
 FROM gradle:7.5-jdk17-jammy AS TEMP_BUILD_IMAGE
 ENV APP_HOME=/app/
 WORKDIR $APP_HOME
 
-COPY settings.gradle $APP_HOME
-COPY gradle $APP_HOME/gradle
+COPY Groups/settings.gradle $APP_HOME
+COPY Groups/gradle $APP_HOME/gradle
 COPY --chown=gradle:gradle . /home/gradle/src
 
 USER root
 RUN chown -R gradle /home/gradle/src
 RUN gradle build || return 0
 
-COPY . .
+COPY ./Groups .
 RUN gradle clean build
 
 # actual container

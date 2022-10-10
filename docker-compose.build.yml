@@ -49,8 +49,8 @@ services:
 
   content:
     build:
-      context: ./Content/
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./Content/Dockerfile
     restart: always
     environment:
       - DATASOURCE_PORT=db:5432
@@ -61,8 +61,8 @@ services:
 
   groups:
     build:
-      context: ./Groups/
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./Groups/Dockerfile
     restart: always
     environment:
       - DATASOURCE_PORT=db:5432
@@ -73,8 +73,8 @@ services:
 
   notifications:
     build:
-      context: ./Notifications/
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./Notifications/Dockerfile
     restart: always
     environment:
       - DATASOURCE_PORT=db:5432

@@ -1,19 +1,19 @@
-# build with: docker build -t ghcr.io/muscle-up-app/notifications:muscleUpDev -f Dockerfile .
+# build with: docker build -t ghcr.io/muscle-up-app/notifications:muscleUpDev -f Notifications/Dockerfile .
 # push with: docker push ghcr.io/muscle-up-app/notifications:muscleUpDev
 
 FROM gradle:7.5-jdk17-jammy AS TEMP_BUILD_IMAGE
 ENV APP_HOME=/app/
 WORKDIR $APP_HOME
 
-COPY settings.gradle $APP_HOME
-COPY gradle $APP_HOME/gradle
+COPY Notifications/settings.gradle $APP_HOME
+COPY Notifications/gradle $APP_HOME/gradle
 COPY --chown=gradle:gradle . /home/gradle/src
 
 USER root
 RUN chown -R gradle /home/gradle/src
 RUN gradle build || return 0
 
-COPY . .
+COPY ./Notifications .
 RUN gradle clean build
 
 # actual container

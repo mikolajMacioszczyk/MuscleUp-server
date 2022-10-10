@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: 'Pa55w0rd'
 
   auth:
-    image: ghcr.io/muscle-up-app/auth:muscleUpDev
+    image: ghcr.io/muscle-up-app/auth
     restart: always
     environment:
       ASPNETCORE_ENVIRONMENT: 'Development'
@@ -19,7 +19,7 @@ services:
       - postgres
 
   carnets:
-    image: ghcr.io/muscle-up-app/carnets:muscleUpDev
+    image: ghcr.io/muscle-up-app/carnets
     restart: always
     environment:
       ASPNETCORE_ENVIRONMENT: 'Development'
@@ -29,7 +29,7 @@ services:
       - postgres
 
   fitnessclubs:
-    image: ghcr.io/muscle-up-app/fitnessclubs:muscleUpDev
+    image: ghcr.io/muscle-up-app/fitnessclubs
     restart: always
     environment:
       ASPNETCORE_ENVIRONMENT: 'Development'
@@ -38,7 +38,7 @@ services:
       - postgres
 
   content:
-    image: ghcr.io/muscle-up-app/content:muscleUpDev
+    image: ghcr.io/muscle-up-app/content
     restart: always
     environment:
       DATASOURCE_PORT: 'db:5432'
@@ -48,7 +48,7 @@ services:
       - postgres
 
   groups:
-    image: ghcr.io/muscle-up-app/groups:muscleUpDev
+    image: ghcr.io/muscle-up-app/groups
     restart: always
     environment:
       DATASOURCE_PORT: 'db:5432'
@@ -58,7 +58,7 @@ services:
       - postgres
 
   notifications:
-    image: ghcr.io/muscle-up-app/notifications:muscleUpDev
+    image: ghcr.io/muscle-up-app/notifications
     restart: always
     environment:
       DATASOURCE_PORT: 'db:5432'
@@ -68,7 +68,7 @@ services:
       - postgres
 
   apigateway:
-    image: ghcr.io/muscle-up-app/apigateway:muscleUpDev
+    image: ghcr.io/muscle-up-app/apigateway
     restart: always
     environment:
       ASPNETCORE_URLS: 'http://+;https://+'
