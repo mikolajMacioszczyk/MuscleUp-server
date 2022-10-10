@@ -58,6 +58,6 @@ public class GroupValidator {
 
     private boolean isNameCorrect(String name) {
 
-        return isNullOrEmpty(name);
+        return !isNullOrEmpty(name);
     }
 }
