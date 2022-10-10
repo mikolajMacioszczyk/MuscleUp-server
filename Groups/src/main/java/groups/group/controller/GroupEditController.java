@@ -17,12 +17,13 @@ class GroupEditController {
 
 
     @Autowired
-    private GroupEditController(GroupService groupService) {
+    private GroupEditController(GroupService groupService, GroupValidator groupValidator) {
 
         Assert.notNull(groupService, "groupService must not be null");
+        Assert.notNull(groupValidator, "groupValidator must not be null");
 
         this.groupService = groupService;
-        this.groupValidator = new GroupValidator();
+        this.groupValidator = groupValidator;
     }
 
 
