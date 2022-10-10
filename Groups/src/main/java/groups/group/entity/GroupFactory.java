@@ -1,13 +1,15 @@
 package groups.group.entity;
 
+import groups.group.controller.GroupForm;
+
 public class GroupFactory {
 
-    public Group create(GroupFullDto groupFullDto) {
+    public Group create(GroupForm groupForm) {
 
         return new Group(
-                groupFullDto.id(),
-                groupFullDto.name(),
-                groupFullDto.maxParticipants()
+                null,
+                groupForm.name(),
+                groupForm.maxParticipants()
         );
     }
 }

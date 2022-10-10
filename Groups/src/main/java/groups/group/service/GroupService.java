@@ -1,5 +1,6 @@
 package groups.group.service;
 
+import groups.group.controller.GroupForm;
 import groups.group.entity.Group;
 import groups.group.entity.GroupFactory;
 import groups.group.entity.GroupFullDto;
@@ -41,11 +42,11 @@ public class GroupService {
         return groupRepository.update(group);
     }
 
-    public UUID saveGroup(GroupFullDto groupFullDto) {
+    public UUID saveGroup(GroupForm groupForm) {
 
-        Assert.notNull(groupFullDto, "groupFullDto must not be null");
+        Assert.notNull(groupForm, "groupForm must not be null");
 
-        Group group = groupFactory.create(groupFullDto);
+        Group group = groupFactory.create(groupForm);
 
         return groupRepository.save(group);
     }

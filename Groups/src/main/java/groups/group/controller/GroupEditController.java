@@ -30,10 +30,10 @@ class GroupEditController {
 
 
     @PostMapping("/save")
-    protected ResponseEntity<UUID> saveGroup(@RequestBody GroupFullDto groupFullDto) {
+    protected ResponseEntity<UUID> saveGroup(@RequestBody GroupForm groupForm) {
 
-        return groupValidator.isCorrectToSave(groupFullDto)?
-            new ResponseEntity<>(groupService.saveGroup(groupFullDto), HttpStatus.OK) :
+        return groupValidator.isCorrectToSave(groupForm)?
+            new ResponseEntity<>(groupService.saveGroup(groupForm), HttpStatus.OK) :
             new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 

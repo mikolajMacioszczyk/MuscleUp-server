@@ -8,8 +8,12 @@ import org.springframework.util.Assert;
 
 import java.util.UUID;
 
+import static groups.common.stringUtils.StringUtils.isNullOrEmpty;
+
 @Component
 public class GroupValidator {
+
+    private final static Long MAX_PARTICIPANTS_PER_GROUP = 100L;
 
     private final GroupQuery groupQuery;
 
@@ -23,14 +27,17 @@ public class GroupValidator {
     }
 
 
-    boolean isCorrectToSave(GroupFullDto groupFullDto) {
+    boolean isCorrectToSave(GroupForm groupForm) {
 
-        return !doesIdExist(groupFullDto.id());
+        return isParticipantNumberCorrect(groupForm.maxParticipants())
+                && isNameCorrect(groupForm.name());
     }
 
     boolean isCorrectToUpdate(GroupFullDto groupFullDto) {
 
-        return doesIdExist(groupFullDto.id());
+        return doesIdExist(groupFullDto.id())
+                && isParticipantNumberCorrect(groupFullDto.maxParticipants())
+                && isNameCorrect(groupFullDto.name());
     }
 
     boolean isCorrectToDelete(UUID id) {
@@ -38,8 +45,19 @@ public class GroupValidator {
         return groupQuery.findGroupById(id).isPresent();
     }
 
+
+    private boolean isParticipantNumberCorrect(Long participantNumber) {
+
+        return participantNumber <= MAX_PARTICIPANTS_PER_GROUP;
+    }
+
     private boolean doesIdExist(UUID id) {
 
         return groupQuery.findGroupById(id).isPresent();
+    }
+
+    private boolean isNameCorrect(String name) {
+
+        return isNullOrEmpty(name);
     }
 }
