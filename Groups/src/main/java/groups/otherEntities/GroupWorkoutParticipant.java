@@ -10,14 +10,14 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "group_workout_participant")
+@Table(name = "class_workout_participant")
 public class GroupWorkoutParticipant extends AbstractEntity {
 
     @Id
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_workout_id")
+    @JoinColumn(name = "class_workout_id")
     private GroupWorkout groupWorkout;
 
     @UnknownForeignKey
@@ -31,8 +31,8 @@ public class GroupWorkoutParticipant extends AbstractEntity {
 
     public GroupWorkoutParticipant(GroupWorkout groupWorkout, UUID gympassId) {
 
-        Assert.notNull(groupWorkout, "group must not be null");
-        Assert.notNull(gympassId, "userId must not be null");
+        Assert.notNull(groupWorkout, "groupWorkout must not be null");
+        Assert.notNull(gympassId, "gympassId must not be null");
 
         this.groupWorkout = groupWorkout;
         this.gympassId = gympassId;

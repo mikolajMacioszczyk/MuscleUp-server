@@ -12,11 +12,11 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "squad")
+@Table(name = "class")
 public class Group extends AbstractEntity {
 
     @Id
-    @Column(name = "group_id")
+    @Column(name = "class_id")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;

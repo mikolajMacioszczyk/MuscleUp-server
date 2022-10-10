@@ -11,14 +11,14 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "group_trainer")
+@Table(name = "class_trainer")
 public class GroupTrainer extends AbstractEntity {
 
     @Id
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
+    @JoinColumn(name = "class_id")
     private Group group;
 
     @UnknownForeignKey

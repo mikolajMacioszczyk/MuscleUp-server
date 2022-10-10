@@ -15,11 +15,11 @@ import java.util.UUID;
 import static javax.persistence.GenerationType.AUTO;
 
 @Entity
-@Table(name = "group_workout")
+@Table(name = "class_workout")
 public class GroupWorkout extends AbstractEntity {
 
     @Id
-    @Column(name = "group_workout_id")
+    @Column(name = "class_workout_id")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
@@ -31,7 +31,7 @@ public class GroupWorkout extends AbstractEntity {
     private LocalDateTime endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
+    @JoinColumn(name = "class_id")
     private Group group;
 
     @UnknownForeignKey

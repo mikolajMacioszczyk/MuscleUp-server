@@ -10,14 +10,14 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "allowed_group_permission")
+@Table(name = "allowed_class_permission")
 public class AllowedGroupPermission extends AbstractEntity {
 
     @Id
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_workout_id")
+    @JoinColumn(name = "class_workout_id")
     private GroupWorkout groupWorkout;
 
     @UnknownForeignKey
@@ -31,8 +31,8 @@ public class AllowedGroupPermission extends AbstractEntity {
 
     public AllowedGroupPermission(GroupWorkout groupWorkout, UUID permissionId) {
 
-        Assert.notNull(groupWorkout, "group must not be null");
-        Assert.notNull(permissionId, "userId must not be null");
+        Assert.notNull(groupWorkout, "groupWorkout must not be null");
+        Assert.notNull(permissionId, "permissionId must not be null");
 
         this.groupWorkout = groupWorkout;
         this.permissionId = permissionId;
