@@ -27,7 +27,7 @@ class GroupEditController {
     }
 
 
-    @PostMapping("/create")
+    @PostMapping("/save")
     protected ResponseEntity<Long> saveGroup(@RequestBody GroupFullDto groupFullDto) {
 
         return groupValidator.isCorrectToSave(groupFullDto)?

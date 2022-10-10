@@ -21,7 +21,7 @@ public class GroupTrainer extends AbstractEntity {
     private Group group;
 
     @UnknownForeignKey
-    @Column(name = "user_id", nullable = false, unique = true)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
 

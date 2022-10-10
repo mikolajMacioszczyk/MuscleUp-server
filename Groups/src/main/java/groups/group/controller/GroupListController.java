@@ -40,6 +40,7 @@ public class GroupListController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    // TODO wszystkie grupy, ale dla danego klubu - pobieramy z tokenu
     @GetMapping("/full-group-info")
     protected ResponseEntity<List<GroupFullDto>> getAllGroups() {
 
@@ -48,6 +49,7 @@ public class GroupListController {
         return new ResponseEntity<>(groups, HttpStatus.OK);
     }
 
+    // TODO wszystkie grupy, ale dla danego klubu - pobieramy z tokenu
     @GetMapping("/group-names")
     protected ResponseEntity<List<GroupNameDto>> getGroupNames() {
 

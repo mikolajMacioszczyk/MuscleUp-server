@@ -20,7 +20,7 @@ public class AllowedGroupPermission extends AbstractEntity {
     private GroupWorkout groupWorkout;
 
     @UnknownForeignKey
-    @Column(name = "permission_id", nullable = false, unique = true)
+    @Column(name = "permission_id", nullable = false)
     private Long permissionId;
 
 

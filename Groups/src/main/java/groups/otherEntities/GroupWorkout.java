@@ -32,7 +32,7 @@ public class GroupWorkout extends AbstractEntity {
     private Group group;
 
     @UnknownForeignKey
-    @Column(name = "workout_id", nullable = false, unique = true)
+    @Column(name = "workout_id", nullable = false)
     private Long workoutId;
 
 
