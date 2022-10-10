@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.util.UUID;
+
 @Component
 public class GroupValidator {
 
@@ -23,20 +25,20 @@ public class GroupValidator {
 
     boolean isCorrectToSave(GroupFullDto groupFullDto) {
 
-        return !doesIdExist(groupFullDto.getId());
+        return !doesIdExist(groupFullDto.id());
     }
 
     boolean isCorrectToUpdate(GroupFullDto groupFullDto) {
 
-        return doesIdExist(groupFullDto.getId());
+        return doesIdExist(groupFullDto.id());
     }
 
-    boolean isCorrectToDelete(Long id) {
+    boolean isCorrectToDelete(UUID id) {
 
         return groupQuery.findGroupById(id).isPresent();
     }
 
-    private boolean doesIdExist(Long id) {
+    private boolean doesIdExist(UUID id) {
 
         return groupQuery.findGroupById(id).isPresent();
     }

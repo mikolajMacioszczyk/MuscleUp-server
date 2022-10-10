@@ -3,9 +3,12 @@ package groups.group.entity;
 import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
 import groups.common.annotation.Reason;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
+
+import java.util.UUID;
 
 import static javax.persistence.GenerationType.AUTO;
 
@@ -15,8 +18,9 @@ public class Group extends AbstractEntity {
 
     @Id
     @Column(name = "group_id")
-    @GeneratedValue(strategy = AUTO)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID id;
 
     @Column(nullable = false)
     private String name;
@@ -29,7 +33,7 @@ public class Group extends AbstractEntity {
     public Group() {
     }
 
-    public Group(Long id, String name, Long maxParticipants) {
+    public Group(UUID id, String name, Long maxParticipants) {
 
         Assert.notNull(id, "id must not be null");
         Assert.notNull(name, "name must not be null");
@@ -51,7 +55,7 @@ public class Group extends AbstractEntity {
     }
 
     @Override
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 

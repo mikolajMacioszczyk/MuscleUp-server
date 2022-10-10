@@ -7,12 +7,13 @@ import groups.group.entity.GroupNameDto;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface GroupQuery {
 
-    Group getById(Long id);
+    Group getById(UUID id);
 
-    Optional<GroupFullDto> findGroupById(Long id);
+    Optional<GroupFullDto> findGroupById(UUID id);
 
     List<GroupFullDto> getAllGroups();
 

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.UUID;
+
 @Service
 public class GroupService {
 
@@ -25,21 +27,21 @@ public class GroupService {
     }
 
 
-    public Long updateGroup(GroupFullDto groupFullDto) {
+    public UUID updateGroup(GroupFullDto groupFullDto) {
 
         Assert.notNull(groupFullDto, "groupFullDto must not be null");
 
-        Group group = groupRepository.getById(groupFullDto.getId());
+        Group group = groupRepository.getById(groupFullDto.id());
 
         group.update(
-                groupFullDto.getName(),
-                groupFullDto.getMaxParticipants()
+                groupFullDto.name(),
+                groupFullDto.maxParticipants()
         );
 
         return groupRepository.update(group);
     }
 
-    public Long saveGroup(GroupFullDto groupFullDto) {
+    public UUID saveGroup(GroupFullDto groupFullDto) {
 
         Assert.notNull(groupFullDto, "groupFullDto must not be null");
 
@@ -48,7 +50,7 @@ public class GroupService {
         return groupRepository.save(group);
     }
 
-    public void deleteGroup(Long idToRemove) {
+    public void deleteGroup(UUID idToRemove) {
 
         Assert.notNull(idToRemove, "idToRemove must not be null");
 

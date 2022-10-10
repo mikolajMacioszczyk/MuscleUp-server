@@ -1,7 +1,8 @@
 package groups.common.abstracts;
 
+import java.util.UUID;
+
 public abstract class AbstractEntity {
 
-    // TODO zamienić id na string za pomoca UUID
-    protected abstract Long getId();
+    protected abstract UUID getId();
 }

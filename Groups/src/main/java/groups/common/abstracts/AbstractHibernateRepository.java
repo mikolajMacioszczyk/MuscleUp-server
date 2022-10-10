@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.UUID;
 
 @Repository
 public abstract class AbstractHibernateRepository<T extends AbstractEntity> {
@@ -27,7 +28,7 @@ public abstract class AbstractHibernateRepository<T extends AbstractEntity> {
     }
 
 
-    public T getById(Long id) {
+    public T getById(UUID id) {
 
         Assert.notNull(id, "id must not be null");
 
@@ -35,7 +36,7 @@ public abstract class AbstractHibernateRepository<T extends AbstractEntity> {
     }
 
     @Transactional
-    public Long save(T entity) {
+    public UUID save(T entity) {
 
         Assert.notNull(entity, "entity must not be null");
 
@@ -47,7 +48,7 @@ public abstract class AbstractHibernateRepository<T extends AbstractEntity> {
     }
 
     @Transactional
-    public Long update(T entity) {
+    public UUID update(T entity) {
 
         Assert.notNull(entity, "entity must not be null");
 
@@ -59,7 +60,7 @@ public abstract class AbstractHibernateRepository<T extends AbstractEntity> {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(UUID id) {
 
         Assert.notNull(id, "id must not be null");
 

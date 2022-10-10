@@ -8,13 +8,14 @@ import groups.group.entity.Group;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name = "group_trainer")
 public class GroupTrainer extends AbstractEntity {
 
     @Id
-    private Long id;
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
@@ -22,14 +23,14 @@ public class GroupTrainer extends AbstractEntity {
 
     @UnknownForeignKey
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private UUID userId;
 
 
     @MustExist(reason = Reason.HIBERNATE)
     public GroupTrainer() {
     }
 
-    public GroupTrainer(Group group, Long userId) {
+    public GroupTrainer(Group group, UUID userId) {
 
         Assert.notNull(group, "group must not be null");
         Assert.notNull(userId, "userId must not be null");
@@ -40,7 +41,7 @@ public class GroupTrainer extends AbstractEntity {
 
 
     @Override
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -48,7 +49,7 @@ public class GroupTrainer extends AbstractEntity {
         return group;
     }
 
-    public Long getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 }

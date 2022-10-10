@@ -1,23 +1,7 @@
 package groups.group.entity;
 
-public class GroupNameDto {
+import java.util.UUID;
 
-    private final Long id;
-    private final String name;
+public record GroupNameDto(UUID id, String name) {
 
-
-    public GroupNameDto(Long id, String name) {
-
-        this.id = id;
-        this.name = name;
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
 }

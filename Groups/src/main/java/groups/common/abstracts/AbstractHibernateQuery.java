@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public abstract class AbstractHibernateQuery<T extends AbstractEntity> {
@@ -33,7 +34,7 @@ public abstract class AbstractHibernateQuery<T extends AbstractEntity> {
                 .list();
     }
 
-    public T getById(Long id) {
+    public T getById(UUID id) {
 
         Assert.notNull(id, "id must not be null");
 

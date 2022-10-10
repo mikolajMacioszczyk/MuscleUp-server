@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("group")
 class GroupEditController {
@@ -28,7 +30,7 @@ class GroupEditController {
 
 
     @PostMapping("/save")
-    protected ResponseEntity<Long> saveGroup(@RequestBody GroupFullDto groupFullDto) {
+    protected ResponseEntity<UUID> saveGroup(@RequestBody GroupFullDto groupFullDto) {
 
         return groupValidator.isCorrectToSave(groupFullDto)?
             new ResponseEntity<>(groupService.saveGroup(groupFullDto), HttpStatus.OK) :
@@ -36,7 +38,7 @@ class GroupEditController {
     }
 
     @PutMapping("/update")
-    protected ResponseEntity<Long> updateGroup(@RequestBody GroupFullDto groupFullDto) {
+    protected ResponseEntity<UUID> updateGroup(@RequestBody GroupFullDto groupFullDto) {
 
         return groupValidator.isCorrectToUpdate(groupFullDto)?
                 new ResponseEntity<>(groupService.updateGroup(groupFullDto), HttpStatus.OK) :
@@ -44,7 +46,7 @@ class GroupEditController {
     }
 
     @DeleteMapping("/delete/{id}")
-    protected ResponseEntity<HttpStatus> deleteGroup(@PathVariable("id") Long id) {
+    protected ResponseEntity<HttpStatus> deleteGroup(@PathVariable("id") UUID id) {
 
         if (groupValidator.isCorrectToDelete(id)) {
 

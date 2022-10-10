@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("group")
@@ -32,7 +33,7 @@ public class GroupListController {
 
 
     @GetMapping("/find-by-id/{id}")
-    protected ResponseEntity<GroupFullDto> findGroupById(@PathVariable("id") Long id) {
+    protected ResponseEntity<GroupFullDto> findGroupById(@PathVariable("id") UUID id) {
 
         Optional<GroupFullDto> groupFullDto = groupQuery.findGroupById(id);
 

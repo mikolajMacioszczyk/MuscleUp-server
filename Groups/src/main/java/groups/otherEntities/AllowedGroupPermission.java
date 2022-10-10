@@ -7,13 +7,14 @@ import groups.common.annotation.UnknownForeignKey;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name = "allowed_group_permission")
 public class AllowedGroupPermission extends AbstractEntity {
 
     @Id
-    private Long id;
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_workout_id")
@@ -21,14 +22,14 @@ public class AllowedGroupPermission extends AbstractEntity {
 
     @UnknownForeignKey
     @Column(name = "permission_id", nullable = false)
-    private Long permissionId;
+    private UUID permissionId;
 
 
     @MustExist(reason = Reason.HIBERNATE)
     public AllowedGroupPermission() {
     }
 
-    public AllowedGroupPermission(GroupWorkout groupWorkout, Long permissionId) {
+    public AllowedGroupPermission(GroupWorkout groupWorkout, UUID permissionId) {
 
         Assert.notNull(groupWorkout, "group must not be null");
         Assert.notNull(permissionId, "userId must not be null");
@@ -39,7 +40,7 @@ public class AllowedGroupPermission extends AbstractEntity {
 
 
     @Override
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -47,7 +48,7 @@ public class AllowedGroupPermission extends AbstractEntity {
         return groupWorkout;
     }
 
-    public Long getPermissionId() {
+    public UUID getPermissionId() {
         return permissionId;
     }
 }

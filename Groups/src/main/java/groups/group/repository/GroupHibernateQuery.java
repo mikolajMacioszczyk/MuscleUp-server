@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -33,7 +34,7 @@ public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implement
 
 
     @Override
-    public Optional<GroupFullDto> findGroupById(Long id) {
+    public Optional<GroupFullDto> findGroupById(UUID id) {
 
         Assert.notNull(id, "id must not be null");
 

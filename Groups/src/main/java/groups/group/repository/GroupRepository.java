@@ -2,13 +2,15 @@ package groups.group.repository;
 
 import groups.group.entity.Group;
 
+import java.util.UUID;
+
 public interface GroupRepository {
 
-    Group getById(Long id);
+    Group getById(UUID id);
 
-    Long save(Group group);
+    UUID save(Group group);
 
-    Long update(Group group);
+    UUID update(Group group);
 
-    void delete(Long id);
+    void delete(UUID id);
 }

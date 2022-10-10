@@ -5,10 +5,12 @@ import groups.common.annotation.MustExist;
 import groups.common.annotation.Reason;
 import groups.common.annotation.UnknownForeignKey;
 import groups.group.entity.Group;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static javax.persistence.GenerationType.AUTO;
 
@@ -18,8 +20,9 @@ public class GroupWorkout extends AbstractEntity {
 
     @Id
     @Column(name = "group_workout_id")
-    @GeneratedValue(strategy = AUTO)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID id;
 
     @Column(nullable = false)
     private LocalDateTime startTime;
@@ -33,14 +36,14 @@ public class GroupWorkout extends AbstractEntity {
 
     @UnknownForeignKey
     @Column(name = "workout_id", nullable = false)
-    private Long workoutId;
+    private UUID workoutId;
 
 
     @MustExist(reason = Reason.HIBERNATE)
     public GroupWorkout() {
     }
 
-    public GroupWorkout(LocalDateTime startTime, LocalDateTime endTime, Group group, Long workoutId) {
+    public GroupWorkout(LocalDateTime startTime, LocalDateTime endTime, Group group, UUID workoutId) {
 
         Assert.notNull(startTime, "startTime must not be null");
         Assert.notNull(endTime, "endTime must not be null");
@@ -55,7 +58,7 @@ public class GroupWorkout extends AbstractEntity {
 
 
     @Override
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -71,7 +74,7 @@ public class GroupWorkout extends AbstractEntity {
         return group;
     }
 
-    public Long getWorkoutId() {
+    public UUID getWorkoutId() {
         return workoutId;
     }
 }
