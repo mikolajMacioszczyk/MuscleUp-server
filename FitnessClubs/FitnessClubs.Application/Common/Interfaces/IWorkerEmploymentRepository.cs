@@ -1,7 +1,7 @@
 ﻿using Common.Models;
 using FitnessClubs.Domain.Models;
 
-namespace FitnessClubs.Domain.Interfaces
+namespace FitnessClubs.Application.Interfaces
 {
     public interface IWorkerEmploymentRepository
     {

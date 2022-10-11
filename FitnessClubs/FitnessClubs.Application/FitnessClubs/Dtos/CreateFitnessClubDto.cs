@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FitnessClubs.Domain.Models.Dtos
+namespace FitnessClubs.Application.FitnessClubs.Dtos
 {
     public class CreateFitnessClubDto
     {

@@ -1,5 +1,5 @@
 ﻿using Common.Models;
-using FitnessClubs.Domain.Interfaces;
+using FitnessClubs.Application.Interfaces;
 using FitnessClubs.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 

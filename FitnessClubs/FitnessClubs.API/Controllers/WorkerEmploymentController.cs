@@ -1,23 +1,21 @@
 ﻿using AutoMapper;
+using Common.BaseClasses;
 using Common.Enums;
-using FitnessClubs.Domain.Interfaces;
+using FitnessClubs.Application.WorkoutEmployments.Commands;
+using FitnessClubs.Application.WorkoutEmployments.Dtos;
+using FitnessClubs.Application.WorkoutEmployments.Queries;
 using FitnessClubs.Domain.Models;
-using FitnessClubs.Domain.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitnessClubs.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class WorkerEmploymentController : ControllerBase
+    public class WorkerEmploymentController : ApiControllerBase
     {
-        private readonly IWorkerEmploymentService _workerEmploymentService;
         private readonly IMapper _mapper;
 
-        public WorkerEmploymentController(IWorkerEmploymentService workerEmploymentService, IMapper mapper)
+        public WorkerEmploymentController(IMapper mapper)
         {
-            _workerEmploymentService = workerEmploymentService;
             _mapper = mapper;
         }
 
@@ -25,7 +23,13 @@ namespace FitnessClubs.API.Controllers
         [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
         public async Task<ActionResult<IEnumerable<WorkerEmploymentDto>>> GetAllEmploymentsFromFitnessClub([FromRoute] string fitnessClubId, [FromQuery] bool includeInactive = false)
         {
-            var workerEmployment = await _workerEmploymentService.GetAllWorkerEmployments(fitnessClubId, includeInactive);
+            var query = new GetAllWorkerEmploymentsQuery()
+            {
+                FitnessClubId = fitnessClubId,
+                IncludeInactive = includeInactive
+            };
+
+            var workerEmployment = await Mediator.Send(query);
             return Ok(_mapper.Map<IEnumerable<WorkerEmploymentDto>>(workerEmployment));
         }
 
@@ -33,8 +37,12 @@ namespace FitnessClubs.API.Controllers
         [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
         public async Task<ActionResult<WorkerEmploymentDto>> CreateWorkerEmployment(CreateWorkerEmploymentDto model)
         {
-            var workerEmployment = _mapper.Map<WorkerEmployment>(model);
-            var createResult = await _workerEmploymentService.CreateWorkerEmployment(workerEmployment);
+            var command = new CreateWorkerEmploymentCommand()
+            {
+                WorkerEmployment = _mapper.Map<WorkerEmployment>(model)
+            };
+
+            var createResult = await Mediator.Send(command);
 
             if (createResult.IsSuccess)
             {
@@ -52,7 +60,12 @@ namespace FitnessClubs.API.Controllers
         [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
         public async Task<ActionResult<WorkerEmploymentDto>> TerminateWorkerEmployment([FromRoute] string workerEmploymentId)
         {
-            var terminateResult = await _workerEmploymentService.TerminateWorkerEmployment(workerEmploymentId);
+            var command = new TerminateWorkerEmploymentCommand()
+            {
+                WorkerEmploymentId = workerEmploymentId
+            };
+
+            var terminateResult = await Mediator.Send(command);
 
             if (terminateResult.IsSuccess)
             {

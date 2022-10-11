@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FitnessClubs.Application\FitnessClubs.Application.csproj" />
     <ProjectReference Include="..\FitnessClubs.Domain\FitnessClubs.Domain.csproj" />
   </ItemGroup>
 

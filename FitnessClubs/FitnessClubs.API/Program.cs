@@ -1,6 +1,6 @@
 using Common.Extensions;
-using FitnessClubs.Domain.Interfaces;
-using FitnessClubs.Domain.Services;
+using FitnessClubs.Application;
+using FitnessClubs.Application.Interfaces;
 using FitnessClubs.Repo;
 using FitnessClubs.Repo.Repositories;
 
@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddBasicApiServices<Program>();
+builder.Services.AddApplicationServices();
 builder.Services.ConfigureRouting();
 
 ProgramExtensions.AddDbContext<FitnessClubsDbContext>(builder.Services, builder.Configuration);
@@ -18,9 +19,7 @@ builder.Services.AddJwtAuthentication();
 
 // register app services
 builder.Services.AddScoped<IFitnessClubRepository, FitnessClubRepository>();
-builder.Services.AddScoped<IFitnessClubService, FitnessClubService>();
 builder.Services.AddScoped<IWorkerEmploymentRepository, WorkerEmploymentRepository>();
-builder.Services.AddScoped<IWorkerEmploymentService, WorkerEmploymentService>();
 
 var app = builder.Build();
 

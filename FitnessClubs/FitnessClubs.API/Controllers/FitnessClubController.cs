@@ -1,44 +1,39 @@
 ﻿using AutoMapper;
+using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
 using Common.Models.Dtos;
-using FitnessClubs.Domain.Interfaces;
+using FitnessClubs.Application.FitnessClubs.Commands;
+using FitnessClubs.Application.FitnessClubs.Dtos;
+using FitnessClubs.Application.FitnessClubs.Queries;
 using FitnessClubs.Domain.Models;
-using FitnessClubs.Domain.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitnessClubs.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class FitnessClubController : ControllerBase
+    public class FitnessClubController : ApiControllerBase
     {
-        private readonly IFitnessClubService _fitnessClubService;
-        private readonly IWorkerEmploymentRepository _workerEmploymentRepository;
         private readonly IMapper _mapper;
 
-        public FitnessClubController(IMapper mapper,
-            IFitnessClubService fitnessClubService,
-            IWorkerEmploymentRepository workerEmploymentRepository)
+        public FitnessClubController(IMapper mapper)
         {
-            _fitnessClubService = fitnessClubService;
             _mapper = mapper;
-            _workerEmploymentRepository = workerEmploymentRepository;
         }
 
         [HttpGet()]
         [Authorize(Roles = AuthHelper.RoleAll)]
         public async Task<ActionResult<IEnumerable<FitnessClubDto>>> GetAll()
         {
-            return Ok(_mapper.Map<IEnumerable<FitnessClubDto>>(await _fitnessClubService.GetAll()));
+            var all = await Mediator.Send(new GetAllFitnessClubsQuery());
+            return Ok(_mapper.Map<IEnumerable<FitnessClubDto>>(all));
         }
 
         [HttpGet("{fitnessClubId}")]
         [Authorize(Roles = AuthHelper.RoleAll)]
         public async Task<ActionResult<FitnessClubDto>> GetById([FromRoute] string fitnessClubId)
         {
-            var result = await _fitnessClubService.GetById(fitnessClubId);
+            var result = await Mediator.Send(new GetFitnessClubByIdQuery() { FitnessClubId = fitnessClubId});
             if (result is null)
             {
                 return NotFound();
@@ -50,7 +45,8 @@ namespace FitnessClubs.API.Controllers
         [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
         public async Task<ActionResult<FitnessClubDto>> GetFitnessClubOfWorker([FromRoute] string workerId)
         {
-            var getResult = await _workerEmploymentRepository.GetFitnessClubOfWorker(workerId, false);
+            
+            var getResult = await Mediator.Send(new GetFitnessClubOfWorkerQuery() { WorkerId = workerId });
             if (getResult.IsSuccess)
             {
                 return Ok(_mapper.Map<FitnessClubDto>(getResult.Value));
@@ -62,8 +58,12 @@ namespace FitnessClubs.API.Controllers
         [Authorize(Roles = nameof(RoleType.Administrator))]
         public async Task<ActionResult<FitnessClubDto>> CreateFitnessClub([FromBody] CreateFitnessClubDto model)
         {
-            var fitnessClub = _mapper.Map<FitnessClub>(model);
-            var createResult = await _fitnessClubService.Create(fitnessClub);
+            var command = new CreateFitnessClubCommand()
+            {
+                FitnessClub = _mapper.Map<FitnessClub>(model)
+            };
+
+            var createResult = await Mediator.Send(command);
             if (createResult.IsSuccess)
             {
                 return Ok(_mapper.Map<FitnessClubDto>(createResult.Value));
@@ -75,7 +75,12 @@ namespace FitnessClubs.API.Controllers
         [Authorize(Roles = nameof(RoleType.Administrator))]
         public async Task<ActionResult> DeleteFitnessClub([FromRoute] string fitnessClubId)
         {
-            var deleteResult = await _fitnessClubService.Delete(fitnessClubId);
+            var command = new DeleteFitnessClubCommand()
+            {
+                FitnessClubId = fitnessClubId
+            };
+
+            var deleteResult = await Mediator.Send(command);
             if (deleteResult.IsSuccess)
             {
                 return NoContent();

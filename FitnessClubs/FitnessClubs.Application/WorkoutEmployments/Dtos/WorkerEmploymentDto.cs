@@ -1,4 +1,6 @@
-﻿namespace FitnessClubs.Domain.Models.Dtos
+﻿using FitnessClubs.Domain.Models;
+
+namespace FitnessClubs.Application.WorkoutEmployments.Dtos
 {
     public class WorkerEmploymentDto
     {
