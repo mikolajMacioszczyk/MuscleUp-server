@@ -21,7 +21,7 @@ public class GroupWorkoutParticipant extends AbstractEntity {
     private GroupWorkout groupWorkout;
 
     @UnknownForeignKey
-    @Column(name = "gympass_id", nullable = false, unique = true)
+    @Column(name = "gympass_id", nullable = false)
     private UUID gympassId;
 
 

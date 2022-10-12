@@ -13,7 +13,7 @@ import static groups.common.stringUtils.StringUtils.isNullOrEmpty;
 @Component
 public class GroupValidator {
 
-    private final static Long MAX_PARTICIPANTS_PER_GROUP = 100L;
+    private final static Long MIN_PARTICIPANTS_PER_GROUP = 1L;
 
     private final GroupQuery groupQuery;
 
@@ -48,7 +48,7 @@ public class GroupValidator {
 
     private boolean isParticipantNumberCorrect(Long participantNumber) {
 
-        return participantNumber <= MAX_PARTICIPANTS_PER_GROUP;
+        return participantNumber >= MIN_PARTICIPANTS_PER_GROUP;
     }
 
     private boolean doesIdExist(UUID id) {
