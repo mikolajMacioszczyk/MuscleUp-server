@@ -1,9 +1,10 @@
-package groups.otherEntities;
+package groups.permission.entity;
 
 import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
 import groups.common.annotation.Reason;
 import groups.common.annotation.UnknownForeignKey;
+import groups.workout.entity.GroupWorkout;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
