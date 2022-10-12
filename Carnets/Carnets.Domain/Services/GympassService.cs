@@ -1,5 +1,6 @@
 ﻿using Carnets.Domain.Interfaces;
 using Carnets.Domain.Models;
+using Common.Enums;
 using Common.Models;
 
 namespace Carnets.Domain.Services
@@ -8,14 +9,25 @@ namespace Carnets.Domain.Services
     {
         private readonly IGympassRepository _gympassRepository;
         private readonly ISubscriptionService _subscriptionService;
+        private readonly HttpAuthContext _httpAuthContext;
 
-        public GympassService(IGympassRepository gympassRepository, ISubscriptionService subscriptionService)
+        public GympassService(IGympassRepository gympassRepository, ISubscriptionService subscriptionService, HttpAuthContext httpAuthContext)
         {
             _gympassRepository = gympassRepository;
             _subscriptionService = subscriptionService;
+            _httpAuthContext = httpAuthContext;
         }
 
-        public Task<IEnumerable<Gympass>> GetAll() => _gympassRepository.GetAll(false);
+        public Task<IEnumerable<Gympass>> GetAll()
+        {
+            if (_httpAuthContext.UserRole == RoleType.Member)
+            {
+                var memberId = _httpAuthContext.UserId;
+                return _gympassRepository.GetAllForMember(memberId, false);
+            }
+
+            return _gympassRepository.GetAll(false);
+        }
 
         public Task<IEnumerable<Gympass>> GetAllFromFitnessClub(string fitnessClubId) => 
             _gympassRepository.GetAllFromFitnessClub(fitnessClubId, false);

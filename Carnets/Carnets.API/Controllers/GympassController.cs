@@ -30,7 +30,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet()]
-        [Authorize(Roles = nameof(RoleType.Administrator))]
+        [Authorize(Roles = nameof(RoleType.Administrator) + "," + nameof(RoleType.Member))]
         public async Task<ActionResult<IEnumerable<GympassDto>>> GetAll()
         {
             var gympasses = await _gympassService.GetAll();
