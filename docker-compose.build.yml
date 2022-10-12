@@ -19,7 +19,8 @@ services:
       dockerfile: ./Auth/Auth.API/Dockerfile
     restart: always
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT
+      - JwtSecret
       - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
     depends_on:
       - postgres
@@ -30,7 +31,8 @@ services:
       dockerfile: ./Carnets/Carnets.API/Dockerfile
     restart: always
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT
+      - JwtSecret
       - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
       - Api:FitnessClubHost=http://fitnessclubs/
     depends_on:
@@ -42,7 +44,8 @@ services:
       dockerfile: ./FitnessClubs/FitnessClubs.API/Dockerfile
     restart: always
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT
+      - JwtSecret
       - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;
     depends_on:
       - postgres

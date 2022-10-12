@@ -73,8 +73,8 @@ services:
     environment:
       ASPNETCORE_URLS: 'http://+;https://+'
     ports:
-      - "81:80"
-      - "80:443"
+      - "8080:80"
+      - "8082:443"
     depends_on:
       - auth
       - carnets

@@ -19,7 +19,8 @@ services:
       dockerfile: ./Auth/Auth.API/Dockerfile
     restart: always
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT
+      - JwtSecret
       - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
     depends_on:
       - postgres

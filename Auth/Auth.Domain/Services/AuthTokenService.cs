@@ -4,6 +4,7 @@ using Common.Consts;
 using Common.Enums;
 using Common.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,6 +21,7 @@ namespace Auth.Domain.Services
         private readonly IAuthTokenManager _authTokenManager;
         private readonly JwtSecurityTokenHandler _jwtTokenHandler;
         private readonly HttpAuthContext _httpAuthContext;
+        private readonly IConfiguration _configuration;
 
         public AuthTokenService(
             IApplicationUserManager applicationUserManager,
@@ -27,7 +29,8 @@ namespace Auth.Domain.Services
             UserManager<ApplicationUser> userManager,
             HttpAuthContext httpAuthContext,
             JwtSecurityTokenHandler jwtTokenHandler, 
-            IAuthTokenManager authTokenManager)
+            IAuthTokenManager authTokenManager,
+            IConfiguration configuration)
         {
             _applicationUserManager = applicationUserManager;
             _jwtOptions = jwtOptions;
@@ -35,6 +38,7 @@ namespace Auth.Domain.Services
             _httpAuthContext = httpAuthContext;
             _jwtTokenHandler = jwtTokenHandler;
             _authTokenManager = authTokenManager;
+            _configuration = configuration;
         }
 
         public async Task<(string AccessToken, string RefreshToken)> CreateAuthToken(ApplicationUser user)
@@ -42,7 +46,8 @@ namespace Auth.Domain.Services
             if (user is null) return default;
 
             var now = DateTime.UtcNow;
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AuthConsts.JwtSecret));
+            var jwtSecret = _configuration.GetValue<string>(AuthConsts.JwtSecretKey);
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
             // TODO: Handle user settings here if needed
 

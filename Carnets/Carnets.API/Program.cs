@@ -16,7 +16,7 @@ builder.Services.ConfigureRouting();
 ProgramExtensions.AddDbContext<CarnetsDbContext>(builder.Services, builder.Configuration);
 
 // Authentication
-builder.Services.AddJwtAuthentication();
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddScoped<IGympassTypeRepository, GympassTypeRepository>();
 builder.Services.AddScoped<IPermissionRepository<AllowedEntriesPermission>, AllowedEntriesPermissionRepository>();
