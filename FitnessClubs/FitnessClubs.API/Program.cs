@@ -33,6 +33,7 @@ if (app.Environment.IsDevelopment())
 app.UseExceptionMiddleware();
 
 await app.Services.MigrateDatabase<FitnessClubsDbContext>();
+await SeedDatabase(app.Services, app.Environment);
 
 app.UseHttpsRedirection();
 
@@ -41,3 +42,30 @@ app.UseJwtAuthentication();
 app.MapControllers();
 
 app.Run();
+
+static async Task SeedDatabase(IServiceProvider serviceProvider, IWebHostEnvironment environment)
+{
+    if (environment.IsDevelopment())
+    {
+        using (var scope = serviceProvider.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger<Program>();
+
+            try
+            {
+                var context = services.GetRequiredService<FitnessClubsDbContext>();
+
+            
+                Console.WriteLine("Seeding default fitness club data...");
+                await FitnessClubsDbContextSeed.SeedDefaultFitnessClubsDataAsync(context);
+                logger.LogInformation("Seed DONE");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred seeding the DB.");
+            }
+        }
+    }
+}

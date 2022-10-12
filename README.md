@@ -32,7 +32,9 @@ In order to start the development:
 2.  Run: 
     - `docker-compose up` to use containers from registry  
     - `docker-compose -f docker-compose.build.yml up --build` command to build and run all services
-3.  (Optional, if you want to debug locally) Run interestning project - it should already be configured by default to work with other microservices.
+3.  (Optional, if you want to debug locally) Run interestning project - it should already be configured by default to work with other microservices.  
+
+See the <b>"default_development_data.md"</b> file for the default data available in the database.  
 
 ## Deployment
 

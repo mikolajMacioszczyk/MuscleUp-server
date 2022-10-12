@@ -60,7 +60,7 @@ if (app.Environment.IsDevelopment())
 app.UseExceptionMiddleware();
 
 await app.Services.MigrateDatabase<AuthDbContext>();
-await SeedDatabase(app.Services);
+await SeedDatabase(app.Services, app.Environment);
 
 app.UseHttpsRedirection();
 
@@ -70,7 +70,7 @@ app.MapControllers();
 
 app.Run();
 
-static async Task SeedDatabase(IServiceProvider serviceProvider)
+static async Task SeedDatabase(IServiceProvider serviceProvider, IWebHostEnvironment environment)
 {
     using (var scope = serviceProvider.CreateScope())
     {
@@ -88,6 +88,11 @@ static async Task SeedDatabase(IServiceProvider serviceProvider)
             await AuthDbContextSeed.SeedRolesAsync(roleManager);
             logger.LogInformation("Seeding admin...");
             await AuthDbContextSeed.SeedAdminAsync(userManager, context);
+            if (environment.IsDevelopment())
+            {
+                Console.WriteLine("Seeding default users...");
+                await AuthDbContextSeed.SeedDefaultUsersAsync(userManager, context);
+            }
             logger.LogInformation("Seed DONE");
         }
         catch (Exception ex)
