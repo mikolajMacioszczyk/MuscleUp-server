@@ -124,4 +124,15 @@
 
 # Groups
 
+## Group
+| Endpoint Name          | Who can | Method type | Purpose       |
+|------------------------|------|-----|---------------|
+| api/group/find-by-id/{id} | TODO | GET | returns single Group by id |
+| api/group/full-group-info | TODO | GET | returns list of all Groups |
+| api/group/group-names | TODO | GET | returns list of all Group names |
+| api/group/save | TODO | POST | creates Group |
+| api/group/update | TODO | PUT | updates existing Group |
+| api/group/delete/{id} | TODO | DELETE | deletes Group |
+
+
 # Notifications
