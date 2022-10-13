@@ -56,7 +56,7 @@ services:
       dockerfile: ./Content/Dockerfile
     restart: always
     environment:
-      - DATASOURCE_PORT=db:5432
+      - DATASOURCE_PORT=postgres:5432
       - DATASOURCE_USERNAME=postgres
       - DATASOURCE_PASSWORD=Pa55w0rd
     depends_on:
@@ -68,7 +68,7 @@ services:
       dockerfile: ./Groups/Dockerfile
     restart: always
     environment:
-      - DATASOURCE_PORT=db:5432
+      - DATASOURCE_PORT=postgres:5432
       - DATASOURCE_USERNAME=postgres
       - DATASOURCE_PASSWORD=Pa55w0rd
     depends_on:
@@ -80,7 +80,7 @@ services:
       dockerfile: ./Notifications/Dockerfile
     restart: always
     environment:
-      - DATASOURCE_PORT=db:5432
+      - DATASOURCE_PORT=postgres:5432
       - DATASOURCE_USERNAME=postgres
       - DATASOURCE_PASSWORD=Pa55w0rd
     depends_on:

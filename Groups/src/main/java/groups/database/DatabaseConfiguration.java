@@ -22,6 +22,7 @@ public class DatabaseConfiguration {
     private static final String DB_USERNAME = "spring.datasource.username";
     private static final String DB_PASSWORD = "spring.datasource.password";
     private static final String DB_HIBERNATE_DIALECT = "spring.jpa.properties.hibernate.dialect";
+    private static final String DB_SHOW_SQL = "spring.jpa.show-sql";
     private static final String DB_GENERATE_DDL = "hibernate.hbm2ddl.auto";
     private static final String DB_DRIVER = "spring.datasource.driver-class-name";
     private static final String ENTITY_MANAGER_PACKAGES_TO_SCAN = "entitymanager.packagesToScan";
@@ -69,6 +70,7 @@ public class DatabaseConfiguration {
         dataSource.setDriverClassName(env.getProperty(DB_DRIVER));
         dataSource.setUsername(env.getProperty(DB_USERNAME));
         dataSource.setPassword(env.getProperty(DB_PASSWORD));
+        dataSource.setDriverClassName(env.getProperty(DB_SHOW_SQL));
 
         return dataSource;
     }
