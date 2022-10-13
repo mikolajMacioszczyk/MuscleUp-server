@@ -13,16 +13,36 @@ namespace Carnets.Repo.Repositories
 
         public override async Task<Result<ClassPermission>> CreatePermission(ClassPermission newPermission)
         {
-            var isUnique = (
-                await GetPermissionByName(newPermission.PermissionName)
-                ) is null;
+            var existing = await GetPermissionByName(newPermission.PermissionName);
 
-            if (!isUnique)
+            if (existing != null)
             {
-                return new Result<ClassPermission>($"ClassPermission with name {newPermission.PermissionName} already exists");
+                return new Result<ClassPermission>(existing);
             }
 
             return await base.CreatePermission(newPermission);
+        }
+
+        public override async Task<Result<IEnumerable<ClassPermission>>> GetAllPermissionsByNames(IEnumerable<string> permissionNames, bool asTracking)
+        {
+            var query = PermissionDbSet.Where(c => permissionNames.Contains(c.PermissionName));
+
+            if (!asTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            var result = await query.ToListAsync();
+
+            if (result.Count == permissionNames.Count())
+            {
+                return new Result<IEnumerable<ClassPermission>>(result);
+            }
+
+            var resultNames = result.Select(r => r.PermissionName).ToList();
+            var notExisting = permissionNames.Where(n => !resultNames.Contains(n));
+
+            return new Result<IEnumerable<ClassPermission>>(notExisting.Select(n => $"Permission with name \"{n}\" does not exists").ToArray());
         }
 
         private Task<ClassPermission> GetPermissionByName(string name)

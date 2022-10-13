@@ -61,6 +61,15 @@
 | api/carnets/class-permission | Worker | POST | creates new ClassPermission |
 | api/carnets/class-permission/{permissionId} | Worker | DELETE | deletes single ClassPermission |
 
+## Perk Permission
+| Endpoint Name | Who can | Method type | Purpose |
+| ------- | ------------------------------- | ------- | ------------------------------- |
+| api/carnets/perk-permission | Worker | GET | returns all PerkPermissions created within the FitnessClub |
+| api/carnets/perk-permission/all-as-admin/{fitnessClubId} | Admin | GET | returns all PerkPermissions created within the FitnessClub |
+| api/carnets/perk-permission/{permissionId} | Worker, Admin | GET | returns a single PerkPermission by id |
+| api/carnets/perk-permission | Worker | POST | creates new PerkPermission |
+| api/carnets/perk-permission/{permissionId} | Worker | DELETE | deletes single PerkPermission |
+
 ## Gympass
 | Endpoint Name | Who can | Method type | Purpose |
 | ------- | ------------------------------- | ------- | ------------------------------- |
@@ -79,8 +88,9 @@
 | api/carnets/gympass-type/{gympasstypeId} | LoggedIn | GET | returns single GympassType by id |
 | api/carnets/gympass-type/active-as-worker | Worker | GET | returns all active GympassTypes from FitnessClub |
 | api/carnets/gympass-type/active/{fitnessClubId} | Member, Admin | GET | returns all active GympassTypes from FitnessClub |
-| api/carnets/gympass-type | Worker | POST | creates GympassType |
+| api/carnets/gympass-type | Worker | POST | creates GympassType and binds ClassPermissions and PerkPermissions. If any of them do not exist, GympassType will not be created  |
 | api/carnets/gympass-type/{gympasstypeId} | Worker | PUT | sets an existing GympassType inactive and returns a new, updated and active entity |
+| api/carnets/gympass-type/withPermissions/{gympasstypeId} | Worker | PUT | sets an existing GympassType inactive and returns a new, updated and active entity. Links only permissions specified in request body |
 | api/carnets/gympass-type/{gympasstypeId} | Worker | DELETE | If there is no associated Gympass, removes GympassType |
 
 ## Permission

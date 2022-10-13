@@ -8,12 +8,18 @@ namespace Carnets.Domain.Services
     {
         private readonly IGympassTypeRepository _gympassTypeRepository;
         private readonly IAssignedPermissionRepository _assignedPermissionRepository;
+        private readonly IPermissionRepository<ClassPermission> _classPermissionRepository;
+        private readonly IPermissionRepository<PerkPermission> _perkPermissionRepository;
 
-        public GympassTypeService(IGympassTypeRepository gympassTypeRepository, 
-            IAssignedPermissionRepository assignedPermissionRepository)
+        public GympassTypeService(IGympassTypeRepository gympassTypeRepository,
+            IAssignedPermissionRepository assignedPermissionRepository, 
+            IPermissionRepository<ClassPermission> classPermissionRepository, 
+            IPermissionRepository<PerkPermission> perkPermissionRepository)
         {
             _gympassTypeRepository = gympassTypeRepository;
             _assignedPermissionRepository = assignedPermissionRepository;
+            _classPermissionRepository = classPermissionRepository;
+            _perkPermissionRepository = perkPermissionRepository;
         }
 
         public Task<IEnumerable<GympassType>> GetAllGympassTypes(string fitnessClubId, bool onlyActive) =>
@@ -22,14 +28,33 @@ namespace Carnets.Domain.Services
         public Task<GympassType> GetGympassTypeById(string gympassId) =>
             _gympassTypeRepository.GetGympassTypeById(gympassId, false);
 
-        public async Task<Result<GympassType>> CreateGympassType(GympassType gympassType)
+        public async Task<Result<GympassType>> CreateGympassType(
+            GympassType gympassType, 
+            IEnumerable<string> classPermissionsNames, 
+            IEnumerable<string> perkPermissionsNames)
         {
+            var allPermissionResult = await GetPermissionsByNames(classPermissionsNames, perkPermissionsNames);
+            if (!allPermissionResult.IsSuccess)
+            {
+                return new Result<GympassType>(allPermissionResult.Errors);
+            }
+            var (classPermissions, perkPermissions) = allPermissionResult.Value;
+
             var createResult = await _gympassTypeRepository.CreateGympassType(gympassType);
 
-            if (createResult.IsSuccess)
+            if (!createResult.IsSuccess)
             {
-                await _gympassTypeRepository.SaveChangesAsync();
+                return createResult;
             }
+
+            var assignResult = await AssignAllGympassPermissions(classPermissions, perkPermissions, createResult.Value);
+            if (!assignResult.IsSuccess)
+            {
+                return assignResult;
+            }
+
+            await _gympassTypeRepository.SaveChangesAsync();
+            await _assignedPermissionRepository.SaveChangesAsync();
 
             return createResult;
         }
@@ -73,6 +98,37 @@ namespace Carnets.Domain.Services
             return updateResult;
         }
 
+        public async Task<Result<GympassType>> UpdateGympassTypeWithPermissions(
+            GympassType gympassType, 
+            IEnumerable<string> classPermissionNames, 
+            IEnumerable<string> perkPermissionNames)
+        {
+            var allPermissionResult = await GetPermissionsByNames(classPermissionNames, perkPermissionNames);
+            if (!allPermissionResult.IsSuccess)
+            {
+                return new Result<GympassType>(allPermissionResult.Errors);
+            }
+            var (classPermissions, perkPermissions) = allPermissionResult.Value;
+
+            var updateResult = await _gympassTypeRepository.UpdateGympassType(gympassType);
+
+            if (!updateResult.IsSuccess)
+            {
+                return updateResult;
+            }
+
+            var assignResult = await AssignAllGympassPermissions(classPermissions, perkPermissions, updateResult.Value);
+            if (!assignResult.IsSuccess)
+            {
+                return assignResult;
+            }
+
+            await _gympassTypeRepository.SaveChangesAsync();
+            await _assignedPermissionRepository.SaveChangesAsync();
+
+            return updateResult;
+        }
+
         public async Task<Result<bool>> DeleteGympassType(string gympassTypeId)
         {
             var deleteResult = await _gympassTypeRepository.DeleteGympassType(gympassTypeId);
@@ -103,6 +159,76 @@ namespace Carnets.Domain.Services
             }
 
             return deleteResult;
+        }
+
+        private async Task<Result<GympassType>> AssignAllGympassPermissions(
+            IEnumerable<ClassPermission> classPermissions,
+            IEnumerable<PerkPermission> perkPermissions,
+            GympassType createdGympassType)
+        {
+            var assignResult = await AssignGympassPermissions(classPermissions, createdGympassType);
+            if (!assignResult.IsSuccess)
+            {
+                return assignResult;
+            }
+
+            assignResult = await AssignGympassPermissions(perkPermissions, createdGympassType);
+            if (!assignResult.IsSuccess)
+            {
+                return assignResult;
+            }
+
+            return new Result<GympassType>(createdGympassType);
+        }
+
+        private async Task<Result<(IEnumerable<ClassPermission>, IEnumerable<PerkPermission>)>> GetPermissionsByNames(
+            IEnumerable<string> classPermissionsNames,
+            IEnumerable<string> perkPermissionsNames)
+        {
+            // get all classPermissions
+            var classPermissions = await _classPermissionRepository
+                .GetAllPermissionsByNames(classPermissionsNames ?? Array.Empty<string>(), true);
+
+            if (!classPermissions.IsSuccess)
+            {
+                return new Result<(IEnumerable<ClassPermission>, IEnumerable<PerkPermission>)>(classPermissions.Errors);
+            }
+
+            // get all perkPemrissions
+            var perkPermissions = await _perkPermissionRepository
+                .GetAllPermissionsByNames(perkPermissionsNames ?? Array.Empty<string>(), true);
+
+            if (!perkPermissions.IsSuccess)
+            {
+                return new Result<(IEnumerable<ClassPermission>, IEnumerable<PerkPermission>)>(perkPermissions.Errors);
+            }
+
+            return new Result<(IEnumerable<ClassPermission>, IEnumerable<PerkPermission>)>((classPermissions.Value, perkPermissions.Value));
+        }
+
+        private async Task<Result<GympassType>> AssignGympassPermissions<TPermission>(
+            IEnumerable<TPermission> permissions, GympassType gympassType)
+            where TPermission : PermissionBase
+        {
+            foreach (var permission in permissions)
+            {
+                var assigement = new AssignedPermission()
+                {
+                    GympassTypeId = gympassType.GympassTypeId,
+                    GympassType = gympassType,
+                    PermissionId = permission.PermissionId,
+                    Permission = permission
+                };
+
+                var assignResult = await _assignedPermissionRepository.CreateAssignedPermission(assigement);
+
+                if (!assignResult.IsSuccess)
+                {
+                    return new Result<GympassType>(assignResult.Errors);
+                }
+            }
+
+            return new Result<GympassType>(gympassType);
         }
     }
 }

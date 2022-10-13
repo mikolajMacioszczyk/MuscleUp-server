@@ -12,6 +12,7 @@ namespace Carnets.API
             CreateMap<GympassType, GympassTypeDto>();
             CreateMap<CreateGympassTypeDto, GympassType>();
             CreateMap<UpdateGympassTypeDto, GympassType>();
+            CreateMap<UpdateGympassTypeWithPermissionsDto, GympassType>();
 
             // Permission
             CreateMap<PermissionBase, PermissionBaseDto>();
@@ -23,6 +24,9 @@ namespace Carnets.API
 
             CreateMap<ClassPermission, ClassPermissionDto>();
             CreateMap<CreateClassPermissionDto, ClassPermission>();
+
+            CreateMap<PerkPermission, PerkPermissionDto>();
+            CreateMap<CreatePerkPermissionDto, PerkPermission>();
 
             // AssignedPermission
             CreateMap<GrantRevokePermissionDto, AssignedPermission>();

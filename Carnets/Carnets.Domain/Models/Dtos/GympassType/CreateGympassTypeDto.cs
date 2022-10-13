@@ -21,5 +21,9 @@ namespace Carnets.Domain.Models.Dtos
 
         [Range(0, int.MaxValue)]
         public int ValidityPeriodInSeconds { get; set; }
+
+        public IEnumerable<string> ClassPermissions { get; set; }
+
+        public IEnumerable<string> PerkPermissions { get; set; }
     }
 }

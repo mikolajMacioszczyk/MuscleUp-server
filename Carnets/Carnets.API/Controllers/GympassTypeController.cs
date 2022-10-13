@@ -76,7 +76,7 @@ namespace Carnets.API.Controllers
             var gympassType = _mapper.Map<GympassType>(model);
             gympassType.FitnessClubId = fitnessClub.FitnessClubId;
 
-            var createResult = await _gympassTypeService.CreateGympassType(gympassType);
+            var createResult = await _gympassTypeService.CreateGympassType(gympassType, model.ClassPermissions, model.PerkPermissions);
             
             if (createResult.IsSuccess)
             {
@@ -88,12 +88,33 @@ namespace Carnets.API.Controllers
 
         [HttpPut("{gympassTypeId}")]
         [Authorize(Roles = nameof(RoleType.Worker))]
-        public async Task<ActionResult<GympassTypeDto>> UpdateGympassTypeById([FromRoute] string gympassTypeId, [FromBody] UpdateGympassTypeDto model)
+        public async Task<ActionResult<GympassTypeDto>> UpdateGympassType([FromRoute] string gympassTypeId, [FromBody] UpdateGympassTypeDto model)
         {
             var gympassType = _mapper.Map<GympassType>(model);
             gympassType.GympassTypeId = gympassTypeId;
 
             var updateResult = await _gympassTypeService.UpdateGympassType(gympassType);
+
+            if (updateResult.IsSuccess)
+            {
+                return Ok(_mapper.Map<GympassTypeDto>(updateResult.Value));
+            }
+            else if (updateResult.Errors?.Any(e => e.Equals(Common.CommonConsts.NOT_FOUND)) ?? false)
+            {
+                return NotFound();
+            }
+
+            return BadRequest(updateResult.ErrorCombined);
+        }
+
+        [HttpPut("withPermissions/{gympassTypeId}")]
+        [Authorize(Roles = nameof(RoleType.Worker))]
+        public async Task<ActionResult<GympassTypeDto>> UpdateGympassTypeWithPermissions([FromRoute] string gympassTypeId, [FromBody] UpdateGympassTypeWithPermissionsDto model)
+        {
+            var gympassType = _mapper.Map<GympassType>(model);
+            gympassType.GympassTypeId = gympassTypeId;
+
+            var updateResult = await _gympassTypeService.UpdateGympassTypeWithPermissions(gympassType, model.ClassPermissions, model.PerkPermissions);
 
             if (updateResult.IsSuccess)
             {

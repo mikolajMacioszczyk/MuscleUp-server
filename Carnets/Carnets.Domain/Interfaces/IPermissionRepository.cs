@@ -9,6 +9,8 @@ namespace Carnets.Domain.Interfaces
 
         Task<TPermission> GetPermissionById(string permissionId, bool asTracking);
 
+        Task<Result<IEnumerable<TPermission>>> GetAllPermissionsByNames(IEnumerable<string> permissionNames, bool asTracking);
+
         Task<Result<TPermission>> CreatePermission(TPermission newPermission);
 
         Task<Result<bool>> DeletePermission(string permissionId, string fitnessClubId);

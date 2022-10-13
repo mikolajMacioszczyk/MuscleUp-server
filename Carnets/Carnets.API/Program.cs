@@ -23,6 +23,8 @@ builder.Services.AddScoped<IPermissionRepository<AllowedEntriesPermission>, Allo
 builder.Services.AddScoped<IPermissionService<AllowedEntriesPermission>, AllowedEntriesPermissionService>();
 builder.Services.AddScoped<IPermissionRepository<ClassPermission>, ClassPermissionRepository>();
 builder.Services.AddScoped<IPermissionService<ClassPermission>, ClassPermissionService>();
+builder.Services.AddScoped<IPermissionRepository<PerkPermission>, PerkPermissionRepository>();
+builder.Services.AddScoped<IPermissionService<PerkPermission>, PerkPermissionService>();
 builder.Services.AddScoped<IAssignedPermissionRepository, AssignedPermissionRepository>();
 builder.Services.AddScoped<IFitnessClubHttpService, FitnessClubHttpService>();
 builder.Services.AddScoped<IGympassRepository, GympassRepository>();

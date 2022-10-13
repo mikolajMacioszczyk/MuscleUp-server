@@ -14,6 +14,7 @@ namespace Carnets.Repo
         public DbSet<AllowedEntriesPermission> AllowedEntriesPermissions { get; set; }
         public DbSet<ClassPermission> ClassPermissions { get; set; }
         public DbSet<AssignedPermission> AssignedPermissions { get; set; }
+        public DbSet<PerkPermission> PerkPermissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

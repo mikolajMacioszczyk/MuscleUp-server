@@ -73,5 +73,7 @@ namespace Carnets.Repo.Repositories
         }
 
         public Task SaveChangesAsync() => _context.SaveChangesAsync();
+
+        public abstract Task<Result<IEnumerable<TPermission>>> GetAllPermissionsByNames(IEnumerable<string> permissionNames, bool asTracking);
     }
 }
