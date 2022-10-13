@@ -41,7 +41,7 @@ services:
     image: ghcr.io/muscle-up-app/content
     restart: always
     environment:
-      DATASOURCE_PORT: 'db:5432'
+      DATASOURCE_PORT: 'postgres:5432'
       DATASOURCE_USERNAME: 'postgres'
       DATASOURCE_PASSWORD: 'Pa55w0rd'
     depends_on:
@@ -51,7 +51,7 @@ services:
     image: ghcr.io/muscle-up-app/groups
     restart: always
     environment:
-      DATASOURCE_PORT: 'db:5432'
+      DATASOURCE_PORT: 'postgres:5432'
       DATASOURCE_USERNAME: 'postgres'
       DATASOURCE_PASSWORD: 'Pa55w0rd'
     depends_on:
@@ -61,7 +61,7 @@ services:
     image: ghcr.io/muscle-up-app/notifications
     restart: always
     environment:
-      DATASOURCE_PORT: 'db:5432'
+      DATASOURCE_PORT: 'postgres:5432'
       DATASOURCE_USERNAME: 'postgres'
       DATASOURCE_PASSWORD: 'Pa55w0rd'
     depends_on:
