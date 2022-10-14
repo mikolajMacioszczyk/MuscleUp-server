@@ -11,7 +11,6 @@ namespace Carnets.Repo
         public DbSet<Gympass> Gympasses { get; set; }
         public DbSet<GympassType> GympassTypes { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
-        public DbSet<AllowedEntriesPermission> AllowedEntriesPermissions { get; set; }
         public DbSet<ClassPermission> ClassPermissions { get; set; }
         public DbSet<AssignedPermission> AssignedPermissions { get; set; }
         public DbSet<PerkPermission> PerkPermissions { get; set; }

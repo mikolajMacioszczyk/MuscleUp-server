@@ -254,5 +254,42 @@ namespace Carnets.Domain.Services
 
             return updateResult;
         }
+
+        public Task<Result<Gympass>> UpdateGympassEntries(string gympassId, int entries) =>
+            UpdateGympassEntriesHelper(gympassId, gympass => entries);
+
+        public Task<Result<Gympass>> ReduceGympassEntries(string gympassId) =>
+            UpdateGympassEntriesHelper(gympassId, gympass => gympass.RemainingEntries - 1);
+
+        public async Task<Result<Gympass>> UpdateGympassEntriesHelper(string gympassId, Func<Gympass, int> updateEntries)
+        {
+            var gympass = await _gympassRepository.GetById(gympassId, true);
+
+            if (gympass is null)
+            {
+                return new Result<Gympass>(Common.CommonConsts.NOT_FOUND);
+            }
+
+            if (gympass.GympassType.ValidationType != Enums.GympassTypeValidation.Entries)
+            {
+                return new Result<Gympass>($"Cannot update entries of gympass with validation type \"{gympass.GympassType.ValidationType}\"");
+            }
+
+            gympass.RemainingEntries = updateEntries(gympass);
+
+            if (gympass.RemainingEntries < 0)
+            {
+                return new Result<Gympass>($"Remaining gympass entries cannot be less than 0");
+            }
+
+            var updateResult = await _gympassRepository.UpdateGympass(gympass);
+
+            if (updateResult.IsSuccess)
+            {
+                await _gympassRepository.SaveChangesAsync();
+            }
+
+            return updateResult;
+        }
     }
 }

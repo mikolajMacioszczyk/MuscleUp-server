@@ -19,8 +19,6 @@ ProgramExtensions.AddDbContext<CarnetsDbContext>(builder.Services, builder.Confi
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddScoped<IGympassTypeRepository, GympassTypeRepository>();
-builder.Services.AddScoped<IPermissionRepository<AllowedEntriesPermission>, AllowedEntriesPermissionRepository>();
-builder.Services.AddScoped<IPermissionService<AllowedEntriesPermission>, AllowedEntriesPermissionService>();
 builder.Services.AddScoped<IPermissionRepository<ClassPermission>, ClassPermissionRepository>();
 builder.Services.AddScoped<IPermissionService<ClassPermission>, ClassPermissionService>();
 builder.Services.AddScoped<IPermissionRepository<PerkPermission>, PerkPermissionRepository>();

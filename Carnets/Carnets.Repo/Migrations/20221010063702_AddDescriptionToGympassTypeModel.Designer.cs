@@ -3,6 +3,7 @@ using System;
 using Carnets.Repo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Carnets.Repo.Migrations
 {
     [DbContext(typeof(CarnetsDbContext))]
-    partial class CarnetsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221010063702_AddDescriptionToGympassTypeModel")]
+    partial class AddDescriptionToGympassTypeModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,9 +52,6 @@ namespace Carnets.Repo.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(36)");
 
-                    b.Property<int>("RemainingEntries")
-                        .HasColumnType("integer");
-
                     b.Property<int>("RemainingValidityPeriodInSeconds")
                         .HasColumnType("integer");
 
@@ -80,9 +79,6 @@ namespace Carnets.Repo.Migrations
                         .HasMaxLength(36)
                         .HasColumnType("character varying(36)");
 
-                    b.Property<int>("AllowedEntries")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Description")
                         .HasMaxLength(10000)
                         .HasColumnType("character varying(10000)");
@@ -108,9 +104,6 @@ namespace Carnets.Repo.Migrations
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
-
-                    b.Property<int>("ValidationType")
-                        .HasColumnType("integer");
 
                     b.Property<int>("ValidityPeriodInSeconds")
                         .HasColumnType("integer");
@@ -173,6 +166,22 @@ namespace Carnets.Repo.Migrations
                         .IsUnique();
 
                     b.ToTable("Subscriptions");
+                });
+
+            modelBuilder.Entity("Carnets.Domain.Models.AllowedEntriesPermission", b =>
+                {
+                    b.HasBaseType("Carnets.Domain.Models.PermissionBase");
+
+                    b.Property<int>("AllowedEntries")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AllowedEntriesCooldown")
+                        .HasColumnType("integer");
+
+                    b.Property<byte>("CooldownType")
+                        .HasColumnType("smallint");
+
+                    b.HasDiscriminator().HasValue("AllowedEntriesPermission");
                 });
 
             modelBuilder.Entity("Carnets.Domain.Models.ClassPermission", b =>

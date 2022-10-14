@@ -43,15 +43,6 @@
 
 # Carnets
 
-## Allowed Entries Permission
-| Endpoint Name | Who can | Method type | Purpose |
-| ------- | ------------------------------- | ------- | ------------------------------- |
-| api/carnets/allowed-entries-permission | Worker | GET | returns all AllowedEntriesPermissions created within the FitnessClub  |
-| api/carnets/allowed-entries-permission/all-as-admin/{fitnessClubId} | Admin | GET | returns all AllowedEntriesPermissions created within the FitnessClub |
-| api/carnets/allowed-entries-permission/{permissionId} | Worker, Admin | GET | returns a single AllowedEntriesPermission by id |
-| api/carnets/allowed-entries-permission | Worker | POST | creates new AllowedEntriesPermission |
-| api/carnets/allowed-entries-permission/{permissionId} | Worker | DELETE | deletes single AllowedEntriesPermission |
-
 ## Class Permission
 | Endpoint Name | Who can | Method type | Purpose |
 | ------- | ------------------------------- | ------- | ------------------------------- |
@@ -81,6 +72,7 @@
 | api/carnets/gympass/cancel-as-worker/{gympassId} | Worker | PUT | cancells the Gympass |
 | api/carnets/gympass/activate/{gympassId} | Worker | PUT | activates the Gympass |
 | api/carnets/gympass/deactivate/{gympassId} | Worker | PUT | deactivates the Gympass |
+| api/carnets/gympass/entry/{gympassId} | Member, Worker | PUT | decreases the number of allowed entries by one |
 
 ## Gympass Type
 | Endpoint Name | Who can | Method type | Purpose |

@@ -18,6 +18,10 @@ namespace Carnets.Domain.Models.Dtos
 
         public GympassStatus Status { get; set; }
 
+        public GympassTypeValidation ValidationType { get; set; }
+
         public int RemainingValidityPeriodInSeconds { get; set; }
+
+        public int RemainingEntries { get; set; }
     }
 }
