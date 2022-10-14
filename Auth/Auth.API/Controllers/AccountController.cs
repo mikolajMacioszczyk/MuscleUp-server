@@ -1,7 +1,7 @@
-﻿using Auth.Domain.Dtos;
-using Auth.Domain.Interfaces;
-using Auth.Domain.Models;
-using Common.Enums;
+﻿using Auth.Application.Common.Dtos;
+using Auth.Application.Common.Interfaces;
+using Auth.Application.Common.Models;
+using Common.BaseClasses;
 using Common.Extensions;
 using Common.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,9 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Auth.API.Controllers
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Route("[controller]")]
-    [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController : ApiControllerBase
     {
         private readonly IAccountHttpManager _accountHttpManager;
         private readonly IUserService _userService;

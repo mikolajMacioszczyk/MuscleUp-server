@@ -1,14 +1,18 @@
-using Auth.Domain.Interfaces;
 using Auth.Domain.Models;
 using Auth.Repo;
 using Auth.Repo.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Common.Extensions;
-using Auth.Domain.Managers;
-using Auth.Domain.Services;
 using System.IdentityModel.Tokens.Jwt;
-using Auth.Domain.Dtos;
+using Auth.Application.Common.Services;
+using Auth.Application.Common.Managers;
+using Auth.Application.Common.Interfaces;
+using Auth.Application.Common.Models;
+using Auth.Application.Members.Dtos;
+using Auth.Application;
+using Auth.Application.Trainer.Dtos;
+using Auth.Application.Workers.Dtos;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -32,6 +36,7 @@ builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
 // Add services to the container.
 builder.Services.AddBasicApiServices<Program>();
+builder.Services.AddApplicationServices();
 builder.Services.ConfigureRouting();
 
 // Application services
