@@ -2,6 +2,7 @@
 using Carnets.Domain.Interfaces;
 using Carnets.Domain.Models;
 using Carnets.Domain.Models.Dtos;
+using Common;
 using Common.Enums;
 using Common.Helpers;
 using Common.Models;
@@ -35,7 +36,7 @@ namespace Carnets.API.Controllers
         [Authorize(Roles = AuthHelper.RoleAll)]
         public async Task<ActionResult<GympassTypeDto>> GetGympassTypeById([FromRoute] string gympassTypeId)
         {
-            var gympassType = await _gympassTypeService.GetGympassTypeById(gympassTypeId);
+            var gympassType = await _gympassTypeService.GetGympassTypeWithPermissionsById(gympassTypeId);
             if (gympassType != null)
             {
                 return Ok(_mapper.Map<GympassTypeDto>(gympassType));
@@ -45,23 +46,27 @@ namespace Carnets.API.Controllers
 
         [HttpGet("active-as-worker")]
         [Authorize(Roles = nameof(RoleType.Worker))]
-        public async Task<ActionResult<IEnumerable<GympassTypeDto>>> GetActiveGympassTypesAsWorker()
+        public async Task<ActionResult<IEnumerable<GympassTypeDto>>> GetActiveGympassTypesAsWorker(
+            [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = CommonConsts.DefaultPageSize)
         {
             var workerId = _httpAuthContext.UserId;
             var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
 
-            var gympassTypes = await _gympassTypeService.GetAllGympassTypes(fitnessClub.FitnessClubId, true);
+            var gympassTypes = await _gympassTypeService.GetAllGympassTypesWithPermissions(fitnessClub.FitnessClubId, 
+                onlyActive: true, pageNumber, pageSize);
             
             return Ok(_mapper.Map<IEnumerable<GympassTypeDto>>(gympassTypes));
         }
 
         [HttpGet("active/{fitnessClubId}")]
         [Authorize(Roles = nameof(RoleType.Member) + "," + nameof(RoleType.Administrator))]
-        public async Task<ActionResult<IEnumerable<GympassTypeDto>>> GetActiveGympassTypes([FromRoute] string fitnessClubId)
+        public async Task<ActionResult<IEnumerable<GympassTypeDto>>> GetActiveGympassTypes([FromRoute] string fitnessClubId,
+            [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = CommonConsts.DefaultPageSize)
         {
             await _fitnessClubHttpService.EnsureFitnessClubExists(fitnessClubId);
 
-            var gympassTypes = await _gympassTypeService.GetAllGympassTypes(fitnessClubId, true);
+            var gympassTypes = await _gympassTypeService.GetAllGympassTypesWithPermissions(fitnessClubId, 
+                onlyActive: true, pageNumber, pageSize);
 
             return Ok(_mapper.Map<IEnumerable<GympassTypeDto>>(gympassTypes));
         }

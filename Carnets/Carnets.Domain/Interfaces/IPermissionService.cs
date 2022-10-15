@@ -9,6 +9,8 @@ namespace Carnets.Domain.Interfaces
 
         Task<TPermission> GetPermissionById(string permissionId);
 
+        Task<IEnumerable<TPermission>> GetAllGympassTypePermissions(string gympassTypeId);
+
         Task<Result<TPermission>> CreatePermission(TPermission newPermission);
 
         Task<Result<bool>> DeletePermission(string permissionId, string fitnessClubId);

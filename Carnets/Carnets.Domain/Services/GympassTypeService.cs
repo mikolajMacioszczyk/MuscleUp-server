@@ -1,4 +1,5 @@
-﻿using Carnets.Domain.Interfaces;
+﻿using AutoMapper;
+using Carnets.Domain.Interfaces;
 using Carnets.Domain.Models;
 using Common.Models;
 
@@ -8,25 +9,59 @@ namespace Carnets.Domain.Services
     {
         private readonly IGympassTypeRepository _gympassTypeRepository;
         private readonly IAssignedPermissionRepository _assignedPermissionRepository;
+        private readonly IPermissionService<PerkPermission> _perkPermissionService;
+        private readonly IPermissionService<ClassPermission> _classPermissionService;
         private readonly IPermissionRepository<ClassPermission> _classPermissionRepository;
         private readonly IPermissionRepository<PerkPermission> _perkPermissionRepository;
+        private readonly IMapper _mapper;
 
         public GympassTypeService(IGympassTypeRepository gympassTypeRepository,
-            IAssignedPermissionRepository assignedPermissionRepository, 
-            IPermissionRepository<ClassPermission> classPermissionRepository, 
-            IPermissionRepository<PerkPermission> perkPermissionRepository)
+            IAssignedPermissionRepository assignedPermissionRepository,
+            IPermissionRepository<ClassPermission> classPermissionRepository,
+            IPermissionRepository<PerkPermission> perkPermissionRepository,
+            IPermissionService<PerkPermission> perkPermissionService,
+            IPermissionService<ClassPermission> classPermissionService,
+            IMapper mapper)
         {
             _gympassTypeRepository = gympassTypeRepository;
             _assignedPermissionRepository = assignedPermissionRepository;
             _classPermissionRepository = classPermissionRepository;
             _perkPermissionRepository = perkPermissionRepository;
+            _perkPermissionService = perkPermissionService;
+            _classPermissionService = classPermissionService;
+            _mapper = mapper;
         }
 
-        public Task<IEnumerable<GympassType>> GetAllGympassTypes(string fitnessClubId, bool onlyActive) =>
-            _gympassTypeRepository.GetAllGympassTypes(fitnessClubId, onlyActive, false);
+        public Task<IEnumerable<GympassType>> GetAllGympassTypes(string fitnessClubId, bool onlyActive, int pageNumber, int pageSize) =>
+            _gympassTypeRepository.GetAllGympassTypes(fitnessClubId, onlyActive, pageNumber, pageSize, false);
+
+        public async Task<IEnumerable<GympassTypeWithPermissions>> GetAllGympassTypesWithPermissions(string fitnessClubId, bool onlyActive, int pageNumber, int pageSize)
+        {
+            var all = await _gympassTypeRepository.GetAllGympassTypes(fitnessClubId, onlyActive, pageNumber, pageSize, false);
+
+            var allWithPermissions = new List<GympassTypeWithPermissions>();
+
+            foreach (var gympassType in all)
+            {
+                allWithPermissions.Add(await AssignPermissionsToGympassType(gympassType));
+            }
+
+            return allWithPermissions;
+        }
 
         public Task<GympassType> GetGympassTypeById(string gympassId) =>
             _gympassTypeRepository.GetGympassTypeById(gympassId, false);
+
+        public async Task<GympassTypeWithPermissions> GetGympassTypeWithPermissionsById(string gympassId)
+        {
+            var gympassType = await _gympassTypeRepository.GetGympassTypeById(gympassId, false);
+            if (gympassType is null)
+            {
+                return null;
+            }
+
+            return await AssignPermissionsToGympassType(gympassType);
+        }
 
         public async Task<Result<GympassType>> CreateGympassType(
             GympassType gympassType, 
@@ -229,6 +264,20 @@ namespace Carnets.Domain.Services
             }
 
             return new Result<GympassType>(gympassType);
+        }
+
+        private async Task<GympassTypeWithPermissions> AssignPermissionsToGympassType(GympassType gympassType)
+        {
+            var gympassWithPermissions = _mapper.Map<GympassTypeWithPermissions>(gympassType);
+
+            // class
+            gympassWithPermissions.ClassPermissions = (await _classPermissionService.GetAllGympassTypePermissions(gympassType.GympassTypeId))
+                .Select(p => p.PermissionName);
+            // perk
+            gympassWithPermissions.PerkPermissions = (await _perkPermissionService.GetAllGympassTypePermissions(gympassType.GympassTypeId))
+                .Select(p => p.PermissionName);
+
+            return gympassWithPermissions;
         }
     }
 }

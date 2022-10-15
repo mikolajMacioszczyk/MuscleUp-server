@@ -6,6 +6,6 @@ namespace Carnets.Domain.Models.Dtos
     {
         [Required]
         [MaxLength(30)]
-        public string PerkName { get; set; }
+        public string PermissionName { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Carnets.Domain.Interfaces;
 using Carnets.Domain.Models;
+using Common.Exceptions;
 using Common.Models;
 
 namespace Carnets.Domain.Services.Permission
@@ -23,6 +24,20 @@ namespace Carnets.Domain.Services.Permission
 
         public Task<TPermission> GetPermissionById(string permissionId) =>
             _permissionRepository.GetPermissionById(permissionId, false);
+
+        public async Task<IEnumerable<TPermission>> GetAllGympassTypePermissions(string gympassTypeId)
+        {
+            var allResult = await _assignedPermissionRepository.GetAllGympassPermissions(gympassTypeId, false);
+
+            if (allResult.IsSuccess)
+            {
+                var allIds = allResult.Value.Select(a => a.PermissionId).ToArray();
+
+                return await _permissionRepository.GetPermissionByIds(allIds, false);
+            }
+
+            throw new BadRequestException(allResult.ErrorCombined);
+        }
 
         public async Task<Result<TPermission>> CreatePermission(TPermission newPermission)
         {

@@ -9,6 +9,6 @@ namespace Carnets.Domain.Models
 
         [Required]
         [MaxLength(30)]
-        public string PerkName { get; set; }
+        public string PermissionName { get; set; }
     }
 }
