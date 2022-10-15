@@ -12,6 +12,8 @@
 
         #region Auth
 
+        public const string DefaultUserAvatarUrl = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png";
+
         public const string DefaultAdminId = "56c3389e-8fea-453e-acc2-e53a2e2768b7";
 
         public const string DefaultWorkerId = "747f6c50-aabc-4be2-aa43-10cf60aba46b";

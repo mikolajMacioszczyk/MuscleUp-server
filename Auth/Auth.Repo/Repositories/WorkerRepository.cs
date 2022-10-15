@@ -61,6 +61,7 @@ namespace Auth.Repo.Repositories
             workerFromDb.User.FirstName = worker.User.FirstName;
             workerFromDb.User.LastName = worker.User.LastName;
             workerFromDb.User.BirthDate = worker.User.BirthDate;
+            workerFromDb.User.AvatarUrl = worker.User.AvatarUrl;
 
             await _context.SaveChangesAsync();
             return new Result<Worker>(workerFromDb);

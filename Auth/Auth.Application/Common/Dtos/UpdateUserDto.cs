@@ -13,5 +13,9 @@ namespace Auth.Application.Common.Dtos
         public string LastName { get; set; }
 
         public DateTime BirthDate { get; set; }
+
+        [Required]
+        [MaxLength(500)]
+        public string AvatarUrl { get; set; }
     }
 }

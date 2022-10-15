@@ -1,5 +1,6 @@
 ﻿using Auth.Application.Common.Dtos;
 using Auth.Domain.Models;
+using Common.Consts;
 using Common.Enums;
 using Common.Models;
 using Microsoft.AspNetCore.Identity;
@@ -45,6 +46,8 @@ namespace Auth.Repo.Repositories
                 return new Result<ApplicationUser>($"User with email {registerDto.Email} already exists");
             }
 
+            var avatarUrl = string.IsNullOrEmpty(registerDto.AvatarUrl) ? SeedConsts.DefaultUserAvatarUrl : registerDto.AvatarUrl;
+
             var user = new ApplicationUser()
             {
                 Email = registerDto.Email,
@@ -52,7 +55,8 @@ namespace Auth.Repo.Repositories
                 LastName = registerDto.LastName,
                 BirthDate = registerDto.BirthDate.ToUniversalTime(),
                 RegisterDate = DateTime.UtcNow,
-                Gender = registerDto.Gender
+                Gender = registerDto.Gender,
+                AvatarUrl = avatarUrl,
             };
 
             await _userStore.SetUserNameAsync(user, registerDto.Email, CancellationToken.None);

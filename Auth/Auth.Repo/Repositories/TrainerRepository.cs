@@ -1,6 +1,7 @@
 ﻿using Auth.Application.Common.Interfaces;
 using Auth.Application.Trainer.Dtos;
 using Auth.Domain.Models;
+using AutoMapper.Execution;
 using Common.Enums;
 using Common.Models;
 using Microsoft.AspNetCore.Identity;
@@ -62,6 +63,7 @@ namespace Auth.Repo.Repositories
             trainerFromDb.User.FirstName = trainer.User.FirstName;
             trainerFromDb.User.LastName = trainer.User.LastName;
             trainerFromDb.User.BirthDate = trainer.User.BirthDate;
+            trainerFromDb.User.AvatarUrl = trainer.User.AvatarUrl;
 
             await _context.SaveChangesAsync();
             return new Result<Trainer>(trainerFromDb);
