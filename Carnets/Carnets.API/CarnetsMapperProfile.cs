@@ -12,17 +12,16 @@ namespace Carnets.API
             CreateMap<GympassType, GympassTypeDto>();
             CreateMap<CreateGympassTypeDto, GympassType>();
             CreateMap<UpdateGympassTypeDto, GympassType>();
+            CreateMap<UpdateGympassTypeWithPermissionsDto, GympassType>();
 
             // Permission
             CreateMap<PermissionBase, PermissionBaseDto>();
 
-            CreateMap<AllowedEntriesPermission, AllowedEntriesPermissionDto>()
-                .ForMember(a => a.CooldownType, 
-                opt => opt.MapFrom(src => src.CooldownType.ToString()));
-            CreateMap<CreateAllowedEntriesPermissionDto, AllowedEntriesPermission>();
-
             CreateMap<ClassPermission, ClassPermissionDto>();
             CreateMap<CreateClassPermissionDto, ClassPermission>();
+
+            CreateMap<PerkPermission, PerkPermissionDto>();
+            CreateMap<CreatePerkPermissionDto, PerkPermission>();
 
             // AssignedPermission
             CreateMap<GrantRevokePermissionDto, AssignedPermission>();
@@ -33,7 +32,9 @@ namespace Carnets.API
                .ForMember(a => a.GympassTypeName,
                 opt => opt.MapFrom(src => src.GympassType.GympassTypeName))
                .ForMember(a => a.GympassTypeId,
-                opt => opt.MapFrom(src => src.GympassType.GympassTypeId));
+                opt => opt.MapFrom(src => src.GympassType.GympassTypeId))
+               .ForMember(a => a.ValidationType,
+                opt => opt.MapFrom(src => src.GympassType.ValidationType));
 
             // Subscription
             CreateMap<CreateGympassSubscriptionDto, Subscription>();

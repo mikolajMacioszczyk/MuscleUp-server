@@ -33,5 +33,8 @@ namespace Carnets.Domain.Interfaces
 
         Task<Result<Gympass>> DeactivateGympassyByFitnessClub(string gympassId, string fitnessClubId);
 
+        Task<Result<Gympass>> UpdateGympassEntries(string gympassId, int entries);
+
+        Task<Result<Gympass>> ReduceGympassEntries(string gympassId);
     }
 }

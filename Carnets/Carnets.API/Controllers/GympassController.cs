@@ -30,7 +30,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet()]
-        [Authorize(Roles = nameof(RoleType.Administrator))]
+        [Authorize(Roles = nameof(RoleType.Administrator) + "," + nameof(RoleType.Member))]
         public async Task<ActionResult<IEnumerable<GympassDto>>> GetAll()
         {
             var gympasses = await _gympassService.GetAll();
@@ -144,6 +144,24 @@ namespace Carnets.API.Controllers
             var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
 
             var result = await _gympassService.DeactivateGympassyByFitnessClub(gympassId, fitnessClub.FitnessClubId);
+
+            if (result.IsSuccess)
+            {
+                return Ok(_mapper.Map<GympassDto>(result.Value));
+            }
+            else if (result.Errors.Contains(Common.CommonConsts.NOT_FOUND))
+            {
+                return NotFound();
+            }
+
+            return BadRequest(result.ErrorCombined);
+        }
+
+        [HttpPut("entry/{gympassId}")]
+        [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Member))]
+        public async Task<ActionResult<GympassDto>> ReduceGympassEntries([FromRoute] string gympassId)
+        {
+            var result = await _gympassService.ReduceGympassEntries(gympassId);
 
             if (result.IsSuccess)
             {

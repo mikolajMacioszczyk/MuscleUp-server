@@ -50,6 +50,9 @@ namespace Carnets.Repo.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(36)");
 
+                    b.Property<int>("RemainingEntries")
+                        .HasColumnType("integer");
+
                     b.Property<int>("RemainingValidityPeriodInSeconds")
                         .HasColumnType("integer");
 
@@ -77,6 +80,13 @@ namespace Carnets.Repo.Migrations
                         .HasMaxLength(36)
                         .HasColumnType("character varying(36)");
 
+                    b.Property<int>("AllowedEntries")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(10000)
+                        .HasColumnType("character varying(10000)");
+
                     b.Property<int>("EnableEntryFromInMinutes")
                         .HasColumnType("integer");
 
@@ -98,6 +108,9 @@ namespace Carnets.Repo.Migrations
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
+
+                    b.Property<int>("ValidationType")
+                        .HasColumnType("integer");
 
                     b.Property<int>("ValidityPeriodInSeconds")
                         .HasColumnType("integer");
@@ -162,22 +175,6 @@ namespace Carnets.Repo.Migrations
                     b.ToTable("Subscriptions");
                 });
 
-            modelBuilder.Entity("Carnets.Domain.Models.AllowedEntriesPermission", b =>
-                {
-                    b.HasBaseType("Carnets.Domain.Models.PermissionBase");
-
-                    b.Property<int>("AllowedEntries")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("AllowedEntriesCooldown")
-                        .HasColumnType("integer");
-
-                    b.Property<byte>("CooldownType")
-                        .HasColumnType("smallint");
-
-                    b.HasDiscriminator().HasValue("AllowedEntriesPermission");
-                });
-
             modelBuilder.Entity("Carnets.Domain.Models.ClassPermission", b =>
                 {
                     b.HasBaseType("Carnets.Domain.Models.PermissionBase");
@@ -191,6 +188,18 @@ namespace Carnets.Repo.Migrations
                         .IsUnique();
 
                     b.HasDiscriminator().HasValue("ClassPermission");
+                });
+
+            modelBuilder.Entity("Carnets.Domain.Models.PerkPermission", b =>
+                {
+                    b.HasBaseType("Carnets.Domain.Models.PermissionBase");
+
+                    b.Property<string>("PerkName")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.HasDiscriminator().HasValue("PerkPermission");
                 });
 
             modelBuilder.Entity("Carnets.Domain.Models.AssignedPermission", b =>

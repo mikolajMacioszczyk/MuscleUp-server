@@ -1,7 +1,8 @@
-﻿using Auth.Domain.Dtos;
-using Auth.Domain.Interfaces;
+﻿using Auth.Application.Common.Interfaces;
+using Auth.Application.Workers.Dtos;
 using Auth.Domain.Models;
 using Common.Enums;
+using Common.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -44,12 +45,7 @@ namespace Auth.Repo.Repositories
             return new Result<Worker>(userResult.Errors);
         }
 
-        public Task<Result<Worker>> UpdateData(string memberId, Worker member)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Result<Worker>> UpdateWorkerData(string workerId, Worker worker)
+        public async Task<Result<Worker>> UpdateData(string workerId, Worker worker)
         {
             var workerFromDb = await GetById(workerId);
             if (workerFromDb is null)

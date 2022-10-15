@@ -1,7 +1,8 @@
-﻿using Auth.Domain.Dtos;
-using Auth.Domain.Interfaces;
+﻿using Auth.Application.Common.Interfaces;
+using Auth.Application.Members.Dtos;
 using Auth.Domain.Models;
 using Common.Enums;
+using Common.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

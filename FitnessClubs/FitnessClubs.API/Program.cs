@@ -15,7 +15,7 @@ builder.Services.ConfigureRouting();
 ProgramExtensions.AddDbContext<FitnessClubsDbContext>(builder.Services, builder.Configuration);
 
 // Authentication
-builder.Services.AddJwtAuthentication();
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 // register app services
 builder.Services.AddScoped<IFitnessClubRepository, FitnessClubRepository>();

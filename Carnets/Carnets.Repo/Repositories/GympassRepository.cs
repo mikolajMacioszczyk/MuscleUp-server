@@ -83,6 +83,7 @@ namespace Carnets.Repo.Repositories
 
             created.GympassType = gympassType;
             created.RemainingValidityPeriodInSeconds = gympassType.ValidityPeriodInSeconds;
+            created.RemainingEntries = gympassType.AllowedEntries;
 
             await _context.Gympasses.AddAsync(created);
 

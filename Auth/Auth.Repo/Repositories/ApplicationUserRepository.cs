@@ -1,4 +1,4 @@
-﻿using Auth.Domain.Interfaces;
+﻿using Auth.Application.Common.Interfaces;
 using Auth.Domain.Models;
 using Common.Models;
 using Microsoft.EntityFrameworkCore;

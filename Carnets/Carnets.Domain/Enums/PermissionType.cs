@@ -2,7 +2,7 @@
 {
     public enum PermissionType : byte
     {
-        TimePermissionEntry = 0,
+        PerkPermission = 0,
         AllowedEntriesPermission = 1,
         ClassPermission = 2
     }

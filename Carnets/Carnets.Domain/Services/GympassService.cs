@@ -1,5 +1,6 @@
 ﻿using Carnets.Domain.Interfaces;
 using Carnets.Domain.Models;
+using Common.Enums;
 using Common.Models;
 
 namespace Carnets.Domain.Services
@@ -8,14 +9,25 @@ namespace Carnets.Domain.Services
     {
         private readonly IGympassRepository _gympassRepository;
         private readonly ISubscriptionService _subscriptionService;
+        private readonly HttpAuthContext _httpAuthContext;
 
-        public GympassService(IGympassRepository gympassRepository, ISubscriptionService subscriptionService)
+        public GympassService(IGympassRepository gympassRepository, ISubscriptionService subscriptionService, HttpAuthContext httpAuthContext)
         {
             _gympassRepository = gympassRepository;
             _subscriptionService = subscriptionService;
+            _httpAuthContext = httpAuthContext;
         }
 
-        public Task<IEnumerable<Gympass>> GetAll() => _gympassRepository.GetAll(false);
+        public Task<IEnumerable<Gympass>> GetAll()
+        {
+            if (_httpAuthContext.UserRole == RoleType.Member)
+            {
+                var memberId = _httpAuthContext.UserId;
+                return _gympassRepository.GetAllForMember(memberId, false);
+            }
+
+            return _gympassRepository.GetAll(false);
+        }
 
         public Task<IEnumerable<Gympass>> GetAllFromFitnessClub(string fitnessClubId) => 
             _gympassRepository.GetAllFromFitnessClub(fitnessClubId, false);
@@ -232,6 +244,43 @@ namespace Carnets.Domain.Services
 
             gympass.Status = Enums.GympassStatus.Inactive;
             gympass.RemainingValidityPeriodInSeconds = (int) gympass.ValidityDate.Subtract(DateTime.UtcNow).TotalSeconds;
+
+            var updateResult = await _gympassRepository.UpdateGympass(gympass);
+
+            if (updateResult.IsSuccess)
+            {
+                await _gympassRepository.SaveChangesAsync();
+            }
+
+            return updateResult;
+        }
+
+        public Task<Result<Gympass>> UpdateGympassEntries(string gympassId, int entries) =>
+            UpdateGympassEntriesHelper(gympassId, gympass => entries);
+
+        public Task<Result<Gympass>> ReduceGympassEntries(string gympassId) =>
+            UpdateGympassEntriesHelper(gympassId, gympass => gympass.RemainingEntries - 1);
+
+        public async Task<Result<Gympass>> UpdateGympassEntriesHelper(string gympassId, Func<Gympass, int> updateEntries)
+        {
+            var gympass = await _gympassRepository.GetById(gympassId, true);
+
+            if (gympass is null)
+            {
+                return new Result<Gympass>(Common.CommonConsts.NOT_FOUND);
+            }
+
+            if (gympass.GympassType.ValidationType != Enums.GympassTypeValidation.Entries)
+            {
+                return new Result<Gympass>($"Cannot update entries of gympass with validation type \"{gympass.GympassType.ValidationType}\"");
+            }
+
+            gympass.RemainingEntries = updateEntries(gympass);
+
+            if (gympass.RemainingEntries < 0)
+            {
+                return new Result<Gympass>($"Remaining gympass entries cannot be less than 0");
+            }
 
             var updateResult = await _gympassRepository.UpdateGympass(gympass);
 

@@ -88,8 +88,14 @@ namespace Common.Extensions
                 options.UseNpgsql(connectionString));
         }
 
-        public static void AddJwtAuthentication(this IServiceCollection services)
+        public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+            var jwtSecret = configuration.GetValue<string>(AuthConsts.JwtSecretKey);
+            if (string.IsNullOrWhiteSpace(jwtSecret))
+            {
+                throw new Exception("Jwt secret not configured!");
+            }
+
             services.AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -101,7 +107,7 @@ namespace Common.Extensions
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(AuthConsts.JwtSecret)),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecret)),
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.Zero,
                         ValidateIssuer = false,
