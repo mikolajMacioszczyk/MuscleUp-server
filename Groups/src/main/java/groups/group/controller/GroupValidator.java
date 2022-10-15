@@ -27,10 +27,10 @@ public class GroupValidator {
     }
 
 
-    boolean isCorrectToSave(GroupForm groupForm) {
+    boolean isCorrectToSave(GroupFullForm groupFullForm) {
 
-        return isParticipantNumberCorrect(groupForm.maxParticipants())
-                && isNameCorrect(groupForm.name());
+        return isParticipantNumberCorrect(groupFullForm.maxParticipants())
+                && isNameCorrect(groupFullForm.name());
     }
 
     boolean isCorrectToUpdate(GroupFullDto groupFullDto) {

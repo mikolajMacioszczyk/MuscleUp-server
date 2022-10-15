@@ -43,6 +43,7 @@ public class GroupWorkout extends AbstractEntity {
     public GroupWorkout() {
     }
 
+
     public GroupWorkout(LocalDateTime startTime, LocalDateTime endTime, Group group, UUID workoutId) {
 
         Assert.notNull(startTime, "startTime must not be null");
@@ -56,6 +57,19 @@ public class GroupWorkout extends AbstractEntity {
         this.workoutId = workoutId;
     }
 
+
+    public void update(LocalDateTime startTime, LocalDateTime endTime, Group group, UUID workoutId) {
+
+        Assert.notNull(startTime, "startTime must not be null");
+        Assert.notNull(endTime, "endTime must not be null");
+        Assert.notNull(group, "group must not be null");
+        Assert.notNull(workoutId, "workoutId must not be null");
+
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.group = group;
+        this.workoutId = workoutId;
+    }
 
     @Override
     public UUID getId() {

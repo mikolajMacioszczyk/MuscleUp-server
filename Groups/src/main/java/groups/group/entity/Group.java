@@ -32,12 +32,11 @@ public class Group extends AbstractEntity {
     public Group() {
     }
 
-    public Group(@Nullable UUID id, String name, Long maxParticipants) {
+    public Group(String name, Long maxParticipants) {
 
         Assert.notNull(name, "name must not be null");
         Assert.notNull(maxParticipants, "maxParticipants must not be null");
 
-        this.id = id;
         this.name = name;
         this.maxParticipants = maxParticipants;
     }
