@@ -8,6 +8,8 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: 'Pa55w0rd'
+    volumes:
+      - ./Database/postgres_init.sql:/docker-entrypoint-initdb.d/postgres_init.sql
 
   auth:
     image: ghcr.io/muscle-up-app/auth
