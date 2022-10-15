@@ -50,7 +50,7 @@ namespace Auth.Repo.Repositories
                 Email = registerDto.Email,
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
-                BirthDate = registerDto.BirthDate,
+                BirthDate = registerDto.BirthDate.ToUniversalTime(),
                 RegisterDate = DateTime.UtcNow,
                 Gender = registerDto.Gender
             };
