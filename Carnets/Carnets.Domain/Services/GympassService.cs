@@ -79,21 +79,20 @@ namespace Carnets.Domain.Services
             };
 
             var createResult = await _gympassRepository.CreateGympass(model.GympassTypeId, created);
-            var checkoutSessionUrl = string.Empty;
-
             if (createResult.IsSuccess)
             {
                 var gympassTypeId = createResult.Value.GympassType.GympassTypeId;
                 var gympassId = createResult.Value.GympassId;
                 var customerId = await _paymentService.GetOrCreateCustomer(userId);
 
-                checkoutSessionUrl = await _paymentService.CreateCheckoutSession(gympassId, customerId, 
+                var checkoutSessionUrl = await _paymentService.CreateCheckoutSession(gympassId, customerId, 
                     gympassTypeId, model.SuccessUrl, model.CancelUrl);
 
                 await _gympassRepository.SaveChangesAsync();
-            }
 
-            return new Result<(Gympass, string)>((createResult.Value, checkoutSessionUrl));
+                return new Result<(Gympass, string)>((createResult.Value, checkoutSessionUrl));
+            }
+            return new Result<(Gympass, string)>(createResult.Errors);
         }
 
         public async Task<Result<Subscription>> CreateGympassSubscription(string userId, string gympassId, Subscription subscription)
