@@ -30,7 +30,17 @@ public class GroupTrainerValidator {
 
         return doesTrainerIdExist(groupTrainerForm.trainerId())
                 && doesGroupIdExist(groupTrainerForm.groupId())
-                && !isAlreadyAssigned(groupTrainerForm.trainerId(), groupTrainerForm.groupId());
+                && !isAssigned(groupTrainerForm.trainerId(), groupTrainerForm.groupId());
+    }
+
+    boolean isCorrectToUnassign(GroupTrainerForm groupTrainerForm) {
+
+        return isAssigned(groupTrainerForm.trainerId(), groupTrainerForm.groupId());
+    }
+
+    boolean isCorrectToUnassign(UUID id) {
+
+        return doesGroupTrainerIdExist(id);
     }
 
 
@@ -45,7 +55,12 @@ public class GroupTrainerValidator {
         return groupQuery.findGroupById(id).isPresent();
     }
 
-    private boolean isAlreadyAssigned(UUID trainerId, UUID groupId) {
+    private boolean doesGroupTrainerIdExist(UUID id) {
+
+        return groupTrainerQuery.findGroupTrainerById(id).isPresent();
+    }
+
+    private boolean isAssigned(UUID trainerId, UUID groupId) {
 
         return !groupTrainerQuery.getAllGroupTrainerByGroupIdAndTrainerId(groupId, trainerId).isEmpty();
     }

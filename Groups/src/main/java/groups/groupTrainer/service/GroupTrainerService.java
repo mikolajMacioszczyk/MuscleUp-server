@@ -34,4 +34,18 @@ public class GroupTrainerService {
 
         return groupTrainerRepository.assign(groupTrainer);
     }
+
+    public void unassign(UUID groupTrainerId) {
+
+        Assert.notNull(groupTrainerId, "groupTrainerId must not be null");
+
+        groupTrainerRepository.unassign(groupTrainerId);
+    }
+
+    public void unassign(GroupTrainerForm groupTrainerForm) {
+
+        Assert.notNull(groupTrainerForm, "groupTrainerForm must not be null");
+
+        groupTrainerRepository.unassign(groupTrainerForm.trainerId(), groupTrainerForm.groupId());
+    }
 }

@@ -18,7 +18,7 @@ public class GroupTrainer extends AbstractEntity {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_id")
+    @JoinColumn(name = "class_id", nullable = false)
     private Group group;
 
     @UnknownForeignKey

@@ -31,7 +31,7 @@ public class GroupWorkout extends AbstractEntity {
     private LocalDateTime endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_id")
+    @JoinColumn(name = "class_id", nullable = false)
     private Group group;
 
     @UnknownForeignKey
