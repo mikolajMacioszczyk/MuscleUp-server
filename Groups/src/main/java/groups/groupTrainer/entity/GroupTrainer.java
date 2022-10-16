@@ -26,7 +26,7 @@ public class GroupTrainer extends AbstractEntity {
 
     @UnknownForeignKey
     @Column(name = "user_id", nullable = false)
-    private UUID userId;
+    private UUID trainerId;
 
 
     @MustExist(reason = Reason.HIBERNATE)
@@ -34,13 +34,13 @@ public class GroupTrainer extends AbstractEntity {
     }
 
 
-    public GroupTrainer(Group group, UUID userId) {
+    public GroupTrainer(Group group, UUID trainerId) {
 
         Assert.notNull(group, "group must not be null");
-        Assert.notNull(userId, "userId must not be null");
+        Assert.notNull(trainerId, "trainerId must not be null");
 
         this.group = group;
-        this.userId = userId;
+        this.trainerId = trainerId;
     }
 
 
@@ -50,7 +50,7 @@ public class GroupTrainer extends AbstractEntity {
         Assert.notNull(userId, "userId must not be null");
 
         this.group = group;
-        this.userId = userId;
+        this.trainerId = userId;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class GroupTrainer extends AbstractEntity {
         return group;
     }
 
-    public UUID getUserId() {
-        return userId;
+    public UUID getTrainerId() {
+        return trainerId;
     }
 }

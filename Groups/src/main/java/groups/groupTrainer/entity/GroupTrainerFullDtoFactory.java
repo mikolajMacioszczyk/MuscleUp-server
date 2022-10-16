@@ -10,7 +10,7 @@ public class GroupTrainerFullDtoFactory {
 
         return new GroupTrainerFullDto(
                 groupTrainer.getId(),
-                groupTrainer.getUserId(),
+                groupTrainer.getTrainerId(),
                 groupTrainer.getGroup().getId()
         );
     }
