@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("class")
+@RequestMapping("group")
 public class GroupListController {
 
     private final GroupQuery groupQuery;
@@ -42,7 +42,7 @@ public class GroupListController {
     }
 
     // TODO wszystkie grupy, ale dla danego klubu - pobieramy z tokenu
-    @GetMapping("/full-class-info")
+    @GetMapping("/full-group-info")
     protected ResponseEntity<List<GroupFullDto>> getAllGroups() {
 
         List<GroupFullDto> groups = groupQuery.getAllGroups();
@@ -51,7 +51,7 @@ public class GroupListController {
     }
 
     // TODO wszystkie grupy, ale dla danego klubu - pobieramy z tokenu
-    @GetMapping("/class-names")
+    @GetMapping("/group-names")
     protected ResponseEntity<List<GroupNameDto>> getGroupNames() {
 
         List<GroupNameDto> groups = groupQuery.getAllGroupNames();

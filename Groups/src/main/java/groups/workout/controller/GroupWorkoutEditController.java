@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("class-workout")
+@RequestMapping("group-workout")
 public class GroupWorkoutEditController {
 
     private final GroupWorkoutService groupWorkoutService;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("class-workout-participant")
+@RequestMapping("group-workout-participant")
 class WorkoutParticipantController {
 
     private final WorkoutParticipantService workoutParticipantService;

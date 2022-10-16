@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("class-trainer")
+@RequestMapping("group-trainer")
 class GroupTrainerController {
 
     private final GroupTrainerService groupTrainerService;

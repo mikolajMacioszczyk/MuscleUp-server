@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("class-workout")
+@RequestMapping("group-workout")
 public class GroupWorkoutListController {
 
     private final GroupWorkoutQuery groupWorkoutQuery;
@@ -29,7 +29,7 @@ public class GroupWorkoutListController {
 
 
     // TODO wszystkie, ale dla danego klubu - pobieramy z tokenu
-    @GetMapping("/full-class-workout-info")
+    @GetMapping("/full-group-workout-info")
     protected ResponseEntity<List<GroupWorkoutFullDto>> getAllGroupWorkouts() {
 
         List<GroupWorkoutFullDto> groupsWorkouts = groupWorkoutQuery.getAllGroupsWorkouts();
@@ -57,7 +57,7 @@ public class GroupWorkoutListController {
     }
 
     // TODO wszystkie, ale dla danego klubu - pobieramy z tokenu
-    @GetMapping("/find-by-class/{id}")
+    @GetMapping("/find-by-group/{id}")
     protected ResponseEntity<List<GroupWorkoutFullDto>> findAllGroupWorkoutsByGroupId(@PathVariable("id") UUID id) {
 
         List<GroupWorkoutFullDto> groupsWorkouts = groupWorkoutQuery.getAllGroupWorkoutByGroupId(id);
