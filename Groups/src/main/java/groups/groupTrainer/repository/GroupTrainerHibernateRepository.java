@@ -20,7 +20,7 @@ import static groups.common.stringUtils.StringUtils.concatenate;
 public class GroupTrainerHibernateRepository extends AbstractHibernateRepository<GroupTrainer> implements GroupTrainerRepository {
 
     @Autowired
-    protected GroupTrainerHibernateRepository(SessionFactory sessionFactory) {
+    private GroupTrainerHibernateRepository(SessionFactory sessionFactory) {
 
         super(GroupTrainer.class, sessionFactory);
     }
@@ -28,11 +28,15 @@ public class GroupTrainerHibernateRepository extends AbstractHibernateRepository
     @Override
     public UUID assign(GroupTrainer groupTrainer) {
 
+        Assert.notNull(groupTrainer, "groupTrainer must not be null");
+
         return save(groupTrainer);
     }
 
     @Override
     public void unassign(UUID groupTrainerId) {
+
+        Assert.notNull(groupTrainerId, "groupTrainerId must not be null");
 
         delete(groupTrainerId);
     }

@@ -12,8 +12,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static javax.persistence.GenerationType.AUTO;
-
 @Entity
 @Table(name = "class_workout")
 public class GroupWorkout extends AbstractEntity {

@@ -13,7 +13,7 @@ public class WorkoutParticipantFactory {
 
 
     @Autowired
-    public WorkoutParticipantFactory(GroupWorkoutQuery groupWorkoutQuery) {
+    private WorkoutParticipantFactory(GroupWorkoutQuery groupWorkoutQuery) {
 
         Assert.notNull(groupWorkoutQuery, "groupWorkoutQuery must not be null");
 
@@ -22,6 +22,8 @@ public class WorkoutParticipantFactory {
 
 
     public WorkoutParticipant create(WorkoutParticipantForm workoutParticipantForm) {
+
+        Assert.notNull(workoutParticipantForm, "workoutParticipantForm must not be null");
 
         return new WorkoutParticipant(
                 groupWorkoutQuery.getById(workoutParticipantForm.groupWorkoutId()),

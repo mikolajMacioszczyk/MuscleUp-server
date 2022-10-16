@@ -2,8 +2,6 @@ package groups.group.repository;
 
 import groups.common.abstracts.AbstractHibernateQuery;
 import groups.group.entity.*;
-import groups.groupTrainer.entity.GroupTrainer;
-import groups.groupTrainer.entity.GroupTrainerFullDto;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -19,7 +17,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static groups.common.stringUtils.StringUtils.concatenate;
-import static java.util.Objects.isNull;
 
 @Primary
 @Repository
@@ -30,7 +27,7 @@ public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implement
 
 
     @Autowired
-    protected GroupHibernateQuery(SessionFactory sessionFactory) {
+    private GroupHibernateQuery(SessionFactory sessionFactory) {
 
         super(Group.class, sessionFactory);
 

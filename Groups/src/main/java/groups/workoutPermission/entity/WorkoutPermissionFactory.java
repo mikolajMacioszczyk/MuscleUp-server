@@ -13,7 +13,7 @@ public class WorkoutPermissionFactory {
 
 
     @Autowired
-    public WorkoutPermissionFactory(GroupWorkoutQuery groupWorkoutQuery) {
+    private WorkoutPermissionFactory(GroupWorkoutQuery groupWorkoutQuery) {
 
         Assert.notNull(groupWorkoutQuery, "groupWorkoutQuery must not be null");
 
@@ -22,6 +22,8 @@ public class WorkoutPermissionFactory {
 
 
     public WorkoutPermission create(WorkoutPermissionForm workoutPermissionForm) {
+
+        Assert.notNull(workoutPermissionForm, "workoutPermissionForm must not be null");
 
         return new WorkoutPermission(
                 groupWorkoutQuery.getById(workoutPermissionForm.groupWorkoutId()),

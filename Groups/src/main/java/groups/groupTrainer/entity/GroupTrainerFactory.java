@@ -13,7 +13,7 @@ public class GroupTrainerFactory {
 
 
     @Autowired
-    public GroupTrainerFactory(GroupQuery groupQuery) {
+    private GroupTrainerFactory(GroupQuery groupQuery) {
 
         Assert.notNull(groupQuery, "groupQuery must not be null");
 
@@ -22,6 +22,8 @@ public class GroupTrainerFactory {
 
 
     public GroupTrainer create(GroupTrainerForm groupTrainerForm) {
+
+        Assert.notNull(groupTrainerForm, "groupTrainerForm must not be null");
 
         return new GroupTrainer(
                 groupQuery.getById(groupTrainerForm.groupId()),

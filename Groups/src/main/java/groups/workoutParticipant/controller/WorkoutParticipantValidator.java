@@ -16,7 +16,7 @@ public class WorkoutParticipantValidator {
 
 
     @Autowired
-    public WorkoutParticipantValidator(GroupWorkoutQuery groupWorkoutQuery, WorkoutParticipantQuery workoutParticipantQuery) {
+    private WorkoutParticipantValidator(GroupWorkoutQuery groupWorkoutQuery, WorkoutParticipantQuery workoutParticipantQuery) {
 
         Assert.notNull(groupWorkoutQuery, "groupWorkoutQuery must not be null");
         Assert.notNull(workoutParticipantQuery, "workoutParticipantQuery must not be null");
@@ -28,6 +28,8 @@ public class WorkoutParticipantValidator {
 
     boolean isCorrectToAssign(WorkoutParticipantForm workoutParticipantForm) {
 
+        Assert.notNull(workoutParticipantForm, "workoutParticipantForm must not be null");
+
         return doesGroupWorkoutIdExist(workoutParticipantForm.groupWorkoutId())
                 && doesParticipantExist(workoutParticipantForm.participantId())
                 && !isAssigned(workoutParticipantForm.groupWorkoutId(), workoutParticipantForm.participantId());
@@ -35,10 +37,14 @@ public class WorkoutParticipantValidator {
 
     boolean isCorrectToUnassign(WorkoutParticipantForm workoutParticipantForm) {
 
+        Assert.notNull(workoutParticipantForm, "workoutParticipantForm must not be null");
+
         return isAssigned(workoutParticipantForm.groupWorkoutId(), workoutParticipantForm.participantId());
     }
 
     boolean isCorrectToUnassign(UUID id) {
+
+        Assert.notNull(id, "id must not be null");
 
         return doesGroupParticipantExist(id);
     }

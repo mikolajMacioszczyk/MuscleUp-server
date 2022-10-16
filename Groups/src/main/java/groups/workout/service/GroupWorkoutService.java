@@ -17,7 +17,6 @@ public class GroupWorkoutService {
 
     private final GroupWorkoutRepository groupWorkoutRepository;
     private final GroupWorkoutFactory groupWorkoutFactory;
-
     private final GroupRepository groupRepository;
 
 

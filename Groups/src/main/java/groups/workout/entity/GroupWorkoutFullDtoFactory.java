@@ -1,6 +1,5 @@
 package groups.workout.entity;
 
-import groups.group.entity.GroupFullDto;
 import org.springframework.util.Assert;
 
 public class GroupWorkoutFullDtoFactory {

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public class GroupWorkoutHibernateRepository extends AbstractHibernateRepository<GroupWorkout> implements GroupWorkoutRepository {
 
     @Autowired
-    protected GroupWorkoutHibernateRepository(SessionFactory sessionFactory) {
+    private GroupWorkoutHibernateRepository(SessionFactory sessionFactory) {
 
         super(GroupWorkout.class, sessionFactory);
     }

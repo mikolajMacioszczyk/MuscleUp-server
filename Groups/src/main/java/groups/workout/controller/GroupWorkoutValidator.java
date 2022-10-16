@@ -18,7 +18,7 @@ public class GroupWorkoutValidator {
 
 
     @Autowired
-    public GroupWorkoutValidator(GroupWorkoutQuery groupWorkoutQuery, GroupQuery groupQuery) {
+    private GroupWorkoutValidator(GroupWorkoutQuery groupWorkoutQuery, GroupQuery groupQuery) {
 
         Assert.notNull(groupWorkoutQuery, "groupWorkoutQuery must not be null");
         Assert.notNull(groupQuery, "groupQuery must not be null");
@@ -31,12 +31,16 @@ public class GroupWorkoutValidator {
     // TODO czy nie ma groupWorkout z workoutId i groupId w tych godzinach
     boolean isCorrectToSave(GroupWorkoutFullForm groupWorkoutFullForm) {
 
+        Assert.notNull(groupWorkoutFullForm, "groupWorkoutFullForm must not be null");
+
         return doesGroupIdExist(groupWorkoutFullForm.groupId())
                 && doesWorkoutIdExist(groupWorkoutFullForm.workoutId())
                 && areDatesCorrect(groupWorkoutFullForm.startTime(), groupWorkoutFullForm.endTime());
     }
 
     boolean isCorrectToUpdate(GroupWorkoutFullDto groupWorkoutFullDto) {
+
+        Assert.notNull(groupWorkoutFullDto, "groupWorkoutFullDto must not be null");
 
         return doesGroupWorkoutIdExist(groupWorkoutFullDto.id())
                 && doesGroupIdExist(groupWorkoutFullDto.groupId())
@@ -45,6 +49,8 @@ public class GroupWorkoutValidator {
     }
 
     boolean isCorrectToDelete(UUID id) {
+
+        Assert.notNull(id, "id must not be null");
 
         return groupWorkoutQuery.findGroupWorkoutById(id).isPresent();
     }

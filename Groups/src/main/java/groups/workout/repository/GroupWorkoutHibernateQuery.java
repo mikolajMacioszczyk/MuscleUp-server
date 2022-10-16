@@ -28,7 +28,7 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
 
 
     @Autowired
-    protected GroupWorkoutHibernateQuery(SessionFactory sessionFactory) {
+    private GroupWorkoutHibernateQuery(SessionFactory sessionFactory) {
 
         super(GroupWorkout.class, sessionFactory);
 

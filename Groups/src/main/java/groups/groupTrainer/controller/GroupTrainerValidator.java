@@ -16,7 +16,7 @@ public class GroupTrainerValidator {
 
 
     @Autowired
-    public GroupTrainerValidator(GroupQuery groupQuery, GroupTrainerQuery groupTrainerQuery) {
+    private GroupTrainerValidator(GroupQuery groupQuery, GroupTrainerQuery groupTrainerQuery) {
 
         Assert.notNull(groupQuery, "groupQuery must not be null");
         Assert.notNull(groupTrainerQuery, "groupTrainerQuery must not be null");
@@ -28,6 +28,8 @@ public class GroupTrainerValidator {
 
     boolean isCorrectToAssign(GroupTrainerForm groupTrainerForm) {
 
+        Assert.notNull(groupTrainerForm, "groupTrainerForm must not be null");
+
         return doesTrainerIdExist(groupTrainerForm.trainerId())
                 && doesGroupIdExist(groupTrainerForm.groupId())
                 && !isAssigned(groupTrainerForm.trainerId(), groupTrainerForm.groupId());
@@ -35,10 +37,14 @@ public class GroupTrainerValidator {
 
     boolean isCorrectToUnassign(GroupTrainerForm groupTrainerForm) {
 
+        Assert.notNull(groupTrainerForm, "groupTrainerForm must not be null");
+
         return isAssigned(groupTrainerForm.trainerId(), groupTrainerForm.groupId());
     }
 
     boolean isCorrectToUnassign(UUID id) {
+
+        Assert.notNull(id, "id must not be null");
 
         return doesGroupTrainerIdExist(id);
     }

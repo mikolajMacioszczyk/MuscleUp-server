@@ -21,7 +21,7 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
 
 
     @Autowired
-    protected WorkoutParticipantHibernateRepository(SessionFactory sessionFactory) {
+    private WorkoutParticipantHibernateRepository(SessionFactory sessionFactory) {
 
         super(WorkoutParticipant.class, sessionFactory);
     }
@@ -30,11 +30,15 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
     @Override
     public UUID assign(WorkoutParticipant workoutParticipant) {
 
+        Assert.notNull(workoutParticipant, "workoutParticipant must not be null");
+
         return save(workoutParticipant);
     }
 
     @Override
     public void unassign(UUID workoutParticipantId) {
+
+        Assert.notNull(workoutParticipantId, "workoutParticipantId must not be null");
 
         delete(workoutParticipantId);
     }

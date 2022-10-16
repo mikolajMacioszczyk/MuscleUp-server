@@ -6,6 +6,8 @@ import groups.workoutPermission.entity.WorkoutPermissionFullDto;
 import groups.workoutPermission.entity.WorkoutPermissionFullDtoFactory;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -18,13 +20,15 @@ import java.util.stream.Collectors;
 
 import static groups.common.stringUtils.StringUtils.concatenate;
 
+@Primary
+@Repository
 public class WorkoutPermissionHibernateQuery extends AbstractHibernateQuery<WorkoutPermission> implements WorkoutPermissionQuery {
 
     private final WorkoutPermissionFullDtoFactory workoutPermissionFullDtoFactory;
 
 
     @Autowired
-    protected WorkoutPermissionHibernateQuery(SessionFactory sessionFactory) {
+    private WorkoutPermissionHibernateQuery(SessionFactory sessionFactory) {
 
         super(WorkoutPermission.class, sessionFactory);
 

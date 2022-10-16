@@ -16,7 +16,7 @@ public class WorkoutPermissionValidator {
 
 
     @Autowired
-    public WorkoutPermissionValidator(GroupWorkoutQuery groupWorkoutQuery, WorkoutPermissionQuery workoutPermissionQuery) {
+    private WorkoutPermissionValidator(GroupWorkoutQuery groupWorkoutQuery, WorkoutPermissionQuery workoutPermissionQuery) {
 
         Assert.notNull(groupWorkoutQuery, "groupWorkoutQuery must not be null");
         Assert.notNull(workoutPermissionQuery, "workoutPermissionQuery must not be null");
@@ -28,6 +28,8 @@ public class WorkoutPermissionValidator {
 
     boolean isCorrectToAdd(WorkoutPermissionForm workoutPermissionForm) {
 
+        Assert.notNull(workoutPermissionForm, "workoutPermissionForm must not be null");
+
         return doesGroupWorkoutIdExist(workoutPermissionForm.groupWorkoutId())
                 && doesPermissionExist(workoutPermissionForm.permissionId())
                 && !isAssigned(workoutPermissionForm.groupWorkoutId(), workoutPermissionForm.permissionId());
@@ -35,10 +37,14 @@ public class WorkoutPermissionValidator {
 
     boolean isCorrectToRemove(WorkoutPermissionForm workoutPermissionForm) {
 
+        Assert.notNull(workoutPermissionForm, "workoutPermissionForm must not be null");
+
         return isAssigned(workoutPermissionForm.groupWorkoutId(), workoutPermissionForm.permissionId());
     }
 
     boolean isCorrectToRemove(UUID id) {
+
+        Assert.notNull(id, "id must not be null");
 
         return doesGroupPermissionExist(id);
     }

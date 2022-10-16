@@ -4,7 +4,6 @@ import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
 import groups.common.annotation.Reason;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
