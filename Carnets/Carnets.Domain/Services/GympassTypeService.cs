@@ -66,7 +66,7 @@ namespace Carnets.Domain.Services
             return await AssignPermissionsToGympassType(gympassType);
         }
 
-        public async Task<Result<GympassType>> CreateGympassType(
+        public async Task<Result<GympassTypeWithPermissions>> CreateGympassType(
             GympassType gympassType, 
             IEnumerable<string> classPermissionsNames, 
             IEnumerable<string> perkPermissionsNames)
@@ -74,7 +74,7 @@ namespace Carnets.Domain.Services
             var allPermissionResult = await GetPermissionsByNames(classPermissionsNames, perkPermissionsNames);
             if (!allPermissionResult.IsSuccess)
             {
-                return new Result<GympassType>(allPermissionResult.Errors);
+                return new Result<GympassTypeWithPermissions>(allPermissionResult.Errors);
             }
             var (classPermissions, perkPermissions) = allPermissionResult.Value;
 
@@ -82,13 +82,13 @@ namespace Carnets.Domain.Services
 
             if (!createResult.IsSuccess)
             {
-                return createResult;
+                return new Result<GympassTypeWithPermissions>(createResult.ErrorCombined);
             }
 
             var assignResult = await AssignAllGympassPermissions(classPermissions, perkPermissions, createResult.Value);
             if (!assignResult.IsSuccess)
             {
-                return assignResult;
+                return new Result<GympassTypeWithPermissions>(assignResult.ErrorCombined);
             }
 
             await _paymentService.CreateProduct(createResult.Value);
@@ -96,10 +96,11 @@ namespace Carnets.Domain.Services
             await _gympassTypeRepository.SaveChangesAsync();
             await _assignedPermissionRepository.SaveChangesAsync();
 
-            return createResult;
+            var gympassWithPermissions = MapToGympassTypeWithPermissions(createResult.Value, classPermissionsNames, perkPermissionsNames);
+            return new Result<GympassTypeWithPermissions>(gympassWithPermissions);
         }
 
-        public async Task<Result<GympassType>> UpdateGympassType(GympassType gympassType)
+        public async Task<Result<GympassTypeWithPermissions>> UpdateGympassType(GympassType gympassType)
         {
             var updateResult = await _gympassTypeRepository.UpdateGympassType(gympassType);
 
@@ -110,7 +111,7 @@ namespace Carnets.Domain.Services
 
                 if (!linkedPermissionsResult.IsSuccess)
                 {
-                    return new Result<GympassType>(linkedPermissionsResult.ErrorCombined);
+                    return new Result<GympassTypeWithPermissions>(linkedPermissionsResult.Errors);
                 }
 
                 foreach (var oldAssignedPermission in linkedPermissionsResult.Value)
@@ -127,7 +128,7 @@ namespace Carnets.Domain.Services
                     
                     if (!createResult.IsSuccess)
                     {
-                        return new Result<GympassType>(createResult.ErrorCombined);
+                        return new Result<GympassTypeWithPermissions>(createResult.Errors);
                     }
                 }
 
@@ -135,12 +136,15 @@ namespace Carnets.Domain.Services
 
                 await _assignedPermissionRepository.SaveChangesAsync();
                 await _gympassTypeRepository.SaveChangesAsync();
+
+                var gympassWithPermissions = await AssignPermissionsToGympassType(updateResult.Value);
+                return new Result<GympassTypeWithPermissions>(gympassWithPermissions);
             }
 
-            return updateResult;
+            return new Result<GympassTypeWithPermissions>(updateResult.Errors);
         }
 
-        public async Task<Result<GympassType>> UpdateGympassTypeWithPermissions(
+        public async Task<Result<GympassTypeWithPermissions>> UpdateGympassTypeWithPermissions(
             GympassType gympassType, 
             IEnumerable<string> classPermissionNames, 
             IEnumerable<string> perkPermissionNames)
@@ -148,7 +152,7 @@ namespace Carnets.Domain.Services
             var allPermissionResult = await GetPermissionsByNames(classPermissionNames, perkPermissionNames);
             if (!allPermissionResult.IsSuccess)
             {
-                return new Result<GympassType>(allPermissionResult.Errors);
+                return new Result<GympassTypeWithPermissions>(allPermissionResult.Errors);
             }
             var (classPermissions, perkPermissions) = allPermissionResult.Value;
 
@@ -156,13 +160,13 @@ namespace Carnets.Domain.Services
 
             if (!updateResult.IsSuccess)
             {
-                return updateResult;
+                return new Result<GympassTypeWithPermissions>(updateResult.Errors);
             }
 
             var assignResult = await AssignAllGympassPermissions(classPermissions, perkPermissions, updateResult.Value);
             if (!assignResult.IsSuccess)
             {
-                return assignResult;
+                return new Result<GympassTypeWithPermissions>(assignResult.Errors);
             }
 
             await _paymentService.CreateProduct(updateResult.Value);
@@ -170,7 +174,8 @@ namespace Carnets.Domain.Services
             await _gympassTypeRepository.SaveChangesAsync();
             await _assignedPermissionRepository.SaveChangesAsync();
 
-            return updateResult;
+            var gympassWithPermissions = MapToGympassTypeWithPermissions(updateResult.Value, classPermissionNames, perkPermissionNames);
+            return new Result<GympassTypeWithPermissions>(gympassWithPermissions);
         }
 
         public async Task<Result<bool>> DeleteGympassType(string gympassTypeId)
@@ -287,6 +292,17 @@ namespace Carnets.Domain.Services
             // perk
             gympassWithPermissions.PerkPermissions = (await _perkPermissionService.GetAllGympassTypePermissions(gympassType.GympassTypeId))
                 .Select(p => p.PermissionName);
+
+            return gympassWithPermissions;
+        }
+
+        private GympassTypeWithPermissions MapToGympassTypeWithPermissions(GympassType source,
+            IEnumerable<string> classPermissionNames,
+            IEnumerable<string> perkPermissionNames)
+        {
+            var gympassWithPermissions = _mapper.Map<GympassTypeWithPermissions>(source);
+            gympassWithPermissions.ClassPermissions = classPermissionNames;
+            gympassWithPermissions.PerkPermissions = perkPermissionNames;
 
             return gympassWithPermissions;
         }

@@ -112,7 +112,7 @@ namespace Carnets.API.Controllers
             return BadRequest(updateResult.ErrorCombined);
         }
 
-        [HttpPut("withPermissions/{gympassTypeId}")]
+        [HttpPut("with-permissions/{gympassTypeId}")]
         [Authorize(Roles = nameof(RoleType.Worker))]
         public async Task<ActionResult<GympassTypeDto>> UpdateGympassTypeWithPermissions([FromRoute] string gympassTypeId, [FromBody] UpdateGympassTypeWithPermissionsDto model)
         {
