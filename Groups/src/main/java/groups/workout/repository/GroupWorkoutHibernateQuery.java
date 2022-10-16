@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
+import static groups.common.stringUtils.StringUtils.concatenate;
 
 @Primary
 @Repository
@@ -41,11 +41,27 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
 
         Assert.notNull(id, "id must not be null");
 
-        GroupWorkout groupWorkout = getById(id);
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaQuery<GroupWorkoutFullDto> criteriaQuery = criteriaBuilder.createQuery(GroupWorkoutFullDto.class);
+        Root<GroupWorkout> root = criteriaQuery.from(GroupWorkout.class);
 
-        return isNull(groupWorkout)?
-                Optional.empty() :
-                Optional.of(groupWorkoutFullDtoFactory.create(groupWorkout));
+        criteriaQuery.multiselect(
+                root.get("id"),
+                root.get("group.id"),
+                root.get("workoutId"),
+                root.get("startTime"),
+                root.get("endTime")
+        ).where(
+                criteriaBuilder.equal(root.get("id"), id)
+        );
+
+        return getSession().createQuery(criteriaQuery)
+                .setComment(
+                        concatenate("GroupWorkout with id = ", id.toString())
+                )
+                .getResultList()
+                .stream()
+                .findFirst();
     }
 
     @Override
@@ -68,7 +84,9 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
         );
 
         return getSession().createQuery(criteriaQuery)
-                .setComment("GroupWorkout with groupId = " + groupId)
+                .setComment(
+                        concatenate("GroupWorkout with groupId = ", groupId.toString())
+                )
                 .getResultList();
     }
 
@@ -92,7 +110,9 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
             );
 
         return getSession().createQuery(criteriaQuery)
-                .setComment("GroupWorkout with workoutId = " + workoutId)
+                .setComment(
+                        concatenate("GroupWorkout with workoutId = ", workoutId.toString())
+                )
                 .getResultList();
     }
 

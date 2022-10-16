@@ -2,17 +2,23 @@ package groups.group.repository;
 
 import groups.common.abstracts.AbstractHibernateQuery;
 import groups.group.entity.*;
+import groups.groupTrainer.entity.GroupTrainer;
+import groups.groupTrainer.entity.GroupTrainerFullDto;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static groups.common.stringUtils.StringUtils.concatenate;
 import static java.util.Objects.isNull;
 
 @Primary
@@ -38,11 +44,25 @@ public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implement
 
         Assert.notNull(id, "id must not be null");
 
-        Group group = getById(id);
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaQuery<GroupFullDto> criteriaQuery = criteriaBuilder.createQuery(GroupFullDto.class);
+        Root<Group> root = criteriaQuery.from(Group.class);
 
-        return isNull(group)?
-                Optional.empty() :
-                Optional.of(groupFullDtoFactory.create(group));
+        criteriaQuery.multiselect(
+                root.get("id"),
+                root.get("name"),
+                root.get("maxParticipants")
+        ).where(
+                criteriaBuilder.equal(root.get("id"), id)
+        );
+
+        return getSession().createQuery(criteriaQuery)
+                .setComment(
+                        concatenate("Group with id = ", id.toString())
+                )
+                .getResultList()
+                .stream()
+                .findFirst();
     }
 
     @Override

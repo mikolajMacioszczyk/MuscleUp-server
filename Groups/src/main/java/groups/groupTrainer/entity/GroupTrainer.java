@@ -1,4 +1,4 @@
-package groups.trainer.entity;
+package groups.groupTrainer.entity;
 
 import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
@@ -30,6 +30,7 @@ public class GroupTrainer extends AbstractEntity {
     public GroupTrainer() {
     }
 
+
     public GroupTrainer(Group group, UUID userId) {
 
         Assert.notNull(group, "group must not be null");
@@ -39,6 +40,15 @@ public class GroupTrainer extends AbstractEntity {
         this.userId = userId;
     }
 
+
+    public void update(Group group, UUID userId) {
+
+        Assert.notNull(group, "group must not be null");
+        Assert.notNull(userId, "userId must not be null");
+
+        this.group = group;
+        this.userId = userId;
+    }
 
     @Override
     public UUID getId() {

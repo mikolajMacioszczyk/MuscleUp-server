@@ -1,4 +1,4 @@
-package groups.participant.entity;
+package groups.workoutParticipant.entity;
 
 import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;

@@ -1,4 +1,4 @@
-package groups.permission.entity;
+package groups.workoutPermission.entity;
 
 import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
