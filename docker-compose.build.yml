@@ -1,5 +1,8 @@
 # run me with: docker-compose -f docker-compose.build.yml up --build
 
+# build and push all
+# docker build -t ghcr.io/muscle-up-app/apigateway:latest -f ApiGateway/ApiGateway.API/Dockerfile .;docker push ghcr.io/muscle-up-app/apigateway:latest;docker build -t ghcr.io/muscle-up-app/auth:latest -f Auth/Auth.API/Dockerfile .;docker push ghcr.io/muscle-up-app/auth:latest;docker build -t ghcr.io/muscle-up-app/carnets:latest -f Carnets/Carnets.API/Dockerfile .;docker push ghcr.io/muscle-up-app/carnets:latest;docker build -t ghcr.io/muscle-up-app/content:latest -f Content/Dockerfile .;docker push ghcr.io/muscle-up-app/content:latest;docker build -t ghcr.io/muscle-up-app/fitnessclubs:latest -f FitnessClubs/FitnessClubs.API/Dockerfile .;docker push ghcr.io/muscle-up-app/fitnessclubs:latest;docker build -t ghcr.io/muscle-up-app/groups:latest -f Groups/Dockerfile .;docker push ghcr.io/muscle-up-app/groups:latest;docker build -t ghcr.io/muscle-up-app/notifications:latest -f Notifications/Dockerfile .;docker push ghcr.io/muscle-up-app/notifications:latest
+
 version: '3.8'
 
 services:
