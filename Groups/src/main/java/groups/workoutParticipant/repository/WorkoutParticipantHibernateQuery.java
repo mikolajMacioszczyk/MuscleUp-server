@@ -13,6 +13,7 @@ import org.springframework.util.Assert;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,6 +46,7 @@ public class WorkoutParticipantHibernateQuery extends AbstractHibernateQuery<Wor
     }
 
     @Override
+    @Transactional
     public Optional<WorkoutParticipantFullDto> findWorkoutParticipantById(UUID id) {
 
         Assert.notNull(id, "id must not be null");
@@ -71,6 +73,7 @@ public class WorkoutParticipantHibernateQuery extends AbstractHibernateQuery<Wor
     }
 
     @Override
+    @Transactional
     public List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGroupWorkoutId(UUID groupWorkoutId) {
 
         Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
@@ -95,6 +98,7 @@ public class WorkoutParticipantHibernateQuery extends AbstractHibernateQuery<Wor
     }
 
     @Override
+    @Transactional
     public List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByParticipantId(UUID participantId) {
 
         Assert.notNull(participantId, "participantId must not be null");
@@ -119,6 +123,7 @@ public class WorkoutParticipantHibernateQuery extends AbstractHibernateQuery<Wor
     }
 
     @Override
+    @Transactional
     public List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGroupWorkoutIdAndParticipantId(UUID groupWorkoutId, UUID participantId) {
 
         Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");

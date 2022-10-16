@@ -13,6 +13,7 @@ import org.springframework.util.Assert;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,6 +46,7 @@ public class GroupTrainerHibernateQuery extends AbstractHibernateQuery<GroupTrai
     }
 
     @Override
+    @Transactional
     public Optional<GroupTrainerFullDto> findGroupTrainerById(UUID id) {
 
         Assert.notNull(id, "id must not be null");
@@ -71,6 +73,7 @@ public class GroupTrainerHibernateQuery extends AbstractHibernateQuery<GroupTrai
     }
 
     @Override
+    @Transactional
     public List<GroupTrainerFullDto> getAllGroupTrainerByGroupId(UUID groupId) {
 
         Assert.notNull(groupId, "groupId must not be null");
@@ -95,6 +98,7 @@ public class GroupTrainerHibernateQuery extends AbstractHibernateQuery<GroupTrai
     }
 
     @Override
+    @Transactional
     public List<GroupTrainerFullDto> getAllGroupTrainerByTrainerId(UUID trainerId) {
 
         Assert.notNull(trainerId, "trainerId must not be null");
@@ -119,6 +123,7 @@ public class GroupTrainerHibernateQuery extends AbstractHibernateQuery<GroupTrai
     }
 
     @Override
+    @Transactional
     public List<GroupTrainerFullDto> getAllGroupTrainerByGroupIdAndTrainerId(UUID groupId, UUID trainerId) {
 
         Assert.notNull(groupId, "groupId must not be null");

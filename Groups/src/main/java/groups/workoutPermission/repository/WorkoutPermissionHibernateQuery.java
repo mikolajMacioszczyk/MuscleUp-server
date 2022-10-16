@@ -13,6 +13,7 @@ import org.springframework.util.Assert;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,6 +46,7 @@ public class WorkoutPermissionHibernateQuery extends AbstractHibernateQuery<Work
     }
 
     @Override
+    @Transactional
     public Optional<WorkoutPermissionFullDto> findWorkoutPermissionById(UUID id) {
 
         Assert.notNull(id, "id must not be null");
@@ -71,6 +73,7 @@ public class WorkoutPermissionHibernateQuery extends AbstractHibernateQuery<Work
     }
 
     @Override
+    @Transactional
     public List<WorkoutPermissionFullDto> getAllWorkoutPermissionsByGroupWorkoutId(UUID groupWorkoutId) {
 
         Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
@@ -95,6 +98,7 @@ public class WorkoutPermissionHibernateQuery extends AbstractHibernateQuery<Work
     }
 
     @Override
+    @Transactional
     public List<WorkoutPermissionFullDto> getAllWorkoutPermissionsByPermissionId(UUID permissionId) {
 
         Assert.notNull(permissionId, "permissionId must not be null");
@@ -119,6 +123,7 @@ public class WorkoutPermissionHibernateQuery extends AbstractHibernateQuery<Work
     }
 
     @Override
+    @Transactional
     public List<WorkoutPermissionFullDto> getAllWorkoutPermissionsByGroupWorkoutIdAndPermissionId(UUID groupWorkoutId, UUID permissionId) {
 
         Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");

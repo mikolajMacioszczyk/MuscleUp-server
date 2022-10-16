@@ -11,6 +11,7 @@ import org.springframework.util.Assert;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ public class GroupWorkoutHibernateRepository extends AbstractHibernateRepository
     }
 
     @Override
+    @Transactional
     public List<UUID> getIdsByGroupId(UUID groupId) {
 
         Assert.notNull(groupId, "groupId must not be null");

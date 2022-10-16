@@ -11,6 +11,7 @@ import org.springframework.util.Assert;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.UUID;
 
 import static groups.common.stringUtils.StringUtils.concatenate;
@@ -44,6 +45,7 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
     }
 
     @Override
+    @Transactional
     public void unassign(UUID groupWorkoutId, UUID participantId) {
 
         Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
@@ -70,6 +72,7 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
     }
 
     @Override
+    @Transactional
     public void unassignAllByGroupWorkoutId(UUID groupWorkoutId) {
 
         Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
