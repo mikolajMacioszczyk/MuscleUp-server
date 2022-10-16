@@ -33,7 +33,6 @@ public class GroupTrainer extends AbstractEntity {
     public GroupTrainer() {
     }
 
-
     public GroupTrainer(Group group, UUID trainerId) {
 
         Assert.notNull(group, "group must not be null");
