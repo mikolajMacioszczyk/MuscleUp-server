@@ -1,13 +1,12 @@
 package groups.workout.service;
 
-import groups.common.UuidWrapper;
+import groups.common.wrappers.UuidWrapper;
 import groups.group.repository.GroupRepository;
-import groups.workout.controller.GroupWorkoutFullForm;
+import groups.workout.controller.form.GroupWorkoutFullForm;
 import groups.workout.entity.GroupWorkout;
 import groups.workout.entity.GroupWorkoutFactory;
 import groups.workout.entity.GroupWorkoutFullDto;
 import groups.workout.repository.GroupWorkoutRepository;
-import groups.workoutParticipant.entity.WorkoutParticipant;
 import groups.workoutParticipant.service.WorkoutParticipantService;
 import groups.workoutPermission.service.WorkoutPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class GroupWorkoutService {

@@ -1,6 +1,6 @@
 package groups.group.entity;
 
-import groups.group.controller.GroupFullForm;
+import groups.group.controller.form.GroupFullForm;
 import org.springframework.util.Assert;
 
 public class GroupFactory {

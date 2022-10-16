@@ -1,13 +1,11 @@
 package groups.group.service;
 
-import groups.group.controller.GroupFullForm;
+import groups.group.controller.form.GroupFullForm;
 import groups.group.entity.Group;
 import groups.group.entity.GroupFactory;
 import groups.group.entity.GroupFullDto;
 import groups.group.repository.GroupRepository;
-import groups.groupTrainer.entity.GroupTrainer;
 import groups.groupTrainer.service.GroupTrainerService;
-import groups.workout.entity.GroupWorkout;
 import groups.workout.service.GroupWorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

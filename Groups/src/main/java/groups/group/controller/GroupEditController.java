@@ -1,5 +1,6 @@
 package groups.group.controller;
 
+import groups.group.controller.form.GroupFullForm;
 import groups.group.entity.GroupFullDto;
 import groups.group.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;

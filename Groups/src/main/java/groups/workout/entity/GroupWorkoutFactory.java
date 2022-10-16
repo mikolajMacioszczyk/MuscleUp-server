@@ -1,7 +1,7 @@
 package groups.workout.entity;
 
 import groups.group.repository.GroupQuery;
-import groups.workout.controller.GroupWorkoutFullForm;
+import groups.workout.controller.form.GroupWorkoutFullForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;

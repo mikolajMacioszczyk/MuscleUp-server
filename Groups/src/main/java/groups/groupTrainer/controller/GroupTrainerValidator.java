@@ -1,6 +1,7 @@
 package groups.groupTrainer.controller;
 
 import groups.group.repository.GroupQuery;
+import groups.groupTrainer.controller.form.GroupTrainerForm;
 import groups.groupTrainer.repository.GroupTrainerQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

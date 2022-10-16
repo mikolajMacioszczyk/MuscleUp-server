@@ -1,4 +1,4 @@
-package groups.workoutParticipant.controller;
+package groups.workoutParticipant.controller.form;
 
 import java.util.UUID;
 

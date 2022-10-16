@@ -1,5 +1,6 @@
 package groups.workoutPermission.controller;
 
+import groups.workoutPermission.controller.form.WorkoutPermissionForm;
 import groups.workoutPermission.service.WorkoutPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,5 +1,6 @@
 package groups.workout.controller;
 
+import groups.workout.controller.form.GroupWorkoutFullForm;
 import groups.workout.entity.GroupWorkoutFullDto;
 import groups.workout.service.GroupWorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;

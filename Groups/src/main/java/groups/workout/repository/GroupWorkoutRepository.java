@@ -1,6 +1,6 @@
 package groups.workout.repository;
 
-import groups.common.UuidWrapper;
+import groups.common.wrappers.UuidWrapper;
 import groups.workout.entity.GroupWorkout;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package groups.workoutParticipant.service;
 
-import groups.workoutParticipant.controller.WorkoutParticipantForm;
+import groups.workoutParticipant.controller.form.WorkoutParticipantForm;
 import groups.workoutParticipant.entity.WorkoutParticipant;
 import groups.workoutParticipant.entity.WorkoutParticipantFactory;
 import groups.workoutParticipant.repository.WorkoutParticipantRepository;

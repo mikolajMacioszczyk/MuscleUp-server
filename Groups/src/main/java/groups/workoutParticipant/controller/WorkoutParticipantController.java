@@ -1,5 +1,6 @@
 package groups.workoutParticipant.controller;
 
+import groups.workoutParticipant.controller.form.WorkoutParticipantForm;
 import groups.workoutParticipant.service.WorkoutParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

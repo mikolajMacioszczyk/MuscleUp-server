@@ -1,6 +1,7 @@
 package groups.workoutParticipant.controller;
 
 import groups.workout.repository.GroupWorkoutQuery;
+import groups.workoutParticipant.controller.form.WorkoutParticipantForm;
 import groups.workoutParticipant.repository.WorkoutParticipantQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

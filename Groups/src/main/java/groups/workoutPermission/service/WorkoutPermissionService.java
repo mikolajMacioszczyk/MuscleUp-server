@@ -1,6 +1,6 @@
 package groups.workoutPermission.service;
 
-import groups.workoutPermission.controller.WorkoutPermissionForm;
+import groups.workoutPermission.controller.form.WorkoutPermissionForm;
 import groups.workoutPermission.entity.WorkoutPermission;
 import groups.workoutPermission.entity.WorkoutPermissionFactory;
 import groups.workoutPermission.repository.WorkoutPermissionRepository;

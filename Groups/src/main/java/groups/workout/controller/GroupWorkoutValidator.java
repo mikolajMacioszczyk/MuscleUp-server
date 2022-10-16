@@ -1,6 +1,7 @@
 package groups.workout.controller;
 
 import groups.group.repository.GroupQuery;
+import groups.workout.controller.form.GroupWorkoutFullForm;
 import groups.workout.entity.GroupWorkoutFullDto;
 import groups.workout.repository.GroupWorkoutQuery;
 import org.springframework.beans.factory.annotation.Autowired;

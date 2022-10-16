@@ -1,4 +1,4 @@
-package groups.workout.controller;
+package groups.workout.controller.form;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

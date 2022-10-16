@@ -1,4 +1,4 @@
-package groups.common;
+package groups.common.wrappers;
 
 import java.util.UUID;
 

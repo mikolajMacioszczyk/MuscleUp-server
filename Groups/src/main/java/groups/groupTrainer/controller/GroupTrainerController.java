@@ -1,5 +1,6 @@
 package groups.groupTrainer.controller;
 
+import groups.groupTrainer.controller.form.GroupTrainerForm;
 import groups.groupTrainer.service.GroupTrainerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

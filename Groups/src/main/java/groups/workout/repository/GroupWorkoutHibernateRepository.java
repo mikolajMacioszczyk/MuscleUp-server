@@ -1,6 +1,6 @@
 package groups.workout.repository;
 
-import groups.common.UuidWrapper;
+import groups.common.wrappers.UuidWrapper;
 import groups.common.abstracts.AbstractHibernateRepository;
 import groups.workout.entity.GroupWorkout;
 import org.hibernate.SessionFactory;

@@ -1,6 +1,6 @@
 package groups.groupTrainer.service;
 
-import groups.groupTrainer.controller.GroupTrainerForm;
+import groups.groupTrainer.controller.form.GroupTrainerForm;
 import groups.groupTrainer.entity.GroupTrainer;
 import groups.groupTrainer.entity.GroupTrainerFactory;
 import groups.groupTrainer.repository.GroupTrainerRepository;
