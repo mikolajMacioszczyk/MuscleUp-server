@@ -7,5 +7,7 @@
         public const string RefreshTokenPath = "/login-with-refresh-token";
 
         public const string UserAgent = "User-Agent";
+
+        public const int DefaultPageSize = 10;
     }
 }

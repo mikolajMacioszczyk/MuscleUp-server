@@ -26,10 +26,13 @@ namespace Carnets.Repo.Repositories
             return await query.FirstOrDefaultAsync(g => g.GympassTypeId == gympassId);
         }
 
-        public async Task<IEnumerable<GympassType>> GetAllGympassTypes(string fitnessClubId, bool onlyActive, bool asTracking)
+        public async Task<IEnumerable<GympassType>> GetAllGympassTypes(string fitnessClubId, bool onlyActive,
+            int pageNumber, int pageSize, bool asTracking)
         {
             var query = _context.GympassTypes
-                .Where(g => g.FitnessClubId == fitnessClubId);
+                .Where(g => g.FitnessClubId == fitnessClubId)
+                .Skip(pageNumber * pageSize)
+                .Take(pageSize);
 
             if (onlyActive)
             {

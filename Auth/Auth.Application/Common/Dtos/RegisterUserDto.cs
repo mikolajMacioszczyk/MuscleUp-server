@@ -29,5 +29,8 @@ namespace Auth.Application.Common.Dtos
         public DateTime BirthDate { get; set; }
 
         public GenderType Gender { get; set; }
+
+        [MaxLength(500)]
+        public string? AvatarUrl { get; set; }
     }
 }

@@ -7,5 +7,11 @@ namespace Carnets.Domain.Models.Dtos
         [Required]
         [MaxLength(36)]
         public string GympassTypeId { get; set; }
+
+        [MaxLength(100)]
+        public string SuccessUrl { get; set; }
+
+        [MaxLength(100)]
+        public string CancelUrl { get; set; }
     }
 }

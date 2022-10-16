@@ -13,7 +13,7 @@ namespace Carnets.Repo.Repositories
 
         public override async Task<Result<PerkPermission>> CreatePermission(PerkPermission newPermission)
         {
-            var existing = await GetPermissionByName(newPermission.PerkName);
+            var existing = await GetPermissionByName(newPermission.PermissionName);
 
             if (existing != null)
             {
@@ -25,7 +25,7 @@ namespace Carnets.Repo.Repositories
 
         public override async Task<Result<IEnumerable<PerkPermission>>> GetAllPermissionsByNames(IEnumerable<string> permissionNames, bool asTracking)
         {
-            var query = PermissionDbSet.Where(c => permissionNames.Contains(c.PerkName));
+            var query = PermissionDbSet.Where(c => permissionNames.Contains(c.PermissionName));
 
             if (!asTracking)
             {
@@ -39,7 +39,7 @@ namespace Carnets.Repo.Repositories
                 return new Result<IEnumerable<PerkPermission>>(result);
             }
 
-            var resultNames = result.Select(r => r.PerkName).ToList();
+            var resultNames = result.Select(r => r.PermissionName).ToList();
             var notExisting = permissionNames.Where(n => !resultNames.Contains(n));
 
             return new Result<IEnumerable<PerkPermission>>(notExisting.Select(n => $"Permission with name \"{n}\" does not exists").ToArray());
@@ -47,7 +47,7 @@ namespace Carnets.Repo.Repositories
 
         private Task<PerkPermission> GetPermissionByName(string name)
         {
-            return PermissionDbSet.FirstOrDefaultAsync(c => c.PerkName.Equals(name));
+            return PermissionDbSet.FirstOrDefaultAsync(c => c.PermissionName.Equals(name));
         }
     }
 }

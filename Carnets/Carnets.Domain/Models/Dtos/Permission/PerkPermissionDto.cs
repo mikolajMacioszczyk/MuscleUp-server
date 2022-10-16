@@ -6,6 +6,6 @@
 
         public string PermissionType => Enums.PermissionType.PerkPermission.ToString();
 
-        public string PerkName { get; set; }
+        public string PermissionName { get; set; }
     }
 }

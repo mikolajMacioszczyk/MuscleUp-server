@@ -2,6 +2,7 @@
 using Carnets.Domain.Interfaces;
 using Carnets.Domain.Models;
 using Common.Enums;
+using Common.Helpers;
 using Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -56,6 +57,14 @@ namespace Carnets.API.Controllers
                 return Ok(_mapper.Map<TPermissionDto>(permission));
             }
             return NotFound();
+        }
+
+        [HttpGet("by-gympass-type/{gympassTypeId}")]
+        [Authorize(Roles = AuthHelper.RoleAll)]
+        public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllGympassTypePermisions([FromRoute] string gympassTypeId)
+        {
+            var allPermissions = await _permissionService.GetAllGympassTypePermissions(gympassTypeId);
+            return Ok(_mapper.Map<IEnumerable<TPermissionDto>>(allPermissions));
         }
 
         [HttpPost()]

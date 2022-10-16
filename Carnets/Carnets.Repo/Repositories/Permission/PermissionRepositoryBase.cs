@@ -43,6 +43,19 @@ namespace Carnets.Repo.Repositories
             return await query.FirstOrDefaultAsync(p => p.PermissionId == permissionId);
         }
 
+        public async Task<IEnumerable<TPermission>> GetPermissionByIds(string[] permissionIds, bool asTracking)
+        {
+            IQueryable<TPermission> query = PermissionDbSet.
+                Where(p => permissionIds.Contains(p.PermissionId));
+
+            if (!asTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return await query.ToListAsync();
+        }
+
         public virtual async Task<Result<TPermission>> CreatePermission(TPermission newPermission)
         {
             newPermission.PermissionId = Guid.NewGuid().ToString();

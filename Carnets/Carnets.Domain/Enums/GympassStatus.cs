@@ -6,9 +6,8 @@
         None = 0,
         New = 1,
         Cancelled = 2,
-        Paid = 3,
-        Active = 4,
-        Inactive = 5,
-        Completed = 6,
+        Active = 3,
+        Inactive = 4,
+        Completed = 5,
     }
 }

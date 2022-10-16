@@ -7,7 +7,11 @@ namespace Carnets.Domain.Interfaces
     {
         Task<GympassType> GetGympassTypeById(string gympassId);
 
-        Task<IEnumerable<GympassType>> GetAllGympassTypes(string fitnessClubId, bool onlyActive);
+        Task<GympassTypeWithPermissions> GetGympassTypeWithPermissionsById(string gympassId);
+
+        Task<IEnumerable<GympassType>> GetAllGympassTypes(string fitnessClubId, bool onlyActive, int pageNumber, int pageSize);
+        
+        Task<IEnumerable<GympassTypeWithPermissions>> GetAllGympassTypesWithPermissions(string fitnessClubId, bool onlyActive, int pageNumber, int pageSize);
 
         Task<Result<GympassType>> CreateGympassType(GympassType gympassType, IEnumerable<string> classPermissions, IEnumerable<string> perkPermissions);
 

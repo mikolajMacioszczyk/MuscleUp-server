@@ -25,5 +25,9 @@ namespace Carnets.Domain.Models.Dtos
         public bool IsActive { get; set; }
 
         public int Version { get; set; }
+
+        public IEnumerable<string> ClassPermissions { get; set; }
+
+        public IEnumerable<string> PerkPermissions { get; set; }
     }
 }

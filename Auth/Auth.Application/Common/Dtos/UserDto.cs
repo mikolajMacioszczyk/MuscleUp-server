@@ -20,5 +20,7 @@ namespace Auth.Application.Common.Dtos
         public GenderType Gender { get; set; }
 
         public abstract RoleType Role { get; }
+
+        public string AvatarUrl { get; set; }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Carnets.Domain.Interfaces;
 using Carnets.Domain.Models;
+using Carnets.Domain.Models.Dtos;
 using Common.Enums;
 using Common.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Carnets.Domain.Services
 {
@@ -10,30 +12,59 @@ namespace Carnets.Domain.Services
         private readonly IGympassRepository _gympassRepository;
         private readonly ISubscriptionService _subscriptionService;
         private readonly HttpAuthContext _httpAuthContext;
+        private readonly IPaymentService _paymentService;
+        private readonly ILogger<GympassService> _logger;
 
-        public GympassService(IGympassRepository gympassRepository, ISubscriptionService subscriptionService, HttpAuthContext httpAuthContext)
+        public GympassService(
+            IGympassRepository gympassRepository, 
+            ISubscriptionService subscriptionService, 
+            HttpAuthContext httpAuthContext,
+            IPaymentService paymentService,
+            ILogger<GympassService> logger)
         {
             _gympassRepository = gympassRepository;
             _subscriptionService = subscriptionService;
             _httpAuthContext = httpAuthContext;
+            _paymentService = paymentService;
+            _logger = logger;
         }
 
-        public Task<IEnumerable<Gympass>> GetAll()
+        public async Task<IEnumerable<Gympass>> GetAll()
         {
+            IEnumerable<Gympass> all;
+
             if (_httpAuthContext.UserRole == RoleType.Member)
             {
                 var memberId = _httpAuthContext.UserId;
-                return _gympassRepository.GetAllForMember(memberId, false);
+                all = await _gympassRepository.GetAllForMember(memberId, false);
+            }
+            else
+            {
+                all = await _gympassRepository.GetAll(false);
             }
 
-            return _gympassRepository.GetAll(false);
+            await EnsureGympassActivityStatus(all);
+
+            return all;
         }
 
-        public Task<IEnumerable<Gympass>> GetAllFromFitnessClub(string fitnessClubId) => 
-            _gympassRepository.GetAllFromFitnessClub(fitnessClubId, false);
+        public async Task<IEnumerable<Gympass>> GetAllFromFitnessClub(string fitnessClubId)
+        {
+            var all = await _gympassRepository.GetAllFromFitnessClub(fitnessClubId, false);
+            
+            await EnsureGympassActivityStatus(all);
+            
+            return all;
+        }
 
-        public Task<Gympass> GetById(string gympassId) => 
-            _gympassRepository.GetById(gympassId, false);
+        public async Task<Gympass> GetById(string gympassId)
+        {
+            var gympass = await _gympassRepository.GetById(gympassId, false);
+            
+            await EnsureGympassActivityStatus(gympass);
+
+            return gympass;
+        }
 
         public Task<Gympass> GetByIdAndFitnessClub(string gympassId, string fitnessClubId) =>
             GetByIdAndFitnessClub(gympassId, fitnessClubId, false);
@@ -41,6 +72,8 @@ namespace Carnets.Domain.Services
         private async Task<Gympass> GetByIdAndFitnessClub(string gympassId, string fitnessClubId, bool asTracking)
         {
             var gympass = await _gympassRepository.GetById(gympassId, asTracking);
+
+            await EnsureGympassActivityStatus(gympass);
 
             return gympass.GympassType.FitnessClubId == fitnessClubId ? gympass : null;
         }
@@ -52,10 +85,12 @@ namespace Carnets.Domain.Services
         {
             var gympass = await _gympassRepository.GetById(gympassId, false);
 
+            await EnsureGympassActivityStatus(gympass);
+
             return gympass.UserId == memberId ? gympass : null;
         }
 
-        public async Task<Result<Gympass>> CreateGympass(string userId, string gympassTypeId)
+        public async Task<Result<(Gympass gympass, string checkoutSessionUrl)>> CreateGympass(string userId, CreateGympassDto model)
         {
             if (string.IsNullOrEmpty(userId))
             {
@@ -71,14 +106,21 @@ namespace Carnets.Domain.Services
                 ValidityDate = DateTime.MinValue,
             };
 
-            var createResult = await _gympassRepository.CreateGympass(gympassTypeId, created);
-
+            var createResult = await _gympassRepository.CreateGympass(model.GympassTypeId, created);
             if (createResult.IsSuccess)
             {
-                await _gympassRepository.SaveChangesAsync();
-            }
+                var gympassTypeId = createResult.Value.GympassType.GympassTypeId;
+                var gympassId = createResult.Value.GympassId;
+                var customerId = await _paymentService.GetOrCreateCustomer(userId);
 
-            return createResult;
+                var checkoutSessionUrl = await _paymentService.CreateCheckoutSession(gympassId, customerId, 
+                    gympassTypeId, model.SuccessUrl, model.CancelUrl);
+
+                await _gympassRepository.SaveChangesAsync();
+
+                return new Result<(Gympass, string)>((createResult.Value, checkoutSessionUrl));
+            }
+            return new Result<(Gympass, string)>(createResult.Errors);
         }
 
         public async Task<Result<Subscription>> CreateGympassSubscription(string userId, string gympassId, Subscription subscription)
@@ -110,7 +152,7 @@ namespace Carnets.Domain.Services
             subscription.Gympass = gympass;
             subscription.SubscriptionId = Guid.NewGuid().ToString();
 
-            gympass.Status = Enums.GympassStatus.Paid;
+            gympass.Status = Enums.GympassStatus.Active;
 
             var updateResult = await _gympassRepository.UpdateGympass(gympass);
             if (!updateResult.IsSuccess)
@@ -135,9 +177,9 @@ namespace Carnets.Domain.Services
             return await ActivateGympassHelper(gympass);
         }
 
-        public async Task<Result<Gympass>> ActivateGympass(string gympassId, string memberId)
+        public async Task<Result<Gympass>> ActivateGympass(string gympassId)
         {
-            var gympass = await GetByIdAndMeber(gympassId, memberId, true);
+            var gympass = await _gympassRepository.GetById(gympassId, true);
 
             return await ActivateGympassHelper(gympass);
         }
@@ -149,18 +191,18 @@ namespace Carnets.Domain.Services
                 return new Result<Gympass>(Common.CommonConsts.NOT_FOUND);
             }
 
-            if (gympass.Status != Enums.GympassStatus.Paid && gympass.Status != Enums.GympassStatus.Inactive)
+            if (gympass.Status != Enums.GympassStatus.New && gympass.Status != Enums.GympassStatus.Inactive)
             {
                 return new Result<Gympass>($"Cannot activate gympass in status: {gympass.Status}");
             }
             
-            if (gympass.RemainingValidityPeriodInSeconds <= 0)
+            if (gympass.RemainingValidityPeriodInSeconds <= 0 && gympass.RemainingEntries <= 0)
             {
                 return new Result<Gympass>($"The Gympass validity has ended");
             }
 
             var now = DateTime.UtcNow;
-            if (gympass.Status == Enums.GympassStatus.Paid)
+            if (gympass.Status == Enums.GympassStatus.New)
             {
                 gympass.ActivationDate = now;
             }
@@ -216,9 +258,9 @@ namespace Carnets.Domain.Services
             return updateResult;
         }
 
-        public async Task<Result<Gympass>> DeactivateGympass(string gympassId, string memberId)
+        public async Task<Result<Gympass>> DeactivateGympass(string gympassId)
         {
-            var gympass = await GetByIdAndMeber(gympassId, memberId, true);
+            var gympass = await _gympassRepository.GetById(gympassId, true);
 
             return await DeactivateGympassHelper(gympass);
         }
@@ -237,7 +279,7 @@ namespace Carnets.Domain.Services
                 return new Result<Gympass>(Common.CommonConsts.NOT_FOUND);
             }
 
-            if (gympass.Status != Enums.GympassStatus.Active)
+            if (gympass.Status != Enums.GympassStatus.Active || gympass.Status != Enums.GympassStatus.New)
             {
                 return new Result<Gympass>($"Cannot deactivate gympass in status: {gympass.Status}");
             }
@@ -290,6 +332,54 @@ namespace Carnets.Domain.Services
             }
 
             return updateResult;
+        }
+
+        private async Task EnsureGympassActivityStatus(IEnumerable<Gympass> gympasses, bool saveChanges = true)
+        {
+            foreach (var gympass in gympasses)
+            {
+                await EnsureGympassActivityStatus(gympass, saveChanges);
+            }
+        }
+
+        private async Task EnsureGympassActivityStatus(Gympass gympass, bool saveChanges = true)
+        {
+            if (gympass.GympassType is null)
+            {
+                throw new ArgumentException(nameof(gympass.GympassType));
+            }
+
+            if (gympass.Status != Enums.GympassStatus.Active)
+            {
+                return;
+            }
+
+            if (gympass.GympassType.ValidationType == Enums.GympassTypeValidation.Time
+                && gympass.ValidityDate < DateTime.UtcNow
+                ||
+                gympass.GympassType.ValidationType == Enums.GympassTypeValidation.Entries
+                && gympass.RemainingEntries <= 0)
+            {
+                gympass.Status = Enums.GympassStatus.Completed;
+                gympass.RemainingEntries = 0;
+                gympass.RemainingValidityPeriodInSeconds = 0;
+
+                var updateResult = await _gympassRepository.UpdateGympass(gympass);
+
+                if (updateResult.IsSuccess)
+                {
+                    if (saveChanges)
+                    {
+                        await _gympassRepository.SaveChangesAsync();
+                    }
+                }
+                else
+                {
+                    _logger.LogCritical(updateResult.ErrorCombined);
+                }
+
+                // TODO: Send email by notification service
+            }
         }
     }
 }
