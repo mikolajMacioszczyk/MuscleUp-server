@@ -27,6 +27,7 @@ public class GroupTrainerHibernateRepository extends AbstractHibernateRepository
     }
 
     @Override
+    @Transactional
     public UUID assign(GroupTrainer groupTrainer) {
 
         Assert.notNull(groupTrainer, "groupTrainer must not be null");
@@ -35,6 +36,7 @@ public class GroupTrainerHibernateRepository extends AbstractHibernateRepository
     }
 
     @Override
+    @Transactional
     public void unassign(UUID groupTrainerId) {
 
         Assert.notNull(groupTrainerId, "groupTrainerId must not be null");

@@ -29,6 +29,7 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
 
 
     @Override
+    @Transactional
     public UUID assign(WorkoutParticipant workoutParticipant) {
 
         Assert.notNull(workoutParticipant, "workoutParticipant must not be null");
@@ -37,6 +38,7 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
     }
 
     @Override
+    @Transactional
     public void unassign(UUID workoutParticipantId) {
 
         Assert.notNull(workoutParticipantId, "workoutParticipantId must not be null");

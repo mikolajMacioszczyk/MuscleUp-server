@@ -29,6 +29,7 @@ public class WorkoutPermissionHibernateRepository extends AbstractHibernateRepos
 
 
     @Override
+    @Transactional
     public UUID add(WorkoutPermission workoutPermission) {
 
         Assert.notNull(workoutPermission, "workoutPermission must not be null");
@@ -37,6 +38,7 @@ public class WorkoutPermissionHibernateRepository extends AbstractHibernateRepos
     }
 
     @Override
+    @Transactional
     public void remove(UUID workoutPermissionId) {
 
         Assert.notNull(workoutPermissionId, "workoutPermissionId must not be null");
