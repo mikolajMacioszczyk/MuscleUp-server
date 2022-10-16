@@ -1,5 +1,6 @@
 package groups.workout.service;
 
+import groups.common.UuidWrapper;
 import groups.group.repository.GroupRepository;
 import groups.workout.controller.GroupWorkoutFullForm;
 import groups.workout.entity.GroupWorkout;
@@ -15,6 +16,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class GroupWorkoutService {
@@ -85,7 +87,10 @@ public class GroupWorkoutService {
 
         Assert.notNull(groupIdToRemove, "groupIdToRemove must not be null");
 
-        List<UUID> groupWorkoutIdsToRemove = groupWorkoutRepository.getIdsByGroupId(groupIdToRemove);
+        List<UUID> groupWorkoutIdsToRemove = groupWorkoutRepository.getIdsByGroupId(groupIdToRemove)
+                .stream()
+                .map(UuidWrapper::uuid)
+                .toList();
 
         groupWorkoutIdsToRemove.forEach(this::deleteGroupWorkout);
     }

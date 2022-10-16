@@ -1,5 +1,6 @@
 package groups.workout.repository;
 
+import groups.common.UuidWrapper;
 import groups.common.abstracts.AbstractHibernateRepository;
 import groups.workout.entity.GroupWorkout;
 import org.hibernate.SessionFactory;
@@ -29,12 +30,12 @@ public class GroupWorkoutHibernateRepository extends AbstractHibernateRepository
 
     @Override
     @Transactional
-    public List<UUID> getIdsByGroupId(UUID groupId) {
+    public List<UuidWrapper> getIdsByGroupId(UUID groupId) {
 
         Assert.notNull(groupId, "groupId must not be null");
 
         CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<UUID> criteriaQuery = criteriaBuilder.createQuery(UUID.class);
+        CriteriaQuery<UuidWrapper> criteriaQuery = criteriaBuilder.createQuery(UuidWrapper.class);
         Root<GroupWorkout> root = criteriaQuery.from(GroupWorkout.class);
 
         criteriaQuery.multiselect(
