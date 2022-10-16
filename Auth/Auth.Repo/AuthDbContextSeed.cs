@@ -32,7 +32,8 @@ namespace Auth.Repo
                 LastName = "Rambo",
                 BirthDate = DateTime.UtcNow,
                 EmailConfirmed = true,
-                PhoneNumberConfirmed = true
+                PhoneNumberConfirmed = true,
+                AvatarUrl = SeedConsts.DefaultUserAvatarUrl
             };
             await SeedUser(userManager, defaultUser, SeedConsts.DefaultPassword, RoleType.Administrator);
         }
@@ -49,7 +50,8 @@ namespace Auth.Repo
                 LastName = "Hamilton",
                 BirthDate = DateTime.UtcNow,
                 EmailConfirmed = true,
-                PhoneNumberConfirmed = true
+                PhoneNumberConfirmed = true,
+                AvatarUrl = SeedConsts.DefaultUserAvatarUrl
             };
 
             var memberCreated = await SeedUser(userManager, defaultMember, SeedConsts.DefaultPassword, RoleType.Member);
@@ -75,7 +77,8 @@ namespace Auth.Repo
                 LastName = "Leclerc",
                 BirthDate = DateTime.UtcNow,
                 EmailConfirmed = true,
-                PhoneNumberConfirmed = true
+                PhoneNumberConfirmed = true,
+                AvatarUrl = SeedConsts.DefaultUserAvatarUrl
             };
 
             var workerCreated = await SeedUser(userManager, defaultWorker, SeedConsts.DefaultPassword, RoleType.Worker);
@@ -99,7 +102,8 @@ namespace Auth.Repo
                 LastName = "Verstappen",
                 BirthDate = DateTime.UtcNow,
                 EmailConfirmed = true,
-                PhoneNumberConfirmed = true
+                PhoneNumberConfirmed = true,
+                AvatarUrl = SeedConsts.DefaultUserAvatarUrl
             };
 
             var trainerCreated = await SeedUser(userManager, defaultTrainer, SeedConsts.DefaultPassword, RoleType.Trainer);

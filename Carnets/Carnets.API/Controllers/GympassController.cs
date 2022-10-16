@@ -61,15 +61,17 @@ namespace Carnets.API.Controllers
 
         [HttpPost()]
         [Authorize(Roles = nameof(RoleType.Member))]
-        public async Task<ActionResult<GympassDto>> Create([FromBody] CreateGympassDto model)
+        public async Task<ActionResult<GympassWithSessionDto>> Create([FromBody] CreateGympassDto model)
         {
             var memberId = _httpAuthContext.UserId;
 
-            var createResult = await _gympassService.CreateGympass(memberId, model.GympassTypeId);
+            var createResult = await _gympassService.CreateGympass(memberId, model);
 
             if (createResult.IsSuccess)
             {
-                return Ok(_mapper.Map<GympassDto>(createResult.Value));
+                var gympassWithSession = _mapper.Map<GympassWithSessionDto>(createResult.Value.gympass);
+                gympassWithSession.CheckoutSessionUrl = createResult.Value.checkoutSessionUrl;
+                return Ok(gympassWithSession);
             }
 
             return BadRequest(createResult.ErrorCombined);

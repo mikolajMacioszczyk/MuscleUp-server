@@ -1,4 +1,5 @@
 ﻿using Carnets.Domain.Models;
+using Carnets.Domain.Models.Dtos;
 using Common.Models;
 
 namespace Carnets.Domain.Interfaces
@@ -15,7 +16,7 @@ namespace Carnets.Domain.Interfaces
 
         Task<Gympass> GetByIdAndMeber(string gympassId, string memberId);
 
-        Task<Result<Gympass>> CreateGympass(string userId, string gympassTypeId);
+        Task<Result<(Gympass gympass, string checkoutSessionUrl)>> CreateGympass(string userId, CreateGympassDto model);
 
         Task<Result<Subscription>> CreateGympassSubscription(string userId, string gympassId, Subscription subscription);
 
@@ -25,11 +26,11 @@ namespace Carnets.Domain.Interfaces
         
         Task<Result<Gympass>> CancelGympassByFitnessClub(string gympassId, string fitnessClubId);
 
-        Task<Result<Gympass>> ActivateGympass(string gympassId, string memberId);
+        Task<Result<Gympass>> ActivateGympass(string gympassId);
 
         Task<Result<Gympass>> ActivateGympassByFitnessClub(string gympassId, string fitnessClubId);
 
-        Task<Result<Gympass>> DeactivateGympass(string gympassId, string memberId);
+        Task<Result<Gympass>> DeactivateGympass(string gympassId);
 
         Task<Result<Gympass>> DeactivateGympassyByFitnessClub(string gympassId, string fitnessClubId);
 

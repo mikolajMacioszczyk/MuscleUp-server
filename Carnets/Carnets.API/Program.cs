@@ -5,6 +5,7 @@ using Carnets.Domain.Services.Permission;
 using Carnets.Repo;
 using Carnets.Repo.Repositories;
 using Common.Extensions;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ ProgramExtensions.AddDbContext<CarnetsDbContext>(builder.Services, builder.Confi
 
 // Authentication
 builder.Services.AddJwtAuthentication(builder.Configuration);
+
+StripeConfiguration.ApiKey = builder.Configuration.GetValue<string>("StripeSecretKey");
 
 builder.Services.AddScoped<IGympassTypeRepository, GympassTypeRepository>();
 builder.Services.AddScoped<IPermissionRepository<ClassPermission>, ClassPermissionRepository>();
@@ -31,6 +34,7 @@ builder.Services.AddScoped<ISubscriptionService, MockSubscriptionService>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 builder.Services.AddScoped<IAssignedPermissionService, AssignedPermissionService>();
 builder.Services.AddScoped<IGympassTypeService, GympassTypeService>();
+builder.Services.AddScoped<IPaymentService, StripeService>();
 
 var app = builder.Build();
 

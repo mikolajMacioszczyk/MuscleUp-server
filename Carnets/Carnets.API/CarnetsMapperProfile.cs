@@ -38,6 +38,12 @@ namespace Carnets.API
                .ForMember(a => a.ValidationType,
                 opt => opt.MapFrom(src => src.GympassType.ValidationType));
 
+            CreateMap<Gympass, GympassWithSessionDto>()
+              .ForMember(a => a.GympassTypeName,
+               opt => opt.MapFrom(src => src.GympassType.GympassTypeName))
+              .ForMember(a => a.GympassTypeId,
+               opt => opt.MapFrom(src => src.GympassType.GympassTypeId));
+
             // Subscription
             CreateMap<CreateGympassSubscriptionDto, Subscription>();
             CreateMap<Subscription, SubscriptionDto>()

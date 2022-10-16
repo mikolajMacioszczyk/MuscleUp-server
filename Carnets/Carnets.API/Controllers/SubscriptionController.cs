@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Carnets.Domain.Consts;
 using Carnets.Domain.Interfaces;
-using Carnets.Domain.Models;
 using Carnets.Domain.Models.Dtos;
 using Common.Enums;
 using Common.Models;
@@ -17,6 +17,7 @@ namespace Carnets.API.Controllers
         private readonly ISubscriptionService _subscriptionService;
         private readonly IGympassService _gympassService;
         private readonly HttpAuthContext _httpAuthContext;
+        private readonly IPaymentService _paymentService;
         private readonly IMapper _mapper;
 
         public SubscriptionController(
@@ -24,13 +25,15 @@ namespace Carnets.API.Controllers
             ISubscriptionService subscriptionService,
             IGympassService gamassService,
             HttpAuthContext httpAuthContext,
-            IMapper mapper)
+            IMapper mapper,
+            IPaymentService paymentService)
         {
             _gympassService = gamassService;
             _fitnessClubHttpService = fitnessClubHttpService;
             _httpAuthContext = httpAuthContext;
             _mapper = mapper;
             _subscriptionService = subscriptionService;
+            _paymentService = paymentService;
         }
 
         [HttpGet("by-gympass/{gympassId}")]
@@ -87,25 +90,35 @@ namespace Carnets.API.Controllers
             return Ok(subscription);
         }
 
-        [HttpPost()]
-        [Authorize(Roles = nameof(RoleType.Member))]
-        public async Task<ActionResult<SubscriptionDto>> CreateGympassWithSubscription([FromBody] CreateGympassSubscriptionDto model)
+        [HttpPost("webhook")]
+        [AllowAnonymous]
+        public async Task<ActionResult<SubscriptionDto>> PaymentWebhook()
         {
-            var memberId = _httpAuthContext.UserId;
-            var subscription = _mapper.Map<Subscription>(model);
+            var jsonBody = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+            var signature = Request.Headers["Stripe-Signature"];
 
-            var payResult = await _gympassService.CreateGympassSubscription(memberId, model.GympassId, subscription);
+            var paymentResult = _paymentService.HandlePaidResult(jsonBody, signature);
 
-            if (payResult.IsSuccess)
+            switch (paymentResult.PaymentStatus)
             {
-                return Ok(_mapper.Map<SubscriptionDto>(payResult.Value));
+                case Domain.Enums.PaymentStatus.Success:
+                    var activateResult = await _gympassService.ActivateGympass(paymentResult.PlanId);
+                    // TODO: Create subscription in later implementation
+                    if (activateResult.IsSuccess)
+                    {
+                        return Ok();
+                    }
+                    return BadRequest(activateResult.ErrorCombined);
+                case Domain.Enums.PaymentStatus.Expired:
+                    var deactivationResult = await _gympassService.DeactivateGympass(paymentResult.PlanId);
+                    if (deactivationResult.IsSuccess)
+                    {
+                        return Ok();
+                    }
+                    return BadRequest(deactivationResult.ErrorCombined);
+                default:
+                    return NoContent();
             }
-            else if (payResult.Errors.Contains(Common.CommonConsts.NOT_FOUND))
-            {
-                return NotFound();
-            }
-
-            return BadRequest(payResult.ErrorCombined);
         }
 
         [HttpPost("as-worker")]
@@ -114,7 +127,7 @@ namespace Carnets.API.Controllers
         {
             var workerId = _httpAuthContext.UserId;
             var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
-            var subscription = _mapper.Map<Subscription>(model);
+            var subscription = _mapper.Map<Domain.Models.Subscription>(model);
 
             var payResult = await _gympassService.CreateGympassSubscription(fitnessClub.FitnessClubId, model.GympassId, subscription);
 

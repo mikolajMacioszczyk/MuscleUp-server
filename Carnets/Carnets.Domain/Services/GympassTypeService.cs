@@ -14,11 +14,13 @@ namespace Carnets.Domain.Services
         private readonly IPermissionRepository<ClassPermission> _classPermissionRepository;
         private readonly IPermissionRepository<PerkPermission> _perkPermissionRepository;
         private readonly IMapper _mapper;
+        private readonly IPaymentService _paymentService;
 
         public GympassTypeService(IGympassTypeRepository gympassTypeRepository,
             IAssignedPermissionRepository assignedPermissionRepository,
             IPermissionRepository<ClassPermission> classPermissionRepository,
             IPermissionRepository<PerkPermission> perkPermissionRepository,
+            IPaymentService paymentService,
             IPermissionService<PerkPermission> perkPermissionService,
             IPermissionService<ClassPermission> classPermissionService,
             IMapper mapper)
@@ -27,6 +29,7 @@ namespace Carnets.Domain.Services
             _assignedPermissionRepository = assignedPermissionRepository;
             _classPermissionRepository = classPermissionRepository;
             _perkPermissionRepository = perkPermissionRepository;
+            _paymentService = paymentService;
             _perkPermissionService = perkPermissionService;
             _classPermissionService = classPermissionService;
             _mapper = mapper;
@@ -88,6 +91,8 @@ namespace Carnets.Domain.Services
                 return assignResult;
             }
 
+            await _paymentService.CreateProduct(createResult.Value);
+
             await _gympassTypeRepository.SaveChangesAsync();
             await _assignedPermissionRepository.SaveChangesAsync();
 
@@ -125,7 +130,9 @@ namespace Carnets.Domain.Services
                         return new Result<GympassType>(createResult.ErrorCombined);
                     }
                 }
-                
+
+                await _paymentService.CreateProduct(updateResult.Value);
+
                 await _assignedPermissionRepository.SaveChangesAsync();
                 await _gympassTypeRepository.SaveChangesAsync();
             }
@@ -158,6 +165,8 @@ namespace Carnets.Domain.Services
                 return assignResult;
             }
 
+            await _paymentService.CreateProduct(updateResult.Value);
+
             await _gympassTypeRepository.SaveChangesAsync();
             await _assignedPermissionRepository.SaveChangesAsync();
 
@@ -180,7 +189,7 @@ namespace Carnets.Domain.Services
 
                 foreach (var assignedPermission in linkedPermissionsResult.Value)
                 {
-                    var deleteAssignedResult = await _assignedPermissionRepository.RemovePermission(assignedPermission.PermissionId, 
+                    var deleteAssignedResult = await _assignedPermissionRepository.RemovePermission(assignedPermission.PermissionId,
                         assignedPermission.GympassTypeId, assignedPermission.Permission?.FitnessClubId);
 
                     if (!deleteAssignedResult.IsSuccess)
@@ -188,6 +197,8 @@ namespace Carnets.Domain.Services
                         return deleteAssignedResult;
                     }
                 }
+
+                await _paymentService.DeleteProduct(gympassTypeId);
 
                 await _assignedPermissionRepository.SaveChangesAsync();
                 await _gympassTypeRepository.SaveChangesAsync();
