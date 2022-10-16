@@ -1,9 +1,9 @@
-package groups.workoutParticipant.repository;
+package groups.workoutPermission.repository;
 
 import groups.common.abstracts.AbstractHibernateQuery;
-import groups.workoutParticipant.entity.WorkoutParticipant;
-import groups.workoutParticipant.entity.WorkoutParticipantFullDto;
-import groups.workoutParticipant.entity.WorkoutParticipantFullDtoFactory;
+import groups.workoutPermission.entity.WorkoutPermission;
+import groups.workoutPermission.entity.WorkoutPermissionFullDto;
+import groups.workoutPermission.entity.WorkoutPermissionFullDtoFactory;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -18,41 +18,41 @@ import java.util.stream.Collectors;
 
 import static groups.common.stringUtils.StringUtils.concatenate;
 
-public class WorkoutParticipantHibernateQuery extends AbstractHibernateQuery<WorkoutParticipant> implements WorkoutParticipantQuery {
+public class WorkoutPermissionHibernateQuery extends AbstractHibernateQuery<WorkoutPermission> implements WorkoutPermissionQuery {
 
-    private final WorkoutParticipantFullDtoFactory workoutParticipantFullDtoFactory;
+    private final WorkoutPermissionFullDtoFactory workoutPermissionFullDtoFactory;
 
 
     @Autowired
-    protected WorkoutParticipantHibernateQuery(SessionFactory sessionFactory) {
+    protected WorkoutPermissionHibernateQuery(SessionFactory sessionFactory) {
 
-        super(WorkoutParticipant.class, sessionFactory);
+        super(WorkoutPermission.class, sessionFactory);
 
-        this.workoutParticipantFullDtoFactory = new WorkoutParticipantFullDtoFactory();
+        this.workoutPermissionFullDtoFactory = new WorkoutPermissionFullDtoFactory();
     }
 
 
     @Override
-    public List<WorkoutParticipantFullDto> getAllWorkoutParticipants() {
+    public List<WorkoutPermissionFullDto> getAllWorkoutPermissions() {
 
         return getAll().stream()
-                .map(workoutParticipantFullDtoFactory::create)
+                .map(workoutPermissionFullDtoFactory::create)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<WorkoutParticipantFullDto> findWorkoutParticipantById(UUID id) {
+    public Optional<WorkoutPermissionFullDto> findWorkoutPermissionById(UUID id) {
 
         Assert.notNull(id, "id must not be null");
 
         CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<WorkoutParticipantFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutParticipantFullDto.class);
-        Root<WorkoutParticipant> root = criteriaQuery.from(WorkoutParticipant.class);
+        CriteriaQuery<WorkoutPermissionFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutPermissionFullDto.class);
+        Root<WorkoutPermission> root = criteriaQuery.from(WorkoutPermission.class);
 
         criteriaQuery.multiselect(
                 root.get("id"),
                 root.get("groupWorkout.id"),
-                root.get("gympassId")
+                root.get("permissionId")
         ).where(
                 criteriaBuilder.equal(root.get("id"), id)
         );
@@ -67,18 +67,18 @@ public class WorkoutParticipantHibernateQuery extends AbstractHibernateQuery<Wor
     }
 
     @Override
-    public List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGroupWorkoutId(UUID groupWorkoutId) {
+    public List<WorkoutPermissionFullDto> getAllWorkoutPermissionsByGroupWorkoutId(UUID groupWorkoutId) {
 
         Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
 
         CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<WorkoutParticipantFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutParticipantFullDto.class);
-        Root<WorkoutParticipant> root = criteriaQuery.from(WorkoutParticipant.class);
+        CriteriaQuery<WorkoutPermissionFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutPermissionFullDto.class);
+        Root<WorkoutPermission> root = criteriaQuery.from(WorkoutPermission.class);
 
         criteriaQuery.multiselect(
                 root.get("id"),
                 root.get("groupWorkout.id"),
-                root.get("gympassId")
+                root.get("permissionId")
         ).where(
                 criteriaBuilder.equal(root.get("groupWorkout.id"), groupWorkoutId)
         );
@@ -91,54 +91,54 @@ public class WorkoutParticipantHibernateQuery extends AbstractHibernateQuery<Wor
     }
 
     @Override
-    public List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByParticipantId(UUID participantId) {
+    public List<WorkoutPermissionFullDto> getAllWorkoutPermissionsByPermissionId(UUID permissionId) {
 
-        Assert.notNull(participantId, "participantId must not be null");
+        Assert.notNull(permissionId, "permissionId must not be null");
 
         CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<WorkoutParticipantFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutParticipantFullDto.class);
-        Root<WorkoutParticipant> root = criteriaQuery.from(WorkoutParticipant.class);
+        CriteriaQuery<WorkoutPermissionFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutPermissionFullDto.class);
+        Root<WorkoutPermission> root = criteriaQuery.from(WorkoutPermission.class);
 
         criteriaQuery.multiselect(
                 root.get("id"),
                 root.get("groupWorkout.id"),
-                root.get("gympassId")
+                root.get("permissionId")
         ).where(
-                criteriaBuilder.equal(root.get("gympassId"), participantId)
+                criteriaBuilder.equal(root.get("permissionId"), permissionId)
         );
 
         return getSession().createQuery(criteriaQuery)
                 .setComment(
-                        concatenate("WorkoutParticipant with participantId =", participantId.toString())
+                        concatenate("WorkoutParticipant with permissionId =", permissionId.toString())
                 )
                 .getResultList();
     }
 
     @Override
-    public List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGroupWorkoutIdAndParticipantId(UUID groupWorkoutId, UUID participantId) {
+    public List<WorkoutPermissionFullDto> getAllWorkoutPermissionsByGroupWorkoutIdAndPermissionId(UUID groupWorkoutId, UUID permissionId) {
 
         Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
-        Assert.notNull(participantId, "participantId must not be null");
+        Assert.notNull(permissionId, "permissionId must not be null");
 
         CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<WorkoutParticipantFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutParticipantFullDto.class);
-        Root<WorkoutParticipant> root = criteriaQuery.from(WorkoutParticipant.class);
+        CriteriaQuery<WorkoutPermissionFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutPermissionFullDto.class);
+        Root<WorkoutPermission> root = criteriaQuery.from(WorkoutPermission.class);
 
         criteriaQuery.multiselect(
                 root.get("id"),
                 root.get("groupWorkout.id"),
-                root.get("gympassId")
+                root.get("permissionId")
         ).where(
                 criteriaBuilder.equal(root.get("groupWorkout.id"), groupWorkoutId),
-                criteriaBuilder.equal(root.get("gympassId"), participantId)
+                criteriaBuilder.equal(root.get("permissionId"), permissionId)
         );
 
         return getSession().createQuery(criteriaQuery)
                 .setComment(
                         concatenate("WorkoutParticipant with groupWorkoutId = ",
                                 groupWorkoutId.toString(),
-                                " and participantId =",
-                                participantId.toString()
+                                " and permissionId =",
+                                permissionId.toString()
                         )
                 )
                 .getResultList();

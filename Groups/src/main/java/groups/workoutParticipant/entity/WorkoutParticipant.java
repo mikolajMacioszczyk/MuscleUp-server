@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "workout_participant")
+@Table(name = "class_workout_participant")
 public class WorkoutParticipant extends AbstractEntity {
 
     @Id
