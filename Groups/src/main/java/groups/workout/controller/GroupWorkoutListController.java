@@ -43,7 +43,7 @@ public class GroupWorkoutListController {
 
         Optional<GroupWorkoutFullDto> groupWorkoutFullDto = groupWorkoutQuery.findGroupWorkoutById(id);
 
-        return groupWorkoutFullDto.map(fullDto -> new ResponseEntity<>(fullDto, HttpStatus.FOUND))
+        return groupWorkoutFullDto.map(fullDto -> new ResponseEntity<>(fullDto, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 

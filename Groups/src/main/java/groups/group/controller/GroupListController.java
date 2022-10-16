@@ -37,7 +37,7 @@ public class GroupListController {
 
         Optional<GroupFullDto> groupFullDto = groupQuery.findGroupById(id);
 
-        return groupFullDto.map(fullDto -> new ResponseEntity<>(fullDto, HttpStatus.FOUND))
+        return groupFullDto.map(fullDto -> new ResponseEntity<>(fullDto, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 

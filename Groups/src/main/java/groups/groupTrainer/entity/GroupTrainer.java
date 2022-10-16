@@ -5,6 +5,7 @@ import groups.common.annotation.MustExist;
 import groups.common.annotation.Reason;
 import groups.common.annotation.UnknownForeignKey;
 import groups.group.entity.Group;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -15,6 +16,8 @@ import java.util.UUID;
 public class GroupTrainer extends AbstractEntity {
 
     @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
