@@ -38,7 +38,7 @@ public class GroupWorkoutHibernateRepository extends AbstractHibernateRepository
         criteriaQuery.multiselect(
                 root.get("id")
         ).where(
-                criteriaBuilder.equal(root.get("group.id"), groupId)
+                criteriaBuilder.equal(root.get("group").get("id"), groupId)
         );
 
         return getSession().createQuery(criteriaQuery)

@@ -55,7 +55,7 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
 
         criteriaDelete.where(
                 criteriaBuilder.equal(root.get("gympassId"), participantId),
-                criteriaBuilder.equal(root.get("groupWorkout.id"), groupWorkoutId)
+                criteriaBuilder.equal(root.get("groupWorkout").get("id"), groupWorkoutId)
         );
 
         getSession().createQuery(criteriaDelete)
@@ -79,7 +79,7 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
         Root<WorkoutParticipant> root = criteriaDelete.from(WorkoutParticipant.class);
 
         criteriaDelete.where(
-                criteriaBuilder.equal(root.get("groupWorkout.id"), groupWorkoutId)
+                criteriaBuilder.equal(root.get("groupWorkout").get("id"), groupWorkoutId)
         );
 
         getSession().createQuery(criteriaDelete)

@@ -55,7 +55,7 @@ public class WorkoutPermissionHibernateQuery extends AbstractHibernateQuery<Work
 
         criteriaQuery.multiselect(
                 root.get("id"),
-                root.get("groupWorkout.id"),
+                root.get("groupWorkout").get("id"),
                 root.get("permissionId")
         ).where(
                 criteriaBuilder.equal(root.get("id"), id)
@@ -81,10 +81,10 @@ public class WorkoutPermissionHibernateQuery extends AbstractHibernateQuery<Work
 
         criteriaQuery.multiselect(
                 root.get("id"),
-                root.get("groupWorkout.id"),
+                root.get("groupWorkout").get("id"),
                 root.get("permissionId")
         ).where(
-                criteriaBuilder.equal(root.get("groupWorkout.id"), groupWorkoutId)
+                criteriaBuilder.equal(root.get("groupWorkout").get("id"), groupWorkoutId)
         );
 
         return getSession().createQuery(criteriaQuery)
@@ -105,7 +105,7 @@ public class WorkoutPermissionHibernateQuery extends AbstractHibernateQuery<Work
 
         criteriaQuery.multiselect(
                 root.get("id"),
-                root.get("groupWorkout.id"),
+                root.get("groupWorkout").get("id"),
                 root.get("permissionId")
         ).where(
                 criteriaBuilder.equal(root.get("permissionId"), permissionId)
@@ -130,10 +130,10 @@ public class WorkoutPermissionHibernateQuery extends AbstractHibernateQuery<Work
 
         criteriaQuery.multiselect(
                 root.get("id"),
-                root.get("groupWorkout.id"),
+                root.get("groupWorkout").get("id"),
                 root.get("permissionId")
         ).where(
-                criteriaBuilder.equal(root.get("groupWorkout.id"), groupWorkoutId),
+                criteriaBuilder.equal(root.get("groupWorkout").get("id"), groupWorkoutId),
                 criteriaBuilder.equal(root.get("permissionId"), permissionId)
         );
 

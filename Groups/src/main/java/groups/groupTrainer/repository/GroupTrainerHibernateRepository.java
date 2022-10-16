@@ -53,7 +53,7 @@ public class GroupTrainerHibernateRepository extends AbstractHibernateRepository
 
         criteriaDelete.where(
                 criteriaBuilder.equal(root.get("user_id"), trainerId),
-                criteriaBuilder.equal(root.get("group.id"), groupId)
+                criteriaBuilder.equal(root.get("group").get("id"), groupId)
         );
 
         getSession().createQuery(criteriaDelete)
@@ -77,7 +77,7 @@ public class GroupTrainerHibernateRepository extends AbstractHibernateRepository
         Root<GroupTrainer> root = criteriaDelete.from(GroupTrainer.class);
 
         criteriaDelete.where(
-                criteriaBuilder.equal(root.get("group.id"), groupId)
+                criteriaBuilder.equal(root.get("group").get("id"), groupId)
         );
 
         getSession().createQuery(criteriaDelete)

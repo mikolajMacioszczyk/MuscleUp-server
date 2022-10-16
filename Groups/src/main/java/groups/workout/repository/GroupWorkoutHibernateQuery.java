@@ -47,7 +47,7 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
 
         criteriaQuery.multiselect(
                 root.get("id"),
-                root.get("group.id"),
+                root.get("group").get("id"),
                 root.get("workoutId"),
                 root.get("startTime"),
                 root.get("endTime")
@@ -75,12 +75,12 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
 
         criteriaQuery.multiselect(
                 root.get("id"),
-                root.get("group.id"),
+                root.get("group").get("id"),
                 root.get("workoutId"),
                 root.get("startTime"),
                 root.get("endTime")
         ).where(
-                criteriaBuilder.equal(root.get("group.id"), groupId)
+                criteriaBuilder.equal(root.get("group").get("id"), groupId)
         );
 
         return getSession().createQuery(criteriaQuery)
@@ -101,7 +101,7 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
 
         criteriaQuery.multiselect(
                 root.get("id"),
-                root.get("group.id"),
+                root.get("group").get("id"),
                 root.get("workoutId"),
                 root.get("startTime"),
                 root.get("endTime")

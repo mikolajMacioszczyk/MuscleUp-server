@@ -55,7 +55,7 @@ public class GroupTrainerHibernateQuery extends AbstractHibernateQuery<GroupTrai
 
         criteriaQuery.multiselect(
                 root.get("id"),
-                root.get("group.id"),
+                root.get("group").get("id"),
                 root.get("trainerId")
         ).where(
                 criteriaBuilder.equal(root.get("id"), id)
@@ -81,10 +81,10 @@ public class GroupTrainerHibernateQuery extends AbstractHibernateQuery<GroupTrai
 
         criteriaQuery.multiselect(
                 root.get("id"),
-                root.get("group.id"),
+                root.get("group").get("id"),
                 root.get("trainerId")
         ).where(
-                criteriaBuilder.equal(root.get("group.id"), groupId)
+                criteriaBuilder.equal(root.get("group").get("id"), groupId)
         );
 
         return getSession().createQuery(criteriaQuery)
@@ -105,7 +105,7 @@ public class GroupTrainerHibernateQuery extends AbstractHibernateQuery<GroupTrai
 
         criteriaQuery.multiselect(
                 root.get("id"),
-                root.get("group.id"),
+                root.get("group").get("id"),
                 root.get("trainerId")
         ).where(
                 criteriaBuilder.equal(root.get("trainerId"), trainerId)
@@ -130,11 +130,11 @@ public class GroupTrainerHibernateQuery extends AbstractHibernateQuery<GroupTrai
 
         criteriaQuery.multiselect(
                 root.get("id"),
-                root.get("group.id"),
+                root.get("group").get("id"),
                 root.get("trainerId")
         ).where(
                 criteriaBuilder.equal(root.get("trainerId"), trainerId),
-                criteriaBuilder.equal(root.get("group.id"), groupId)
+                criteriaBuilder.equal(root.get("group").get("id"), groupId)
         );
 
         return getSession().createQuery(criteriaQuery)
