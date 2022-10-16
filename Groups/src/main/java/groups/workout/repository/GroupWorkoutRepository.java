@@ -2,11 +2,14 @@ package groups.workout.repository;
 
 import groups.workout.entity.GroupWorkout;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface GroupWorkoutRepository {
 
     GroupWorkout getById(UUID id);
+
+    List<UUID> getIdsByGroupId(UUID id);
 
     UUID save(GroupWorkout groupWorkout);
 

@@ -6,6 +6,15 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
+import java.util.UUID;
+
+import static groups.common.stringUtils.StringUtils.concatenate;
 
 @Primary
 @Repository
@@ -15,5 +24,27 @@ public class GroupWorkoutHibernateRepository extends AbstractHibernateRepository
     private GroupWorkoutHibernateRepository(SessionFactory sessionFactory) {
 
         super(GroupWorkout.class, sessionFactory);
+    }
+
+    @Override
+    public List<UUID> getIdsByGroupId(UUID groupId) {
+
+        Assert.notNull(groupId, "groupId must not be null");
+
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaQuery<UUID> criteriaQuery = criteriaBuilder.createQuery(UUID.class);
+        Root<GroupWorkout> root = criteriaQuery.from(GroupWorkout.class);
+
+        criteriaQuery.multiselect(
+                root.get("id")
+        ).where(
+                criteriaBuilder.equal(root.get("group.id"), groupId)
+        );
+
+        return getSession().createQuery(criteriaQuery)
+                .setComment(
+                        concatenate("GroupWorkout with groupId = ", groupId.toString())
+                )
+                .getResultList();
     }
 }

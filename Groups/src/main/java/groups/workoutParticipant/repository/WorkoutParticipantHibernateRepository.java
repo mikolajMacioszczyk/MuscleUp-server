@@ -68,5 +68,27 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
                 )
                 .executeUpdate();
     }
+
+    @Override
+    public void unassignAllByGroupWorkoutId(UUID groupWorkoutId) {
+
+        Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
+
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaDelete<WorkoutParticipant> criteriaDelete = criteriaBuilder.createCriteriaDelete(WorkoutParticipant.class);
+        Root<WorkoutParticipant> root = criteriaDelete.from(WorkoutParticipant.class);
+
+        criteriaDelete.where(
+                criteriaBuilder.equal(root.get("groupWorkout.id"), groupWorkoutId)
+        );
+
+        getSession().createQuery(criteriaDelete)
+                .setComment(
+                        concatenate("Delete WorkoutParticipant with GroupWorkoutId = ",
+                                groupWorkoutId.toString()
+                        )
+                )
+                .executeUpdate();
+    }
 }
 

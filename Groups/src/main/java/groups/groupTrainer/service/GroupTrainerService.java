@@ -48,4 +48,11 @@ public class GroupTrainerService {
 
         groupTrainerRepository.unassign(groupTrainerForm.trainerId(), groupTrainerForm.groupId());
     }
+
+    public void unassignAllByGroupId(UUID groupId) {
+
+        Assert.notNull(groupId, "groupId must not be null");
+
+        groupTrainerRepository.unassignAllByGroupId(groupId);
+    }
 }

@@ -13,4 +13,6 @@ public interface WorkoutPermissionRepository {
     void remove(UUID workoutPermissionId);
 
     void remove(UUID groupWorkoutId, UUID permissionId);
+
+    void unassignAllByGroupWorkoutId(UUID groupWorkoutId);
 }

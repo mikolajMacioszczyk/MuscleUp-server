@@ -1,7 +1,6 @@
 package groups.workoutPermission.repository;
 
 import groups.common.abstracts.AbstractHibernateRepository;
-import groups.workoutParticipant.entity.WorkoutParticipant;
 import groups.workoutPermission.entity.WorkoutPermission;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +64,28 @@ public class WorkoutPermissionHibernateRepository extends AbstractHibernateRepos
                                 groupWorkoutId.toString(),
                                 " and PermissionId = ",
                                 permissionId.toString()
+                        )
+                )
+                .executeUpdate();
+    }
+
+    @Override
+    public void unassignAllByGroupWorkoutId(UUID groupWorkoutId) {
+
+        Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
+
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaDelete<WorkoutPermission> criteriaDelete = criteriaBuilder.createCriteriaDelete(WorkoutPermission.class);
+        Root<WorkoutPermission> root = criteriaDelete.from(WorkoutPermission.class);
+
+        criteriaDelete.where(
+                criteriaBuilder.equal(root.get("groupWorkout.id"), groupWorkoutId)
+        );
+
+        getSession().createQuery(criteriaDelete)
+                .setComment(
+                        concatenate("Delete WorkoutParticipant with GroupWorkoutId = ",
+                                groupWorkoutId.toString()
                         )
                 )
                 .executeUpdate();

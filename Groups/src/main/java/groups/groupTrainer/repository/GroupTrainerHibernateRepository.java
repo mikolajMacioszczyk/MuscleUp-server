@@ -66,4 +66,24 @@ public class GroupTrainerHibernateRepository extends AbstractHibernateRepository
             )
             .executeUpdate();
     }
+
+    @Override
+    public void unassignAllByGroupId(UUID groupId) {
+
+        Assert.notNull(groupId, "groupId must not be null");
+
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaDelete<GroupTrainer> criteriaDelete = criteriaBuilder.createCriteriaDelete(GroupTrainer.class);
+        Root<GroupTrainer> root = criteriaDelete.from(GroupTrainer.class);
+
+        criteriaDelete.where(
+                criteriaBuilder.equal(root.get("group.id"), groupId)
+        );
+
+        getSession().createQuery(criteriaDelete)
+                .setComment(
+                        concatenate("Delete GroupTrainer with groupId = ", groupId.toString())
+                )
+                .executeUpdate();
+    }
 }

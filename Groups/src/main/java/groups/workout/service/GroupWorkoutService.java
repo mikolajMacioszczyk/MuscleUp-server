@@ -6,10 +6,14 @@ import groups.workout.entity.GroupWorkout;
 import groups.workout.entity.GroupWorkoutFactory;
 import groups.workout.entity.GroupWorkoutFullDto;
 import groups.workout.repository.GroupWorkoutRepository;
+import groups.workoutParticipant.entity.WorkoutParticipant;
+import groups.workoutParticipant.service.WorkoutParticipantService;
+import groups.workoutPermission.service.WorkoutPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -18,20 +22,28 @@ public class GroupWorkoutService {
     private final GroupWorkoutRepository groupWorkoutRepository;
     private final GroupWorkoutFactory groupWorkoutFactory;
     private final GroupRepository groupRepository;
+    private final WorkoutParticipantService workoutParticipantService;
+    private final WorkoutPermissionService workoutPermissionService;
 
 
     @Autowired
     private GroupWorkoutService(GroupWorkoutRepository groupWorkoutRepository,
                                 GroupWorkoutFactory groupWorkoutFactory,
-                                GroupRepository groupRepository) {
+                                GroupRepository groupRepository,
+                                WorkoutParticipantService workoutParticipantService,
+                                WorkoutPermissionService workoutPermissionService) {
 
         Assert.notNull(groupWorkoutRepository, "groupWorkoutRepository must not be null");
         Assert.notNull(groupWorkoutFactory, "groupWorkoutFactory must not be null");
         Assert.notNull(groupRepository, "groupRepository must not be null");
+        Assert.notNull(workoutParticipantService, "workoutParticipantService must not be null");
+        Assert.notNull(workoutPermissionService, "workoutPermissionService must not be null");
 
         this.groupWorkoutRepository = groupWorkoutRepository;
         this.groupWorkoutFactory = groupWorkoutFactory;
         this.groupRepository = groupRepository;
+        this.workoutParticipantService = workoutParticipantService;
+        this.workoutPermissionService = workoutPermissionService;
     }
 
 
@@ -64,6 +76,17 @@ public class GroupWorkoutService {
 
         Assert.notNull(idToRemove, "idToRemove must not be null");
 
+        workoutParticipantService.unassignAllByGroupWorkoutId(idToRemove);
+        workoutPermissionService.unassignAllByGroupWorkoutId(idToRemove);
         groupWorkoutRepository.delete(idToRemove);
+    }
+
+    public void deleteAllByGroupId(UUID groupIdToRemove) {
+
+        Assert.notNull(groupIdToRemove, "groupIdToRemove must not be null");
+
+        List<UUID> groupWorkoutIdsToRemove = groupWorkoutRepository.getIdsByGroupId(groupIdToRemove);
+
+        groupWorkoutIdsToRemove.forEach(this::deleteGroupWorkout);
     }
 }

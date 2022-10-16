@@ -13,4 +13,6 @@ public interface GroupTrainerRepository {
     void unassign(UUID groupTrainerId);
 
     void unassign(UUID trainerId, UUID groupId);
+
+    void unassignAllByGroupId(UUID groupId);
 }
