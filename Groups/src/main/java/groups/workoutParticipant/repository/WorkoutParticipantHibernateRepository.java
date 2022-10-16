@@ -21,7 +21,7 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
 
 
     @Autowired
-    private WorkoutParticipantHibernateRepository(SessionFactory sessionFactory) {
+    WorkoutParticipantHibernateRepository(SessionFactory sessionFactory) {
 
         super(WorkoutParticipant.class, sessionFactory);
     }

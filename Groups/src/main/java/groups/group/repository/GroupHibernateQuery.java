@@ -27,7 +27,7 @@ public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implement
 
 
     @Autowired
-    private GroupHibernateQuery(SessionFactory sessionFactory) {
+    GroupHibernateQuery(SessionFactory sessionFactory) {
 
         super(Group.class, sessionFactory);
 

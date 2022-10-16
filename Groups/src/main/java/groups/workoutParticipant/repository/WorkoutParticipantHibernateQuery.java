@@ -28,7 +28,7 @@ public class WorkoutParticipantHibernateQuery extends AbstractHibernateQuery<Wor
 
 
     @Autowired
-    private WorkoutParticipantHibernateQuery(SessionFactory sessionFactory) {
+    WorkoutParticipantHibernateQuery(SessionFactory sessionFactory) {
 
         super(WorkoutParticipant.class, sessionFactory);
 

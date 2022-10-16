@@ -5,10 +5,12 @@ import groups.workoutParticipant.entity.WorkoutParticipant;
 import groups.workoutParticipant.entity.WorkoutParticipantFactory;
 import groups.workoutParticipant.repository.WorkoutParticipantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.UUID;
 
+@Service
 public class WorkoutParticipantService {
 
     private final WorkoutParticipantRepository workoutParticipantRepository;

@@ -20,7 +20,7 @@ import static groups.common.stringUtils.StringUtils.concatenate;
 public class GroupTrainerHibernateRepository extends AbstractHibernateRepository<GroupTrainer> implements GroupTrainerRepository {
 
     @Autowired
-    private GroupTrainerHibernateRepository(SessionFactory sessionFactory) {
+    GroupTrainerHibernateRepository(SessionFactory sessionFactory) {
 
         super(GroupTrainer.class, sessionFactory);
     }

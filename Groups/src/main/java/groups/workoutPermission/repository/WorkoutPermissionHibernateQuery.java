@@ -28,7 +28,7 @@ public class WorkoutPermissionHibernateQuery extends AbstractHibernateQuery<Work
 
 
     @Autowired
-    private WorkoutPermissionHibernateQuery(SessionFactory sessionFactory) {
+    WorkoutPermissionHibernateQuery(SessionFactory sessionFactory) {
 
         super(WorkoutPermission.class, sessionFactory);
 

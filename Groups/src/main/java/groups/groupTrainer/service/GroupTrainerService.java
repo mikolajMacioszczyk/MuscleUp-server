@@ -5,10 +5,12 @@ import groups.groupTrainer.entity.GroupTrainer;
 import groups.groupTrainer.entity.GroupTrainerFactory;
 import groups.groupTrainer.repository.GroupTrainerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.UUID;
 
+@Service
 public class GroupTrainerService {
 
     private final GroupTrainerRepository groupTrainerRepository;

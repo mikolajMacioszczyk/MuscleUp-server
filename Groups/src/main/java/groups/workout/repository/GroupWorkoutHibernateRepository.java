@@ -21,7 +21,7 @@ import static groups.common.stringUtils.StringUtils.concatenate;
 public class GroupWorkoutHibernateRepository extends AbstractHibernateRepository<GroupWorkout> implements GroupWorkoutRepository {
 
     @Autowired
-    private GroupWorkoutHibernateRepository(SessionFactory sessionFactory) {
+    GroupWorkoutHibernateRepository(SessionFactory sessionFactory) {
 
         super(GroupWorkout.class, sessionFactory);
     }

@@ -28,7 +28,7 @@ public class GroupTrainerHibernateQuery extends AbstractHibernateQuery<GroupTrai
 
 
     @Autowired
-    private GroupTrainerHibernateQuery(SessionFactory sessionFactory) {
+    GroupTrainerHibernateQuery(SessionFactory sessionFactory) {
 
         super(GroupTrainer.class, sessionFactory);
 
