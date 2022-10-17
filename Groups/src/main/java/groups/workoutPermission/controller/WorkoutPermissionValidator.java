@@ -36,11 +36,12 @@ public class WorkoutPermissionValidator {
                 && !isAssigned(workoutPermissionForm.groupWorkoutId(), workoutPermissionForm.permissionId());
     }
 
-    boolean isCorrectToRemove(WorkoutPermissionForm workoutPermissionForm) {
+    boolean isCorrectToRemove(UUID groupWorkoutId, UUID permissionId) {
 
-        Assert.notNull(workoutPermissionForm, "workoutPermissionForm must not be null");
+        Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
+        Assert.notNull(permissionId, "permissionId must not be null");
 
-        return isAssigned(workoutPermissionForm.groupWorkoutId(), workoutPermissionForm.permissionId());
+        return isAssigned(groupWorkoutId, permissionId);
     }
 
     boolean isCorrectToRemove(UUID id) {

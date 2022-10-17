@@ -44,11 +44,12 @@ public class WorkoutParticipantService {
         workoutParticipantRepository.unassign(workoutParticipantId);
     }
 
-    public void unassign(WorkoutParticipantForm workoutParticipantForm) {
+    public void unassign(UUID groupWorkoutId, UUID participantId) {
 
-        Assert.notNull(workoutParticipantForm, "workoutParticipantForm must not be null");
+        Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
+        Assert.notNull(participantId, "participantId must not be null");
 
-        workoutParticipantRepository.unassign(workoutParticipantForm.groupWorkoutId(), workoutParticipantForm.participantId());
+        workoutParticipantRepository.unassign(groupWorkoutId, participantId);
     }
 
     public void unassignAllByGroupWorkoutId(UUID groupWorkoutId) {

@@ -150,25 +150,25 @@
 | api/group-workout/delete/{id}              | TODO    | DELETE      | cascade deletes GroupWorkout                           |
 
 ## GroupTrainer
-| Endpoint Name                   | Who can | Method type | Purpose                                                  |
-|---------------------------------|---------|-------------|----------------------------------------------------------|
-| api/group-trainer/assign        | TODO    | POST        | assign trainer to group                                  |
-| api/group-trainer/unassign      | TODO    | POST        | delete trainer from group based on trainerId and groupId |
-| api/group-trainer/unassign/{id} | TODO    | DELETE      | delete trainer from group based on groupTrainerId        |
+| Endpoint Name                                    | Who can | Method type | Purpose                                                   |
+|--------------------------------------------------|---------|-------------|-----------------------------------------------------------|
+| api/group-trainer/assign                         | TODO    | POST        | assign trainer to group                                   |
+| api/group-trainer/unassign/{id}                  | TODO    | DELETE      | delete trainer from group based on groupTrainerId         |
+| api/group-trainer/unassign/{trainerId}/{groupId} | TODO    | DELETE      | delete trainer from group based on trainerId and groupId  |
 
 ## GroupWorkoutPermission
-| Endpoint Name                            | Who can | Method type | Purpose                                                                      |
-|------------------------------------------|---------|-------------|------------------------------------------------------------------------------|
-| api/group-workout-permission/add         | TODO    | POST        | add permission to groupWorkout                                               |
-| api/group-workout-permission/remove      | TODO    | POST        | remove permission from groupWorkout based on groupWorkoutId and permissionId |
-| api/group-workout-permission/remove/{id} | TODO    | DELETE      | remove permission from groupWorkout based on groupWorkoutPermissionId        |
+| Endpoint Name                                                       | Who can | Method type | Purpose                                                                      |
+|---------------------------------------------------------------------|---------|-------------|------------------------------------------------------------------------------|
+| api/group-workout-permission/add                                    | TODO    | POST        | add permission to groupWorkout                                               |
+| api/group-workout-permission/remove/{id}                            | TODO    | DELETE      | remove permission from groupWorkout based on groupWorkoutPermissionId        |
+| api/group-workout-permission/remove/{groupWorkoutId}/{permissionId} | TODO    | DELETE      | remove permission from groupWorkout based on groupWorkoutId and permissionId |
 
 ## GroupWorkoutParticipant
-| Endpoint Name                               | Who can  | Method type | Purpose                                                                        |
-|---------------------------------------------|----------|-------------|--------------------------------------------------------------------------------|
-| api/group-workout-participant/assign        | TODO     | POST        | assign user(gympassId) to groupWorkout                                         |
-| api/group-workout-participant/unassign      | TODO     | POST        | delete user(gympassId) from groupWorkout based on groupWorkoutId and gympassId |
-| api/group-workout-participant/unassign/{id} | TODO     | DELETE      | delete user(gympassId) from groupWorkout based on groupWorkoutParticipantId    |
+| Endpoint Name                                                       | Who can  | Method type | Purpose                                                                        |
+|---------------------------------------------------------------------|----------|-------------|--------------------------------------------------------------------------------|
+| api/group-workout-participant/assign                                | TODO     | POST        | assign user(gympassId) to groupWorkout                                         |
+| api/group-workout-participant/unassign/{id}                         | TODO     | DELETE      | delete user(gympassId) from groupWorkout based on groupWorkoutParticipantId    |
+| api/group-workout-participant/unassign/{groupWorkoutId}/{gympassId} | TODO     | DELETE      | delete user(gympassId) from groupWorkout based on groupWorkoutId and gympassId |
 
 
 

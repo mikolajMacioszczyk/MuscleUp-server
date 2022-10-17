@@ -37,12 +37,13 @@ class GroupTrainerController {
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/unassign")
-    protected ResponseEntity<HttpStatus> deleteGroup(@RequestBody GroupTrainerForm groupTrainerForm) {
+    @DeleteMapping("/unassign/{trainerId}/{groupId}")
+    protected ResponseEntity<HttpStatus> deleteGroup(@PathVariable("trainerId") UUID trainerId,
+                                                     @PathVariable("groupId") UUID groupId) {
 
-        if (groupTrainerValidator.isCorrectToUnassign(groupTrainerForm)) {
+        if (groupTrainerValidator.isCorrectToUnassign(trainerId, groupId)) {
 
-            groupTrainerService.unassign(groupTrainerForm);
+            groupTrainerService.unassign(trainerId, groupId);
             return new ResponseEntity<>(HttpStatus.OK);
         }
 

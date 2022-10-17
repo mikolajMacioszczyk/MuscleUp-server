@@ -36,11 +36,12 @@ public class WorkoutParticipantValidator {
                 && !isAssigned(workoutParticipantForm.groupWorkoutId(), workoutParticipantForm.participantId());
     }
 
-    boolean isCorrectToUnassign(WorkoutParticipantForm workoutParticipantForm) {
+    boolean isCorrectToUnassign(UUID groupWorkoutId, UUID participantId) {
 
-        Assert.notNull(workoutParticipantForm, "workoutParticipantForm must not be null");
+        Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
+        Assert.notNull(participantId, "participantId must not be null");
 
-        return isAssigned(workoutParticipantForm.groupWorkoutId(), workoutParticipantForm.participantId());
+        return isAssigned(groupWorkoutId, participantId);
     }
 
     boolean isCorrectToUnassign(UUID id) {

@@ -36,11 +36,12 @@ public class GroupTrainerValidator {
                 && !isAssigned(groupTrainerForm.trainerId(), groupTrainerForm.groupId());
     }
 
-    boolean isCorrectToUnassign(GroupTrainerForm groupTrainerForm) {
+    boolean isCorrectToUnassign(UUID trainerId, UUID groupId) {
 
-        Assert.notNull(groupTrainerForm, "groupTrainerForm must not be null");
+        Assert.notNull(trainerId, "trainerId must not be null");
+        Assert.notNull(groupId, "groupId must not be null");
 
-        return isAssigned(groupTrainerForm.trainerId(), groupTrainerForm.groupId());
+        return isAssigned(trainerId, groupId);
     }
 
     boolean isCorrectToUnassign(UUID id) {

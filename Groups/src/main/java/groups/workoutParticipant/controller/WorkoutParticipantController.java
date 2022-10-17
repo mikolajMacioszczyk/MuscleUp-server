@@ -38,12 +38,13 @@ class WorkoutParticipantController {
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/unassign")
-    protected ResponseEntity<HttpStatus> deleteGroup(@RequestBody WorkoutParticipantForm workoutParticipantForm) {
+    @DeleteMapping("/unassign/{groupWorkoutId}/{participantId}")
+    protected ResponseEntity<HttpStatus> deleteGroup(@PathVariable("groupWorkoutId") UUID groupWorkoutId,
+                                                     @PathVariable("participantId") UUID participantId) {
 
-        if (workoutParticipantValidator.isCorrectToUnassign(workoutParticipantForm)) {
+        if (workoutParticipantValidator.isCorrectToUnassign(groupWorkoutId, participantId)) {
 
-            workoutParticipantService.unassign(workoutParticipantForm);
+            workoutParticipantService.unassign(groupWorkoutId, participantId);
             return new ResponseEntity<>(HttpStatus.OK);
         }
 

@@ -44,11 +44,12 @@ public class WorkoutPermissionService {
         workoutPermissionRepository.remove(workoutPermissionId);
     }
 
-    public void remove(WorkoutPermissionForm workoutPermissionForm) {
+    public void remove(UUID groupWorkoutId, UUID permissionId) {
 
-        Assert.notNull(workoutPermissionForm, "workoutPermissionForm must not be null");
+        Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
+        Assert.notNull(permissionId, "permissionId must not be null");
 
-        workoutPermissionRepository.remove(workoutPermissionForm.groupWorkoutId(), workoutPermissionForm.permissionId());
+        workoutPermissionRepository.remove(groupWorkoutId, permissionId);
     }
 
     public void unassignAllByGroupWorkoutId(UUID groupWorkoutId) {

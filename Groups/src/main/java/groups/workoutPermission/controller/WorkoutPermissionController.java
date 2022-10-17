@@ -38,12 +38,13 @@ class WorkoutPermissionController {
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/remove")
-    protected ResponseEntity<HttpStatus> removePermission(@RequestBody WorkoutPermissionForm workoutPermissionForm) {
+    @DeleteMapping("/remove/{groupWorkoutId}/{permissionId}")
+    protected ResponseEntity<HttpStatus> removePermission(@PathVariable("groupWorkoutId") UUID groupWorkoutId,
+                                                          @PathVariable("permissionId") UUID permissionId) {
 
-        if (workoutPermissionValidator.isCorrectToRemove(workoutPermissionForm)) {
+        if (workoutPermissionValidator.isCorrectToRemove(groupWorkoutId, permissionId)) {
 
-            workoutPermissionService.remove(workoutPermissionForm);
+            workoutPermissionService.remove(groupWorkoutId, permissionId);
             return new ResponseEntity<>(HttpStatus.OK);
         }
 

@@ -44,11 +44,12 @@ public class GroupTrainerService {
         groupTrainerRepository.unassign(groupTrainerId);
     }
 
-    public void unassign(GroupTrainerForm groupTrainerForm) {
+    public void unassign(UUID trainerId, UUID groupId) {
 
-        Assert.notNull(groupTrainerForm, "groupTrainerForm must not be null");
+        Assert.notNull(trainerId, "trainerId must not be null");
+        Assert.notNull(groupId, "groupId must not be null");
 
-        groupTrainerRepository.unassign(groupTrainerForm.trainerId(), groupTrainerForm.groupId());
+        groupTrainerRepository.unassign(trainerId, groupId);
     }
 
     public void unassignAllByGroupId(UUID groupId) {
