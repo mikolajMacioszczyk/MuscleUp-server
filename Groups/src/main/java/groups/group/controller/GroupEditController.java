@@ -1,5 +1,6 @@
 package groups.group.controller;
 
+import groups.group.controller.form.GroupFullForm;
 import groups.group.entity.GroupFullDto;
 import groups.group.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,10 @@ class GroupEditController {
 
 
     @PostMapping("/save")
-    protected ResponseEntity<UUID> saveGroup(@RequestBody GroupForm groupForm) {
+    protected ResponseEntity<UUID> saveGroup(@RequestBody GroupFullForm groupFullForm) {
 
-        return groupValidator.isCorrectToSave(groupForm)?
-            new ResponseEntity<>(groupService.saveGroup(groupForm), HttpStatus.OK) :
+        return groupValidator.isCorrectToSave(groupFullForm)?
+            new ResponseEntity<>(groupService.saveGroup(groupFullForm), HttpStatus.OK) :
             new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 

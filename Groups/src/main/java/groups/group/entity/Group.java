@@ -4,7 +4,6 @@ import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
 import groups.common.annotation.Reason;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -32,12 +31,11 @@ public class Group extends AbstractEntity {
     public Group() {
     }
 
-    public Group(@Nullable UUID id, String name, Long maxParticipants) {
+    public Group(String name, Long maxParticipants) {
 
         Assert.notNull(name, "name must not be null");
         Assert.notNull(maxParticipants, "maxParticipants must not be null");
 
-        this.id = id;
         this.name = name;
         this.maxParticipants = maxParticipants;
     }

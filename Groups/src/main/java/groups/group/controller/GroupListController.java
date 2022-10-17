@@ -32,12 +32,12 @@ public class GroupListController {
     }
 
 
-    @GetMapping("/find-by-id/{id}")
+    @GetMapping("/find/{id}")
     protected ResponseEntity<GroupFullDto> findGroupById(@PathVariable("id") UUID id) {
 
         Optional<GroupFullDto> groupFullDto = groupQuery.findGroupById(id);
 
-        return groupFullDto.map(fullDto -> new ResponseEntity<>(fullDto, HttpStatus.FOUND))
+        return groupFullDto.map(fullDto -> new ResponseEntity<>(fullDto, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 

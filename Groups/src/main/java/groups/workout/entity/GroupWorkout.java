@@ -1,4 +1,4 @@
-package groups.otherEntities;
+package groups.workout.entity;
 
 import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
@@ -11,8 +11,6 @@ import org.springframework.util.Assert;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import static javax.persistence.GenerationType.AUTO;
 
 @Entity
 @Table(name = "class_workout")
@@ -31,7 +29,7 @@ public class GroupWorkout extends AbstractEntity {
     private LocalDateTime endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_id")
+    @JoinColumn(name = "class_id", nullable = false)
     private Group group;
 
     @UnknownForeignKey
@@ -42,6 +40,7 @@ public class GroupWorkout extends AbstractEntity {
     @MustExist(reason = Reason.HIBERNATE)
     public GroupWorkout() {
     }
+
 
     public GroupWorkout(LocalDateTime startTime, LocalDateTime endTime, Group group, UUID workoutId) {
 
@@ -56,6 +55,19 @@ public class GroupWorkout extends AbstractEntity {
         this.workoutId = workoutId;
     }
 
+
+    public void update(LocalDateTime startTime, LocalDateTime endTime, Group group, UUID workoutId) {
+
+        Assert.notNull(startTime, "startTime must not be null");
+        Assert.notNull(endTime, "endTime must not be null");
+        Assert.notNull(group, "group must not be null");
+        Assert.notNull(workoutId, "workoutId must not be null");
+
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.group = group;
+        this.workoutId = workoutId;
+    }
 
     @Override
     public UUID getId() {

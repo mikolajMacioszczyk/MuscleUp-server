@@ -1,19 +1,23 @@
-package groups.otherEntities;
+package groups.workoutPermission.entity;
 
 import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
 import groups.common.annotation.Reason;
 import groups.common.annotation.UnknownForeignKey;
+import groups.workout.entity.GroupWorkout;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "class_permission_allowed")
-public class GroupPermissionAllowed extends AbstractEntity {
+@Table(name = "class_workout_permission")
+public class WorkoutPermission extends AbstractEntity {
 
     @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,10 +30,10 @@ public class GroupPermissionAllowed extends AbstractEntity {
 
 
     @MustExist(reason = Reason.HIBERNATE)
-    public GroupPermissionAllowed() {
+    public WorkoutPermission() {
     }
 
-    public GroupPermissionAllowed(GroupWorkout groupWorkout, UUID permissionId) {
+    public WorkoutPermission(GroupWorkout groupWorkout, UUID permissionId) {
 
         Assert.notNull(groupWorkout, "groupWorkout must not be null");
         Assert.notNull(permissionId, "permissionId must not be null");

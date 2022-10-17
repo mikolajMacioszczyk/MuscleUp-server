@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public class GroupHibernateRepository extends AbstractHibernateRepository<Group> implements GroupRepository {
 
     @Autowired
-    protected GroupHibernateRepository(SessionFactory sessionFactory) {
+    GroupHibernateRepository(SessionFactory sessionFactory) {
 
         super(Group.class, sessionFactory);
     }

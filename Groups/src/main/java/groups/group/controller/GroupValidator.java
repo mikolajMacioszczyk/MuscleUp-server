@@ -1,5 +1,6 @@
 package groups.group.controller;
 
+import groups.group.controller.form.GroupFullForm;
 import groups.group.entity.GroupFullDto;
 import groups.group.repository.GroupQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class GroupValidator {
 
 
     @Autowired
-    public GroupValidator(GroupQuery groupQuery) {
+    private GroupValidator(GroupQuery groupQuery) {
 
         Assert.notNull(groupQuery, "groupQuery must not be null");
 
@@ -27,13 +28,17 @@ public class GroupValidator {
     }
 
 
-    boolean isCorrectToSave(GroupForm groupForm) {
+    boolean isCorrectToSave(GroupFullForm groupFullForm) {
 
-        return isParticipantNumberCorrect(groupForm.maxParticipants())
-                && isNameCorrect(groupForm.name());
+        Assert.notNull(groupFullForm, "groupFullForm must not be null");
+
+        return isParticipantNumberCorrect(groupFullForm.maxParticipants())
+                && isNameCorrect(groupFullForm.name());
     }
 
     boolean isCorrectToUpdate(GroupFullDto groupFullDto) {
+
+        Assert.notNull(groupFullDto, "groupFullDto must not be null");
 
         return doesIdExist(groupFullDto.id())
                 && isParticipantNumberCorrect(groupFullDto.maxParticipants())
@@ -41,6 +46,8 @@ public class GroupValidator {
     }
 
     boolean isCorrectToDelete(UUID id) {
+
+        Assert.notNull(id, "id must not be null");
 
         return groupQuery.findGroupById(id).isPresent();
     }
