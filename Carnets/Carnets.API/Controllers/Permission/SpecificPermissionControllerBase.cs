@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
-using Carnets.Domain.Interfaces;
+using Carnets.Application.FitnessClubs.Queries;
+using Carnets.Application.SpecificPermissions.Commands;
+using Carnets.Application.SpecificPermissions.Queries;
 using Carnets.Domain.Models;
+using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
 using Common.Models;
@@ -9,23 +12,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Carnets.API.Controllers
 {
-    public abstract class SpecificPermissionControllerBase<TPermission, TPermissionDto, TCreatePermissionDto> : ControllerBase
+    public abstract class SpecificPermissionControllerBase<TPermission, TPermissionDto, TCreatePermissionDto> : ApiControllerBase
         where TPermission : PermissionBase
     {
-        private readonly IPermissionService<TPermission> _permissionService;
-        private readonly IFitnessClubHttpService _fitnessClubHttpService;
         private readonly IMapper _mapper;
         private readonly HttpAuthContext _httpAuthContext;
 
-        protected SpecificPermissionControllerBase(
-            IPermissionService<TPermission> permissionService,
-            IMapper mapper,
-            IFitnessClubHttpService fitnessClubHttpService, 
-            HttpAuthContext httpAuthContext)
+        protected SpecificPermissionControllerBase(IMapper mapper, HttpAuthContext httpAuthContext)
         {
-            _permissionService = permissionService;
             _mapper = mapper;
-            _fitnessClubHttpService = fitnessClubHttpService;
             _httpAuthContext = httpAuthContext;
         }
 
@@ -34,24 +29,38 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllPermisions()
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClub = await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
             var fitnessClubId = fitnessClub.FitnessClubId;
 
-            return Ok(_mapper.Map<IEnumerable<TPermissionDto>>(await _permissionService.GetAll(fitnessClubId)));
+            var allPermissions = await Mediator.Send(new GetAllPermisionsQuery<TPermission>()
+            {
+                FitnessClubId = fitnessClubId
+            });
+
+            return Ok(_mapper.Map<IEnumerable<TPermissionDto>>(allPermissions));
         }
 
         [HttpGet("all-as-admin/{fitnessClubId}")]
         [Authorize(Roles = nameof(RoleType.Administrator))]
         public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllPermisions([FromRoute] string fitnessClubId)
         {
-            return Ok(_mapper.Map<IEnumerable<TPermissionDto>>(await _permissionService.GetAll(fitnessClubId)));
+            var allPermissions = await Mediator.Send(new GetAllPermisionsQuery<TPermission>()
+            {
+                FitnessClubId = fitnessClubId
+            });
+
+            return Ok(_mapper.Map<IEnumerable<TPermissionDto>>(allPermissions));
         }
 
         [HttpGet("{permissionId}")]
         [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
         public async Task<ActionResult> GetPermissionById([FromRoute] string permissionId)
         {
-            var permission = await _permissionService.GetPermissionById(permissionId);
+            var permission = await Mediator.Send(new GetPermissionById<TPermission>()
+            {
+                PermissionId = permissionId
+            });
+
             if (permission != null)
             {
                 return Ok(_mapper.Map<TPermissionDto>(permission));
@@ -63,7 +72,11 @@ namespace Carnets.API.Controllers
         [Authorize(Roles = AuthHelper.RoleAll)]
         public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllGympassTypePermisions([FromRoute] string gympassTypeId)
         {
-            var allPermissions = await _permissionService.GetAllGympassTypePermissions(gympassTypeId);
+            var allPermissions = await Mediator.Send(new GetAllGympassTypePermissionsQuery<TPermission>()
+            {
+                GympassTypeId = gympassTypeId
+            });
+
             return Ok(_mapper.Map<IEnumerable<TPermissionDto>>(allPermissions));
         }
 
@@ -72,12 +85,15 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult> CreatePermission([FromBody] TCreatePermissionDto model)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClub = await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
 
             var permission = _mapper.Map<TPermission>(model);
             permission.FitnessClubId = fitnessClub.FitnessClubId;
 
-            var createResult = await _permissionService.CreatePermission(permission);
+            var createResult = await Mediator.Send(new CreatePermissionCommand<TPermission>()
+            {
+                NewPermission = permission,
+            });
 
             if (createResult.IsSuccess)
             {
@@ -92,9 +108,13 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult> DeletePermission([FromRoute] string permissionId)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClub = await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
 
-            var deleteResult = await _permissionService.DeletePermission(permissionId, fitnessClub.FitnessClubId);
+            var deleteResult = await Mediator.Send(new DeletePermissionCommand<TPermission>()
+            {
+                FitnessClubId = fitnessClub.FitnessClubId,
+                PermissionId = permissionId
+            });
 
             if (deleteResult.IsSuccess)
             {

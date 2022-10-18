@@ -1,7 +1,13 @@
 ﻿using AutoMapper;
-using Carnets.Domain.Consts;
-using Carnets.Domain.Interfaces;
-using Carnets.Domain.Models.Dtos;
+using Carnets.Application.Enums;
+using Carnets.Application.FitnessClubs.Queries;
+using Carnets.Application.Gympasses.Commands;
+using Carnets.Application.Payments.Commands;
+using Carnets.Application.Subscriptions.Commands;
+using Carnets.Application.Subscriptions.Dtos;
+using Carnets.Application.Subscriptions.Queries;
+using Carnets.Domain.Models;
+using Common.BaseClasses;
 using Common.Enums;
 using Common.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -9,31 +15,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Carnets.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class SubscriptionController : ControllerBase
+    public class SubscriptionController : ApiControllerBase
     {
-        private readonly IFitnessClubHttpService _fitnessClubHttpService;
-        private readonly ISubscriptionService _subscriptionService;
-        private readonly IGympassService _gympassService;
         private readonly HttpAuthContext _httpAuthContext;
-        private readonly IPaymentService _paymentService;
         private readonly IMapper _mapper;
 
-        public SubscriptionController(
-            IFitnessClubHttpService fitnessClubHttpService,
-            ISubscriptionService subscriptionService,
-            IGympassService gamassService,
-            HttpAuthContext httpAuthContext,
-            IMapper mapper,
-            IPaymentService paymentService)
+        public SubscriptionController(HttpAuthContext httpAuthContext, IMapper mapper)
         {
-            _gympassService = gamassService;
-            _fitnessClubHttpService = fitnessClubHttpService;
             _httpAuthContext = httpAuthContext;
             _mapper = mapper;
-            _subscriptionService = subscriptionService;
-            _paymentService = paymentService;
         }
 
         [HttpGet("by-gympass/{gympassId}")]
@@ -42,7 +32,11 @@ namespace Carnets.API.Controllers
         {
             var memberId = _httpAuthContext.UserId;
 
-            var subscriptions = await _subscriptionService.GetAllGympassSubscriptions(gympassId, memberId);
+            var subscriptions = await Mediator.Send(new GetAllGympassSubscriptionsQuery()
+            {
+                GympassId = gympassId,
+                MemberId = memberId
+            });
 
             return Ok(subscriptions);
         }
@@ -51,7 +45,11 @@ namespace Carnets.API.Controllers
         [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
         public async Task<ActionResult<SubscriptionDto>> GetAllGympassSubscriptions([FromRoute] string gympassId, [FromRoute] string memberId)
         {
-            var subscriptions = await _subscriptionService.GetAllGympassSubscriptions(gympassId, memberId);
+            var subscriptions = await Mediator.Send(new GetAllGympassSubscriptionsQuery()
+            {
+                GympassId = gympassId,
+                MemberId = memberId
+            });
 
             return Ok(subscriptions);
         }
@@ -62,7 +60,10 @@ namespace Carnets.API.Controllers
         {
             var memberId = _httpAuthContext.UserId;
 
-            var subscriptions = await _subscriptionService.GetAllMemberSubscriptions(memberId);
+            var subscriptions = await Mediator.Send(new GetAllMemberSubscriptionsQuery()
+            {
+                MemberId = memberId
+            });
 
             return Ok(subscriptions);
         }
@@ -71,7 +72,10 @@ namespace Carnets.API.Controllers
         [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
         public async Task<ActionResult<SubscriptionDto>> GetAllMemberSubscriptions([FromRoute] string memberId)
         {
-            var subscriptions = await _subscriptionService.GetAllMemberSubscriptions(memberId);
+            var subscriptions = await Mediator.Send(new GetAllMemberSubscriptionsQuery()
+            {
+                MemberId = memberId
+            });
 
             return Ok(subscriptions);
         }
@@ -80,7 +84,10 @@ namespace Carnets.API.Controllers
         [Authorize(Roles = nameof(RoleType.Member) + "," + nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
         public async Task<ActionResult<SubscriptionDto>> GetSubscriptionById([FromRoute] string subscriptionId)
         {
-            var subscription = await _subscriptionService.GetSubscriptionById(subscriptionId);
+            var subscription = await Mediator.Send(new GetSubscriptionByIdQuery()
+            {
+                SubscriptionId = subscriptionId
+            });
 
             if (subscription is null)
             {
@@ -94,23 +101,30 @@ namespace Carnets.API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<SubscriptionDto>> PaymentWebhook()
         {
-            var jsonBody = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-            var signature = Request.Headers["Stripe-Signature"];
-
-            var paymentResult = _paymentService.HandlePaidResult(jsonBody, signature);
+            var paymentResult = await Mediator.Send(new HandlePaidResultCommand()
+            {
+                JsonBody = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync(),
+                Signature = Request.Headers["Stripe-Signature"]
+            });
 
             switch (paymentResult.PaymentStatus)
             {
-                case Domain.Enums.PaymentStatus.Success:
-                    var activateResult = await _gympassService.ActivateGympass(paymentResult.PlanId);
+                case PaymentStatus.Success:
+                    var activateResult = await Mediator.Send(new ActivateGympassCommand()
+                    {
+                        GympassId = paymentResult.PlanId
+                    });
                     // TODO: Create subscription in later implementation
                     if (activateResult.IsSuccess)
                     {
                         return Ok();
                     }
                     return BadRequest(activateResult.ErrorCombined);
-                case Domain.Enums.PaymentStatus.Expired:
-                    var deactivationResult = await _gympassService.DeactivateGympass(paymentResult.PlanId);
+                case PaymentStatus.Expired:
+                    var deactivationResult = await Mediator.Send(new DeactivateGympassCommand()
+                    {
+                        GympassId = paymentResult.PlanId
+                    });
                     if (deactivationResult.IsSuccess)
                     {
                         return Ok();
@@ -126,10 +140,14 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult<SubscriptionDto>> CreateGympassWithSubscriptionAsWorker([FromBody] CreateGympassSubscriptionDto model)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
-            var subscription = _mapper.Map<Domain.Models.Subscription>(model);
+            await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
+            var subscription = _mapper.Map<Subscription>(model);
 
-            var payResult = await _gympassService.CreateGympassSubscription(fitnessClub.FitnessClubId, model.GympassId, subscription);
+            var payResult = await Mediator.Send(new CreateGympassSubscriptionCommand()
+            {
+                GympassId = model.GympassId,
+                Subscription = subscription,
+            });
 
             if (payResult.IsSuccess)
             {

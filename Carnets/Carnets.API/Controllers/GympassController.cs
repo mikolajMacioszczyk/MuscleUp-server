@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
-using Carnets.Domain.Interfaces;
-using Carnets.Domain.Models.Dtos;
+using Carnets.Application.FitnessClubs.Queries;
+using Carnets.Application.Gympasses.Commands;
+using Carnets.Application.Gympasses.Dtos;
+using Carnets.Application.Gympasses.Queries;
+using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
 using Common.Models;
@@ -9,31 +12,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Carnets.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class GympassController : ControllerBase
+    public class GympassController : ApiControllerBase
     {
-        private readonly IFitnessClubHttpService _fitnessClubHttpService;
-        private readonly IGympassService _gympassService;
         private readonly HttpAuthContext _httpAuthContext;
         private readonly IMapper _mapper;
 
-        public GympassController(IMapper mapper,
-            IFitnessClubHttpService fitnessClubHttpService,
-            IGympassService gympassService,
-            HttpAuthContext httpAuthContext)
+        public GympassController(IMapper mapper, HttpAuthContext httpAuthContext)
         {
-            _gympassService = gympassService;
             _mapper = mapper;
             _httpAuthContext = httpAuthContext;
-            _fitnessClubHttpService = fitnessClubHttpService;
         }
 
         [HttpGet()]
         [Authorize(Roles = nameof(RoleType.Administrator) + "," + nameof(RoleType.Member))]
         public async Task<ActionResult<IEnumerable<GympassDto>>> GetAll()
         {
-            var gympasses = await _gympassService.GetAll();
+            var gympasses = await Mediator.Send(new GetAllGympassesQuery());
 
             return Ok(_mapper.Map<IEnumerable<GympassDto>>(gympasses));
         }
@@ -43,9 +37,15 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult<IEnumerable<GympassDto>>> GetAllFromFitnessClub()
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClub = await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery()
+            {
+                WorkerId = workerId,
+            });
 
-            var gympasses = await _gympassService.GetAllFromFitnessClub(fitnessClub.FitnessClubId);
+            var gympasses = await Mediator.Send(new GetAllFromFitnessClubQuery()
+            {
+                FitnessClubId = fitnessClub.FitnessClubId
+            });
 
             return Ok(_mapper.Map<IEnumerable<GympassDto>>(gympasses));
         }
@@ -54,7 +54,10 @@ namespace Carnets.API.Controllers
         [Authorize(Roles = AuthHelper.RoleAll)]
         public async Task<ActionResult<GympassDto>> GetById([FromRoute] string gympassId)
         {
-            var gympass = await _gympassService.GetById(gympassId);
+            var gympass = await Mediator.Send(new GetGympassByIdQuery()
+            {
+                GympassId = gympassId
+            });
 
             return Ok(_mapper.Map<GympassDto>(gympass));
         }
@@ -65,13 +68,15 @@ namespace Carnets.API.Controllers
         {
             var memberId = _httpAuthContext.UserId;
 
-            var createResult = await _gympassService.CreateGympass(memberId, model);
+            var createResult = await Mediator.Send(new CreateGympassCommand()
+            {
+                Model = model,
+                UserId = memberId
+            });
 
             if (createResult.IsSuccess)
             {
-                var gympassWithSession = _mapper.Map<GympassWithSessionDto>(createResult.Value.gympass);
-                gympassWithSession.CheckoutSessionUrl = createResult.Value.checkoutSessionUrl;
-                return Ok(gympassWithSession);
+                return Ok(createResult.Value);
             }
 
             return BadRequest(createResult.ErrorCombined);
@@ -81,8 +86,10 @@ namespace Carnets.API.Controllers
         [Authorize(Roles = nameof(RoleType.Member))]
         public async Task<ActionResult<GympassDto>> CancelGympass([FromRoute] string gympassId)
         {
-            var memberId = _httpAuthContext.UserId;
-            var result = await _gympassService.CancelGympass(gympassId, memberId);
+            var result = await Mediator.Send(new CancelGympassCommand()
+            {
+                GympassId = gympassId
+            });
 
             if (result.IsSuccess)
             {
@@ -101,9 +108,12 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult<GympassDto>> CancelGympassAsWorker([FromRoute] string gympassId)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId});
 
-            var result = await _gympassService.CancelGympassByFitnessClub(gympassId, fitnessClub.FitnessClubId);
+            var result = await Mediator.Send(new CancelGympassCommand()
+            {
+                GympassId = gympassId
+            });
 
             if (result.IsSuccess)
             {
@@ -122,9 +132,12 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult<GympassDto>> ActivateGympass([FromRoute] string gympassId)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
 
-            var result = await _gympassService.ActivateGympassByFitnessClub(gympassId, fitnessClub.FitnessClubId);
+            var result = await Mediator.Send(new ActivateGympassCommand()
+            {
+                GympassId = gympassId
+            });
 
             if (result.IsSuccess)
             {
@@ -143,9 +156,12 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult<GympassDto>> DeactivateGympass([FromRoute] string gympassId)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
 
-            var result = await _gympassService.DeactivateGympassyByFitnessClub(gympassId, fitnessClub.FitnessClubId);
+            var result = await Mediator.Send(new DeactivateGympassCommand()
+            {
+                GympassId = gympassId
+            });
 
             if (result.IsSuccess)
             {
@@ -163,7 +179,10 @@ namespace Carnets.API.Controllers
         [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Member))]
         public async Task<ActionResult<GympassDto>> ReduceGympassEntries([FromRoute] string gympassId)
         {
-            var result = await _gympassService.ReduceGympassEntries(gympassId);
+            var result = await Mediator.Send(new ReduceGympassEntriesCommand()
+            {
+                GympassId = gympassId
+            });
 
             if (result.IsSuccess)
             {

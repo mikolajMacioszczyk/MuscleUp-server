@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
-using Carnets.Domain.Interfaces;
+using Carnets.Application.FitnessClubs.Queries;
+using Carnets.Application.GympassTypes.Commands;
+using Carnets.Application.GympassTypes.Dtos;
+using Carnets.Application.GympassTypes.Queries;
+using Carnets.Application.Interfaces;
 using Carnets.Domain.Models;
-using Carnets.Domain.Models.Dtos;
 using Common;
+using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
 using Common.Models;
@@ -11,24 +15,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Carnets.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class GympassTypeController : ControllerBase
+    public class GympassTypeController : ApiControllerBase
     {
-        private readonly IGympassTypeService _gympassTypeService;
-        private readonly IFitnessClubHttpService _fitnessClubHttpService;
         private readonly IMapper _mapper;
         private readonly HttpAuthContext _httpAuthContext;
 
-        public GympassTypeController(
-            IGympassTypeService gympassTypeService, 
-            IMapper mapper, 
-            IFitnessClubHttpService fitnessClubHttpService, 
-            HttpAuthContext authContext)
+        public GympassTypeController(IMapper mapper, HttpAuthContext authContext)
         {
-            _gympassTypeService = gympassTypeService;
             _mapper = mapper;
-            _fitnessClubHttpService = fitnessClubHttpService;
             _httpAuthContext = authContext;
         }
 
@@ -36,10 +30,15 @@ namespace Carnets.API.Controllers
         [Authorize(Roles = AuthHelper.RoleAll)]
         public async Task<ActionResult<GympassTypeDto>> GetGympassTypeById([FromRoute] string gympassTypeId)
         {
-            var gympassType = await _gympassTypeService.GetGympassTypeWithPermissionsById(gympassTypeId);
+            var query = new GetGympassTypeWithPermissionsByIdQuery()
+            {
+                GympassTypeId = gympassTypeId
+            };
+
+            var gympassType = await Mediator.Send(query);
             if (gympassType != null)
             {
-                return Ok(_mapper.Map<GympassTypeDto>(gympassType));
+                return Ok(gympassType);
             }
             return NotFound();
         }
@@ -50,10 +49,17 @@ namespace Carnets.API.Controllers
             [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = CommonConsts.DefaultPageSize)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClub = await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
 
-            var gympassTypes = await _gympassTypeService.GetAllGympassTypesWithPermissions(fitnessClub.FitnessClubId, 
-                onlyActive: true, pageNumber, pageSize);
+            var query = new GetAllGympassTypesWithPermissionsQuery()
+            {
+                FitnessClubId = fitnessClub.FitnessClubId,
+                OnlyActive = true,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var gympassTypes = await Mediator.Send(query);
             
             return Ok(_mapper.Map<IEnumerable<GympassTypeDto>>(gympassTypes));
         }
@@ -63,10 +69,20 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult<IEnumerable<GympassTypeDto>>> GetActiveGympassTypes([FromRoute] string fitnessClubId,
             [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = CommonConsts.DefaultPageSize)
         {
-            await _fitnessClubHttpService.EnsureFitnessClubExists(fitnessClubId);
+            await Mediator.Send(new EnsureFitnessClubExistsQuery()
+            {
+                FitnessClubId = fitnessClubId
+            });
 
-            var gympassTypes = await _gympassTypeService.GetAllGympassTypesWithPermissions(fitnessClubId, 
-                onlyActive: true, pageNumber, pageSize);
+            var query = new GetAllGympassTypesWithPermissionsQuery()
+            {
+                FitnessClubId = fitnessClubId,
+                OnlyActive = true,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var gympassTypes = await Mediator.Send(query);
 
             return Ok(_mapper.Map<IEnumerable<GympassTypeDto>>(gympassTypes));
         }
@@ -76,19 +92,19 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult<GympassTypeDto>> CreateGympassType([FromBody] CreateGympassTypeDto model)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClub = await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
             
             var gympassType = _mapper.Map<GympassType>(model);
             gympassType.FitnessClubId = fitnessClub.FitnessClubId;
 
-            var createResult = await _gympassTypeService.CreateGympassType(gympassType, model.ClassPermissions, model.PerkPermissions);
-            
-            if (createResult.IsSuccess)
+            var command = new CreateGympassTypeCommand()
             {
-                return Ok(_mapper.Map<GympassTypeDto>(createResult.Value));
-            }
+                GympassType = gympassType,
+                ClassPermissionsNames = model.ClassPermissions,
+                PerkPermissionsNames = model.PerkPermissions
+            };
 
-            return BadRequest(createResult.ErrorCombined);
+            return Ok(await Mediator.Send(command));
         }
 
         [HttpPut("{gympassTypeId}")]
@@ -98,7 +114,10 @@ namespace Carnets.API.Controllers
             var gympassType = _mapper.Map<GympassType>(model);
             gympassType.GympassTypeId = gympassTypeId;
 
-            var updateResult = await _gympassTypeService.UpdateGympassType(gympassType);
+            var updateResult = await Mediator.Send(new UpdateGympassTypeCommand()
+            {
+                GympassType = gympassType
+            });
 
             if (updateResult.IsSuccess)
             {
@@ -119,7 +138,12 @@ namespace Carnets.API.Controllers
             var gympassType = _mapper.Map<GympassType>(model);
             gympassType.GympassTypeId = gympassTypeId;
 
-            var updateResult = await _gympassTypeService.UpdateGympassTypeWithPermissions(gympassType, model.ClassPermissions, model.PerkPermissions);
+            var updateResult = await Mediator.Send(new UpdateGympassTypeWithPermissionsCommand()
+            {
+                GympassType = gympassType,
+                ClassPermissions = model.ClassPermissions,
+                PerkPermissions = model.PerkPermissions
+            });
 
             if (updateResult.IsSuccess)
             {
@@ -137,7 +161,12 @@ namespace Carnets.API.Controllers
         [Authorize(Roles = nameof(RoleType.Worker))]
         public async Task<ActionResult> DeleteGympassType([FromRoute] string gympassTypeId)
         {
-            var deleteResult = await _gympassTypeService.DeleteGympassType(gympassTypeId);
+            var command = new DeleteGympassTypeCommand()
+            {
+                GympassTypeId = gympassTypeId
+            };
+
+            var deleteResult = await Mediator.Send(command);
 
             if (deleteResult.IsSuccess)
             {

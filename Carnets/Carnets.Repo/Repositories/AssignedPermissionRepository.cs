@@ -1,4 +1,4 @@
-﻿using Carnets.Domain.Interfaces;
+﻿using Carnets.Application.Interfaces;
 using Carnets.Domain.Models;
 using Common.Exceptions;
 using Common.Models;

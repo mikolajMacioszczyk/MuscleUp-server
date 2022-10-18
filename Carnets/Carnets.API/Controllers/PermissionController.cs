@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
-using Carnets.Domain.Interfaces;
-using Carnets.Domain.Models;
-using Carnets.Domain.Models.Dtos;
+using Carnets.Application.AssignedPermissions.Commands;
+using Carnets.Application.AssignedPermissions.Dtos;
+using Carnets.Application.Dtos.Permission;
+using Carnets.Application.FitnessClubs.Queries;
+using Carnets.Application.Permissions.Queries;
+using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
 using Common.Models;
@@ -10,23 +13,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Carnets.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class PermissionController : ControllerBase
+    public class PermissionController : ApiControllerBase
     {
-        private readonly IAssignedPermissionService _assignedPermissionService;
-        private readonly IFitnessClubHttpService _fitnessClubHttpService;
         private readonly IMapper _mapper;
         private readonly HttpAuthContext _httpAuthContext;
 
-        public PermissionController(IMapper mapper,
-            IAssignedPermissionService assignedPermissionService,
-            IFitnessClubHttpService fitnessClubHttpService, 
-            HttpAuthContext httpAuthContext)
+        public PermissionController(IMapper mapper, HttpAuthContext httpAuthContext)
         {
             _mapper = mapper;
-            _assignedPermissionService = assignedPermissionService;
-            _fitnessClubHttpService = fitnessClubHttpService;
             _httpAuthContext = httpAuthContext;
         }
 
@@ -34,7 +28,10 @@ namespace Carnets.API.Controllers
         [Authorize(Roles = AuthHelper.RoleAll)]
         public async Task<ActionResult<IEnumerable<PermissionBaseDto>>> GetAllGympassPermissions([FromRoute] string gympassTypeId)
         {
-            var permissionsResult = await _assignedPermissionService.GetAllGympassPermissions(gympassTypeId);
+            var permissionsResult = await Mediator.Send(new GetAllGympassPermissionsQuery()
+            {
+                GympassTypeId = gympassTypeId
+            });
 
             if (permissionsResult.IsSuccess)
             {
@@ -53,11 +50,14 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult<AssignedPermissionDto>> GrantPermission([FromBody] GrantRevokePermissionDto model)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClub = await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
 
-            var grantRequest = _mapper.Map<AssignedPermission>(model);
+            var grantResult = await Mediator.Send(new GrantPermissionCommand()
+            {
+                Model = model,
+                FitnessClubId = fitnessClub.FitnessClubId
+            });
 
-            var grantResult = await _assignedPermissionService.GrantPermission(grantRequest, fitnessClub.FitnessClubId);
             if (grantResult.IsSuccess)
             {
                 return Ok(_mapper.Map<AssignedPermissionDto>(grantResult.Value));
@@ -75,10 +75,15 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult> RevokePermission([FromBody] GrantRevokePermissionDto model)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClub = await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
             var fitnessClubId = fitnessClub.FitnessClubId;
 
-            var revokeResult = await _assignedPermissionService.RevokePermission(model.PermissionId, fitnessClubId, model.GympassTypeId);
+            var revokeResult = await Mediator.Send(new RevokePermissionCommand()
+            {
+                PermissionId = model.PermissionId,
+                FitnessClubId = fitnessClubId,
+                GympassTypeId = model.GympassTypeId
+            });
 
             if (revokeResult.IsSuccess)
             {
@@ -97,10 +102,14 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult> RemovePermissionWithAllAssigements([FromRoute] string permissionId)
         {
             var workerId = _httpAuthContext.UserId;
-            var fitnessClub = await _fitnessClubHttpService.EnsureWorkerCanManageFitnessClub(workerId);
+            var fitnessClub = await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
             var fitnessClubId = fitnessClub.FitnessClubId;
 
-            var revokeResult = await _assignedPermissionService.RemovePermissionWithAllAssigements(permissionId, fitnessClubId);
+            var revokeResult = await Mediator.Send(new RemovePermissionWithAllAssigementsCommand()
+            {
+                FitnessClubId = fitnessClubId,
+                PermissionId = permissionId
+            });
 
             if (revokeResult.IsSuccess)
             {

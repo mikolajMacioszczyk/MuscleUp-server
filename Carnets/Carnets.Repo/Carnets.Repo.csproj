@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Carnets.Domain\Carnets.Domain.csproj" />
+    <ProjectReference Include="..\Carnets.Application\Carnets.Application.csproj" />
   </ItemGroup>
 
 </Project>

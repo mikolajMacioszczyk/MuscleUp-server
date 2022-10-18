@@ -1,7 +1,7 @@
-using Carnets.Domain.Interfaces;
+using Carnets.Application;
+using Carnets.Application.Interfaces;
+using Carnets.Application.Services;
 using Carnets.Domain.Models;
-using Carnets.Domain.Services;
-using Carnets.Domain.Services.Permission;
 using Carnets.Repo;
 using Carnets.Repo.Repositories;
 using Common.Extensions;
@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddBasicApiServices<Program>();
+builder.Services.AddApplicationServices();
 builder.Services.ConfigureRouting();
 
 ProgramExtensions.AddDbContext<CarnetsDbContext>(builder.Services, builder.Configuration);
@@ -23,17 +24,11 @@ StripeConfiguration.ApiKey = builder.Configuration.GetValue<string>("StripeSecre
 
 builder.Services.AddScoped<IGympassTypeRepository, GympassTypeRepository>();
 builder.Services.AddScoped<IPermissionRepository<ClassPermission>, ClassPermissionRepository>();
-builder.Services.AddScoped<IPermissionService<ClassPermission>, ClassPermissionService>();
 builder.Services.AddScoped<IPermissionRepository<PerkPermission>, PerkPermissionRepository>();
-builder.Services.AddScoped<IPermissionService<PerkPermission>, PerkPermissionService>();
 builder.Services.AddScoped<IAssignedPermissionRepository, AssignedPermissionRepository>();
 builder.Services.AddScoped<IFitnessClubHttpService, FitnessClubHttpService>();
 builder.Services.AddScoped<IGympassRepository, GympassRepository>();
-builder.Services.AddScoped<IGympassService, GympassService>();
-builder.Services.AddScoped<ISubscriptionService, MockSubscriptionService>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
-builder.Services.AddScoped<IAssignedPermissionService, AssignedPermissionService>();
-builder.Services.AddScoped<IGympassTypeService, GympassTypeService>();
 builder.Services.AddScoped<IPaymentService, StripeService>();
 
 var app = builder.Build();
