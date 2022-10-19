@@ -7,6 +7,8 @@ namespace Carnets.Application.Interfaces
     {
         Task<string> GetOrCreateCustomer(string userId);
 
+        Task EnsureProductCreated(GympassType gympassTypeId);
+
         Task CreateProduct(GympassType gympassType);
 
         PaymentResult HandlePaidResult(string jsonBody, string signature);

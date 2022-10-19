@@ -66,9 +66,10 @@ static async Task SeedDatabase(IServiceProvider serviceProvider, IWebHostEnviron
             try
             {
                 var context = services.GetRequiredService<CarnetsDbContext>();
+                var paymentService = services.GetRequiredService<IPaymentService>();
 
                 Console.WriteLine("Seeding default carnets data...");
-                await CarnetsDbContextSeed.SeedDefaultCarnetsDataAsync(context);
+                await CarnetsDbContextSeed.SeedDefaultCarnetsDataAsync(context, paymentService);
                 logger.LogInformation("Seed DONE");
             }
             catch (Exception ex)

@@ -1,4 +1,5 @@
-﻿using Carnets.Domain.Models;
+﻿using Carnets.Application.Interfaces;
+using Carnets.Domain.Models;
 using Common.Consts;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,7 +7,7 @@ namespace Carnets.Repo
 {
     public static class CarnetsDbContextSeed
     {
-        public static async Task SeedDefaultCarnetsDataAsync(CarnetsDbContext context)
+        public static async Task SeedDefaultCarnetsDataAsync(CarnetsDbContext context, IPaymentService _paymentService)
         {
             if (await context.GympassTypes.AnyAsync())
             {
@@ -28,6 +29,8 @@ namespace Carnets.Repo
             };
 
             await context.GympassTypes.AddAsync(defaultGympassType);
+
+            await _paymentService.EnsureProductCreated(defaultGympassType);
 
             // seed gympass permission data
             var defaultClassPermission = new ClassPermission()

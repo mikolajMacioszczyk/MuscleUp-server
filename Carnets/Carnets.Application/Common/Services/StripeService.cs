@@ -75,6 +75,27 @@ namespace Carnets.Application.Services
             }
         }
 
+        public async Task EnsureProductCreated(GympassType gympassType)
+        {
+            var service = new ProductService();
+            Product product;
+
+            try
+            {
+                product = await service.GetAsync(gympassType.GympassTypeId);
+            }
+            catch (StripeException)
+            {
+                product = null;
+            }
+
+            if (product is null)
+            {
+                _logger.LogInformation($"Product with id {gympassType.GympassTypeId} does not exists");
+                await CreateProduct(gympassType);
+            }
+        }
+
         public async Task DeleteProduct(string gympassTypeId)
         {
             var service = new ProductService();
