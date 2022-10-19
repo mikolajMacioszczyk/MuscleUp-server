@@ -22,10 +22,10 @@ public class GroupWorkout extends AbstractEntity {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(name="start_time", nullable = false)
     private LocalDateTime startTime;
 
-    @Column(nullable = false)
+    @Column(name="end_time", nullable = false)
     private LocalDateTime endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -84,7 +84,7 @@ public class WorkoutPermissionHibernateRepository extends AbstractHibernateRepos
         Root<WorkoutPermission> root = criteriaDelete.from(WorkoutPermission.class);
 
         criteriaDelete.where(
-                criteriaBuilder.equal(root.get("groupWorkout.id"), groupWorkoutId)
+                criteriaBuilder.equal(root.get("groupWorkout").get("id"), groupWorkoutId)
         );
 
         getSession().createQuery(criteriaDelete)
