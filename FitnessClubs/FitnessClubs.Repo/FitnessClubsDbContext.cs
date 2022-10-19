@@ -16,9 +16,6 @@ namespace FitnessClubs.Repo
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TrainerEmployment>()
-                .HasKey(t => new { t.UserId, t.FitnessClubId });
-
             modelBuilder.Entity<FitnessClub>()
                 .HasIndex(f => f.FitnessClubName)
                 .IsUnique();

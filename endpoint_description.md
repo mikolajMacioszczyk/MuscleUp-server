@@ -129,6 +129,13 @@
 | api/fitness-clubs/worker-employment | Worker, Admin | POST | creates WorkerEmployment |
 | api/fitness-clubs/worker-employment/{workerEmploymentId} | Worker, Admin | PUT | sets an end date for employment, making it inactive |
 
+## Trainer Empoyment
+| Endpoint Name | Who can | Method type | Purpose |
+| ------- | ------------------------------- | ------- | ------------------------------- |
+| api/fitness-clubs/trainer-employment/{fitnessClubId} | Trainer, Worker, Admin | GET | returns all TrainerEmployments from FitnessClub |
+| api/fitness-clubs/trainer-employment | Worker, Admin | POST | creates TrainerEmployment |
+| api/fitness-clubs/trainer-employment/{trainerEmploymentId} | Worker, Admin | PUT | sets an end date for employment, making it inactive |
+
 # Groups
 
 ## Group

@@ -1,8 +1,8 @@
 ﻿using FitnessClubs.Domain.Models;
 
-namespace FitnessClubs.Application.WorkoutEmployments.Dtos
+namespace FitnessClubs.Application.TrainerEmployments.Dtos
 {
-    public class WorkerEmploymentDto
+    public class TrainerEmploymentDto
     {
         public string EmploymentId { get; set; }
 

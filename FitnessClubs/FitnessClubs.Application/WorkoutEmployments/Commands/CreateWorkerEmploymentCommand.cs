@@ -12,12 +12,12 @@ namespace FitnessClubs.Application.WorkoutEmployments.Commands
 
     public class CreateWorkerEmploymentCommandHandler : IRequestHandler<CreateWorkerEmploymentCommand, Result<WorkerEmployment>>
     {
-        private readonly IWorkerEmploymentRepository _workerEmploymentRepository;
+        private readonly IEmploymentRepository<WorkerEmployment> _workerEmploymentRepository;
         private readonly IFitnessClubRepository _fitnessClubRepository;
 
         public CreateWorkerEmploymentCommandHandler(
-            IFitnessClubRepository fitnessClubRepository, 
-            IWorkerEmploymentRepository workerEmploymentRepository)
+            IFitnessClubRepository fitnessClubRepository,
+            IEmploymentRepository<WorkerEmployment> workerEmploymentRepository)
         {
             _fitnessClubRepository = fitnessClubRepository;
             _workerEmploymentRepository = workerEmploymentRepository;
@@ -37,7 +37,7 @@ namespace FitnessClubs.Application.WorkoutEmployments.Commands
             workerEmployment.FitnessClub = fitnessClubFromDb;
             workerEmployment.FitnessClubId = fitnessClubFromDb.FitnessClubId;
 
-            var createResult = await _workerEmploymentRepository.CreateWorkerEmployment(workerEmployment);
+            var createResult = await _workerEmploymentRepository.CreateEmployment(workerEmployment);
 
             if (createResult.IsSuccess)
             {

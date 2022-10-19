@@ -26,7 +26,7 @@ namespace FitnessClubs.Repo
             // seed worker employments
             var defaultWorkerEmployment = new WorkerEmployment()
             {
-                WorkerEmploymentId = SeedConsts.DefaultWorkerEmploymentId,
+                EmploymentId = SeedConsts.DefaultWorkerEmploymentId,
                 FitnessClubId = SeedConsts.DefaultFitnessClubId,
                 FitnessClub = defaultFitnessClub,
                 UserId = SeedConsts.DefaultWorkerId,

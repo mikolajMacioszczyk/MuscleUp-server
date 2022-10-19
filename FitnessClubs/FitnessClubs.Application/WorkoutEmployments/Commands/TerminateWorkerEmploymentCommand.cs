@@ -12,16 +12,16 @@ namespace FitnessClubs.Application.WorkoutEmployments.Commands
 
     public class TerminateWorkerEmploymentCommandHandler : IRequestHandler<TerminateWorkerEmploymentCommand, Result<WorkerEmployment>>
     {
-        private readonly IWorkerEmploymentRepository _repository;
+        private readonly IEmploymentRepository<WorkerEmployment> _repository;
 
-        public TerminateWorkerEmploymentCommandHandler(IWorkerEmploymentRepository repository)
+        public TerminateWorkerEmploymentCommandHandler(IEmploymentRepository<WorkerEmployment> repository)
         {
             _repository = repository;
         }
 
         public async Task<Result<WorkerEmployment>> Handle(TerminateWorkerEmploymentCommand request, CancellationToken cancellationToken)
         {
-            var terminateResult = await _repository.TerminateWorkerEmployment(request.WorkerEmploymentId);
+            var terminateResult = await _repository.TerminateEmployment(request.WorkerEmploymentId);
 
             if (terminateResult.IsSuccess)
             {

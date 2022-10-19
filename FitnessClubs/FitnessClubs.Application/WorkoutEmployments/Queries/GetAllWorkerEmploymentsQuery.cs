@@ -12,16 +12,16 @@ namespace FitnessClubs.Application.WorkoutEmployments.Queries
 
     public class GetAllFitnessClubsQueryHandler : IRequestHandler<GetAllWorkerEmploymentsQuery, IEnumerable<WorkerEmployment>>
     {
-        private readonly IWorkerEmploymentRepository _repository;
+        private readonly IEmploymentRepository<WorkerEmployment> _repository;
 
-        public GetAllFitnessClubsQueryHandler(IWorkerEmploymentRepository repository)
+        public GetAllFitnessClubsQueryHandler(IEmploymentRepository<WorkerEmployment> repository)
         {
             _repository = repository;
         }
 
         public Task<IEnumerable<WorkerEmployment>> Handle(GetAllWorkerEmploymentsQuery request, CancellationToken cancellationToken)
         {
-            return _repository.GetAllWorkerEmployments(request.FitnessClubId, request.IncludeInactive, false);
+            return _repository.GetAllEmployments(request.FitnessClubId, request.IncludeInactive, false);
         }
     }
 }
