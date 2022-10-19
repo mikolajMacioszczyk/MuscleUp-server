@@ -3,6 +3,7 @@ using Auth.Application.Members.Dtos;
 using Auth.Application.Members.Queries;
 using Common.BaseClasses;
 using Common.Enums;
+using Common.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,19 @@ namespace Auth.API.Controllers
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetAllMembers()
         {
             return Ok(await Mediator.Send(new GetAllMembersQuery()));
+        }
+
+        [HttpGet("by-ids/{userIds}")]
+        [Authorize(Roles = AuthHelper.RoleAll)]
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetAllMembersWithIds(
+            [FromRoute] string userIds,
+            [FromQuery] string separator = ",")
+        {
+            return Ok(await Mediator.Send(new GetAllMembersWithIdsQuery()
+            {
+                UserIds = userIds,
+                Separator = separator
+            }));
         }
 
         [HttpGet()]

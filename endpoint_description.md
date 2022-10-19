@@ -22,6 +22,7 @@
 | ------- | ------------------------------- | ------- | ------------------------------- |
 | api/auth/member/all | Admin | GET | get the data of all Members |
 | api/auth/member | Member | GET | get the data of currently logged in Member |
+| api/auth/member/by-ids/{userIds}?separator=<string> | LoggedIn | GET | get the data of Members whose id is include in provided list. Default separator = ',' |
 | api/auth/member/register | Guest | POST | register Member account |
 | api/auth/member | Member | PUT | update data of currently logged in Member |
 
@@ -30,6 +31,7 @@
 | ------- | ------------------------------- | ------- | ------------------------------- |
 | api/auth/trainer/all | Admin | GET | get the data of all Trainers |
 | api/auth/trainer | Trainer | GET | get the data of currently logged in Trainer |
+| api/auth/trainer/by-ids/{userIds}?separator=<string> | LoggedIn | GET | get the data of Trainers whose id is include in provided list. Default separator = ',' |
 | api/auth/trainer/register | Guest | POST | register Trainer account |
 | api/auth/trainer | Trainer | PUT | update data of currently logged in Trainer |
 
@@ -37,9 +39,10 @@
 | Endpoint Name | Who can | Method type | Purpose |
 | ------- | ------------------------------- | ------- | ------------------------------- |
 | api/auth/worker/all | Admin | GET | get the data of all Workers |
-| api/auth/worker | Trainer | GET | get the data of currently logged in Worker |
+| api/auth/worker | Worker | GET | get the data of currently logged in Worker |
+| api/auth/worker/by-ids/{userIds}?separator=<string> | LoggedIn | GET | get the data of Workers whose id is include in provided list. Default separator = ',' |
 | api/auth/worker/register | Guest | POST | register Worker account |
-| api/auth/worker | Trainer | PUT | update data of currently logged in Worker |
+| api/auth/worker | Worker | PUT | update data of currently logged in Worker |
 
 # Carnets
 

@@ -1,5 +1,4 @@
-﻿using Auth.Domain.Models;
-using Common.Models;
+﻿using Common.Models;
 
 namespace Auth.Application.Common.Interfaces
 {
@@ -7,10 +6,12 @@ namespace Auth.Application.Common.Interfaces
     {
         Task<IEnumerable<TUser>> GetAll();
 
-        Task<TUser> GetById(string memberId);
+        Task<TUser> GetById(string userId);
+
+        Task<IEnumerable<TUser>> GetUsersByIds(string[] userIds);
 
         Task<Result<TUser>> Register(TRegistrationUser registerDto);
 
-        Task<Result<TUser>> UpdateData(string memberId, TUser member);
+        Task<Result<TUser>> UpdateData(string userId, TUser user);
     }
 }

@@ -3,6 +3,7 @@ using Auth.Application.Trainer.Dtos;
 using Auth.Application.Trainer.Queries;
 using Common.BaseClasses;
 using Common.Enums;
+using Common.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,19 @@ namespace Auth.API.Controllers
         public async Task<ActionResult<IEnumerable<TrainerDto>>> GetAllTrainers()
         {
             return Ok(await Mediator.Send(new GetAllTrainersQuery()));
+        }
+
+        [HttpGet("by-ids/{userIds}")]
+        [Authorize(Roles = AuthHelper.RoleAll)]
+        public async Task<ActionResult<IEnumerable<TrainerDto>>> GetAllTrainersWithIds(
+            [FromRoute] string userIds,
+            [FromQuery] string separator = ",")
+        {
+            return Ok(await Mediator.Send(new GetAllTrainersWithIdsQuery()
+            {
+                UserIds = userIds,
+                Separator = separator
+            }));
         }
 
         [HttpGet()]

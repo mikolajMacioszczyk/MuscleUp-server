@@ -38,6 +38,13 @@ namespace Auth.Repo.Repositories
             await Users.Include(m => m.User)
             .FirstOrDefaultAsync(m => m.UserId == memberId);
 
+        public async Task<IEnumerable<TUser>> GetUsersByIds(string[] userIds)
+        {
+            return await Users.Include(m => m.User)
+                .Where(m => userIds.Contains(m.UserId))
+                .ToListAsync();
+        }
+
         protected async Task<Result<ApplicationUser>> RegisterUser(RegisterUserDto registerDto, RoleType role)
         {
             var userByEmail = await _userManager.FindByEmailAsync(registerDto.Email);
