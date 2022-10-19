@@ -16,6 +16,7 @@ import java.util.UUID;
 public class WorkoutParticipant extends AbstractEntity {
 
     @Id
+    @Column(name = "class_workout_participant_id")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;

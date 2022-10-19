@@ -16,6 +16,7 @@ import java.util.UUID;
 public class GroupTrainer extends AbstractEntity {
 
     @Id
+    @Column(name = "group_trainer_id")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
@@ -25,7 +26,7 @@ public class GroupTrainer extends AbstractEntity {
     private Group group;
 
     @UnknownForeignKey
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "trainer_id", nullable = false)
     private UUID trainerId;
 
 

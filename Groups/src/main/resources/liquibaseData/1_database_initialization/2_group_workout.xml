@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_group_workout_table" author="Mateusz_Kleinowski">
+        <sql>
+            CREATE TABLE IF NOT EXISTS class_workout (
+                class_workout_id uuid not null,
+                workout_id uuid not null,
+                class_id uuid not null,
+                start_time timestamp,
+                end_time timestamp,
+
+                PRIMARY KEY (class_workout_id),
+                FOREIGN KEY (class_id) REFERENCES class(class_id)
+            )
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
