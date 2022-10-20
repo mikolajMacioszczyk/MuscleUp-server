@@ -2,6 +2,7 @@
 using Auth.Application.Trainer.Dtos;
 using AutoMapper;
 using Common.Exceptions;
+using Common.Models.Dtos;
 using MediatR;
 
 namespace Auth.Application.Trainer.Queries

@@ -36,6 +36,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: 'Development'
       ConnectionStrings__DefaultConnection: 'Server=postgres;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;'
+      Api__Auth: 'http://auth/'
     depends_on:
       - postgres
 

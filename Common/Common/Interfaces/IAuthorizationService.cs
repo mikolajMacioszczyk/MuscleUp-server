@@ -3,7 +3,7 @@ using Common.Models;
 
 namespace Common.Interfaces
 {
-    public interface IAuthService
+    public interface IAuthorizationService
     {
         Task<TokenValidationResult> ValidateAuthToken(JwtPayload jwtPayload, bool isRefreshToken);
     }

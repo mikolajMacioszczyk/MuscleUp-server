@@ -3,6 +3,8 @@ using Auth.Application.Workers.Dtos;
 using Auth.Domain.Models;
 using AutoMapper;
 using Common.Exceptions;
+using Common.Models;
+using Common.Models.Dtos;
 using MediatR;
 
 namespace Auth.Application.Workers.Queries

@@ -4,7 +4,7 @@ using Common.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace Common.Services
 {
@@ -43,14 +43,10 @@ namespace Common.Services
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
                 
                 try
                 {
-                    var deserialized = JsonSerializer.Deserialize<T>(content, options);
+                    var deserialized = JsonConvert.DeserializeObject<T>(content);
                     return new Result<T>(deserialized);
                 }
                 catch (Exception ex)

@@ -1,6 +1,7 @@
 using Common.Extensions;
 using FitnessClubs.Application;
 using FitnessClubs.Application.Interfaces;
+using FitnessClubs.Application.Services;
 using FitnessClubs.Domain.Models;
 using FitnessClubs.Repo;
 using FitnessClubs.Repo.Repositories;
@@ -22,6 +23,7 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddScoped<IFitnessClubRepository, FitnessClubRepository>();
 builder.Services.AddScoped<IEmploymentRepository<WorkerEmployment>, WorkerEmploymentRepository>();
 builder.Services.AddScoped<IEmploymentRepository<TrainerEmployment>, TrainerEmploymentRepository>();
+builder.Services.AddScoped<IAuthService, AuthHttpService>();
 
 var app = builder.Build();
 

@@ -4,6 +4,8 @@ using Auth.Application.Trainer.Dtos;
 using Auth.Application.Workers.Dtos;
 using Auth.Domain.Models;
 using AutoMapper;
+using Common.Models;
+using Common.Models.Dtos;
 
 namespace Auth.API
 {

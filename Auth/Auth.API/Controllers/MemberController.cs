@@ -4,6 +4,7 @@ using Auth.Application.Members.Queries;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
+using Common.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -116,7 +116,7 @@ namespace Common.Extensions
                 });
 
             services.AddAuthorization();
-            services.AddSingleton<IAuthService, AuthService>();
+            services.AddSingleton<IAuthorizationService, AuthService>();
         }
 
         #endregion

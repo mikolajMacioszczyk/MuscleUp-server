@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Common.BaseClasses;
 using Common.Enums;
+using Common.Models.Dtos;
 using FitnessClubs.Application.TrainerEmployments.Commands;
 using FitnessClubs.Application.TrainerEmployments.Dtos;
 using FitnessClubs.Application.TrainerEmployments.Queries;
@@ -21,7 +22,7 @@ namespace FitnessClubs.API.Controllers
 
         [HttpGet("{fitnessClubId}")]
         [Authorize(Roles = nameof(RoleType.Trainer) + "," + nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
-        public async Task<ActionResult<IEnumerable<TrainerEmploymentDto>>> GetAllEmploymentsFromFitnessClub([FromRoute] string fitnessClubId, [FromQuery] bool includeInactive = false)
+        public async Task<ActionResult<IEnumerable<TrainerDto>>> GetAllEmploymentsFromFitnessClub([FromRoute] string fitnessClubId, [FromQuery] bool includeInactive = false)
         {
             var query = new GetAllTrainerEmploymentsQuery()
             {
@@ -30,7 +31,7 @@ namespace FitnessClubs.API.Controllers
             };
 
             var workerEmployment = await Mediator.Send(query);
-            return Ok(_mapper.Map<IEnumerable<TrainerEmploymentDto>>(workerEmployment));
+            return Ok(workerEmployment);
         }
 
         [HttpPost()]

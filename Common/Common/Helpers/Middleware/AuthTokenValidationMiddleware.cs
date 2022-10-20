@@ -9,11 +9,11 @@ namespace Common.Helpers.Middleware
 {
     public class AuthTokenValidationMiddleware
     {
-        private readonly IAuthService _authService;
+        private readonly IAuthorizationService _authService;
         private readonly RequestDelegate _next;
         private readonly ILogger<AuthTokenValidationMiddleware> _logger;
 
-        public AuthTokenValidationMiddleware(RequestDelegate next, IAuthService authService, ILogger<AuthTokenValidationMiddleware> logger)
+        public AuthTokenValidationMiddleware(RequestDelegate next, IAuthorizationService authService, ILogger<AuthTokenValidationMiddleware> logger)
         {
             _next = next;
             _authService = authService;

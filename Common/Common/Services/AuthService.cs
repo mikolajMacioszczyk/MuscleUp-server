@@ -4,7 +4,7 @@ using Common.Models;
 
 namespace Common.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService : IAuthorizationService
     {
         public Task<TokenValidationResult> ValidateAuthToken(JwtPayload jwtPayload, bool isRefreshToken)
         {

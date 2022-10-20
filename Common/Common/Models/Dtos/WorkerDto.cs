@@ -1,7 +1,7 @@
 ﻿using Auth.Application.Common.Dtos;
 using Common.Enums;
 
-namespace Auth.Application.Workers.Dtos
+namespace Common.Models.Dtos
 {
     public class WorkerDto : UserDto
     {
