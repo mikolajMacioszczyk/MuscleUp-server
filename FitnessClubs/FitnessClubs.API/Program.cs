@@ -23,6 +23,7 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddScoped<IFitnessClubRepository, FitnessClubRepository>();
 builder.Services.AddScoped<IEmploymentRepository<WorkerEmployment>, WorkerEmploymentRepository>();
 builder.Services.AddScoped<IEmploymentRepository<TrainerEmployment>, TrainerEmploymentRepository>();
+builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 builder.Services.AddScoped<IAuthService, AuthHttpService>();
 
 var app = builder.Build();

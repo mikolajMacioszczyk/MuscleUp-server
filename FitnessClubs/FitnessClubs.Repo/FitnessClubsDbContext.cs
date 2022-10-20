@@ -14,11 +14,16 @@ namespace FitnessClubs.Repo
 
         public DbSet<WorkerEmployment> WorkerEmployments { get; set; }
 
+        public DbSet<Membership> Memberships { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FitnessClub>()
                 .HasIndex(f => f.FitnessClubName)
                 .IsUnique();
+
+            modelBuilder.Entity<Membership>()
+                .HasKey(m => new { m.MemberId, m.FitnessClubId });
 
             base.OnModelCreating(modelBuilder);
         }
