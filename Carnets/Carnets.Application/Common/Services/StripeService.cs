@@ -4,6 +4,7 @@ using Carnets.Application.Interfaces;
 using Carnets.Application.Models;
 using Carnets.Domain.Models;
 using Common.Exceptions;
+using Common.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Stripe;
@@ -135,8 +136,8 @@ namespace Carnets.Application.Services
                   },
                 },
                 Mode = PaymentModeType.payment.ToString().ToLower(),
-                SuccessUrl = successUrl,
-                CancelUrl = cancelUrl,
+                SuccessUrl = UriHelper.AppendQueryParamToUri(successUrl, PaymentConsts.GympassIdKey, gympassId),
+                CancelUrl = UriHelper.AppendQueryParamToUri(cancelUrl, PaymentConsts.GympassIdKey, gympassId),
                 ClientReferenceId = customerId,
             };
             options.Metadata = new Dictionary<string, string>()
