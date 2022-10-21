@@ -65,7 +65,7 @@ namespace Carnets.Application.Services
                     Currency = DefaultCurrency,
                     UnitAmountDecimal = Convert.ToDecimal(gympassType.Price * 100)
                 },
-                Description = gympassType.Description,
+                Description = string.IsNullOrEmpty(gympassType.Description) ? null : gympassType.Description,
             };
             var service = new ProductService();
             var product = await service.CreateAsync(options);
