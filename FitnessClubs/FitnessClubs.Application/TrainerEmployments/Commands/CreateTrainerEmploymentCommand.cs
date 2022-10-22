@@ -1,4 +1,5 @@
 ﻿using Common.Models;
+using Common.Services;
 using FitnessClubs.Application.Interfaces;
 using FitnessClubs.Domain.Models;
 using MediatR;
@@ -14,18 +15,25 @@ namespace FitnessClubs.Application.TrainerEmployments.Commands
     {
         private readonly IEmploymentRepository<TrainerEmployment> _employmentRepository;
         private readonly IFitnessClubRepository _fitnessClubRepository;
+        private readonly IAuthService _authService;
 
         public CreateTrainerEmploymentCommandHandler(
             IFitnessClubRepository fitnessClubRepository,
-            IEmploymentRepository<TrainerEmployment> employmentRepository)
+            IEmploymentRepository<TrainerEmployment> employmentRepository,
+            IAuthService authService)
         {
             _fitnessClubRepository = fitnessClubRepository;
             _employmentRepository = employmentRepository;
+            _authService = authService;
         }
 
         public async Task<Result<TrainerEmployment>> Handle(CreateTrainerEmploymentCommand request, CancellationToken cancellationToken)
         {
-            // TODO: Validate UserId
+            if (!(await _authService.DoesTrainerExists(request.TrainerEmployment.UserId)))
+            {
+                return new Result<TrainerEmployment>($"Trainer with id {request.TrainerEmployment.UserId} does not exists");
+            }
+
             var trainerEmployment = request.TrainerEmployment;
             var fitnessClubFromDb = await _fitnessClubRepository.GetById(trainerEmployment.FitnessClubId, true);
 

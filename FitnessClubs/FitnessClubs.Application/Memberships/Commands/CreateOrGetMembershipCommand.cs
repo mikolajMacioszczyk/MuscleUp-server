@@ -16,15 +16,18 @@ namespace FitnessClubs.Application.Memberships.Commands
     {
         private readonly IMembershipRepository _membershipRepository;
         private readonly IFitnessClubRepository _fitnessClubRepository;
+        private readonly IAuthService _authService;
         private readonly IMapper _mapper;
 
         public CreateOrGetMembershipCommandHandler(
             IMembershipRepository membershipRepository,
             IFitnessClubRepository fitnessClubRepository,
+            IAuthService authService,
             IMapper mapper)
         {
             _membershipRepository = membershipRepository;
             _fitnessClubRepository = fitnessClubRepository;
+            _authService = authService;
             _mapper = mapper;
         }
 
@@ -44,6 +47,11 @@ namespace FitnessClubs.Application.Memberships.Commands
             if (existing != null)
             {
                 return new Result<MembershipDto>(_mapper.Map<MembershipDto>(membership));
+            }
+
+            if (!(await _authService.DoesMemberExists(request.CreateMembershipDto.MemberId)))
+            {
+                return new Result<MembershipDto>($"Member with id {request.CreateMembershipDto.MemberId} does not exists");
             }
 
             var created = await _membershipRepository.CreateMembership(membership);

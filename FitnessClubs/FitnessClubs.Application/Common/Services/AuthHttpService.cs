@@ -1,4 +1,5 @@
-﻿using Common.Models;
+﻿using Common.Exceptions;
+using Common.Models;
 using Common.Models.Dtos;
 using Common.Services;
 using FitnessClubs.Application.Interfaces;
@@ -35,6 +36,11 @@ namespace FitnessClubs.Application.Services
             return await SendGetRequestAsync<IEnumerable<MemberDto>>("member/by-ids/" + JoinUserIds(userIds));
         }
 
+        public Task<bool> DoesMemberExists(string userId)
+        {
+            return DoesUserExists<MemberDto>("member/by-ids/" + userId);
+        }
+
         public async Task<Result<IEnumerable<TrainerDto>>> GetAllTrainersWithIds(IEnumerable<string> userIds)
         {
             if (userIds is null || (!userIds.Any()))
@@ -45,6 +51,11 @@ namespace FitnessClubs.Application.Services
             return await SendGetRequestAsync<IEnumerable<TrainerDto>>("trainer/by-ids/" + JoinUserIds(userIds));
         }
 
+        public Task<bool> DoesTrainerExists(string userId)
+        {
+            return DoesUserExists<TrainerDto>("trainer/by-ids/" + userId);
+        }
+
         public async Task<Result<IEnumerable<WorkerDto>>> GetAllWorkersWithIds(IEnumerable<string> userIds)
         {
             if (userIds is null || (!userIds.Any()))
@@ -53,6 +64,23 @@ namespace FitnessClubs.Application.Services
             }
 
             return await SendGetRequestAsync<IEnumerable<WorkerDto>>("worker/by-ids/" + JoinUserIds(userIds));
+        }
+
+        public Task<bool> DoesWorkerExists(string userId)
+        {
+            return DoesUserExists<WorkerDto>("worker/by-ids/" + userId);
+        }
+
+        public async Task<bool> DoesUserExists<TUserDto>(string path)
+        {
+            var userData = await SendGetRequestAsync<IEnumerable<TUserDto>>(path);
+
+            if (!userData.IsSuccess)
+            {
+                throw new BadRequestException(userData.ErrorCombined);
+            }
+
+            return userData.Value.Any();
         }
 
         private string JoinUserIds(IEnumerable<string> userIds)

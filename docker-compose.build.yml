@@ -50,7 +50,7 @@ services:
       - ASPNETCORE_ENVIRONMENT
       - JwtSecret
       - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;
-      - Api:Auth=http://auth/
+      - Api:AuthHost=http://auth/
     depends_on:
       - postgres
 

@@ -14,18 +14,25 @@ namespace FitnessClubs.Application.WorkoutEmployments.Commands
     {
         private readonly IEmploymentRepository<WorkerEmployment> _workerEmploymentRepository;
         private readonly IFitnessClubRepository _fitnessClubRepository;
+        private readonly IAuthService _authService;
 
         public CreateWorkerEmploymentCommandHandler(
             IFitnessClubRepository fitnessClubRepository,
-            IEmploymentRepository<WorkerEmployment> workerEmploymentRepository)
+            IEmploymentRepository<WorkerEmployment> workerEmploymentRepository,
+            IAuthService authService)
         {
             _fitnessClubRepository = fitnessClubRepository;
             _workerEmploymentRepository = workerEmploymentRepository;
+            _authService = authService;
         }
 
         public async Task<Result<WorkerEmployment>> Handle(CreateWorkerEmploymentCommand request, CancellationToken cancellationToken)
         {
-            // TODO: Validate UserId
+            if (!(await _authService.DoesWorkerExists(request.WorkerEmployment.UserId)))
+            {
+                return new Result<WorkerEmployment>($"Worker with id {request.WorkerEmployment.UserId} does not exists");
+            }
+
             var workerEmployment = request.WorkerEmployment;
             var fitnessClubFromDb = await _fitnessClubRepository.GetById(workerEmployment.FitnessClubId, true);
 
