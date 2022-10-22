@@ -11,5 +11,8 @@ namespace FitnessClubs.Application.FitnessClubs.Dtos
         [Required]
         [StringLength(255)]
         public string Address { get; set; }
+
+        [MaxLength(500)]
+        public string FitnessClubLogoUrl { get; set; }
     }
 }

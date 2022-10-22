@@ -4,6 +4,8 @@
     {
         #region Fitness Clubs
 
+        public const string DefaultFitnessClubLogoUrl = "https://seeklogo.com/images/F/fitness-gym-logo-9191CD4CF2-seeklogo.com.png";
+        
         public const string DefaultFitnessClubId = "42b2ab44-d451-4f9d-9e98-c1734e6006f6";
 
         public const string DefaultWorkerEmploymentId = "6fae2655-a372-4fe1-9949-5574d78dc85f";

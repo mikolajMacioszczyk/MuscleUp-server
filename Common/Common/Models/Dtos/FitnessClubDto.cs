@@ -7,5 +7,7 @@
         public string FitnessClubName { get; set; }
 
         public string Address { get; set; }
+
+        public string FitnessClubLogoUrl { get; set; }
     }
 }

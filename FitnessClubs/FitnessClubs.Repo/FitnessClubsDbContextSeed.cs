@@ -18,7 +18,8 @@ namespace FitnessClubs.Repo
             {
                 FitnessClubId = SeedConsts.DefaultFitnessClubId,
                 FitnessClubName = "Default Fitness Club",
-                Address = "Default address" 
+                Address = "Default address",
+                FitnessClubLogoUrl = SeedConsts.DefaultFitnessClubLogoUrl
             };
 
             await context.FitnessClubs.AddAsync(defaultFitnessClub);

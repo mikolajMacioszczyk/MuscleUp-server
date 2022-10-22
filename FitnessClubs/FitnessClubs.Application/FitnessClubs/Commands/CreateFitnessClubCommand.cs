@@ -1,4 +1,5 @@
-﻿using Common.Models;
+﻿using Common.Consts;
+using Common.Models;
 using FitnessClubs.Application.Interfaces;
 using FitnessClubs.Domain.Models;
 using MediatR;
@@ -21,6 +22,11 @@ namespace FitnessClubs.Application.FitnessClubs.Commands
 
         public async Task<Result<FitnessClub>> Handle(CreateFitnessClubCommand request, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrEmpty(request.FitnessClub.FitnessClubLogoUrl))
+            {
+                request.FitnessClub.FitnessClubLogoUrl = SeedConsts.DefaultFitnessClubLogoUrl;
+            }
+
             var createResult = await _repository.Create(request.FitnessClub);
 
             if (createResult.IsSuccess)

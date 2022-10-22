@@ -15,5 +15,9 @@ namespace FitnessClubs.Domain.Models
         [Required]
         [StringLength(255)]
         public string Address { get; set; }
+
+        [Required]
+        [MaxLength(500)]
+        public string FitnessClubLogoUrl { get; set; }
     }
 }
