@@ -5,9 +5,7 @@ version: '3.8'
 services:
 
   postgres:
-    build:
-      context: .
-      dockerfile: ./Database/Dockerfile
+    image: ghcr.io/muscle-up-app/database
     restart: always
 
   auth:
