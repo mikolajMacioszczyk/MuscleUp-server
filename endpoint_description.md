@@ -139,10 +139,10 @@
 ## Membership
 | Endpoint Name | Who can | Method type | Purpose |
 | ------- | ------------------------------- | ------- | ------------------------------- |
-| api/fitness-clubs/membership/{membershipId} | Worker | GET | returns Membership by Id from Worker's FitnessClub |
-| api/fitness-clubs/membership/{membershipId}/{fitnessClubId} | Admin | GET | returns Membership by Id from FitnessClub |
-| api/fitness-clubs/membership/from-fitness-club | Worker | GET | returns all Memberships from Worker's FitnessClub |
-| api/fitness-clubs/membership/from-fitness-club/{fitnessClubId} | Admin | GET | returns all Memberships from FitnessClub |
+| api/fitness-clubs/membership/{membershipId} | Worker | GET | returns Membership with Member's data by Id from Worker's FitnessClub |
+| api/fitness-clubs/membership/{membershipId}/{fitnessClubId} | Admin | GET | returns Membership with Member's data by Id from FitnessClub |
+| api/fitness-clubs/membership/from-fitness-club | Worker | GET | returns all Memberships with Member's datas from Worker's FitnessClub |
+| api/fitness-clubs/membership/from-fitness-club/{fitnessClubId} | Admin | GET | returns all Memberships with Member's datas from FitnessClub |
 | api/fitness-clubs/membership | Admin, Worker, Member | POST | creates Membership |
 
 # Groups

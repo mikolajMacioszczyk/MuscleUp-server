@@ -14,13 +14,16 @@ namespace FitnessClubs.Application.Memberships.Queries
     public class GetMembershipByIdQueryHandler : IRequestHandler<GetMembershipByIdQuery, MembershipDto>
     {
         private readonly IMembershipRepository _repository;
+        private readonly IAuthService _authService;
         private readonly IMapper _mapper;
 
         public GetMembershipByIdQueryHandler(
-            IMembershipRepository repository, 
+            IMembershipRepository repository,
+            IAuthService authService,
             IMapper mapper)
         {
             _repository = repository;
+            _authService = authService;
             _mapper = mapper;
         }
 
@@ -33,7 +36,16 @@ namespace FitnessClubs.Application.Memberships.Queries
                 return null;
             }
 
-            return _mapper.Map<MembershipDto>(membership);
+            var membershipDto = _mapper.Map<MembershipDto>(membership);
+
+            var memberData = await _authService.GetAllMembersWithIds(new string[] { request.MemberId });
+
+            if (memberData.IsSuccess && memberData.Value.Any())
+            {
+                membershipDto.MemberData = memberData.Value.First();
+            }
+
+            return membershipDto;
         }
     }
 }
