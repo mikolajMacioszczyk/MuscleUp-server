@@ -25,7 +25,6 @@ namespace FitnessClubs.Application.TrainerEmployments.Commands
 
             if (terminateResult.IsSuccess)
             {
-                // TODO: Use broker to deactivate worker account
                 await _repository.SaveChangesAsync();
             }
 
