@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Common.Models;
+using Common.Models.Dtos;
 using FitnessClubs.Application.Interfaces;
 using FitnessClubs.Application.Memberships.Dtos;
 using FitnessClubs.Domain.Models;
@@ -10,6 +11,7 @@ namespace FitnessClubs.Application.Memberships.Commands
     public record CreateOrGetMembershipCommand : IRequest<Result<MembershipDto>>
     {
         public CreateMembershipDto CreateMembershipDto { get; init; }
+        public bool UserConfirmed { get; init; } = false;
     }
 
     public class CreateOrGetMembershipCommandHandler : IRequestHandler<CreateOrGetMembershipCommand, Result<MembershipDto>>
@@ -49,7 +51,7 @@ namespace FitnessClubs.Application.Memberships.Commands
                 return new Result<MembershipDto>(_mapper.Map<MembershipDto>(membership));
             }
 
-            if (!(await _authService.DoesMemberExists(request.CreateMembershipDto.MemberId)))
+            if (!request.UserConfirmed && !(await _authService.DoesMemberExists(request.CreateMembershipDto.MemberId)))
             {
                 return new Result<MembershipDto>($"Member with id {request.CreateMembershipDto.MemberId} does not exists");
             }

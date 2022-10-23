@@ -37,6 +37,16 @@ namespace FitnessClubs.Repo
 
             await context.WorkerEmployments.AddAsync(defaultWorkerEmployment);
 
+            // seed memberships
+            var defaultMembership = new Membership()
+            {
+                FitnessClubId = SeedConsts.DefaultFitnessClubId,
+                MemberId = SeedConsts.DefaultMemberId,
+                JoiningDate = DateTime.UtcNow
+            };
+
+            await context.Memberships.AddAsync(defaultMembership);
+
             await context.SaveChangesAsync();
         }
     }

@@ -5,6 +5,7 @@ using Carnets.Domain.Models;
 using Carnets.Repo;
 using Carnets.Repo.Repositories;
 using Common.Extensions;
+using RabbitMQ.Client.Core.DependencyInjection;
 using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +31,11 @@ builder.Services.AddScoped<IFitnessClubHttpService, FitnessClubHttpService>();
 builder.Services.AddScoped<IGympassRepository, GympassRepository>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 builder.Services.AddScoped<IPaymentService, StripeService>();
+builder.Services.AddScoped<IMembershipService, MembershipService>();
+
+// RabbitMq
+builder.Services.AddRabbitMqClient(builder.Configuration.GetSection("Broker:Host"))
+    .AddProductionExchange(Common.CommonConsts.ExchangeName, builder.Configuration.GetSection("Broker:Exchange"));
 
 var app = builder.Build();
 

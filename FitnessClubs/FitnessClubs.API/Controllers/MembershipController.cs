@@ -1,6 +1,7 @@
 ﻿using Common.BaseClasses;
 using Common.Enums;
 using Common.Models;
+using Common.Models.Dtos;
 using FitnessClubs.Application.FitnessClubs.Queries;
 using FitnessClubs.Application.Memberships.Commands;
 using FitnessClubs.Application.Memberships.Dtos;

@@ -11,6 +11,18 @@ services:
     volumes:
       - ./Database/postgres_init.sql:/docker-entrypoint-initdb.d/postgres_init.sql
 
+  broker:
+    container_name: "broker"
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: 'muscleUp'
+      RABBITMQ_DEFAULT_PASS: 'Pa55w0rd'
+    ports:
+      # AMQP protocol port
+      - '5672:5672'
+      # HTTP management UI
+      - '15672:15672'
+
   auth:
     image: ghcr.io/muscle-up-app/auth
     restart: always
@@ -27,8 +39,10 @@ services:
       ASPNETCORE_ENVIRONMENT: 'Development'
       ConnectionStrings__DefaultConnection: 'Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;'
       Api__FitnessClubHost: 'http://fitnessclubs/'
+      Broker__Host__HostName: 'broker'
     depends_on:
       - postgres
+      - broker
 
   fitnessclubs:
     image: ghcr.io/muscle-up-app/fitnessclubs
@@ -37,8 +51,10 @@ services:
       ASPNETCORE_ENVIRONMENT: 'Development'
       ConnectionStrings__DefaultConnection: 'Server=postgres;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;'
       Api__AuthHost: 'http://auth/'
+      Broker__Host__HostName: 'broker'
     depends_on:
       - postgres
+      - broker
 
   content:
     image: ghcr.io/muscle-up-app/content

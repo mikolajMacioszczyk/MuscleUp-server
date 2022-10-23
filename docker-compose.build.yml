@@ -16,6 +16,18 @@ services:
     volumes:
       - ./Database/postgres_init.sql:/docker-entrypoint-initdb.d/postgres_init.sql
 
+  broker:
+    container_name: "broker"
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=muscleUp
+      - RABBITMQ_DEFAULT_PASS=Pa55w0rd
+    ports:
+      # AMQP protocol port
+      - '5672:5672'
+      # HTTP management UI
+      - '15672:15672'
+
   auth:
     build: 
       context: .
@@ -38,8 +50,10 @@ services:
       - JwtSecret
       - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
       - Api:FitnessClubHost=http://fitnessclubs/
+      - Broker:Host:HostName=broker
     depends_on:
       - postgres
+      - broker
 
   fitnessclubs:
     build: 
@@ -50,9 +64,11 @@ services:
       - ASPNETCORE_ENVIRONMENT
       - JwtSecret
       - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;
+      - Broker:Host:HostName=broker
       - Api:AuthHost=http://auth/
     depends_on:
       - postgres
+      - broker
 
   content:
     build:

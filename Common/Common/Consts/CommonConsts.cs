@@ -9,5 +9,9 @@
         public const string UserAgent = "User-Agent";
 
         public const int DefaultPageSize = 10;
+
+        public const string ExchangeName = "muscleUpExchange";
+
+        public const string MembershipQueueName = "memberships";
     }
 }

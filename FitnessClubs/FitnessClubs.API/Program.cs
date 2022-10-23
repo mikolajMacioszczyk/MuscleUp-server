@@ -1,4 +1,5 @@
 using Common.Extensions;
+using FitnessClubs.API.Extensions;
 using FitnessClubs.Application;
 using FitnessClubs.Application.Interfaces;
 using FitnessClubs.Application.Services;
@@ -25,6 +26,9 @@ builder.Services.AddScoped<IEmploymentRepository<WorkerEmployment>, WorkerEmploy
 builder.Services.AddScoped<IEmploymentRepository<TrainerEmployment>, TrainerEmploymentRepository>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 builder.Services.AddScoped<IAuthService, AuthHttpService>();
+
+// RabbitMQ configuration
+builder.Services.AddRabbitMq(builder.Configuration);
 
 var app = builder.Build();
 

@@ -4,6 +4,7 @@ using Carnets.Application.Interfaces;
 using Carnets.Domain.Enums;
 using Carnets.Domain.Models;
 using Common.Models;
+using Common.Models.Dtos;
 using MediatR;
 
 namespace Carnets.Application.Gympasses.Commands
@@ -18,15 +19,18 @@ namespace Carnets.Application.Gympasses.Commands
     {
         private readonly IGympassRepository _gympassRepository;
         private readonly IPaymentService _paymentService;
+        private readonly IMembershipService _membershipService;
         private readonly IMapper _mapper;
 
         public CreateGympassCommandHandler(
-            IGympassRepository gympassRepository, 
-            IPaymentService paymentService, 
+            IGympassRepository gympassRepository,
+            IPaymentService paymentService,
+            IMembershipService membershipService, 
             IMapper mapper)
         {
             _gympassRepository = gympassRepository;
             _paymentService = paymentService;
+            _membershipService = membershipService;
             _mapper = mapper;
         }
 
@@ -58,6 +62,11 @@ namespace Carnets.Application.Gympasses.Commands
                     gympassTypeId, request.Model.SuccessUrl, request.Model.CancelUrl);
 
                 await _gympassRepository.SaveChangesAsync();
+                await _membershipService.CreateMembership(new CreateMembershipDto
+                {
+                    MemberId = request.UserId,
+                    FitnessClubId = createResult.Value.GympassType.FitnessClubId
+                });
 
                 var gympassWithSession = _mapper.Map<GympassWithSessionDto>(createResult.Value);
                 gympassWithSession.CheckoutSessionUrl = checkoutSessionUrl;

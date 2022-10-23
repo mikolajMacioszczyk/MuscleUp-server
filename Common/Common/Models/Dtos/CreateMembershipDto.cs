@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FitnessClubs.Application.Memberships.Dtos
+namespace Common.Models.Dtos
 {
     public class CreateMembershipDto
     {
