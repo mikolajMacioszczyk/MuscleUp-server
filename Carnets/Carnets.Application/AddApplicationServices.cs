@@ -16,6 +16,7 @@ namespace Carnets.Application
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
             // Generic [Specific permissions]
+            services.AddScoped<IRequestHandler<CreatePermissionCommand<ClassPermission>, Result<ClassPermission>>, CreatePermissionCommandHandler<ClassPermission>>();
             services.AddScoped<IRequestHandler<CreatePermissionCommand<PerkPermission>, Result<PerkPermission>>, CreatePermissionCommandHandler<PerkPermission>>();
 
             services.AddScoped<IRequestHandler<DeletePermissionCommand<ClassPermission>, Result<bool>>, DeletePermissionCommandHandler<ClassPermission>>();

@@ -50,7 +50,7 @@
 | Endpoint Name | Who can | Method type | Purpose |
 | ------- | ------------------------------- | ------- | ------------------------------- |
 | api/carnets/class-permission | Worker | GET | returns all ClassPermissions created within the FitnessClub |
-| api/carnets/class-permission/all-as-admin/{fitnessClubId} | Admin | GET | returns all ClassPermissions created within the FitnessClub |
+| api/carnets/class-permission/all-from-fitness-club/{fitnessClubId} | Admin, Member | GET | returns all ClassPermissions created within the FitnessClub |
 | api/carnets/class-permission/{permissionId} | Worker, Admin | GET | returns a single ClassPermission by id |
 | api/carnets/class-permission/by-gympass-type/{gympassTypeId} | LoggedIn | GET | returns all ClassPermissions assigned to GympassType indentified by id |
 | api/carnets/class-permission | Worker | POST | creates new ClassPermission |
@@ -60,7 +60,7 @@
 | Endpoint Name | Who can | Method type | Purpose |
 | ------- | ------------------------------- | ------- | ------------------------------- |
 | api/carnets/perk-permission | Worker | GET | returns all PerkPermissions created within the FitnessClub |
-| api/carnets/perk-permission/all-as-admin/{fitnessClubId} | Admin | GET | returns all PerkPermissions created within the FitnessClub |
+| api/carnets/perk-permission/all-from-fitness-club/{fitnessClubId} | Admin, Member | GET | returns all PerkPermissions created within the FitnessClub |
 | api/carnets/perk-permission/{permissionId} | Worker, Admin | GET | returns a single PerkPermission by id |
 | api/carnets/class-permission/by-gympass-type/{gympassTypeId} | LoggedIn | GET | returns all PerkPermissions assigned to GympassType indentified by id |
 | api/carnets/perk-permission | Worker | POST | creates new PerkPermission |
