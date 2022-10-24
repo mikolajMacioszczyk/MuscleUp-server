@@ -112,7 +112,7 @@ namespace Auth.Repo
                 var trainer = new Trainer()
                 {
                     UserId = SeedConsts.DefaultTrainerId,
-                    User = defaultWorker,
+                    User = defaultTrainer,
                 };
                 await context.Trainers.AddAsync(trainer);
             }
