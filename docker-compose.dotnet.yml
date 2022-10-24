@@ -3,15 +3,14 @@
 version: '3.8'
 
 services:
+
   postgres:
-    image: postgres:14.5
+    build:
+      context: .
+      dockerfile: ./Database/Dockerfile
     restart: always
-    environment:
-      - POSTGRES_PASSWORD=Pa55w0rd
     ports:
       - "5432:5432"
-    volumes:
-      - ./Database/postgres_init.sql:/docker-entrypoint-initdb.d/postgres_init.sql
 
   broker:
     container_name: "broker"

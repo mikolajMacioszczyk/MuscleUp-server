@@ -3,13 +3,10 @@
 version: '3.8'
 
 services:
+
   postgres:
-    image: postgres:14.5
+    image: ghcr.io/muscle-up-app/database
     restart: always
-    environment:
-      POSTGRES_PASSWORD: 'Pa55w0rd'
-    volumes:
-      - ./Database/postgres_init.sql:/docker-entrypoint-initdb.d/postgres_init.sql
 
   broker:
     container_name: "broker"
