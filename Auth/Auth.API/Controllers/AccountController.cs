@@ -1,6 +1,7 @@
 ﻿using Auth.Application.Common.Dtos;
 using Auth.Application.Common.Interfaces;
 using Auth.Application.Common.Models;
+using Common.Attribute;
 using Common.BaseClasses;
 using Common.Extensions;
 using Common.Helpers;
@@ -43,13 +44,13 @@ namespace Auth.API.Controllers
         }
 
         [HttpPost("change-password")]
-        [Authorize(Roles = AuthHelper.RoleAllExceptAdmin)]
+        [AuthorizeRoles(AuthHelper.RoleAllExceptAdmin)]
         public async Task<ActionResult<AuthResponse>> ChangePassword([FromBody] ChangePasswordRequestDto request)
         {
             return Ok(await _userService.ChangePasswordAsync(request));
         }
 
-        [Authorize(Roles = AuthHelper.RoleAll)]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
         [HttpPut("logout")]
         public async Task<IActionResult> Logout()
         {

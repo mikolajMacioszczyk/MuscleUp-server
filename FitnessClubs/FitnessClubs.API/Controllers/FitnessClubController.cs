@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
@@ -22,7 +23,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpGet()]
-        [Authorize(Roles = AuthHelper.RoleAll)]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<IEnumerable<FitnessClubDto>>> GetAll()
         {
             var all = await Mediator.Send(new GetAllFitnessClubsQuery());
@@ -30,7 +31,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpGet("{fitnessClubId}")]
-        [Authorize(Roles = AuthHelper.RoleAll)]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<FitnessClubDto>> GetById([FromRoute] string fitnessClubId)
         {
             var result = await Mediator.Send(new GetFitnessClubByIdQuery() { FitnessClubId = fitnessClubId});
@@ -42,7 +43,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpGet("worker/{workerId}")]
-        [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Worker, RoleType.Administrator)]
         public async Task<ActionResult<FitnessClubDto>> GetFitnessClubOfWorker([FromRoute] string workerId)
         {
             
@@ -55,7 +56,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpPost()]
-        [Authorize(Roles = nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Administrator)]
         public async Task<ActionResult<FitnessClubDto>> CreateFitnessClub([FromBody] CreateFitnessClubDto model)
         {
             var command = new CreateFitnessClubCommand()
@@ -72,7 +73,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpDelete("{fitnessClubId}")]
-        [Authorize(Roles = nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Administrator)]
         public async Task<ActionResult> DeleteFitnessClub([FromRoute] string fitnessClubId)
         {
             var command = new DeleteFitnessClubCommand()

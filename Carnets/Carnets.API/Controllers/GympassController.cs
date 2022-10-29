@@ -3,6 +3,7 @@ using Carnets.Application.FitnessClubs.Queries;
 using Carnets.Application.Gympasses.Commands;
 using Carnets.Application.Gympasses.Dtos;
 using Carnets.Application.Gympasses.Queries;
+using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
@@ -24,7 +25,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet()]
-        [Authorize(Roles = nameof(RoleType.Administrator) + "," + nameof(RoleType.Member))]
+        [AuthorizeRoles(RoleType.Administrator, RoleType.Member)]
         public async Task<ActionResult<IEnumerable<GympassDto>>> GetAll()
         {
             var gympasses = await Mediator.Send(new GetAllGympassesQuery());
@@ -33,7 +34,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("from-fitness-club")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<IEnumerable<GympassDto>>> GetAllFromFitnessClub()
         {
             var workerId = _httpAuthContext.UserId;
@@ -51,7 +52,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("{gympassId}")]
-        [Authorize(Roles = AuthHelper.RoleAll)]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<GympassDto>> GetById([FromRoute] string gympassId)
         {
             var gympass = await Mediator.Send(new GetGympassByIdQuery()
@@ -63,7 +64,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpPost()]
-        [Authorize(Roles = nameof(RoleType.Member))]
+        [AuthorizeRoles(RoleType.Member)]
         public async Task<ActionResult<GympassWithSessionDto>> Create([FromBody] CreateGympassDto model)
         {
             var memberId = _httpAuthContext.UserId;
@@ -83,7 +84,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpPut("cancel/{gympassId}")]
-        [Authorize(Roles = nameof(RoleType.Member))]
+        [AuthorizeRoles(RoleType.Member)]
         public async Task<ActionResult<GympassDto>> CancelGympass([FromRoute] string gympassId)
         {
             var result = await Mediator.Send(new CancelGympassCommand()
@@ -104,7 +105,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpPut("cancel-as-worker/{gympassId}")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<GympassDto>> CancelGympassAsWorker([FromRoute] string gympassId)
         {
             var workerId = _httpAuthContext.UserId;
@@ -128,7 +129,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpPut("activate/{gympassId}")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<GympassDto>> ActivateGympass([FromRoute] string gympassId)
         {
             var workerId = _httpAuthContext.UserId;
@@ -152,7 +153,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpPut("deactivate/{gympassId}")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<GympassDto>> DeactivateGympass([FromRoute] string gympassId)
         {
             var workerId = _httpAuthContext.UserId;
@@ -176,7 +177,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpPut("entry/{gympassId}")]
-        [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Member))]
+        [AuthorizeRoles(RoleType.Worker, RoleType.Member)]
         public async Task<ActionResult<GympassDto>> ReduceGympassEntries([FromRoute] string gympassId)
         {
             var result = await Mediator.Send(new ReduceGympassEntriesCommand()

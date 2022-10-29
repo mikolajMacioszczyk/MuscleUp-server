@@ -4,6 +4,7 @@ using Carnets.Application.AssignedPermissions.Dtos;
 using Carnets.Application.Dtos.Permission;
 using Carnets.Application.FitnessClubs.Queries;
 using Carnets.Application.Permissions.Queries;
+using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
@@ -25,7 +26,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("gympass-permissions/{gympassTypeId}")]
-        [Authorize(Roles = AuthHelper.RoleAll)]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<IEnumerable<PermissionBaseDto>>> GetAllGympassPermissions([FromRoute] string gympassTypeId)
         {
             var permissionsResult = await Mediator.Send(new GetAllGympassPermissionsQuery()
@@ -46,7 +47,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpPost("grant")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<AssignedPermissionDto>> GrantPermission([FromBody] GrantRevokePermissionDto model)
         {
             var workerId = _httpAuthContext.UserId;
@@ -71,7 +72,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpDelete("revoke")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult> RevokePermission([FromBody] GrantRevokePermissionDto model)
         {
             var workerId = _httpAuthContext.UserId;
@@ -98,7 +99,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpDelete("revoke-all/{permissionId}")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult> RemovePermissionWithAllAssigements([FromRoute] string permissionId)
         {
             var workerId = _httpAuthContext.UserId;

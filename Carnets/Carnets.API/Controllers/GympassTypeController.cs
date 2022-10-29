@@ -3,9 +3,9 @@ using Carnets.Application.FitnessClubs.Queries;
 using Carnets.Application.GympassTypes.Commands;
 using Carnets.Application.GympassTypes.Dtos;
 using Carnets.Application.GympassTypes.Queries;
-using Carnets.Application.Interfaces;
 using Carnets.Domain.Models;
 using Common;
+using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
@@ -27,7 +27,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("{gympassTypeId}")]
-        [Authorize(Roles = AuthHelper.RoleAll)]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<GympassTypeDto>> GetGympassTypeById([FromRoute] string gympassTypeId)
         {
             var query = new GetGympassTypeWithPermissionsByIdQuery()
@@ -44,7 +44,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("active-as-worker")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<IEnumerable<GympassTypeDto>>> GetActiveGympassTypesAsWorker(
             [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = CommonConsts.DefaultPageSize)
         {
@@ -65,7 +65,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("active/{fitnessClubId}")]
-        [Authorize(Roles = nameof(RoleType.Member) + "," + nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Member, RoleType.Administrator)]
         public async Task<ActionResult<IEnumerable<GympassTypeDto>>> GetActiveGympassTypes([FromRoute] string fitnessClubId,
             [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = CommonConsts.DefaultPageSize)
         {
@@ -88,7 +88,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpPost()]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<GympassTypeDto>> CreateGympassType([FromBody] CreateGympassTypeDto model)
         {
             var workerId = _httpAuthContext.UserId;
@@ -108,7 +108,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpPut("{gympassTypeId}")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<GympassTypeDto>> UpdateGympassType([FromRoute] string gympassTypeId, [FromBody] UpdateGympassTypeDto model)
         {
             var gympassType = _mapper.Map<GympassType>(model);
@@ -132,7 +132,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpPut("with-permissions/{gympassTypeId}")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<GympassTypeDto>> UpdateGympassTypeWithPermissions([FromRoute] string gympassTypeId, [FromBody] UpdateGympassTypeWithPermissionsDto model)
         {
             var gympassType = _mapper.Map<GympassType>(model);
@@ -158,7 +158,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpDelete("{gympassTypeId}")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult> DeleteGympassType([FromRoute] string gympassTypeId)
         {
             var command = new DeleteGympassTypeCommand()

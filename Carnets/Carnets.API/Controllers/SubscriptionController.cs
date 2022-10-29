@@ -6,7 +6,7 @@ using Carnets.Application.Payments.Commands;
 using Carnets.Application.Subscriptions.Commands;
 using Carnets.Application.Subscriptions.Dtos;
 using Carnets.Application.Subscriptions.Queries;
-using Carnets.Domain.Models;
+using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Models;
@@ -32,7 +32,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("by-gympass/{gympassId}")]
-        [Authorize(Roles = nameof(RoleType.Member) + "," + nameof(RoleType.Administrator) + "," + nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Member, RoleType.Administrator, RoleType.Worker)]
         public async Task<ActionResult<SubscriptionDto>> GetAllGympassSubscriptions([FromRoute] string gympassId)
         {
             var subscriptions = await Mediator.Send(new GetAllGympassSubscriptionsQuery()
@@ -44,7 +44,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("by-member")]
-        [Authorize(Roles = nameof(RoleType.Member))]
+        [AuthorizeRoles(RoleType.Member)]
         public async Task<ActionResult<SubscriptionDto>> GetAllMemberSubscriptions()
         {
             var memberId = _httpAuthContext.UserId;
@@ -58,7 +58,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("by-member-as-worker/{memberId}")]
-        [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Worker, RoleType.Administrator)]
         public async Task<ActionResult<SubscriptionDto>> GetAllMemberSubscriptions([FromRoute] string memberId)
         {
             var subscriptions = await Mediator.Send(new GetAllMemberSubscriptionsQuery()
@@ -70,7 +70,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("{subscriptionId}")]
-        [Authorize(Roles = nameof(RoleType.Member) + "," + nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Member, RoleType.Worker, RoleType.Administrator)]
         public async Task<ActionResult<SubscriptionDto>> GetSubscriptionById([FromRoute] string subscriptionId)
         {
             var subscription = await Mediator.Send(new GetSubscriptionByIdQuery()
@@ -142,7 +142,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpPost("as-worker")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<SubscriptionDto>> CreateGympassWithSubscriptionAsWorker([FromBody] CreateGympassSubscriptionDto model)
         {
             var workerId = _httpAuthContext.UserId;

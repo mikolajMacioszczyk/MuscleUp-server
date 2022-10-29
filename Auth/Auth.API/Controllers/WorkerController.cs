@@ -1,10 +1,10 @@
 ﻿using Auth.Application.Workers.Commands;
 using Auth.Application.Workers.Dtos;
 using Auth.Application.Workers.Queries;
+using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
-using Common.Models;
 using Common.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,14 +14,14 @@ namespace Auth.API.Controllers
     public class WorkerController : ApiControllerBase
     {
         [HttpGet("all")]
-        [Authorize(Roles = nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Administrator)]
         public async Task<ActionResult<IEnumerable<WorkerDto>>> GetAllWorkers()
         {
             return Ok(await Mediator.Send(new GetAllWorkersQuery()));
         }
 
         [HttpGet("by-ids/{userIds}")]
-        [Authorize(Roles = AuthHelper.RoleAll)]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<IEnumerable<WorkerDto>>> GetAllWorkersWithIds(
             [FromRoute] string userIds, 
             [FromQuery] string separator = ",")
@@ -34,7 +34,7 @@ namespace Auth.API.Controllers
         }
 
         [HttpGet()]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<WorkerDto>> GetWorkerData()
         {
             var worker = await Mediator.Send(new GetWorkerByIdQuery());
@@ -52,7 +52,7 @@ namespace Auth.API.Controllers
         }
 
         [HttpPut()]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<WorkerDto>> UpdateWorker([FromBody] UpdateWorkerDto updateDto)
         {
             var command = new UpdateWorkerCommand() { UpdateDto = updateDto };

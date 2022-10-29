@@ -1,4 +1,5 @@
-﻿using Common.BaseClasses;
+﻿using Common.Attribute;
+using Common.BaseClasses;
 using Common.Enums;
 using Common.Models;
 using Common.Models.Dtos;
@@ -21,7 +22,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpGet("{membershipId}")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<MembershipDto>> GetMembershipById([FromRoute] string membershipId)
         {
             var workerFitnessClub = await Mediator.Send(new GetFitnessClubOfWorkerQuery()
@@ -44,7 +45,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpGet("{membershipId}/{fitnessClubId}")]
-        [Authorize(Roles = nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Administrator)]
         public async Task<ActionResult<MembershipDto>> GetMembershipByIdAsAdmin(
             [FromRoute] string membershipId, [FromRoute] string fitnessClubId)
         {
@@ -58,7 +59,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpGet("from-fitness-club")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<IEnumerable<MembershipDto>>> GetAllMembershipsFromFitnessClub()
         {
             var workerFitnessClub = await Mediator.Send(new GetFitnessClubOfWorkerQuery()
@@ -80,7 +81,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpGet("from-fitness-club/{fitnessClubId}")]
-        [Authorize(Roles = nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Administrator)]
         public async Task<ActionResult<IEnumerable<MembershipDto>>> GetAllMembershipsFromFitnessClubAsAdmin(
             [FromRoute] string fitnessClubId)
         {
@@ -93,7 +94,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpPost()]
-        [Authorize(Roles = nameof(RoleType.Administrator) + "," + nameof(RoleType.Worker) + nameof(RoleType.Member))]
+        [AuthorizeRoles(RoleType.Administrator, RoleType.Worker, RoleType.Member)]
         public async Task<ActionResult<MembershipDto>> CreateMembership([FromBody] CreateMembershipDto model)
         {
             var createResult = await Mediator.Send(new CreateOrGetMembershipCommand()

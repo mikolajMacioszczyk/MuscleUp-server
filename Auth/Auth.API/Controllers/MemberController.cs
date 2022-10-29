@@ -1,6 +1,7 @@
 ﻿using Auth.Application.Members.Commands;
 using Auth.Application.Members.Dtos;
 using Auth.Application.Members.Queries;
+using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
@@ -13,14 +14,14 @@ namespace Auth.API.Controllers
     public class MemberController : ApiControllerBase
     {
         [HttpGet("all")]
-        [Authorize(Roles = nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Administrator)]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetAllMembers()
         {
             return Ok(await Mediator.Send(new GetAllMembersQuery()));
         }
 
         [HttpGet("by-ids/{userIds}")]
-        [Authorize(Roles = AuthHelper.RoleAll)]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetAllMembersWithIds(
             [FromRoute] string userIds,
             [FromQuery] string separator = ",")
@@ -33,7 +34,7 @@ namespace Auth.API.Controllers
         }
 
         [HttpGet()]
-        [Authorize(Roles = nameof(RoleType.Member))]
+        [AuthorizeRoles(RoleType.Member)]
         public async Task<ActionResult<MemberDto>> GetMemeberData()
         {
             var member = await Mediator.Send(new GetMemberByIdQuery());
@@ -51,7 +52,7 @@ namespace Auth.API.Controllers
         }
 
         [HttpPut()]
-        [Authorize(Roles = nameof(RoleType.Member))]
+        [AuthorizeRoles(RoleType.Member)]
         public async Task<ActionResult<MemberDto>> UpdateMember([FromBody] UpdateMemberDto updateDto)
         {
             var command = new UpdateMemberCommand() { UpdateDto = updateDto };

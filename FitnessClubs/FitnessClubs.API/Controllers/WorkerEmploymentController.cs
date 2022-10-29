@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Models.Dtos;
@@ -21,7 +22,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpGet("{fitnessClubId}")]
-        [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Worker, RoleType.Administrator)]
         public async Task<ActionResult<IEnumerable<WorkerDto>>> GetAllEmploymentsFromFitnessClub([FromRoute] string fitnessClubId, [FromQuery] bool includeInactive = false)
         {
             var query = new GetAllWorkerEmploymentsQuery()
@@ -35,7 +36,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpPost()]
-        [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Worker, RoleType.Administrator)]
         public async Task<ActionResult<WorkerEmploymentDto>> CreateWorkerEmployment(CreateWorkerEmploymentDto model)
         {
             var command = new CreateWorkerEmploymentCommand()
@@ -58,7 +59,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpPut("{workerEmploymentId}")]
-        [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Worker, RoleType.Administrator)]
         public async Task<ActionResult<WorkerEmploymentDto>> TerminateWorkerEmployment([FromRoute] string workerEmploymentId)
         {
             var command = new TerminateWorkerEmploymentCommand()

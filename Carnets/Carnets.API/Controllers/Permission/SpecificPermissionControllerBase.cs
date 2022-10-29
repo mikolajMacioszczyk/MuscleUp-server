@@ -3,6 +3,7 @@ using Carnets.Application.FitnessClubs.Queries;
 using Carnets.Application.SpecificPermissions.Commands;
 using Carnets.Application.SpecificPermissions.Queries;
 using Carnets.Domain.Models;
+using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
@@ -25,7 +26,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet()]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllPermisions()
         {
             var workerId = _httpAuthContext.UserId;
@@ -41,7 +42,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("all-from-fitness-club/{fitnessClubId}")]
-        [Authorize(Roles = nameof(RoleType.Administrator) + "," + nameof(RoleType.Member))]
+        [AuthorizeRoles(RoleType.Administrator, RoleType.Member)]
         public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllPermisions([FromRoute] string fitnessClubId)
         {
             var allPermissions = await Mediator.Send(new GetAllPermisionsQuery<TPermission>()
@@ -53,7 +54,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("{permissionId}")]
-        [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
+        [AuthorizeRoles(RoleType.Worker, RoleType.Administrator)]
         public async Task<ActionResult> GetPermissionById([FromRoute] string permissionId)
         {
             var permission = await Mediator.Send(new GetPermissionById<TPermission>()
@@ -69,7 +70,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpGet("by-gympass-type/{gympassTypeId}")]
-        [Authorize(Roles = AuthHelper.RoleAll)]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllGympassTypePermisions([FromRoute] string gympassTypeId)
         {
             var allPermissions = await Mediator.Send(new GetAllGympassTypePermissionsQuery<TPermission>()
@@ -81,7 +82,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpPost()]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult> CreatePermission([FromBody] TCreatePermissionDto model)
         {
             var workerId = _httpAuthContext.UserId;
@@ -104,7 +105,7 @@ namespace Carnets.API.Controllers
         }
 
         [HttpDelete("{permissionId}")]
-        [Authorize(Roles = nameof(RoleType.Worker))]
+        [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult> DeletePermission([FromRoute] string permissionId)
         {
             var workerId = _httpAuthContext.UserId;
