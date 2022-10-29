@@ -101,8 +101,7 @@
 ## Subscription
 | Endpoint Name | Who can | Method type | Purpose |
 | ------- | ------------------------------- | ------- | ------------------------------- |
-| api/carnets/subscription/by-gympass/{gympassId} | Member | GET | returns all Subscriptions associated with Gympass |
-| api/carnets/subscription/by-gympass-as-worker/{gympassId} | Worker, Admin | GET | returns all Subscriptions associated with Gympass |
+| api/carnets/subscription/by-gympass/{gympassId} | Worker, Admin, Member | GET | returns all Subscriptions associated with Gympass |
 | api/carnets/subscription/by-member | Member | GET | returns all Member's Subscriptions |
 | api/carnets/subscription/by-member-as-worker | Worker, Admin | GET | returns all Member's Subscriptions |
 | api/carnets/subscription/{subscriptionId} | Member, Worker, Admin | GET | returns single Subscription by id |

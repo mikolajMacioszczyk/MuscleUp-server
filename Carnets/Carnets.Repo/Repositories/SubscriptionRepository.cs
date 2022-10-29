@@ -71,6 +71,22 @@ namespace Carnets.Repo.Repositories
             return new Result<Subscription>(subscription);
         }
 
+        public async Task<Result<Subscription>> UpdateSubscription(string subscriptionId, Subscription subscription)
+        {
+            var subscriptionFromDb = await GetSubscriptionById(subscriptionId, true);
+
+            if (subscriptionFromDb is null)
+            {
+                return new Result<Subscription>(Common.CommonConsts.NOT_FOUND);
+            }
+
+            subscriptionFromDb.LastPaymentDate = subscription.LastPaymentDate;
+            subscriptionFromDb.StripePaymentmethodId = subscription.StripePaymentmethodId;
+            subscriptionFromDb.StripeCustomerId = subscription.StripeCustomerId;
+
+            return new Result<Subscription>(subscription);
+        }
+
         public Task SaveChangesAsync() => _context.SaveChangesAsync();
     }
 }

@@ -12,11 +12,17 @@ namespace Carnets.Domain.Models
         public Gympass Gympass { get; set; }
 
         [Required]
-        [MaxLength(30)]
+        [MaxLength(50)]
         public string StripeCustomerId { get; set; }
 
         [Required]
-        [MaxLength(30)]
+        [MaxLength(50)]
         public string StripePaymentmethodId { get; set; }
+
+        public DateTime CreationDate { get; set; }
+
+        public DateTime LastPaymentDate { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

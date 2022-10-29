@@ -9,6 +9,8 @@ namespace Carnets.Application.Gympasses.Commands
     public record ActivateGympassCommand : IRequest<Result<Gympass>>
     {
         public string GympassId { get; init; }
+
+        public bool SaveChanges { get; init; } = true;
     }
 
     public class ActivateGympassCommandHandler : IRequestHandler<ActivateGympassCommand, Result<Gympass>>
@@ -50,7 +52,7 @@ namespace Carnets.Application.Gympasses.Commands
 
             var updateResult = await _gympassRepository.UpdateGympass(gympass);
 
-            if (updateResult.IsSuccess)
+            if (updateResult.IsSuccess && request.SaveChanges)
             {
                 await _gympassRepository.SaveChangesAsync();
             }

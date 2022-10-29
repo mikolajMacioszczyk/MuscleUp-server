@@ -3,7 +3,9 @@
     public enum PaymentStatus
     {
         None,
-        Success,
-        Expired
+        SinglePaymentSuccess,
+        SinglePaymentExpired,
+        SubscriptionPaid,
+        SubscriptionDeleted
     }
 }

@@ -46,8 +46,8 @@ namespace Carnets.Application.Gympasses.Commands
                 GympassId = Guid.NewGuid().ToString(),
                 UserId = request.UserId,
                 Status = GympassStatus.New,
-                ActivationDate = DateTime.MinValue,
-                ValidityDate = DateTime.MinValue,
+                ActivationDate = DateTime.UtcNow,
+                ValidityDate = DateTime.UtcNow,
             };
 
             var createResult = await _gympassRepository.CreateGympass(request.Model.GympassTypeId, created);

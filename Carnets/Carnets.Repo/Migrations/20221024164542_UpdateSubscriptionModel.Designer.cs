@@ -3,6 +3,7 @@ using System;
 using Carnets.Repo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Carnets.Repo.Migrations
 {
     [DbContext(typeof(CarnetsDbContext))]
-    partial class CarnetsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221024164542_UpdateSubscriptionModel")]
+    partial class UpdateSubscriptionModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,13 +168,13 @@ namespace Carnets.Repo.Migrations
 
                     b.Property<string>("StripeCustomerId")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("StripePaymentmethodId")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.HasKey("SubscriptionId");
 

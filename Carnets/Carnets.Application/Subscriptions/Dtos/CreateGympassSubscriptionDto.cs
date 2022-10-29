@@ -9,11 +9,11 @@ namespace Carnets.Application.Subscriptions.Dtos
         public string GympassId { get; set; }
 
         [Required]
-        [MaxLength(30)]
-        public string StripeCustomerId { get; set; }
+        [MaxLength(50)]
+        public string CustomerId { get; set; }
 
         [Required]
-        [MaxLength(30)]
-        public string StripePaymentmethodId { get; set; }
+        [MaxLength(50)]
+        public string PaymentMethodId { get; set; }
     }
 }

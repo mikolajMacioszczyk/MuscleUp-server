@@ -63,7 +63,11 @@ namespace Carnets.Application.Services
                 DefaultPriceData = new ProductDefaultPriceDataOptions()
                 {
                     Currency = DefaultCurrency,
-                    UnitAmountDecimal = Convert.ToDecimal(gympassType.Price * 100)
+                    UnitAmountDecimal = Convert.ToDecimal(gympassType.Price * 100),
+                    Recurring = new ProductDefaultPriceDataRecurringOptions { 
+                        // TODO: Custom intervals
+                        Interval = "month",
+                    }
                 },
                 Description = string.IsNullOrEmpty(gympassType.Description) ? null : gympassType.Description,
             };
@@ -135,7 +139,7 @@ namespace Carnets.Application.Services
                     Quantity = 1,
                   },
                 },
-                Mode = PaymentModeType.payment.ToString().ToLower(),
+                Mode = PaymentModeType.subscription.ToString().ToLower(),
                 SuccessUrl = UriHelper.AppendQueryParamToUri(successUrl, PaymentConsts.GympassIdKey, gympassId),
                 CancelUrl = UriHelper.AppendQueryParamToUri(cancelUrl, PaymentConsts.GympassIdKey, gympassId),
                 ClientReferenceId = customerId,
@@ -158,29 +162,40 @@ namespace Carnets.Application.Services
                 var stripeEvent = EventUtility.ConstructEvent(jsonBody, signature, WebhookSecret);
 
                 // Handle the event
-                if (stripeEvent.Type == Events.CheckoutSessionCompleted)
+                if (stripeEvent.Type == Events.InvoicePaid)
                 {
-                    string gympassId = GetPlanIdFromSession(stripeEvent);
+                    var (gympassId, customerId, paymentMethodId) = GetDataFromInvoice(stripeEvent);
 
                     if (!string.IsNullOrEmpty(gympassId))
                     {
-                        return new PaymentResult() { PaymentStatus = PaymentStatus.Success, PlanId = gympassId };
+                        return new PaymentResult(PaymentStatus.SubscriptionPaid, gympassId, customerId, paymentMethodId);
+                    }
+                    ServeMissingPlanMetadata();
+                }
+                // TODO: Handle subscription deleted
+                else if (stripeEvent.Type == Events.CheckoutSessionCompleted)
+                {
+                    var (gympassId, customerId, paymentMethodId) = GetDataFromSession(stripeEvent);
+
+                    if (!string.IsNullOrEmpty(gympassId))
+                    {
+                        return new PaymentResult(PaymentStatus.SinglePaymentSuccess, gympassId, customerId, paymentMethodId);
                     }
                     ServeMissingPlanMetadata();
                 }
                 else if (stripeEvent.Type == Events.CheckoutSessionExpired)
                 {
-                    string gympassId = GetPlanIdFromSession(stripeEvent);
+                    var (gympassId, customerId, paymentMethodId) = GetDataFromSession(stripeEvent);
 
                     if (!string.IsNullOrEmpty(gympassId))
                     {
-                        return new PaymentResult() { PaymentStatus = PaymentStatus.Expired, PlanId = gympassId };
+                        return new PaymentResult(PaymentStatus.SinglePaymentExpired, gympassId, customerId, paymentMethodId);
                     }
                     ServeMissingPlanMetadata();
                 }
 
                 _logger.LogInformation($"Unhandled Stripe event of type = {stripeEvent.Type}");
-                return new PaymentResult() { PaymentStatus = PaymentStatus.None, PlanId = string.Empty };
+                return PaymentResult.Empty();
             }
             catch (StripeException e)
             {
@@ -189,7 +204,7 @@ namespace Carnets.Application.Services
             }
         }
 
-        private string GetPlanIdFromSession(Event stripeEvent)
+        private (string planId, string customerId, string paymentMethodId) GetDataFromSession(Event stripeEvent)
         {
             var session = stripeEvent.Data.Object as Session;
             string gympassId = string.Empty;
@@ -197,10 +212,24 @@ namespace Carnets.Application.Services
             var hasGympassIdMetadata = session.Metadata?.TryGetValue(PaymentConsts.GympassIdKey, out gympassId) ?? false;
             if (hasGympassIdMetadata)
             {
-                return gympassId;
+                return (gympassId, session.CustomerId, string.Empty);
             }
 
-            return string.Empty;
+            return (string.Empty, string.Empty, string.Empty);
+        }
+
+        private (string planId, string customerId, string paymentMethodId) GetDataFromInvoice(Event stripeEvent)
+        {
+            var invoice = stripeEvent.Data.Object as Invoice;
+            string gympassId = string.Empty;
+
+            var hasGympassIdMetadata = invoice.Metadata?.TryGetValue(PaymentConsts.GympassIdKey, out gympassId) ?? false;
+            if (hasGympassIdMetadata)
+            {
+                return (gympassId, invoice.CustomerId, invoice.DefaultPaymentMethodId);
+            }
+
+            return (string.Empty, string.Empty, string.Empty);
         }
 
         private void ServeMissingPlanMetadata()

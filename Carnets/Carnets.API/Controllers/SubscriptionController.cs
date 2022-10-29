@@ -17,41 +17,30 @@ namespace Carnets.API.Controllers
 {
     public class SubscriptionController : ApiControllerBase
     {
+        private readonly ILogger<SubscriptionController> _logger;
         private readonly HttpAuthContext _httpAuthContext;
         private readonly IMapper _mapper;
 
-        public SubscriptionController(HttpAuthContext httpAuthContext, IMapper mapper)
+        public SubscriptionController(
+            ILogger<SubscriptionController> logger,
+            HttpAuthContext httpAuthContext, 
+            IMapper mapper)
         {
             _httpAuthContext = httpAuthContext;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet("by-gympass/{gympassId}")]
-        [Authorize(Roles = nameof(RoleType.Member))]
+        [Authorize(Roles = nameof(RoleType.Member) + "," + nameof(RoleType.Administrator) + "," + nameof(RoleType.Worker))]
         public async Task<ActionResult<SubscriptionDto>> GetAllGympassSubscriptions([FromRoute] string gympassId)
         {
-            var memberId = _httpAuthContext.UserId;
-
             var subscriptions = await Mediator.Send(new GetAllGympassSubscriptionsQuery()
             {
-                GympassId = gympassId,
-                MemberId = memberId
+                GympassId = gympassId
             });
 
-            return Ok(subscriptions);
-        }
-
-        [HttpGet("by-gympass-as-worker/{gympassId}/{memberId}")]
-        [Authorize(Roles = nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator))]
-        public async Task<ActionResult<SubscriptionDto>> GetAllGympassSubscriptions([FromRoute] string gympassId, [FromRoute] string memberId)
-        {
-            var subscriptions = await Mediator.Send(new GetAllGympassSubscriptionsQuery()
-            {
-                GympassId = gympassId,
-                MemberId = memberId
-            });
-
-            return Ok(subscriptions);
+            return Ok(_mapper.Map<IEnumerable<SubscriptionDto>>(subscriptions));
         }
 
         [HttpGet("by-member")]
@@ -65,7 +54,7 @@ namespace Carnets.API.Controllers
                 MemberId = memberId
             });
 
-            return Ok(subscriptions);
+            return Ok(_mapper.Map<IEnumerable<SubscriptionDto>>(subscriptions));
         }
 
         [HttpGet("by-member-as-worker/{memberId}")]
@@ -77,7 +66,7 @@ namespace Carnets.API.Controllers
                 MemberId = memberId
             });
 
-            return Ok(subscriptions);
+            return Ok(_mapper.Map<IEnumerable<SubscriptionDto>>(subscriptions));
         }
 
         [HttpGet("{subscriptionId}")]
@@ -94,33 +83,33 @@ namespace Carnets.API.Controllers
                 return NotFound();
             }
 
-            return Ok(subscription);
+            return Ok(_mapper.Map<SubscriptionDto>(subscription));
         }
 
         [HttpPost("webhook")]
         [AllowAnonymous]
         public async Task<ActionResult<SubscriptionDto>> PaymentWebhook()
         {
+            var jsonBody = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             var paymentResult = await Mediator.Send(new HandlePaidResultCommand()
             {
-                JsonBody = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync(),
+                JsonBody = jsonBody,
                 Signature = Request.Headers["Stripe-Signature"]
             });
 
             switch (paymentResult.PaymentStatus)
             {
-                case PaymentStatus.Success:
+                case PaymentStatus.SinglePaymentSuccess:
                     var activateResult = await Mediator.Send(new ActivateGympassCommand()
                     {
                         GympassId = paymentResult.PlanId
                     });
-                    // TODO: Create subscription in later implementation
                     if (activateResult.IsSuccess)
                     {
                         return Ok();
                     }
                     return BadRequest(activateResult.ErrorCombined);
-                case PaymentStatus.Expired:
+                case PaymentStatus.SinglePaymentExpired:
                     var deactivationResult = await Mediator.Send(new DeactivateGympassCommand()
                     {
                         GympassId = paymentResult.PlanId
@@ -130,7 +119,24 @@ namespace Carnets.API.Controllers
                         return Ok();
                     }
                     return BadRequest(deactivationResult.ErrorCombined);
+                case PaymentStatus.SubscriptionPaid:
+                    var subscriptionResult = await Mediator.Send(new CreateOrExtendGympassSubscriptionCommand()
+                    {
+                        GympassId = paymentResult.PlanId,
+                        CustomerId = paymentResult.CustomerId,
+                        PaymentMethodId = paymentResult.PaymentMethodId
+                    });
+                    if (subscriptionResult.IsSuccess)
+                    {
+                        return Ok(subscriptionResult.Value);
+                    }
+                    return BadRequest(subscriptionResult.ErrorCombined);
+                case PaymentStatus.SubscriptionDeleted:
+                    // TODO: Implement
+                    return Ok();
                 default:
+                    _logger.LogWarning($"Unchandled webhook event: {paymentResult.PaymentStatus}." +
+                        $"\nBody: {jsonBody}");
                     return NoContent();
             }
         }
@@ -141,12 +147,12 @@ namespace Carnets.API.Controllers
         {
             var workerId = _httpAuthContext.UserId;
             await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
-            var subscription = _mapper.Map<Subscription>(model);
 
-            var payResult = await Mediator.Send(new CreateGympassSubscriptionCommand()
+            var payResult = await Mediator.Send(new CreateOrExtendGympassSubscriptionCommand()
             {
                 GympassId = model.GympassId,
-                Subscription = subscription,
+                CustomerId = model.CustomerId,
+                PaymentMethodId = model.PaymentMethodId
             });
 
             if (payResult.IsSuccess)

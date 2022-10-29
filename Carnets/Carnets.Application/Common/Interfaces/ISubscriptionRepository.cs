@@ -13,6 +13,8 @@ namespace Carnets.Application.Interfaces
 
         Task<Result<Subscription>> CreateSubscription(Subscription subscription);
 
+        Task<Result<Subscription>> UpdateSubscription(string subscriptionId, Subscription subscription);
+
         Task SaveChangesAsync();
     }
 }

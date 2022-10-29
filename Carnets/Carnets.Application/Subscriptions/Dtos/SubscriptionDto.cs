@@ -13,5 +13,11 @@ namespace Carnets.Application.Subscriptions.Dtos
         public string StripeCustomerId { get; set; }
 
         public string StripePaymentmethodId { get; set; }
+
+        public DateTime CreationDate { get; set; }
+
+        public DateTime LastPaymentDate { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }
