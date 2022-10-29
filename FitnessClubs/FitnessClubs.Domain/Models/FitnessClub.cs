@@ -19,5 +19,7 @@ namespace FitnessClubs.Domain.Models
         [Required]
         [MaxLength(500)]
         public string FitnessClubLogoUrl { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

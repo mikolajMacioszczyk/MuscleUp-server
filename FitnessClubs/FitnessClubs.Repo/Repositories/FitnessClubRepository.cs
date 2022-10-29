@@ -16,7 +16,8 @@ namespace FitnessClubs.Repo.Repositories
 
         public async Task<IEnumerable<FitnessClub>> GetAll(bool asTracking)
         {
-            IQueryable<FitnessClub> query = _context.FitnessClubs;
+            IQueryable<FitnessClub> query = _context.FitnessClubs
+                .Where(f => !f.IsDeleted);
 
             if (!asTracking)
             {
@@ -28,7 +29,8 @@ namespace FitnessClubs.Repo.Repositories
 
         public async Task<FitnessClub> GetById(string fitnessClubId, bool asTracking)
         {
-            IQueryable<FitnessClub> query = _context.FitnessClubs;
+            IQueryable<FitnessClub> query = _context.FitnessClubs
+                .Where(f => !f.IsDeleted);
 
             if (!asTracking)
             {
@@ -59,15 +61,16 @@ namespace FitnessClubs.Repo.Repositories
             {
                 return new Result<bool>(Common.CommonConsts.NOT_FOUND);
             }
-            // TODO: What if FitnessClub have carnets? => Broker or merge services
-            _context.FitnessClubs.Remove(fitnessClubFromDb);
+
+            fitnessClubFromDb.IsDeleted = true;
 
             return new Result<bool>(true);
         }
 
         private async Task<FitnessClub> GetByName(string fitnessClubName, bool asTracking)
         {
-            IQueryable<FitnessClub> query = _context.FitnessClubs;
+            IQueryable<FitnessClub> query = _context.FitnessClubs
+                .Where(f => !f.IsDeleted);
 
             if (!asTracking)
             {
