@@ -23,9 +23,6 @@ namespace Carnets.Domain.Models
         public GympassStatus Status { get; set; }
 
         [Range(0, int.MaxValue)]
-        public int RemainingValidityPeriodInSeconds { get; set; }
-
-        [Range(0, int.MaxValue)]
         public int RemainingEntries { get; set; }
     }
 }

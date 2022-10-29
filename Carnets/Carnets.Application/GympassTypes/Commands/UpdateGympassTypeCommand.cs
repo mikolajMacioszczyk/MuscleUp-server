@@ -1,4 +1,5 @@
 ﻿using Carnets.Application.GympassTypes.Queries;
+using Carnets.Application.Helpers;
 using Carnets.Application.Interfaces;
 using Carnets.Domain.Models;
 using Common.Models;
@@ -32,6 +33,8 @@ namespace Carnets.Application.GympassTypes.Commands
 
         public async Task<Result<GympassTypeWithPermissions>> Handle(UpdateGympassTypeCommand request, CancellationToken cancellationToken)
         {
+            GympassTypeHelper.ValidateGympassIntervals(request.GympassType);
+
             var updateResult = await _gympassTypeRepository.UpdateGympassType(request.GympassType);
 
             if (updateResult.IsSuccess)

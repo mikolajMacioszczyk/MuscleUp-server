@@ -20,8 +20,6 @@ namespace Carnets.Application.Gympasses.Dtos
 
         public GympassTypeValidation ValidationType { get; set; }
 
-        public int RemainingValidityPeriodInSeconds { get; set; }
-
         public int RemainingEntries { get; set; }
     }
 }

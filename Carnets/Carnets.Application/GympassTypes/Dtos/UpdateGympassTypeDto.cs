@@ -19,8 +19,10 @@ namespace Carnets.Application.GympassTypes.Dtos
         [Range(0, 1440)]
         public int EnableEntryToInMinutes { get; set; }
 
-        [Range(0, int.MaxValue)]
-        public int ValidityPeriodInSeconds { get; set; }
+        public IntervalType Interval { get; set; }
+
+        [Range(1, int.MaxValue)]
+        public int IntervalCount { get; set; }
 
         [Range(0, int.MaxValue)]
         public int AllowedEntries { get; set; }

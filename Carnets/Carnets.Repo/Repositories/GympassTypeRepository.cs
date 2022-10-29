@@ -115,7 +115,8 @@ namespace Carnets.Repo.Repositories
             updated.Description = gympassType.Description;
             updated.EnableEntryFromInMinutes = gympassType.EnableEntryFromInMinutes;
             updated.EnableEntryToInMinutes = gympassType.EnableEntryToInMinutes;
-            updated.ValidityPeriodInSeconds = gympassType.ValidityPeriodInSeconds;
+            updated.Interval = gympassType.Interval;
+            updated.IntervalCount = gympassType.IntervalCount;
             updated.AllowedEntries = gympassType.AllowedEntries;
             updated.ValidationType = gympassType.ValidationType;
 

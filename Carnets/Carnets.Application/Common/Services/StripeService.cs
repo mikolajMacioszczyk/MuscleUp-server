@@ -65,8 +65,8 @@ namespace Carnets.Application.Services
                     Currency = DefaultCurrency,
                     UnitAmountDecimal = Convert.ToDecimal(gympassType.Price * 100),
                     Recurring = new ProductDefaultPriceDataRecurringOptions { 
-                        // TODO: Custom intervals
-                        Interval = "month",
+                        Interval = gympassType.Interval.ToString().ToLower(),
+                        IntervalCount = gympassType.IntervalCount
                     }
                 },
                 Description = string.IsNullOrEmpty(gympassType.Description) ? null : gympassType.Description,

@@ -41,6 +41,8 @@ namespace Carnets.Application.GympassTypes.Commands
 
         public async Task<Result<GympassTypeWithPermissions>> Handle(UpdateGympassTypeWithPermissionsCommand request, CancellationToken cancellationToken)
         {
+            GympassTypeHelper.ValidateGympassIntervals(request.GympassType);
+
             var getPermissionsQuery = new GetPermissionsByNamesQuery()
             {
                 ClassPermissionsNames = request.ClassPermissions,

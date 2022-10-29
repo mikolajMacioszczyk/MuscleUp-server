@@ -36,7 +36,9 @@ namespace Carnets.Application.Gympasses.Commands
                 return new Result<Gympass>($"Cannot activate gympass in status: {gympass.Status}");
             }
 
-            if (gympass.RemainingValidityPeriodInSeconds <= 0 && gympass.RemainingEntries <= 0)
+            if (gympass.Status != GympassStatus.New &&
+                gympass.ValidityDate < DateTime.UtcNow && 
+                gympass.RemainingEntries <= 0)
             {
                 return new Result<Gympass>($"The Gympass validity has ended");
             }
@@ -46,7 +48,10 @@ namespace Carnets.Application.Gympasses.Commands
             {
                 gympass.ActivationDate = now;
             }
-            gympass.ValidityDate = now.AddSeconds(gympass.RemainingValidityPeriodInSeconds);
+            var intervalCount = gympass.GympassType.IntervalCount;
+            var newDate = gympass.GympassType.Interval.AddToDate(now, intervalCount);
+
+            gympass.ValidityDate = newDate;
 
             gympass.Status = GympassStatus.Active;
 

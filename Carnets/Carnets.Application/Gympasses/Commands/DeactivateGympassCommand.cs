@@ -35,7 +35,6 @@ namespace Carnets.Application.Gympasses.Commands
             }
 
             gympass.Status = GympassStatus.Inactive;
-            gympass.RemainingValidityPeriodInSeconds = (int)gympass.ValidityDate.Subtract(DateTime.UtcNow).TotalSeconds;
 
             var updateResult = await _gympassRepository.UpdateGympass(gympass);
 

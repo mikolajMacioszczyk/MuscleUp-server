@@ -39,6 +39,8 @@ namespace Carnets.Application.GympassTypes.Commands
 
         public async Task<GympassTypeWithPermissions> Handle(CreateGympassTypeCommand request, CancellationToken cancellationToken)
         {
+            GympassTypeHelper.ValidateGympassIntervals(request.GympassType);
+
             var (classPermissions, perkPermissions) = await GetAllPermissions(request);
 
             var createResult = await _gympassTypeRepository.CreateGympassType(request.GympassType);

@@ -24,7 +24,8 @@ namespace Carnets.Repo
                 IsActive = true,
                 EnableEntryFromInMinutes = 6 * 60,
                 EnableEntryToInMinutes = 20 * 60,
-                ValidityPeriodInSeconds = 3600 * 24 * 30,
+                Interval = Domain.Enums.IntervalType.Month,
+                IntervalCount = 1,
                 Version = 1
             };
 
@@ -59,7 +60,6 @@ namespace Carnets.Repo
                 GympassId = SeedConsts.DefaultGympassId,
                 GympassType = defaultGympassType,
                 UserId = SeedConsts.DefaultMemberId,
-                RemainingValidityPeriodInSeconds = 3600 * 24 * 30,
                 Status = Domain.Enums.GympassStatus.Active,
                 ValidityDate = DateTime.UtcNow.AddDays(30),
                 ActivationDate = DateTime.UtcNow

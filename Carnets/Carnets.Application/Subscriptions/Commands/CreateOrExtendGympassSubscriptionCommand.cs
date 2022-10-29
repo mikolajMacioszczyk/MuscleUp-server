@@ -151,14 +151,12 @@ namespace Carnets.Application.Subscriptions.Commands
             switch (gympass.GympassType.ValidationType)
             {
                 case GympassTypeValidation.Time:
-                    var additionalSeconds = gympass.GympassType.ValidityPeriodInSeconds;
-
-                    gympass.ValidityDate = gympass.ValidityDate.AddSeconds(additionalSeconds);
-                    gympass.RemainingValidityPeriodInSeconds += additionalSeconds;
+                    ExtendGympassValidityDate(gympass);
                     break;
                 case GympassTypeValidation.Entries:
                     // sets entries to default value
                     gympass.RemainingEntries = gympass.GympassType.AllowedEntries;
+                    ExtendGympassValidityDate(gympass);
                     break;
                 default:
                     _logger.LogError($"Unhandled validation type: {gympass.GympassType.ValidationType}");
@@ -174,6 +172,14 @@ namespace Carnets.Application.Subscriptions.Commands
 
             _logger.LogError($"Cannot update gympass validity: {gympass.GympassId}");
             throw new ApplicationException();
+        }
+
+        private void ExtendGympassValidityDate(Gympass gympass)
+        {
+            var intervalCount = gympass.GympassType.IntervalCount;
+            var newDate = gympass.GympassType.Interval.AddToDate(gympass.ValidityDate, intervalCount);
+
+            gympass.ValidityDate = newDate;
         }
     }
 }

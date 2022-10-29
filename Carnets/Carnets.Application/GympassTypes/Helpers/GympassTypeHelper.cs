@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Carnets.Application.Permissions.Commands;
 using Carnets.Domain.Models;
+using Common.Exceptions;
 using Common.Models;
 using MediatR;
 
@@ -49,6 +50,34 @@ namespace Carnets.Application.Helpers
             }
 
             return new Result<GympassType>(createdGympassType);
+        }
+
+        // TODO: Replace with FluentValidation
+        public static void ValidateGympassIntervals(GympassType gympassType)
+        {
+            if (gympassType.Interval == Domain.Enums.IntervalType.Day
+                && gympassType.IntervalCount > 365)
+            {
+                throw new BadRequestException("Interval count for daily subscription must be less than 365");
+            };
+
+            if (gympassType.Interval == Domain.Enums.IntervalType.Week
+                && gympassType.IntervalCount > 52)
+            {
+                throw new BadRequestException("Interval count for weekly subscription must be less than 53");
+            };
+
+            if (gympassType.Interval == Domain.Enums.IntervalType.Month
+                && gympassType.IntervalCount > 12)
+            {
+                throw new BadRequestException("Interval count for monthly subscription must be less than 13");
+            };
+
+            if (gympassType.Interval == Domain.Enums.IntervalType.Year
+                && gympassType.IntervalCount > 1)
+            {
+                throw new BadRequestException("Interval count for yearly subscription must be 1");
+            };
         }
     }
 }

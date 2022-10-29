@@ -37,15 +37,10 @@ namespace Carnets.Application.Gympasses.Commands
                 return true;
             }
 
-            if (request.Gympass.GympassType.ValidationType == GympassTypeValidation.Time
-            && request.Gympass.ValidityDate < DateTime.UtcNow
-            ||
-                request.Gympass.GympassType.ValidationType == GympassTypeValidation.Entries
-                && request.Gympass.RemainingEntries <= 0)
+            if (request.Gympass.ValidityDate < DateTime.UtcNow)
             {
                 request.Gympass.Status = GympassStatus.Completed;
                 request.Gympass.RemainingEntries = 0;
-                request.Gympass.RemainingValidityPeriodInSeconds = 0;
 
                 var updateResult = await _gympassRepository.UpdateGympass(request.Gympass);
 

@@ -1,4 +1,5 @@
 ﻿using Carnets.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Carnets.Application.GympassTypes.Dtos
 {
@@ -16,7 +17,9 @@ namespace Carnets.Application.GympassTypes.Dtos
 
         public int EnableEntryToInMinutes { get; set; }
 
-        public int ValidityPeriodInSeconds { get; set; }
+        public IntervalType Interval { get; set; }
+
+        public int IntervalCount { get; set; }
 
         public int AllowedEntries { get; set; }
 
