@@ -5,9 +5,9 @@ namespace Auth.Domain.Models
     public class Member : SpecificUserBase
     {
         [Range(0, double.MaxValue)]
-        public double Height { get; set; }
+        public double HeightInCm { get; set; }
 
         [Range(0, double.MaxValue)]
-        public double Weight { get; set; }
+        public double WeightInKg { get; set; }
     }
 }

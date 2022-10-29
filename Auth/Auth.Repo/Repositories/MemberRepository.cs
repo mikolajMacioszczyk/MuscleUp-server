@@ -35,8 +35,8 @@ namespace Auth.Repo.Repositories
                 {
                     User = userResult.Value,
                     UserId = userResult.Value.Id,
-                    Height = registerDto.Height,
-                    Weight = registerDto.Weight
+                    HeightInCm = registerDto.HeightInCm,
+                    WeightInKg = registerDto.WeightInKg
                 };
 
                 _context.Members.Add(member);
@@ -61,8 +61,8 @@ namespace Auth.Repo.Repositories
                 throw new UnauthorizedAccessException();
             }
 
-            memberFromDb.Weight = member.Weight;
-            memberFromDb.Height = member.Height;
+            memberFromDb.WeightInKg = member.WeightInKg;
+            memberFromDb.HeightInCm = member.HeightInCm;
             memberFromDb.User.FirstName = member.User.FirstName;
             memberFromDb.User.LastName = member.User.LastName;
             memberFromDb.User.BirthDate = member.User.BirthDate;

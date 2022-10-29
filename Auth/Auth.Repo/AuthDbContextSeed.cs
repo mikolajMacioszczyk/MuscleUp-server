@@ -61,8 +61,8 @@ namespace Auth.Repo
                 {
                     UserId = SeedConsts.DefaultMemberId,
                     User = defaultMember,
-                    Height = 180,
-                    Weight = 70
+                    HeightInCm = 180,
+                    WeightInKg = 70
                 };
                 await context.Members.AddAsync(member);
             }

@@ -5,8 +5,8 @@ namespace Common.Models.Dtos
 {
     public class MemberDto : UserDto
     {
-        public double Height { get; set; }
-        public double Weight { get; set; }
+        public double HeightInCm { get; set; }
+        public double WeightInKg { get; set; }
         public override RoleType Role => RoleType.Member;
     }
 }
