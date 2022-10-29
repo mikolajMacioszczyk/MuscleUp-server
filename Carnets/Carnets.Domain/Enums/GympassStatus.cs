@@ -1,6 +1,5 @@
 ﻿namespace Carnets.Domain.Enums
 {
-    // TODO: Create state machine
     public enum GympassStatus
     {
         None = 0,
