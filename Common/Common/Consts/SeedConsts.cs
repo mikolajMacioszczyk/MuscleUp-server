@@ -2,6 +2,14 @@
 {
     public class SeedConsts
     {
+        #region Migration Consts
+
+        public const int RetryCount = 10;
+
+        public const int WaitMiliseconds = 3_000;
+
+        #endregion
+
         #region Fitness Clubs
 
         public const string DefaultFitnessClubLogoUrl = "https://seeklogo.com/images/F/fitness-gym-logo-9191CD4CF2-seeklogo.com.png";

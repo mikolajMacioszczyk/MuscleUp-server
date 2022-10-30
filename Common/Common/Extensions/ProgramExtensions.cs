@@ -127,11 +127,33 @@ namespace Common.Extensions
         public static async Task MigrateDatabase<TDbContext>(this IServiceProvider services)
             where TDbContext : DbContext
         {
-            using var scope = services.CreateScope();
+            int retryCount = 0;
+            bool succeded = false;
 
-            var context = scope.ServiceProvider.GetRequiredService<TDbContext>();
-            Console.WriteLine("Migrating database...");
-            await context.Database.MigrateAsync();
+            while (!succeded)
+            {
+                try
+                {
+                    using var scope = services.CreateScope();
+
+                    var context = scope.ServiceProvider.GetRequiredService<TDbContext>();
+                    Console.WriteLine("Migrating database...");
+                    await context.Database.MigrateAsync();
+                    succeded = true;
+                }
+                catch (Exception ex)
+                {
+                    retryCount++;
+                    if (retryCount == SeedConsts.RetryCount)
+                    {
+                        throw;
+                    }
+
+                    Console.WriteLine($"Failed to apply migration. Exception: {ex.Message}");
+                    Console.WriteLine($"Attempty {retryCount}. Waiting {SeedConsts.WaitMiliseconds} ms");
+                    Thread.Sleep(SeedConsts.WaitMiliseconds);
+                }
+            }
         }
 
         public static void UseExceptionMiddleware(this WebApplication app)
