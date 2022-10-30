@@ -59,7 +59,7 @@ namespace Carnets.Application.Mapping
                 opt => opt.MapFrom(src => src.Gympass.Status));
 
             // Entries
-            CreateMap<Entry, EntryDto>();
+            CreateMap<Entry, CreatedEntryDto>();
         }
     }
 }

@@ -5,6 +5,8 @@ using Carnets.Domain.Models;
 using Carnets.Repo;
 using Carnets.Repo.Repositories;
 using Common.Extensions;
+using Common.Interfaces;
+using Common.Services;
 using RabbitMQ.Client.Core.DependencyInjection;
 using Stripe;
 
@@ -31,6 +33,7 @@ builder.Services.AddScoped<IFitnessClubHttpService, FitnessClubHttpService>();
 builder.Services.AddScoped<IGympassRepository, GympassRepository>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 builder.Services.AddScoped<IEntryRepository, EntryRepository>();
+builder.Services.AddScoped<IAuthService, AuthHttpService>();
 
 // RabbitMq
 builder.Services.AddRabbitMqClient(builder.Configuration.GetSection("Broker:Host"))

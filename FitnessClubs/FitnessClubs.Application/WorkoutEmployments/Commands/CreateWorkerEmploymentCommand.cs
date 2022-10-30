@@ -1,4 +1,5 @@
-﻿using Common.Models;
+﻿using Common.Interfaces;
+using Common.Models;
 using FitnessClubs.Application.Interfaces;
 using FitnessClubs.Domain.Models;
 using MediatR;

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.Interfaces;
 using Common.Models;
 using Common.Models.Dtos;
 using FitnessClubs.Application.Interfaces;

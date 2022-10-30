@@ -1,4 +1,5 @@
 ﻿using Common.Exceptions;
+using Common.Interfaces;
 using Common.Models.Dtos;
 using FitnessClubs.Application.Interfaces;
 using FitnessClubs.Domain.Models;

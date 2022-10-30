@@ -1,8 +1,9 @@
 using Common.Extensions;
+using Common.Interfaces;
+using Common.Services;
 using FitnessClubs.API.Extensions;
 using FitnessClubs.Application;
 using FitnessClubs.Application.Interfaces;
-using FitnessClubs.Application.Services;
 using FitnessClubs.Domain.Models;
 using FitnessClubs.Repo;
 using FitnessClubs.Repo.Repositories;

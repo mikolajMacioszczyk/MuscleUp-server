@@ -3,6 +3,7 @@ using Carnets.Application.Entries.Commands;
 using Carnets.Application.Entries.Dtos;
 using Carnets.Application.Entries.Queries;
 using Carnets.Application.FitnessClubs.Queries;
+using Carnets.Application.Members.Queries;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Models;
@@ -24,7 +25,7 @@ namespace Carnets.API.Controllers
 
         [HttpGet("generate-token/{gympassId}")]
         [Authorize(Roles = nameof(RoleType.Member))]
-        public async Task<ActionResult<EntryTokenDto>> GenerateEntryToken([FromRoute] string gympassId)
+        public async Task<ActionResult<GeneratedEndtryTokenDto>> GenerateEntryToken([FromRoute] string gympassId)
         {
             var tokenGenerationResult = await Mediator.Send(new GenerateEntryTokenQuery(gympassId));
 
@@ -49,10 +50,14 @@ namespace Carnets.API.Controllers
         
             if (entryResult.IsSuccess)
             {
-                return Ok(_mapper.Map<EntryDto>(entryResult.Value));
+                var createdEntry = _mapper.Map<CreatedEntryDto>(entryResult.Value);
+
+                createdEntry.User = await Mediator.Send(new GetMemberByIdQuery(entryResult.Value.Gympass.UserId));
+
+                return Ok(createdEntry);
             }
 
-            return BadRequest(entryResult.ErrorCombined);
+            return Ok(new FailedEntryDto() { Error = entryResult.ErrorCombined });
         }
     }
 }

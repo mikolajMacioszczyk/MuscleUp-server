@@ -1,8 +1,9 @@
 ﻿using Carnets.Domain.Models;
+using Common.Models.Dtos;
 
 namespace Carnets.Application.Entries.Dtos
 {
-    public class EntryDto
+    public class CreatedEntryDto
     {
         public string EntryId { get; set; }
 
@@ -10,6 +11,8 @@ namespace Carnets.Application.Entries.Dtos
 
         public DateTime CheckInTime { get; set; }
 
-        public DateTime? CheckOutTime { get; set; }
+        public bool IsValid => true;
+
+        public MemberDto User { get; set; }
     }
 }

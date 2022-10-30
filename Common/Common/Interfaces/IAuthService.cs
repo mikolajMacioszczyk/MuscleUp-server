@@ -1,7 +1,7 @@
 ﻿using Common.Models;
 using Common.Models.Dtos;
 
-namespace FitnessClubs.Application.Interfaces
+namespace Common.Interfaces
 {
     public interface IAuthService
     {
@@ -10,7 +10,7 @@ namespace FitnessClubs.Application.Interfaces
 
         Task<Result<IEnumerable<MemberDto>>> GetAllMembersWithIds(IEnumerable<string> userIds);
         Task<bool> DoesMemberExists(string userId);
-        
+
         Task<Result<IEnumerable<TrainerDto>>> GetAllTrainersWithIds(IEnumerable<string> userIds);
         Task<bool> DoesTrainerExists(string userId);
     }

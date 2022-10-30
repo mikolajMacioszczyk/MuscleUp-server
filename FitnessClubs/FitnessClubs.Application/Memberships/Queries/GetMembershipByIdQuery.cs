@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.Interfaces;
 using FitnessClubs.Application.Interfaces;
 using FitnessClubs.Application.Memberships.Dtos;
 using MediatR;

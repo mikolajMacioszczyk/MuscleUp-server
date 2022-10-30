@@ -4,6 +4,7 @@ using Carnets.Application.Entries.Helpers;
 using Carnets.Application.Interfaces;
 using Carnets.Domain.Models;
 using Common;
+using Common.Exceptions;
 using Common.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -46,12 +47,12 @@ namespace Carnets.Application.Entries.Commands
 
             if (gympass is null)
             {
-                return new Result<Entry>(CommonConsts.NOT_FOUND);
+                throw new BadRequestException($"Gympass with id {decoded.GympassId} not found");
             }
 
             if (gympass.GympassType.FitnessClubId != request.fitnessClubId)
             {
-                return new Result<Entry>("Gympass does not belongs to fitness club");
+                throw new BadRequestException($"Gympass does not belongs to fitness club");
             }
 
             var reduceEntriesResult = await EntryHelper.ReduceGympassEntries(gympass, _gympassRepository);

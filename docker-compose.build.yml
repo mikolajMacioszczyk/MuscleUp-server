@@ -49,6 +49,7 @@ services:
       - JwtSecret
       - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
       - Api:FitnessClubHost=http://fitnessclubs/
+      - Api:AuthHost=http://auth/
       - Broker:Host:HostName=broker
     depends_on:
       - postgres

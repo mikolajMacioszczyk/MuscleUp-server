@@ -1,13 +1,12 @@
 ﻿using Common.Exceptions;
+using Common.Interfaces;
 using Common.Models;
 using Common.Models.Dtos;
-using Common.Services;
-using FitnessClubs.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace FitnessClubs.Application.Services
+namespace Common.Services
 {
     public class AuthHttpService : HttpServiceBase, IAuthService
     {
@@ -17,10 +16,10 @@ namespace FitnessClubs.Application.Services
         protected override string BaseAddress => _baseAddress;
 
         public AuthHttpService(
-            IHttpClientFactory httpClientFactory, 
-            ILogger<HttpServiceBase> logger, 
+            IHttpClientFactory httpClientFactory,
+            ILogger<HttpServiceBase> logger,
             IHttpContextAccessor contextAccessor,
-            IConfiguration configuration) 
+            IConfiguration configuration)
             : base(httpClientFactory, logger, contextAccessor)
         {
             _baseAddress = configuration.GetSection("Api").GetValue<string>("AuthHost");
@@ -28,7 +27,7 @@ namespace FitnessClubs.Application.Services
 
         public async Task<Result<IEnumerable<MemberDto>>> GetAllMembersWithIds(IEnumerable<string> userIds)
         {
-            if (userIds is null || (!userIds.Any()))
+            if (userIds is null || !userIds.Any())
             {
                 return new Result<IEnumerable<MemberDto>>(Array.Empty<MemberDto>());
             }
@@ -43,7 +42,7 @@ namespace FitnessClubs.Application.Services
 
         public async Task<Result<IEnumerable<TrainerDto>>> GetAllTrainersWithIds(IEnumerable<string> userIds)
         {
-            if (userIds is null || (!userIds.Any()))
+            if (userIds is null || !userIds.Any())
             {
                 return new Result<IEnumerable<TrainerDto>>(Array.Empty<TrainerDto>());
             }
@@ -58,7 +57,7 @@ namespace FitnessClubs.Application.Services
 
         public async Task<Result<IEnumerable<WorkerDto>>> GetAllWorkersWithIds(IEnumerable<string> userIds)
         {
-            if (userIds is null || (!userIds.Any()))
+            if (userIds is null || !userIds.Any())
             {
                 return new Result<IEnumerable<WorkerDto>>(Array.Empty<WorkerDto>());
             }
