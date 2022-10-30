@@ -16,11 +16,15 @@ namespace Carnets.Application.Gympasses.Commands
     public class EnsureGympassActivityStatusCommandHandler : IRequestHandler<EnsureGympassActivityStatusCommand, bool>
     {
         private readonly IGympassRepository _gympassRepository;
+        private readonly ISubscriptionRepository _subscriptionRepository;
         private readonly ILogger<EnsureGympassActivityStatusCommandHandler> _logger;
 
-        public EnsureGympassActivityStatusCommandHandler(IGympassRepository gympassRepository, 
-            ILogger<EnsureGympassActivityStatusCommandHandler> logger)
+        public EnsureGympassActivityStatusCommandHandler(
+            ILogger<EnsureGympassActivityStatusCommandHandler> logger,
+            IGympassRepository gympassRepository,
+            ISubscriptionRepository subscriptionRepository)
         {
+            _subscriptionRepository = subscriptionRepository;
             _gympassRepository = gympassRepository;
             _logger = logger;
         }
@@ -37,7 +41,8 @@ namespace Carnets.Application.Gympasses.Commands
                 return true;
             }
 
-            if (request.Gympass.ValidityDate < DateTime.UtcNow)
+            if (request.Gympass.ValidityDate < DateTime.UtcNow
+                && await DoNotHaveActiveSubscription(request.Gympass.GympassId))
             {
                 request.Gympass.Status = GympassStatus.Completed;
                 request.Gympass.RemainingEntries = 0;
@@ -60,6 +65,13 @@ namespace Carnets.Application.Gympasses.Commands
             }
 
             return true;
+        }
+
+        private async Task<bool> DoNotHaveActiveSubscription(string gympassId)
+        {
+            var allSubscriptions = await _subscriptionRepository.GetAllGympassSubscriptions(new string[] { gympassId }, false);
+
+            return !(allSubscriptions.Where(s => s.IsActive).Any());
         }
     }
 }
