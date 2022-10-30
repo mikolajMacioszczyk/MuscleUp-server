@@ -30,7 +30,7 @@ Available only when environement is "Development".
 # Carnets
 
 ### Gympass Type
-- Id: 0184fafb-f3f9-47bc-8aae-e3b458a0670d
+- Id: b50a9241-09a0-4878-afbb-d91bfeae6c75
 
 ### ClassPermission
 - Id: 0e737124-da70-40d5-b3fb-37f474050240

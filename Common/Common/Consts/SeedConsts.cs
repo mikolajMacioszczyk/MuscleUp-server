@@ -30,7 +30,7 @@
 
         #region Carnets
 
-        public const string DefaultGympassTypeId = "0184fafb-f3f9-47bc-8aae-e3b458a0670d";
+        public const string DefaultGympassTypeId = "b50a9241-09a0-4878-afbb-d91bfeae6c75";
 
         public const string DefaultGympassId = "b967911e-7c9c-4f8e-b55e-8a5b46b8abfb";
 
