@@ -161,41 +161,43 @@ namespace Carnets.Application.Services
             {
                 var stripeEvent = EventUtility.ConstructEvent(jsonBody, signature, WebhookSecret);
 
+                PaymentStatus paymentStatus = PaymentStatus.None;
+                Func<Event, (string, string, string)> eventAdapter = null;
+
                 // Handle the event
                 if (stripeEvent.Type == Events.InvoicePaid)
                 {
-                    var (gympassId, customerId, paymentMethodId) = GetDataFromInvoice(stripeEvent);
-
-                    if (!string.IsNullOrEmpty(gympassId))
-                    {
-                        return new PaymentResult(PaymentStatus.SubscriptionPaid, gympassId, customerId, paymentMethodId);
-                    }
-                    ServeMissingPlanMetadata();
+                    eventAdapter = GetDataFromInvoice;
+                    paymentStatus = PaymentStatus.SubscriptionPaid;
                 }
-                // TODO: Handle subscription deleted
+                else if (stripeEvent.Type == Events.CustomerSubscriptionDeleted)
+                {
+                    eventAdapter = GetDataFromSubscription;
+                    paymentStatus = PaymentStatus.SubscriptionDeleted;
+                }
                 else if (stripeEvent.Type == Events.CheckoutSessionCompleted)
                 {
-                    var (gympassId, customerId, paymentMethodId) = GetDataFromSession(stripeEvent);
-
-                    if (!string.IsNullOrEmpty(gympassId))
-                    {
-                        return new PaymentResult(PaymentStatus.SinglePaymentSuccess, gympassId, customerId, paymentMethodId);
-                    }
-                    ServeMissingPlanMetadata();
+                    eventAdapter = GetDataFromSession;
+                    paymentStatus = PaymentStatus.SinglePaymentSuccess;
                 }
                 else if (stripeEvent.Type == Events.CheckoutSessionExpired)
                 {
-                    var (gympassId, customerId, paymentMethodId) = GetDataFromSession(stripeEvent);
-
-                    if (!string.IsNullOrEmpty(gympassId))
-                    {
-                        return new PaymentResult(PaymentStatus.SinglePaymentExpired, gympassId, customerId, paymentMethodId);
-                    }
-                    ServeMissingPlanMetadata();
+                    eventAdapter = GetDataFromSession;
+                    paymentStatus = PaymentStatus.SinglePaymentExpired;
+                }
+                else
+                {
+                    _logger.LogInformation($"Unhandled Stripe event of type = {stripeEvent.Type}");
+                    return PaymentResult.Empty();
                 }
 
-                _logger.LogInformation($"Unhandled Stripe event of type = {stripeEvent.Type}");
-                return PaymentResult.Empty();
+                var (gympassId, customerId, paymentMethodId) = eventAdapter(stripeEvent);
+
+                if (!string.IsNullOrEmpty(gympassId))
+                {
+                    return new PaymentResult(paymentStatus, gympassId, customerId, paymentMethodId);
+                }
+                return ServeMissingPlanMetadata();
             }
             catch (StripeException e)
             {
@@ -232,7 +234,21 @@ namespace Carnets.Application.Services
             return (string.Empty, string.Empty, string.Empty);
         }
 
-        private void ServeMissingPlanMetadata()
+        private (string planId, string customerId, string paymentMethodId) GetDataFromSubscription(Event stripeEvent)
+        {
+            var subscription = stripeEvent.Data.Object as Stripe.Subscription;
+            string gympassId = string.Empty;
+
+            var hasGympassIdMetadata = subscription.Metadata?.TryGetValue(PaymentConsts.GympassIdKey, out gympassId) ?? false;
+            if (hasGympassIdMetadata)
+            {
+                return (gympassId, subscription.CustomerId, subscription.DefaultPaymentMethodId);
+            }
+
+            return (string.Empty, string.Empty, string.Empty);
+        }
+
+        private PaymentResult ServeMissingPlanMetadata()
         {
             _logger.LogError($"Missing {PaymentConsts.GympassIdKey} metadata");
             throw new ArgumentException($"Missing {PaymentConsts.GympassIdKey} metadata");

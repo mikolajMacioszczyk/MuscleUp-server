@@ -6,12 +6,8 @@ using MediatR;
 
 namespace Carnets.Application.Gympasses.Commands
 {
-    public record ActivateGympassCommand : IRequest<Result<Gympass>>
-    {
-        public string GympassId { get; init; }
-
-        public bool SaveChanges { get; init; } = true;
-    }
+    public record ActivateGympassCommand(string GympassId, bool SaveChanges = true) : IRequest<Result<Gympass>>
+    { }
 
     public class ActivateGympassCommandHandler : IRequestHandler<ActivateGympassCommand, Result<Gympass>>
     {

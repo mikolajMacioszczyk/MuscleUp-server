@@ -135,10 +135,7 @@ namespace Carnets.API.Controllers
             var workerId = _httpAuthContext.UserId;
             await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
 
-            var result = await Mediator.Send(new ActivateGympassCommand()
-            {
-                GympassId = gympassId
-            });
+            var result = await Mediator.Send(new ActivateGympassCommand(gympassId));
 
             if (result.IsSuccess)
             {
@@ -159,10 +156,7 @@ namespace Carnets.API.Controllers
             var workerId = _httpAuthContext.UserId;
             await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
 
-            var result = await Mediator.Send(new DeactivateGympassCommand()
-            {
-                GympassId = gympassId
-            });
+            var result = await Mediator.Send(new DeactivateGympassCommand(gympassId));
 
             if (result.IsSuccess)
             {

@@ -8,14 +8,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Carnets.Application.Subscriptions.Commands
 {
-    public record CreateOrExtendGympassSubscriptionCommand : IRequest<Result<Subscription>>
-    {
-        public string GympassId { get; init; }
-
-        public string CustomerId { get; init; }
-
-        public string PaymentMethodId { get; init; }
-    }
+    public record CreateOrExtendGympassSubscriptionCommand(string GympassId, string CustomerId, string PaymentMethodId)
+        : IRequest<Result<Subscription>>
+    { }
 
     public class CreateOrExtendGympassSubscriptionCommandHandler : IRequestHandler<CreateOrExtendGympassSubscriptionCommand, Result<Subscription>>
     {
@@ -54,11 +49,7 @@ namespace Carnets.Application.Subscriptions.Commands
                 subscription = await CreateSubscription(request, gympass);
 
                 // activate gympass
-                var activationResult = await _mediator.Send(new ActivateGympassCommand()
-                {
-                    GympassId = gympass.GympassId,
-                    SaveChanges = false
-                });
+                var activationResult = await _mediator.Send(new ActivateGympassCommand(gympass.GympassId, false));
 
                 if (!activationResult.IsSuccess)
                 {

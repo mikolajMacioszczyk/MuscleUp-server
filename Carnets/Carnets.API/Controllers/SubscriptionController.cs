@@ -100,40 +100,37 @@ namespace Carnets.API.Controllers
             switch (paymentResult.PaymentStatus)
             {
                 case PaymentStatus.SinglePaymentSuccess:
-                    var activateResult = await Mediator.Send(new ActivateGympassCommand()
-                    {
-                        GympassId = paymentResult.PlanId
-                    });
+                    var activateResult = await Mediator.Send(new ActivateGympassCommand(paymentResult.PlanId));
                     if (activateResult.IsSuccess)
                     {
                         return Ok();
                     }
                     return BadRequest(activateResult.ErrorCombined);
                 case PaymentStatus.SinglePaymentExpired:
-                    var deactivationResult = await Mediator.Send(new DeactivateGympassCommand()
-                    {
-                        GympassId = paymentResult.PlanId
-                    });
+                    var deactivationResult = await Mediator.Send(new DeactivateGympassCommand(paymentResult.PlanId));
                     if (deactivationResult.IsSuccess)
                     {
                         return Ok();
                     }
                     return BadRequest(deactivationResult.ErrorCombined);
                 case PaymentStatus.SubscriptionPaid:
-                    var subscriptionResult = await Mediator.Send(new CreateOrExtendGympassSubscriptionCommand()
-                    {
-                        GympassId = paymentResult.PlanId,
-                        CustomerId = paymentResult.CustomerId,
-                        PaymentMethodId = paymentResult.PaymentMethodId
-                    });
+                    var subscriptionResult = await Mediator.Send(new CreateOrExtendGympassSubscriptionCommand(
+                        paymentResult.PlanId, paymentResult.CustomerId, paymentResult.PaymentMethodId));
+
                     if (subscriptionResult.IsSuccess)
                     {
                         return Ok(subscriptionResult.Value);
                     }
                     return BadRequest(subscriptionResult.ErrorCombined);
                 case PaymentStatus.SubscriptionDeleted:
-                    // TODO: Implement
-                    return Ok();
+                    var terminateResult = await Mediator.Send(new TerminateGympassSubscriptionCommand(
+                        paymentResult.PlanId, paymentResult.CustomerId, paymentResult.PaymentMethodId));
+                    
+                    if (terminateResult.IsSuccess)
+                    {
+                        return Ok(terminateResult.Value);
+                    }
+                    return BadRequest(terminateResult.ErrorCombined);
                 default:
                     _logger.LogWarning($"Unchandled webhook event: {paymentResult.PaymentStatus}." +
                         $"\nBody: {jsonBody}");
@@ -148,12 +145,8 @@ namespace Carnets.API.Controllers
             var workerId = _httpAuthContext.UserId;
             await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
 
-            var payResult = await Mediator.Send(new CreateOrExtendGympassSubscriptionCommand()
-            {
-                GympassId = model.GympassId,
-                CustomerId = model.CustomerId,
-                PaymentMethodId = model.PaymentMethodId
-            });
+            var payResult = await Mediator.Send(new CreateOrExtendGympassSubscriptionCommand(
+                model.GympassId, model.CustomerId, model.PaymentMethodId));
 
             if (payResult.IsSuccess)
             {
