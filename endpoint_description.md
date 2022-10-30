@@ -77,7 +77,6 @@
 | api/carnets/gympass/cancel-as-worker/{gympassId} | Worker | PUT | cancells the Gympass |
 | api/carnets/gympass/activate/{gympassId} | Worker | PUT | activates the Gympass |
 | api/carnets/gympass/deactivate/{gympassId} | Worker | PUT | deactivates the Gympass |
-| api/carnets/gympass/entry/{gympassId} | Member, Worker | PUT | decreases the number of allowed entries by one |
 
 ## Gympass Type
 | Endpoint Name | Who can | Method type | Purpose |
@@ -107,6 +106,13 @@
 | api/carnets/subscription/{subscriptionId} | Member, Worker, Admin | GET | returns single Subscription by id |
 | api/carnets/subscription | Member | POST | creates Subscription |
 | api/carnets/subscription/as-worker | Worker | POST | creates Subscription |
+
+## Entries
+| Endpoint Name | Who can | Method type | Purpose |
+| ------- | ------------------------------- | ------- | ------------------------------- |
+| api/carnets/entry/generate-token/{gympassId} | Member | GET | returns entry token |
+| api/carnets/entry | Worker | POST | creates entry based on entry token |
+
 
 # Content
 

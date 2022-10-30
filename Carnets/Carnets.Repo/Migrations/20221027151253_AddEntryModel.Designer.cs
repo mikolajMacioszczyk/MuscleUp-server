@@ -3,6 +3,7 @@ using System;
 using Carnets.Repo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Carnets.Repo.Migrations
 {
     [DbContext(typeof(CarnetsDbContext))]
-    partial class CarnetsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221027151253_AddEntryModel")]
+    partial class AddEntryModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

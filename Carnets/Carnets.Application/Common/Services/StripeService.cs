@@ -140,13 +140,13 @@ namespace Carnets.Application.Services
                   },
                 },
                 Mode = PaymentModeType.subscription.ToString().ToLower(),
-                SuccessUrl = UriHelper.AppendQueryParamToUri(successUrl, PaymentConsts.GympassIdKey, gympassId),
-                CancelUrl = UriHelper.AppendQueryParamToUri(cancelUrl, PaymentConsts.GympassIdKey, gympassId),
+                SuccessUrl = UriHelper.AppendQueryParamToUri(successUrl, CarnetsConsts.GympassIdKey, gympassId),
+                CancelUrl = UriHelper.AppendQueryParamToUri(cancelUrl, CarnetsConsts.GympassIdKey, gympassId),
                 ClientReferenceId = customerId,
             };
             options.Metadata = new Dictionary<string, string>()
             {
-                [PaymentConsts.GympassIdKey] = gympassId
+                [CarnetsConsts.GympassIdKey] = gympassId
             };
 
             var sessionService = new SessionService();
@@ -211,7 +211,7 @@ namespace Carnets.Application.Services
             var session = stripeEvent.Data.Object as Session;
             string gympassId = string.Empty;
 
-            var hasGympassIdMetadata = session.Metadata?.TryGetValue(PaymentConsts.GympassIdKey, out gympassId) ?? false;
+            var hasGympassIdMetadata = session.Metadata?.TryGetValue(CarnetsConsts.GympassIdKey, out gympassId) ?? false;
             if (hasGympassIdMetadata)
             {
                 return (gympassId, session.CustomerId, string.Empty);
@@ -225,7 +225,7 @@ namespace Carnets.Application.Services
             var invoice = stripeEvent.Data.Object as Invoice;
             string gympassId = string.Empty;
 
-            var hasGympassIdMetadata = invoice.Metadata?.TryGetValue(PaymentConsts.GympassIdKey, out gympassId) ?? false;
+            var hasGympassIdMetadata = invoice.Metadata?.TryGetValue(CarnetsConsts.GympassIdKey, out gympassId) ?? false;
             if (hasGympassIdMetadata)
             {
                 return (gympassId, invoice.CustomerId, invoice.DefaultPaymentMethodId);
@@ -239,7 +239,7 @@ namespace Carnets.Application.Services
             var subscription = stripeEvent.Data.Object as Stripe.Subscription;
             string gympassId = string.Empty;
 
-            var hasGympassIdMetadata = subscription.Metadata?.TryGetValue(PaymentConsts.GympassIdKey, out gympassId) ?? false;
+            var hasGympassIdMetadata = subscription.Metadata?.TryGetValue(CarnetsConsts.GympassIdKey, out gympassId) ?? false;
             if (hasGympassIdMetadata)
             {
                 return (gympassId, subscription.CustomerId, subscription.DefaultPaymentMethodId);
@@ -250,8 +250,8 @@ namespace Carnets.Application.Services
 
         private PaymentResult ServeMissingPlanMetadata()
         {
-            _logger.LogError($"Missing {PaymentConsts.GympassIdKey} metadata");
-            throw new ArgumentException($"Missing {PaymentConsts.GympassIdKey} metadata");
+            _logger.LogError($"Missing {CarnetsConsts.GympassIdKey} metadata");
+            throw new ArgumentException($"Missing {CarnetsConsts.GympassIdKey} metadata");
         }
     }
 }

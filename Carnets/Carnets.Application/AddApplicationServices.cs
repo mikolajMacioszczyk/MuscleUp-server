@@ -1,9 +1,12 @@
-﻿using Carnets.Application.SpecificPermissions.Commands;
+﻿using Carnets.Application.Interfaces;
+using Carnets.Application.Services;
+using Carnets.Application.SpecificPermissions.Commands;
 using Carnets.Application.SpecificPermissions.Queries;
 using Carnets.Domain.Models;
 using Common.Models;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 
 namespace Carnets.Application
@@ -30,6 +33,12 @@ namespace Carnets.Application
 
             services.AddScoped<IRequestHandler<GetPermissionById<ClassPermission>, ClassPermission>, GetPermissionByIdHandler<ClassPermission>>();
             services.AddScoped<IRequestHandler<GetPermissionById<PerkPermission>, PerkPermission>, GetPermissionByIdHandler<PerkPermission>>();
+
+            // Add services
+            services.AddScoped<JwtSecurityTokenHandler>();
+            services.AddScoped<IPaymentService, StripeService>();
+            services.AddScoped<IMembershipService, MembershipService>();
+            services.AddScoped<IEntryTokenService, EntryTokenService>();
 
             return services;
         }

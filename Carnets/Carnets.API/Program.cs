@@ -30,8 +30,7 @@ builder.Services.AddScoped<IAssignedPermissionRepository, AssignedPermissionRepo
 builder.Services.AddScoped<IFitnessClubHttpService, FitnessClubHttpService>();
 builder.Services.AddScoped<IGympassRepository, GympassRepository>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
-builder.Services.AddScoped<IPaymentService, StripeService>();
-builder.Services.AddScoped<IMembershipService, MembershipService>();
+builder.Services.AddScoped<IEntryRepository, EntryRepository>();
 
 // RabbitMq
 builder.Services.AddRabbitMqClient(builder.Configuration.GetSection("Broker:Host"))

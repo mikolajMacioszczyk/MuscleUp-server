@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Carnets.Application.AssignedPermissions.Dtos;
 using Carnets.Application.Dtos.Permission;
+using Carnets.Application.Entries.Dtos;
 using Carnets.Application.Gympasses.Dtos;
 using Carnets.Application.GympassTypes.Dtos;
 using Carnets.Application.SpecificPermissions.Dtos;
@@ -56,6 +57,9 @@ namespace Carnets.Application.Mapping
                 opt => opt.MapFrom(src => src.Gympass.GympassId))
                 .ForMember(s => s.GympassStatus,
                 opt => opt.MapFrom(src => src.Gympass.Status));
+
+            // Entries
+            CreateMap<Entry, EntryDto>();
         }
     }
 }

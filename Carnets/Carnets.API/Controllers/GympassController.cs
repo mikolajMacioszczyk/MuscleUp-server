@@ -169,26 +169,5 @@ namespace Carnets.API.Controllers
 
             return BadRequest(result.ErrorCombined);
         }
-
-        [HttpPut("entry/{gympassId}")]
-        [AuthorizeRoles(RoleType.Worker, RoleType.Member)]
-        public async Task<ActionResult<GympassDto>> ReduceGympassEntries([FromRoute] string gympassId)
-        {
-            var result = await Mediator.Send(new ReduceGympassEntriesCommand()
-            {
-                GympassId = gympassId
-            });
-
-            if (result.IsSuccess)
-            {
-                return Ok(_mapper.Map<GympassDto>(result.Value));
-            }
-            else if (result.Errors.Contains(Common.CommonConsts.NOT_FOUND))
-            {
-                return NotFound();
-            }
-
-            return BadRequest(result.ErrorCombined);
-        }
     }
 }
