@@ -51,8 +51,7 @@ namespace Auth.API.Controllers
             return trainer is null ? NotFound() : Ok(trainer);
         }
 
-        // TODO: Update description
-        [HttpGet("{userId}")]
+        [HttpGet("find/{userId}")]
         [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<MemberDto>> GetTrainerById([FromRoute] string userId)
         {

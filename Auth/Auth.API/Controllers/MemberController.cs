@@ -51,8 +51,7 @@ namespace Auth.API.Controllers
             return member is null ? NotFound() : Ok(member);
         }
 
-        // TODO: Update description
-        [HttpGet("{userId}")]
+        [HttpGet("find/{userId}")]
         [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<MemberDto>> GetMemeberById([FromRoute] string userId)
         {

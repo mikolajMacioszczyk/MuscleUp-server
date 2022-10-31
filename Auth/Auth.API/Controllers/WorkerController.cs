@@ -51,8 +51,7 @@ namespace Auth.API.Controllers
             return worker is null ? NotFound() : Ok(worker);
         }
 
-        // TODO: Update description
-        [HttpGet("{userId}")]
+        [HttpGet("find/{userId}")]
         [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<MemberDto>> GetWorkerById([FromRoute] string userId)
         {
