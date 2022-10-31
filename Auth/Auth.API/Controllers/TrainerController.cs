@@ -5,6 +5,7 @@ using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
+using Common.Models;
 using Common.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,13 @@ namespace Auth.API.Controllers
 {
     public class TrainerController : ApiControllerBase
     {
+        private readonly HttpAuthContext _httpAuthContext;
+
+        public TrainerController(HttpAuthContext httpAuthContext)
+        {
+            _httpAuthContext = httpAuthContext;
+        }
+
         [HttpGet("all")]
         [AuthorizeRoles(RoleType.Administrator)]
         public async Task<ActionResult<IEnumerable<TrainerDto>>> GetAllTrainers()
@@ -37,9 +45,20 @@ namespace Auth.API.Controllers
         [AuthorizeRoles(RoleType.Trainer)]
         public async Task<ActionResult<TrainerDto>> GetTrainerData()
         {
-            var trainer = await Mediator.Send(new GetTrainerByIdQuery());
+            var trainerId = _httpAuthContext.UserId;
+            var trainer = await Mediator.Send(new GetTrainerByIdQuery(trainerId));
 
             return trainer is null ? NotFound() : Ok(trainer);
+        }
+
+        // TODO: Update description
+        [HttpGet("{userId}")]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
+        public async Task<ActionResult<MemberDto>> GetTrainerById([FromRoute] string userId)
+        {
+            var member = await Mediator.Send(new GetTrainerByIdQuery(userId));
+
+            return member is null ? NotFound() : Ok(member);
         }
 
         [HttpPost("register")]
