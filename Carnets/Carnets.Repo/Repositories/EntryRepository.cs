@@ -27,6 +27,22 @@ namespace Carnets.Repo.Repositories
             return query.FirstOrDefaultAsync();
         }
 
+        public async Task<IEnumerable<Entry>> GetGympassEntries(string gympassId, int pageNumber, int pageSize, bool asTracking)
+        {
+            var query = _context.Entries
+                .Include(e => e.Gympass)
+                .Where(e => e.Gympass.GympassId == gympassId)
+                .Skip(pageNumber * pageSize)
+                .Take(pageSize);
+
+            if (!asTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return await query.ToListAsync();
+        }
+
         public async Task<Entry> CreateEntry(Entry entry)
         {
             if (entry == null) throw new ArgumentException(nameof(entry));
