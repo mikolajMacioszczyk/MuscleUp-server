@@ -31,7 +31,7 @@ namespace Auth.API.Controllers
         [HttpGet("by-ids/{userIds}")]
         [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<IEnumerable<WorkerDto>>> GetAllWorkersWithIds(
-            [FromRoute] string userIds, 
+            [FromRoute] string userIds,
             [FromQuery] string separator = ",")
         {
             return Ok(await Mediator.Send(new GetAllWorkersWithIdsQuery()
@@ -73,7 +73,18 @@ namespace Auth.API.Controllers
         [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<WorkerDto>> UpdateWorker([FromBody] UpdateWorkerDto updateDto)
         {
-            var command = new UpdateWorkerCommand() { UpdateDto = updateDto };
+            var workerId = _httpAuthContext.UserId;
+            var command = new UpdateWorkerCommand(workerId, updateDto);
+
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPut("{workerId}")]
+        [AuthorizeRoles(RoleType.Worker)]
+        public async Task<ActionResult<WorkerDto>> UpdateWorkerById([FromRoute] string workerId, 
+            [FromBody] UpdateWorkerDto updateDto)
+        {
+            var command = new UpdateWorkerCommand(workerId, updateDto);
 
             return Ok(await Mediator.Send(command));
         }

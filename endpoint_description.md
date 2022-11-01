@@ -46,6 +46,7 @@
 | api/auth/worker/by-ids/{userIds}?separator=<string> | LoggedIn | GET | get the data of Workers whose id is include in provided list. Default separator = ',' |
 | api/auth/worker/register | Guest | POST | register Worker account |
 | api/auth/worker | Worker | PUT | update data of currently logged in Worker |
+| api/auth/worker/{workerId} | Worker | PUT | update data Worker by id |
 
 # Carnets
 
