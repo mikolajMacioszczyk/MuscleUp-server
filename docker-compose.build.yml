@@ -79,6 +79,8 @@ services:
       - DATASOURCE_PORT=postgres:5432
       - DATASOURCE_USERNAME=postgres
       - DATASOURCE_PASSWORD=Pa55w0rd
+      - APPLICATION_CONTEXT=prod
+      - JwtSecret
     depends_on:
       - postgres
 
@@ -91,6 +93,8 @@ services:
       - DATASOURCE_PORT=postgres:5432
       - DATASOURCE_USERNAME=postgres
       - DATASOURCE_PASSWORD=Pa55w0rd
+      - APPLICATION_CONTEXT=prod
+      - JwtSecret
     depends_on:
       - postgres
 
@@ -103,6 +107,8 @@ services:
       - DATASOURCE_PORT=postgres:5432
       - DATASOURCE_USERNAME=postgres
       - DATASOURCE_PASSWORD=Pa55w0rd
+      - APPLICATION_CONTEXT=prod
+      - JwtSecret
     depends_on:
       - postgres
 

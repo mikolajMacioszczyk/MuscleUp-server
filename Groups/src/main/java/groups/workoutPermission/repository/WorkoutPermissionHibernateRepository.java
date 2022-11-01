@@ -14,7 +14,7 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.UUID;
 
-import static groups.common.stringUtils.StringUtils.concatenate;
+import static groups.common.utils.StringUtils.concatenate;
 
 @Primary
 @Repository

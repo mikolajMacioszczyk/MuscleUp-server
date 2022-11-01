@@ -35,3 +35,32 @@ services:
       - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
     depends_on:
       - postgres
+
+  carnets:
+    build:
+      context: .
+      dockerfile: ./Carnets/Carnets.API/Dockerfile
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT
+      - JwtSecret
+      - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
+      - Api:FitnessClubHost=http://fitnessclubs/
+      - Broker:Host:HostName=broker
+    depends_on:
+      - postgres
+      - broker
+
+  apigateway:
+    build:
+      context: .
+      dockerfile: ./ApiGateway/ApiGateway.API/Dockerfile
+    restart: always
+    environment:
+      - ASPNETCORE_URLS=http://+;https://+
+    ports:
+      - "8079:80"
+      - "8082:443"
+    depends_on:
+      - auth
+      - carnets

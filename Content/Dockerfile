@@ -14,7 +14,7 @@ RUN chown -R gradle /home/gradle/src
 RUN gradle build || return 0
 
 COPY ./Content .
-RUN gradle clean build
+RUN gradle clean build -x test
 
 # actual container
 FROM openjdk:17-jdk

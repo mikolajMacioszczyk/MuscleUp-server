@@ -1,19 +1,22 @@
 package groups.group.controller;
 
+import groups.common.abstracts.AbstractEditController;
 import groups.group.controller.form.GroupFullForm;
 import groups.group.entity.GroupFullDto;
 import groups.group.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.OK;
+
+
 @RestController
 @RequestMapping("group")
-class GroupEditController {
+class GroupEditController extends AbstractEditController {
 
     private final GroupService groupService;
     private final GroupValidator groupValidator;
@@ -31,30 +34,30 @@ class GroupEditController {
 
 
     @PostMapping("/save")
-    protected ResponseEntity<UUID> saveGroup(@RequestBody GroupFullForm groupFullForm) {
+    protected ResponseEntity<?> saveGroup(@RequestBody GroupFullForm groupFullForm) {
 
-        return groupValidator.isCorrectToSave(groupFullForm)?
-            new ResponseEntity<>(groupService.saveGroup(groupFullForm), HttpStatus.OK) :
-            new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        groupValidator.validateBeforeSave(groupFullForm, errors);
+
+        return hasErrors()? errors() : response(OK, groupService.saveGroup(groupFullForm));
     }
 
     @PutMapping("/update")
-    protected ResponseEntity<UUID> updateGroup(@RequestBody GroupFullDto groupFullDto) {
+    protected ResponseEntity<?> updateGroup(@RequestBody GroupFullDto groupFullDto) {
 
-        return groupValidator.isCorrectToUpdate(groupFullDto)?
-                new ResponseEntity<>(groupService.updateGroup(groupFullDto), HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        groupValidator.validateBeforeUpdate(groupFullDto, errors);
+
+        return hasErrors()? errors() : response(OK, groupService.updateGroup(groupFullDto));
     }
 
     @DeleteMapping("/delete/{id}")
-    protected ResponseEntity<HttpStatus> deleteGroup(@PathVariable("id") UUID id) {
+    protected ResponseEntity<?> deleteGroup(@PathVariable("id") UUID id) {
 
-        if (groupValidator.isCorrectToDelete(id)) {
+        groupValidator.validateBeforeDelete(id, errors);
 
-            groupService.deleteGroup(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+        if (hasErrors()) return errors();
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        groupService.deleteGroup(id);
+
+        return response(OK);
     }
 }

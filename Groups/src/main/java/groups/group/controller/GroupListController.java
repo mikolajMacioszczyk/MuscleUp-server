@@ -1,10 +1,10 @@
 package groups.group.controller;
 
+import groups.common.abstracts.AbstractListController;
 import groups.group.entity.GroupFullDto;
 import groups.group.entity.GroupNameDto;
 import groups.group.repository.GroupQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +16,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
+
 @RestController
 @RequestMapping("group")
-public class GroupListController {
+public class GroupListController extends AbstractListController {
 
     private final GroupQuery groupQuery;
 
@@ -33,29 +36,28 @@ public class GroupListController {
 
 
     @GetMapping("/find/{id}")
-    protected ResponseEntity<GroupFullDto> findGroupById(@PathVariable("id") UUID id) {
+    protected ResponseEntity<?> findGroupById(@PathVariable("id") UUID id) {
 
         Optional<GroupFullDto> groupFullDto = groupQuery.findGroupById(id);
 
-        return groupFullDto.map(fullDto -> new ResponseEntity<>(fullDto, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return groupFullDto.isPresent() ? response(OK, groupFullDto.get()) : response(NOT_FOUND);
     }
 
     // TODO wszystkie grupy, ale dla danego klubu - pobieramy z tokenu
     @GetMapping("/full-group-info")
-    protected ResponseEntity<List<GroupFullDto>> getAllGroups() {
+    protected ResponseEntity<?> getAllGroups() {
 
         List<GroupFullDto> groups = groupQuery.getAllGroups();
 
-        return new ResponseEntity<>(groups, HttpStatus.OK);
+        return response(OK, groups);
     }
 
     // TODO wszystkie grupy, ale dla danego klubu - pobieramy z tokenu
     @GetMapping("/group-names")
-    protected ResponseEntity<List<GroupNameDto>> getGroupNames() {
+    protected ResponseEntity<?> getGroupNames() {
 
         List<GroupNameDto> groups = groupQuery.getAllGroupNames();
 
-        return new ResponseEntity<>(groups, HttpStatus.OK);
+        return response(OK, groups);
     }
 }

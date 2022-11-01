@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static groups.common.stringUtils.StringUtils.concatenate;
+import static groups.common.utils.StringUtils.concatenate;
 
 @Primary
 @Repository
@@ -99,9 +99,9 @@ public class WorkoutParticipantHibernateQuery extends AbstractHibernateQuery<Wor
 
     @Override
     @Transactional
-    public List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByParticipantId(UUID participantId) {
+    public List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGympassId(UUID gympassId) {
 
-        Assert.notNull(participantId, "participantId must not be null");
+        Assert.notNull(gympassId, "gympassId must not be null");
 
         CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
         CriteriaQuery<WorkoutParticipantFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutParticipantFullDto.class);
@@ -112,22 +112,22 @@ public class WorkoutParticipantHibernateQuery extends AbstractHibernateQuery<Wor
                 root.get("groupWorkout").get("id"),
                 root.get("gympassId")
         ).where(
-                criteriaBuilder.equal(root.get("gympassId"), participantId)
+                criteriaBuilder.equal(root.get("gympassId"), gympassId)
         );
 
         return getSession().createQuery(criteriaQuery)
                 .setComment(
-                        concatenate("WorkoutParticipant with participantId =", participantId.toString())
+                        concatenate("WorkoutParticipant with gympassId =", gympassId.toString())
                 )
                 .getResultList();
     }
 
     @Override
     @Transactional
-    public List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGroupWorkoutIdAndParticipantId(UUID groupWorkoutId, UUID participantId) {
+    public List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGroupWorkoutIdAndGympassId(UUID groupWorkoutId, UUID gympassId) {
 
         Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
-        Assert.notNull(participantId, "participantId must not be null");
+        Assert.notNull(gympassId, "gympassId must not be null");
 
         CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
         CriteriaQuery<WorkoutParticipantFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutParticipantFullDto.class);
@@ -139,15 +139,15 @@ public class WorkoutParticipantHibernateQuery extends AbstractHibernateQuery<Wor
                 root.get("gympassId")
         ).where(
                 criteriaBuilder.equal(root.get("groupWorkout").get("id"), groupWorkoutId),
-                criteriaBuilder.equal(root.get("gympassId"), participantId)
+                criteriaBuilder.equal(root.get("gympassId"), gympassId)
         );
 
         return getSession().createQuery(criteriaQuery)
                 .setComment(
                         concatenate("WorkoutParticipant with groupWorkoutId = ",
                                 groupWorkoutId.toString(),
-                                " and participantId =",
-                                participantId.toString()
+                                " and gympassId =",
+                                gympassId.toString()
                         )
                 )
                 .getResultList();

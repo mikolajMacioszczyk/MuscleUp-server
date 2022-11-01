@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static groups.common.stringUtils.StringUtils.concatenate;
+import static groups.common.utils.StringUtils.concatenate;
 
 @Primary
 @Repository

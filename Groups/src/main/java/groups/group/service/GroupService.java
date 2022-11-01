@@ -6,7 +6,7 @@ import groups.group.entity.GroupFactory;
 import groups.group.entity.GroupFullDto;
 import groups.group.repository.GroupRepository;
 import groups.groupTrainer.service.GroupTrainerService;
-import groups.workout.service.GroupWorkoutService;
+import groups.workoutGroup.service.GroupWorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;

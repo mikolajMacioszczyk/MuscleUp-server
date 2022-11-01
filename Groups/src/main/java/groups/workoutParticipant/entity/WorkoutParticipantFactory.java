@@ -1,6 +1,6 @@
 package groups.workoutParticipant.entity;
 
-import groups.workout.repository.GroupWorkoutQuery;
+import groups.workoutGroup.repository.GroupWorkoutQuery;
 import groups.workoutParticipant.controller.form.WorkoutParticipantForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class WorkoutParticipantFactory {
 
         return new WorkoutParticipant(
                 groupWorkoutQuery.getById(workoutParticipantForm.groupWorkoutId()),
-                workoutParticipantForm.participantId()
+                workoutParticipantForm.gympassId()
         );
     }
 }

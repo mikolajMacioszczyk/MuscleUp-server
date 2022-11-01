@@ -14,7 +14,7 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.UUID;
 
-import static groups.common.stringUtils.StringUtils.concatenate;
+import static groups.common.utils.StringUtils.concatenate;
 
 @Primary
 @Repository
@@ -48,17 +48,17 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
 
     @Override
     @Transactional
-    public void unassign(UUID groupWorkoutId, UUID participantId) {
+    public void unassign(UUID groupWorkoutId, UUID gympassId) {
 
         Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
-        Assert.notNull(participantId, "participantId must not be null");
+        Assert.notNull(gympassId, "gympassId must not be null");
 
         CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
         CriteriaDelete<WorkoutParticipant> criteriaDelete = criteriaBuilder.createCriteriaDelete(WorkoutParticipant.class);
         Root<WorkoutParticipant> root = criteriaDelete.from(WorkoutParticipant.class);
 
         criteriaDelete.where(
-                criteriaBuilder.equal(root.get("gympassId"), participantId),
+                criteriaBuilder.equal(root.get("gympassId"), gympassId),
                 criteriaBuilder.equal(root.get("groupWorkout").get("id"), groupWorkoutId)
         );
 
@@ -67,7 +67,7 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
                         concatenate("Delete WorkoutParticipant with GroupWorkoutId = ",
                                 groupWorkoutId.toString(),
                                 " and GympassId = ",
-                                participantId.toString()
+                                gympassId.toString()
                         )
                 )
                 .executeUpdate();

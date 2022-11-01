@@ -17,7 +17,7 @@ public interface WorkoutParticipantQuery {
 
     List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGroupWorkoutId(UUID groupWorkoutId);
 
-    List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByParticipantId(UUID participantId);
+    List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGympassId(UUID gympassId);
 
-    List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGroupWorkoutIdAndParticipantId(UUID groupWorkoutId, UUID participantId);
+    List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGroupWorkoutIdAndGympassId(UUID groupWorkoutId, UUID gympassId);
 }

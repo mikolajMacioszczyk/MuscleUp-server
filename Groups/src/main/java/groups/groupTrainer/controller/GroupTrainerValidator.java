@@ -1,75 +1,115 @@
 package groups.groupTrainer.controller;
 
+import groups.common.innerCommunicators.resolver.ResolvedStatus;
+import groups.common.validation.ValidationError;
+import groups.common.wrappers.ValidationErrors;
 import groups.group.repository.GroupQuery;
 import groups.groupTrainer.controller.form.GroupTrainerForm;
 import groups.groupTrainer.repository.GroupTrainerQuery;
+import groups.groupTrainer.trainer.TrainerValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.UUID;
 
-@Component
+import static groups.common.innerCommunicators.resolver.InnerCommunicationStatusResolver.resolveIdCheckStatus;
+import static org.springframework.http.HttpStatus.*;
+
+@Service
 public class GroupTrainerValidator {
 
     private final GroupQuery groupQuery;
     private final GroupTrainerQuery groupTrainerQuery;
+    private final TrainerValidator trainerValidator;
 
 
     @Autowired
-    private GroupTrainerValidator(GroupQuery groupQuery, GroupTrainerQuery groupTrainerQuery) {
+    private GroupTrainerValidator(GroupQuery groupQuery,
+                                  GroupTrainerQuery groupTrainerQuery,
+                                  TrainerValidator trainerValidator) {
 
         Assert.notNull(groupQuery, "groupQuery must not be null");
         Assert.notNull(groupTrainerQuery, "groupTrainerQuery must not be null");
+        Assert.notNull(trainerValidator, "trainerValidator must not be null");
 
         this.groupQuery = groupQuery;
         this.groupTrainerQuery = groupTrainerQuery;
+        this.trainerValidator = trainerValidator;
     }
 
 
-    boolean isCorrectToAssign(GroupTrainerForm groupTrainerForm) {
+    void validateBeforeAssign(GroupTrainerForm groupTrainerForm, ValidationErrors errors) {
 
         Assert.notNull(groupTrainerForm, "groupTrainerForm must not be null");
+        Assert.notNull(errors, "errors must not be null");
 
-        return doesTrainerIdExist(groupTrainerForm.trainerId())
-                && doesGroupIdExist(groupTrainerForm.groupId())
-                && !isAssigned(groupTrainerForm.trainerId(), groupTrainerForm.groupId());
+        checkTrainerId(groupTrainerForm.trainerId(), errors);
+        checkGroupId(groupTrainerForm.groupId(), errors);
+        checkIfAssigned(groupTrainerForm.trainerId(), groupTrainerForm.groupId(), errors);
     }
 
-    boolean isCorrectToUnassign(UUID trainerId, UUID groupId) {
+    void validateBeforeUnassign(UUID trainerId, UUID groupId, ValidationErrors errors) {
 
         Assert.notNull(trainerId, "trainerId must not be null");
         Assert.notNull(groupId, "groupId must not be null");
+        Assert.notNull(errors, "errors must not be null");
 
-        return isAssigned(trainerId, groupId);
+        checkTrainerId(trainerId, errors);
+        checkGroupId(groupId, errors);
+        checkIfNotAssigned(trainerId, groupId, errors);
     }
 
-    boolean isCorrectToUnassign(UUID id) {
+    void validateBeforeUnassign(UUID id, ValidationErrors errors) {
 
         Assert.notNull(id, "id must not be null");
 
-        return doesGroupTrainerIdExist(id);
+        checkGroupTrainerId(id, errors);
     }
 
 
-    // TODO integracja z innym serwisem
-    private boolean doesTrainerIdExist(UUID id) {
+    private void checkTrainerId(UUID id, ValidationErrors errors) {
 
-        return true;
+        HttpStatus validationStatus = trainerValidator.checkTrainerId(id);
+
+        ResolvedStatus resolvedStatus = resolveIdCheckStatus(validationStatus, "Trainer");
+
+        if (resolvedStatus.httpStatus() != OK) {
+
+            errors.addError(new ValidationError(resolvedStatus.httpStatus(), resolvedStatus.description()));
+        }
     }
 
-    private boolean doesGroupIdExist(UUID id) {
+    private void checkGroupId(UUID id, ValidationErrors errors) {
 
-        return groupQuery.findGroupById(id).isPresent();
+        if (groupQuery.findGroupById(id).isEmpty()) {
+
+            errors.addError(new ValidationError(BAD_REQUEST, "Group with given ID does not exist"));
+        }
     }
 
-    private boolean doesGroupTrainerIdExist(UUID id) {
+    private void checkGroupTrainerId(UUID id, ValidationErrors errors) {
 
-        return groupTrainerQuery.findGroupTrainerById(id).isPresent();
+        if (groupTrainerQuery.findGroupTrainerById(id).isEmpty()) {
+
+            errors.addError(new ValidationError(BAD_REQUEST, "GroupTrainer with given ID does not exist"));
+        }
     }
 
-    private boolean isAssigned(UUID trainerId, UUID groupId) {
+    private void checkIfAssigned(UUID trainerId, UUID groupId, ValidationErrors errors) {
 
-        return !groupTrainerQuery.getAllGroupTrainerByGroupIdAndTrainerId(groupId, trainerId).isEmpty();
+        if (!groupTrainerQuery.getAllGroupTrainerByGroupIdAndTrainerId(groupId, trainerId).isEmpty()) {
+
+            errors.addError(new ValidationError(BAD_REQUEST, "Given trainerID is already assigned to this groupID"));
+        }
+    }
+
+    private void checkIfNotAssigned(UUID trainerId, UUID groupId, ValidationErrors errors) {
+
+        if (groupTrainerQuery.getAllGroupTrainerByGroupIdAndTrainerId(groupId, trainerId).isEmpty()) {
+
+            errors.addError(new ValidationError(BAD_REQUEST, "Given trainerID is not assigned to this groupID"));
+        }
     }
 }

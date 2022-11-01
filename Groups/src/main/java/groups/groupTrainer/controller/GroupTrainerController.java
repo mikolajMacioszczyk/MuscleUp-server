@@ -1,18 +1,20 @@
 package groups.groupTrainer.controller;
 
+import groups.common.abstracts.AbstractEditController;
 import groups.groupTrainer.controller.form.GroupTrainerForm;
 import groups.groupTrainer.service.GroupTrainerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.OK;
+
 @RestController
 @RequestMapping("group-trainer")
-class GroupTrainerController {
+class GroupTrainerController extends AbstractEditController {
 
     private final GroupTrainerService groupTrainerService;
     private final GroupTrainerValidator groupTrainerValidator;
@@ -30,35 +32,35 @@ class GroupTrainerController {
 
 
     @PostMapping("/assign")
-    protected ResponseEntity<UUID> assignTrainerToGroup(@RequestBody GroupTrainerForm groupTrainerForm) {
+    protected ResponseEntity<?> assignTrainerToGroup(@RequestBody GroupTrainerForm groupTrainerForm) {
 
-        return groupTrainerValidator.isCorrectToAssign(groupTrainerForm)?
-                new ResponseEntity<>(groupTrainerService.assign(groupTrainerForm), HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        groupTrainerValidator.validateBeforeAssign(groupTrainerForm, errors);
+
+        return hasErrors()? errors() : response(OK, groupTrainerService.assign(groupTrainerForm));
     }
 
     @DeleteMapping("/unassign/{trainerId}/{groupId}")
-    protected ResponseEntity<HttpStatus> deleteGroup(@PathVariable("trainerId") UUID trainerId,
-                                                     @PathVariable("groupId") UUID groupId) {
+    protected ResponseEntity<?> unassign(@PathVariable("trainerId") UUID trainerId,
+                                         @PathVariable("groupId") UUID groupId) {
 
-        if (groupTrainerValidator.isCorrectToUnassign(trainerId, groupId)) {
+        groupTrainerValidator.validateBeforeUnassign(trainerId, groupId, errors);
 
-            groupTrainerService.unassign(trainerId, groupId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+        if (hasErrors()) return errors();
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        groupTrainerService.unassign(trainerId, groupId);
+
+        return response(OK);
     }
 
     @DeleteMapping("/unassign/{id}")
-    protected ResponseEntity<HttpStatus> deleteGroup(@PathVariable("id") UUID id) {
+    protected ResponseEntity<?> unassign(@PathVariable("id") UUID id) {
 
-        if (groupTrainerValidator.isCorrectToUnassign(id)) {
+        groupTrainerValidator.validateBeforeUnassign(id, errors);
 
-            groupTrainerService.unassign(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+        if (hasErrors()) return errors();
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        groupTrainerService.unassign(id);
+
+        return response(OK);
     }
 }

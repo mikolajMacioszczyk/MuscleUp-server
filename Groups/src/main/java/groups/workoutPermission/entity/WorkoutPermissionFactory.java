@@ -1,6 +1,6 @@
 package groups.workoutPermission.entity;
 
-import groups.workout.repository.GroupWorkoutQuery;
+import groups.workoutGroup.repository.GroupWorkoutQuery;
 import groups.workoutPermission.controller.form.WorkoutPermissionForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

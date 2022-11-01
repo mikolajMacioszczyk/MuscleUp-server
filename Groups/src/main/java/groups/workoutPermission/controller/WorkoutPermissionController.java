@@ -1,18 +1,20 @@
 package groups.workoutPermission.controller;
 
+import groups.common.abstracts.AbstractEditController;
 import groups.workoutPermission.controller.form.WorkoutPermissionForm;
 import groups.workoutPermission.service.WorkoutPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.OK;
+
 @RestController
 @RequestMapping("group-workout-permission")
-class WorkoutPermissionController {
+class WorkoutPermissionController extends AbstractEditController {
 
     private final WorkoutPermissionService workoutPermissionService;
     private final WorkoutPermissionValidator workoutPermissionValidator;
@@ -31,35 +33,35 @@ class WorkoutPermissionController {
 
 
     @PostMapping("/add")
-    protected ResponseEntity<UUID> addToGroupPermission(@RequestBody WorkoutPermissionForm workoutPermissionForm) {
+    protected ResponseEntity<?> addGroupPermission(@RequestBody WorkoutPermissionForm workoutPermissionForm) {
 
-        return workoutPermissionValidator.isCorrectToAdd(workoutPermissionForm)?
-                new ResponseEntity<>(workoutPermissionService.add(workoutPermissionForm), HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        workoutPermissionValidator.validateBeforeAdd(workoutPermissionForm, errors);
+
+        return hasErrors()? errors() : response(OK, workoutPermissionService.add(workoutPermissionForm));
     }
 
     @DeleteMapping("/remove/{groupWorkoutId}/{permissionId}")
-    protected ResponseEntity<HttpStatus> removePermission(@PathVariable("groupWorkoutId") UUID groupWorkoutId,
-                                                          @PathVariable("permissionId") UUID permissionId) {
+    protected ResponseEntity<?> removeGroupPermission(@PathVariable("groupWorkoutId") UUID groupWorkoutId,
+                                                           @PathVariable("permissionId") UUID permissionId) {
 
-        if (workoutPermissionValidator.isCorrectToRemove(groupWorkoutId, permissionId)) {
+        workoutPermissionValidator.validateBeforeRemove(groupWorkoutId, permissionId, errors);
 
-            workoutPermissionService.remove(groupWorkoutId, permissionId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+        if (hasErrors()) return errors();
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        workoutPermissionService.remove(groupWorkoutId, permissionId);
+
+        return response(OK);
     }
 
     @DeleteMapping("/remove/{id}")
-    protected ResponseEntity<HttpStatus> deletePermission(@PathVariable("id") UUID id) {
+    protected ResponseEntity<?> removeGroupPermission(@PathVariable("id") UUID id) {
 
-        if (workoutPermissionValidator.isCorrectToRemove(id)) {
+        workoutPermissionValidator.validateBeforeRemove(id, errors);
 
-            workoutPermissionService.remove(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+        if (hasErrors()) return errors();
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        workoutPermissionService.remove(id);
+
+        return response(OK);
     }
 }
