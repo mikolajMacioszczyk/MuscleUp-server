@@ -5,6 +5,7 @@ using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
+using Common.Models;
 using Common.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,13 @@ namespace Auth.API.Controllers
 {
     public class WorkerController : ApiControllerBase
     {
+        private readonly HttpAuthContext _httpAuthContext;
+
+        public WorkerController(HttpAuthContext httpAuthContext)
+        {
+            _httpAuthContext = httpAuthContext;
+        }
+
         [HttpGet("all")]
         [AuthorizeRoles(RoleType.Administrator)]
         public async Task<ActionResult<IEnumerable<WorkerDto>>> GetAllWorkers()
@@ -37,9 +45,19 @@ namespace Auth.API.Controllers
         [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<WorkerDto>> GetWorkerData()
         {
-            var worker = await Mediator.Send(new GetWorkerByIdQuery());
+            var workerId = _httpAuthContext.UserId;
+            var worker = await Mediator.Send(new GetWorkerByIdQuery(workerId));
 
             return worker is null ? NotFound() : Ok(worker);
+        }
+
+        [HttpGet("find/{userId}")]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
+        public async Task<ActionResult<MemberDto>> GetWorkerById([FromRoute] string userId)
+        {
+            var member = await Mediator.Send(new GetWorkerByIdQuery(userId));
+
+            return member is null ? NotFound() : Ok(member);
         }
 
         [HttpPost("register")]

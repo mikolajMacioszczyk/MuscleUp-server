@@ -2,33 +2,29 @@
 using Auth.Application.Workers.Dtos;
 using Auth.Domain.Models;
 using AutoMapper;
-using Common.Models;
 using Common.Models.Dtos;
 using MediatR;
 
 namespace Auth.Application.Workers.Queries
 {
-    public record GetWorkerByIdQuery : IRequest<WorkerDto> { }
+    public record GetWorkerByIdQuery(string WorkerId) : IRequest<WorkerDto> { }
 
     public class GetWorkerByIdQueryHandler : IRequestHandler<GetWorkerByIdQuery, WorkerDto>
     {
         private readonly ISpecificUserRepository<Worker, RegisterWorkerDto> _repository;
-        private readonly HttpAuthContext _httpAuthContext;
         private readonly IMapper _mapper;
 
         public GetWorkerByIdQueryHandler(
             ISpecificUserRepository<Worker, RegisterWorkerDto> repository,
-            IMapper mapper,
-            HttpAuthContext httpAuthContext)
+            IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _httpAuthContext = httpAuthContext;
         }
 
         public async Task<WorkerDto> Handle(GetWorkerByIdQuery request, CancellationToken cancellationToken)
         {
-            var worker = await _repository.GetById(_httpAuthContext.UserId);
+            var worker = await _repository.GetById(request.WorkerId);
 
             if (worker is null)
             {

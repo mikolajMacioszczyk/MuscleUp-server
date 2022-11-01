@@ -5,6 +5,7 @@ using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
+using Common.Models;
 using Common.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,13 @@ namespace Auth.API.Controllers
 {
     public class MemberController : ApiControllerBase
     {
+        private readonly HttpAuthContext _httpAuthContext;
+
+        public MemberController(HttpAuthContext httpAuthContext)
+        {
+            _httpAuthContext = httpAuthContext;
+        }
+
         [HttpGet("all")]
         [AuthorizeRoles(RoleType.Administrator)]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetAllMembers()
@@ -37,7 +45,17 @@ namespace Auth.API.Controllers
         [AuthorizeRoles(RoleType.Member)]
         public async Task<ActionResult<MemberDto>> GetMemeberData()
         {
-            var member = await Mediator.Send(new GetMemberByIdQuery());
+            var memberId = _httpAuthContext.UserId;
+            var member = await Mediator.Send(new GetMemberByIdQuery(memberId));
+
+            return member is null ? NotFound() : Ok(member);
+        }
+
+        [HttpGet("find/{userId}")]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
+        public async Task<ActionResult<MemberDto>> GetMemeberById([FromRoute] string userId)
+        {
+            var member = await Mediator.Send(new GetMemberByIdQuery(userId));
 
             return member is null ? NotFound() : Ok(member);
         }
