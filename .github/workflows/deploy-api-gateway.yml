@@ -2,8 +2,6 @@ name: Deploy Api Gateway
 
 on:
   push:
-    branches:
-      - master
     tags:
       - "v*-apigateway"
   

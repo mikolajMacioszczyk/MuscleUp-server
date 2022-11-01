@@ -26,7 +26,7 @@ namespace FitnessClubs.API.Extensions
                     queue.StartConsuming();
                     isRabbitMqAvailable = true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Thread.Sleep(5000);
                 }

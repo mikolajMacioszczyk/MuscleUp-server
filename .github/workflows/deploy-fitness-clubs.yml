@@ -2,8 +2,6 @@ name: Deploy Fitness Clubs
 
 on:
   push:
-    branches:
-      - master
     tags:
       - "v*-fitnessclubs"
   

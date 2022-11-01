@@ -2,8 +2,6 @@ name: Deploy Carnets
 
 on:
   push:
-    branches:
-      - master
     tags:
       - "v*-carnets"
   

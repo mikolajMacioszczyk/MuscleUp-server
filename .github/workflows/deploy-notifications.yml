@@ -2,8 +2,6 @@ name: Deploy Notifications
 
 on:
   push:
-    branches:
-      - master
     tags:
       - "v*-notifications"
   

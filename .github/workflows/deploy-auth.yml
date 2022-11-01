@@ -2,8 +2,6 @@ name: Deploy Auth
 
 on:
   push:
-    branches:
-      - master
     tags:
       - "v*-auth"
   

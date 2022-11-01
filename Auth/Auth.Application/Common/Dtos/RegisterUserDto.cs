@@ -31,6 +31,6 @@ namespace Auth.Application.Common.Dtos
         public GenderType Gender { get; set; }
 
         [MaxLength(500)]
-        public string? AvatarUrl { get; set; }
+        public string AvatarUrl { get; set; }
     }
 }

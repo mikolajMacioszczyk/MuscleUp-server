@@ -5,6 +5,7 @@ using Carnets.Application.Models;
 using Carnets.Domain.Enums;
 using Carnets.Domain.Models;
 using Common;
+using Common.Exceptions;
 using Common.Models;
 using Moq;
 using Xunit;
@@ -52,7 +53,6 @@ namespace CarnetsTests.EntriesTests
             // arrange
             var entryToken = "Entry Token";
             var exirationDate = DateTime.UtcNow.AddHours(1);
-            var expectedError = CommonConsts.NOT_FOUND;
             var testGympassId = Guid.NewGuid().ToString();
 
             var command = new CreateGymEntryCommand(new EntryTokenDto() { EntryToken = entryToken }, string.Empty);
@@ -76,12 +76,9 @@ namespace CarnetsTests.EntriesTests
                     null // mapper
                 );
 
-            // act
-            var result = await handler.Handle(command, CancellationToken.None);
-
             // assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(expectedError, result.ErrorCombined);
+            await Assert.ThrowsAsync<BadRequestException>(
+                async () => await handler.Handle(command, CancellationToken.None));
         }
 
         [Fact]
@@ -90,7 +87,6 @@ namespace CarnetsTests.EntriesTests
             // arrange
             var entryToken = "Entry Token";
             var exirationDate = DateTime.UtcNow.AddHours(1);
-            var expectedError = "Gympass does not belongs to fitness club";
             var testGympassId = "e5d0115f-7ba2-423d-8cf9-959ae4e4cad5";
             var fitnessClubIdParam = "6dfbdddb-c856-4cf2-90c7-07e3addba596";
             var otherFitnessClubIdParam = "a36034f2-8c24-46e3-931f-6b7875852c35";
@@ -124,12 +120,9 @@ namespace CarnetsTests.EntriesTests
                     null // mapper
                 );
 
-            // act
-            var result = await handler.Handle(command, CancellationToken.None);
-
             // assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(expectedError, result.ErrorCombined);
+            await Assert.ThrowsAsync<BadRequestException>(
+                async () => await handler.Handle(command, CancellationToken.None));
         }
 
         [Fact]
