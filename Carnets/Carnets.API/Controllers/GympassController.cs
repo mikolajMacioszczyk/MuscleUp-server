@@ -60,7 +60,7 @@ namespace Carnets.API.Controllers
                 GympassId = gympassId
             });
 
-            return Ok(_mapper.Map<GympassDto>(gympass));
+            return gympass is null ? NotFound() : Ok(_mapper.Map<GympassDto>(gympass));
         }
 
         [HttpPost()]

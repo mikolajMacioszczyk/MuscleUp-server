@@ -1,13 +1,7 @@
 ﻿using Carnets.Application.Gympasses.Commands;
-using Carnets.Application.Gympasses.Helpers;
 using Carnets.Application.Interfaces;
 using Carnets.Domain.Models;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Carnets.Application.Gympasses.Queries
 {
@@ -33,10 +27,13 @@ namespace Carnets.Application.Gympasses.Queries
         {
             var gympass = await _gympassRepository.GetById(request.GympassId, false);
 
-            await _mediator.Send(new EnsureGympassActivityStatusCommand()
+            if (gympass != null)
             {
-                Gympass = gympass
-            });
+                await _mediator.Send(new EnsureGympassActivityStatusCommand()
+                {
+                    Gympass = gympass
+                });
+            }
 
             return gympass;
         }
