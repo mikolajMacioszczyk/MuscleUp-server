@@ -11,7 +11,10 @@ public class GroupFactory {
 
         return new Group(
                 groupFullForm.name(),
-                groupFullForm.maxParticipants()
+                groupFullForm.description(),
+                groupFullForm.startTime(),
+                groupFullForm.endTime(),
+                groupFullForm.repeatable()
         );
     }
 }

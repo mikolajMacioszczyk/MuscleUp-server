@@ -10,15 +10,15 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
                 class_workout_id,
                 workout_id,
                 class_id,
-                start_time,
-                end_time
+                location,
+                max_participants
             )
             VALUES (
                 '163cc334-4f81-11ed-bdc3-0242ac120002',
-                '37517ba0-4f81-11ed-bdc3-0242ac120002',
+                '37517ba0-4f81-19ef-b1c3-0242at190142',
                 '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-                '2022-10-19T07:00:00+02:00',
-                '2022-10-19T08:00:00+02:00'
+                'Sala fitness, pierwsza po prawej za damską toaleta',
+                15
             );
         </sql>
     </changeSet>

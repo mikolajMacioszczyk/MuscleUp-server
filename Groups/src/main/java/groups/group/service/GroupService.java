@@ -6,7 +6,7 @@ import groups.group.entity.GroupFactory;
 import groups.group.entity.GroupFullDto;
 import groups.group.repository.GroupRepository;
 import groups.groupTrainer.service.GroupTrainerService;
-import groups.workoutGroup.service.GroupWorkoutService;
+import groups.groupWorkout.service.GroupWorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -46,7 +46,10 @@ public class GroupService {
 
         group.update(
                 groupFullDto.name(),
-                groupFullDto.maxParticipants()
+                groupFullDto.description(),
+                groupFullDto.startTime(),
+                groupFullDto.endTime(),
+                groupFullDto.repeatable()
         );
 
         return groupRepository.update(group);

@@ -8,9 +8,13 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
         <sql>
             CREATE TABLE IF NOT EXISTS class (
                 class_id uuid not null,
-                name varchar(255),
-                max_participants int8,
-                primary key (class_id)
+                name varchar(255) not null,
+                description varchar(255),
+                start_time timestamp not null,
+                end_time timestamp not null,
+                repeatable boolean not null,
+
+                PRIMARY KEY (class_id)
             )
         </sql>
     </changeSet>

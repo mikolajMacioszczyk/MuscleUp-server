@@ -4,15 +4,15 @@ xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="create_group_workout_permission_table" author="Mateusz_Kleinowski">
+    <changeSet id="create_group_permission_table" author="Mateusz_Kleinowski">
         <sql>
             CREATE TABLE IF NOT EXISTS class_workout_permission (
-                class_workout_permission_id uuid not null,
+                class_permission_id uuid not null,
                 permission_id uuid not null,
-                class_workout_id uuid not null,
+                class_id uuid not null,
 
-                PRIMARY KEY (class_workout_permission_id),
-                FOREIGN KEY (class_workout_id) REFERENCES class_workout(class_workout_id)
+                PRIMARY KEY (class_permission_id),
+                FOREIGN KEY (class_id) REFERENCES class(class_id)
             )
         </sql>
     </changeSet>

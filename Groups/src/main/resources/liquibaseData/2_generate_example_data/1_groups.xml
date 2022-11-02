@@ -9,12 +9,18 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
             INSERT INTO class (
                 class_id,
                 name,
-                max_participants
+                description,
+                start_time,
+                end_time,
+                repeatable
             )
             VALUES (
                 '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-                'Yoga',
-                15
+                'Brazilian butt',
+                'No pain no gain',
+                '2022-11-04T07:00:00+02:00',
+                '2022-11-04T08:00:00+02:00',
+                false
             );
         </sql>
     </changeSet>

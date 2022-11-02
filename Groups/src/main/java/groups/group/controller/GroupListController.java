@@ -2,7 +2,6 @@ package groups.group.controller;
 
 import groups.common.abstracts.AbstractListController;
 import groups.group.entity.GroupFullDto;
-import groups.group.entity.GroupNameDto;
 import groups.group.repository.GroupQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,20 +42,11 @@ public class GroupListController extends AbstractListController {
         return groupFullDto.isPresent() ? response(OK, groupFullDto.get()) : response(NOT_FOUND);
     }
 
-    // TODO wszystkie grupy, ale dla danego klubu - pobieramy z tokenu
+    // TODO dla danego klubu
     @GetMapping("/full-group-info")
     protected ResponseEntity<?> getAllGroups() {
 
         List<GroupFullDto> groups = groupQuery.getAllGroups();
-
-        return response(OK, groups);
-    }
-
-    // TODO wszystkie grupy, ale dla danego klubu - pobieramy z tokenu
-    @GetMapping("/group-names")
-    protected ResponseEntity<?> getGroupNames() {
-
-        List<GroupNameDto> groups = groupQuery.getAllGroupNames();
 
         return response(OK, groups);
     }

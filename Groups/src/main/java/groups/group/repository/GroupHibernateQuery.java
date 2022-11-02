@@ -24,7 +24,6 @@ import static groups.common.utils.StringUtils.concatenate;
 public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implements GroupQuery {
 
     private final GroupFullDtoFactory groupFullDtoFactory;
-    private final GroupNameDtoFactory groupNameDtoFactory;
 
 
     @Autowired
@@ -33,7 +32,6 @@ public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implement
         super(Group.class, sessionFactory);
 
         this.groupFullDtoFactory = new GroupFullDtoFactory();
-        this.groupNameDtoFactory = new GroupNameDtoFactory();
     }
 
 
@@ -50,7 +48,10 @@ public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implement
         criteriaQuery.multiselect(
                 root.get("id"),
                 root.get("name"),
-                root.get("maxParticipants")
+                root.get("description"),
+                root.get("startTime"),
+                root.get("endTime"),
+                root.get("repeatable")
         ).where(
                 criteriaBuilder.equal(root.get("id"), id)
         );
@@ -69,14 +70,6 @@ public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implement
 
         return getAll().stream()
                 .map(groupFullDtoFactory::create)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<GroupNameDto> getAllGroupNames() {
-
-        return getAll().stream()
-                .map(groupNameDtoFactory::create)
                 .collect(Collectors.toList());
     }
 }

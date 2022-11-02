@@ -4,7 +4,7 @@ import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
 import groups.common.annotation.Reason;
 import groups.common.annotation.UnknownForeignKey;
-import groups.workoutGroup.entity.GroupWorkout;
+import groups.groupWorkout.entity.GroupWorkout;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.Assert;
 

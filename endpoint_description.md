@@ -187,11 +187,11 @@
 | api/group-trainer/unassign/{trainerId}/{groupId} | TODO    | DELETE      | delete trainer from group based on trainerId and groupId  |
 
 ## GroupWorkoutPermission
-| Endpoint Name                                                       | Who can | Method type | Purpose                                                                      |
-|---------------------------------------------------------------------|---------|-------------|------------------------------------------------------------------------------|
-| api/group-workout-permission/add                                    | TODO    | POST        | add permission to groupWorkout                                               |
-| api/group-workout-permission/remove/{id}                            | TODO    | DELETE      | remove permission from groupWorkout based on groupWorkoutPermissionId        |
-| api/group-workout-permission/remove/{groupWorkoutId}/{permissionId} | TODO    | DELETE      | remove permission from groupWorkout based on groupWorkoutId and permissionId |
+| Endpoint Name                                                    | Who can | Method type | Purpose                                                                     |
+|------------------------------------------------------------------|---------|-------------|-----------------------------------------------------------------------------|
+| api/group-permission/add                                   | TODO    | POST        | add permission to groupWorkout                                              |
+| api/group-permission/remove/{id}                           | TODO    | DELETE      | remove permission from group based on groupPermissionId        |
+| api/group-permission/remove/{groupWorkoutId}/{permissionId} | TODO    | DELETE      | remove permission from group based on groupId and permissionId |
 
 ## GroupWorkoutParticipant
 | Endpoint Name                                                       | Who can  | Method type | Purpose                                                                        |

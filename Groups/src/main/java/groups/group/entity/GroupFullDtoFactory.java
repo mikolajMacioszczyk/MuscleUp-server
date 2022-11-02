@@ -11,7 +11,10 @@ public class GroupFullDtoFactory {
         return new GroupFullDto(
                 group.getId(),
                 group.getName(),
-                group.getMaxParticipants()
+                group.getDescription(),
+                group.getStartTime(),
+                group.getEndTime(),
+                group.getRepeatable()
         );
     }
 }

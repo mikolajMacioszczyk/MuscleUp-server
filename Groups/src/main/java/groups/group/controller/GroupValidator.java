@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static groups.common.utils.StringUtils.isNullOrEmpty;
@@ -16,8 +17,6 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class GroupValidator {
-
-    private final static Long MIN_PARTICIPANTS_PER_GROUP = 1L;
 
     private final GroupQuery groupQuery;
 
@@ -36,8 +35,8 @@ public class GroupValidator {
         Assert.notNull(groupFullForm, "groupFullForm must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkParticipantNumber(groupFullForm.maxParticipants(), errors);
         checkName(groupFullForm.name(), errors);
+        checkDates(groupFullForm.startTime(), groupFullForm.endTime(), errors);
     }
 
     void validateBeforeUpdate(GroupFullDto groupFullDto, ValidationErrors errors) {
@@ -46,8 +45,8 @@ public class GroupValidator {
         Assert.notNull(errors, "errors must not be null");
 
         checkGroupId(groupFullDto.id(), errors);
-        checkParticipantNumber(groupFullDto.maxParticipants(), errors);
         checkName(groupFullDto.name(), errors);
+        checkDates(groupFullDto.startTime(), groupFullDto.endTime(), errors);
     }
 
     void validateBeforeDelete(UUID id, ValidationErrors errors) {
@@ -59,11 +58,19 @@ public class GroupValidator {
     }
 
 
-    private void checkParticipantNumber(Long participantNumber, ValidationErrors errors) {
+    private void checkName(String name, ValidationErrors errors) {
 
-        if (participantNumber < MIN_PARTICIPANTS_PER_GROUP) {
+        if (isNullOrEmpty(name)) {
 
-            errors.addError(new ValidationError(BAD_REQUEST, "Number of participants is too low"));
+            errors.addError(new ValidationError(BAD_REQUEST, "Group name can not be empty"));
+        }
+    }
+
+    private void checkDates(LocalDateTime dateFrom, LocalDateTime dateTo, ValidationErrors errors) {
+
+        if (!dateFrom.isBefore(dateTo)) {
+
+            errors.addError(new ValidationError(BAD_REQUEST, "Start time can not be equal or after end time"));
         }
     }
 
@@ -72,14 +79,6 @@ public class GroupValidator {
         if (groupQuery.findGroupById(id).isEmpty()) {
 
             errors.addError(new ValidationError(BAD_REQUEST, "Group with given ID does not exist"));
-        }
-    }
-
-    private void checkName(String name, ValidationErrors errors) {
-
-        if (isNullOrEmpty(name)) {
-
-            errors.addError(new ValidationError(BAD_REQUEST, "Group name can not be empty"));
         }
     }
 }
