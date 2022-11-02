@@ -16,9 +16,11 @@ namespace FitnessClubs.Application.Mappings
             CreateMap<CreateFitnessClubDto, FitnessClub>();
 
             CreateMap<WorkerEmployment, WorkerEmploymentDto>();
+            CreateMap<WorkerEmployment, WorkerEmploymentWithUserDataDto>();
             CreateMap<CreateWorkerEmploymentDto, WorkerEmployment>();
 
             CreateMap<TrainerEmployment, TrainerEmploymentDto>();
+            CreateMap<TrainerEmployment, TrainerEmploymentWithUserDataDto>();
             CreateMap<CreateTrainerEmploymentDto, TrainerEmployment>();
 
             CreateMap<Membership, MembershipDto>();

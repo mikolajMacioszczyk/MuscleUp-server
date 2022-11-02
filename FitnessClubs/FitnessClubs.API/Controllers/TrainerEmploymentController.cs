@@ -7,7 +7,6 @@ using FitnessClubs.Application.TrainerEmployments.Commands;
 using FitnessClubs.Application.TrainerEmployments.Dtos;
 using FitnessClubs.Application.TrainerEmployments.Queries;
 using FitnessClubs.Domain.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitnessClubs.API.Controllers
@@ -23,16 +22,20 @@ namespace FitnessClubs.API.Controllers
 
         [HttpGet("{fitnessClubId}")]
         [AuthorizeRoles(RoleType.Trainer, RoleType.Worker, RoleType.Administrator)]
-        public async Task<ActionResult<IEnumerable<TrainerDto>>> GetAllEmploymentsFromFitnessClub([FromRoute] string fitnessClubId, [FromQuery] bool includeInactive = false)
+        public async Task<ActionResult<IEnumerable<TrainerDto>>> GetAllTrainersFromFitnessClub([FromRoute] string fitnessClubId, [FromQuery] bool includeInactive = false)
         {
-            var query = new GetAllTrainerEmploymentsQuery()
-            {
-                FitnessClubId = fitnessClubId,
-                IncludeInactive = includeInactive
-            };
+            var query = new GetAllEmployedTrainersQuery(fitnessClubId, includeInactive);
 
-            var workerEmployment = await Mediator.Send(query);
-            return Ok(workerEmployment);
+            return Ok(await Mediator.Send(query));
+        }
+
+        [HttpGet("details/{fitnessClubId}")]
+        [AuthorizeRoles(RoleType.Worker, RoleType.Administrator)]
+        public async Task<ActionResult<IEnumerable<TrainerEmploymentWithUserDataDto>>> GetAllEmploymentsFromFitnessClub([FromRoute] string fitnessClubId, [FromQuery] bool includeInactive = false)
+        {
+            var query = new GetAllTrainerEmploymentsQuery(fitnessClubId, includeInactive);
+
+            return Ok(await Mediator.Send(query));
         }
 
         [HttpPost()]

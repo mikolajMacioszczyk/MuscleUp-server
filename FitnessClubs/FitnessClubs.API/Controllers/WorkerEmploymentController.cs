@@ -7,7 +7,6 @@ using FitnessClubs.Application.WorkoutEmployments.Commands;
 using FitnessClubs.Application.WorkoutEmployments.Dtos;
 using FitnessClubs.Application.WorkoutEmployments.Queries;
 using FitnessClubs.Domain.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitnessClubs.API.Controllers
@@ -23,16 +22,20 @@ namespace FitnessClubs.API.Controllers
 
         [HttpGet("{fitnessClubId}")]
         [AuthorizeRoles(RoleType.Worker, RoleType.Administrator)]
+        public async Task<ActionResult<IEnumerable<WorkerDto>>> GetAllWorkersFromFitnessClub([FromRoute] string fitnessClubId, [FromQuery] bool includeInactive = false)
+        {
+            var query = new GetAllEmployedWorkersQuery(fitnessClubId, includeInactive);
+
+            return Ok(await Mediator.Send(query));
+        }
+
+        [HttpGet("details/{fitnessClubId}")]
+        [AuthorizeRoles(RoleType.Worker, RoleType.Administrator)]
         public async Task<ActionResult<IEnumerable<WorkerDto>>> GetAllEmploymentsFromFitnessClub([FromRoute] string fitnessClubId, [FromQuery] bool includeInactive = false)
         {
-            var query = new GetAllWorkerEmploymentsQuery()
-            {
-                FitnessClubId = fitnessClubId,
-                IncludeInactive = includeInactive
-            };
+            var query = new GetAllWorkerEmploymentsQuery(fitnessClubId, includeInactive);
 
-            var employedWorkers = await Mediator.Send(query);
-            return Ok(employedWorkers);
+            return Ok(await Mediator.Send(query));
         }
 
         [HttpPost()]

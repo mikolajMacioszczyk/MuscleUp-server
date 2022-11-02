@@ -1,34 +1,37 @@
-﻿using Common.Exceptions;
+﻿using AutoMapper;
+using Common.Exceptions;
 using Common.Interfaces;
-using Common.Models.Dtos;
 using FitnessClubs.Application.Interfaces;
+using FitnessClubs.Application.WorkoutEmployments.Dtos;
 using FitnessClubs.Domain.Models;
 using MediatR;
 
 namespace FitnessClubs.Application.WorkoutEmployments.Queries
 {
-    public record GetAllWorkerEmploymentsQuery : IRequest<IEnumerable<WorkerDto>> 
-    {
-        public string FitnessClubId { get; init; }
-        public bool IncludeInactive { get; init; }
-    }
+    public record GetAllWorkerEmploymentsQuery(string FitnessClubId, bool IncludeInactive) 
+        : IRequest<IEnumerable<WorkerEmploymentWithUserDataDto>>
+    { }
 
-    public class GetAllFitnessClubsQueryHandler : IRequestHandler<GetAllWorkerEmploymentsQuery, IEnumerable<WorkerDto>>
+    public class GetAllWorkerEmploymentsQueryHandler : IRequestHandler<GetAllWorkerEmploymentsQuery, IEnumerable<WorkerEmploymentWithUserDataDto>>
     {
         private readonly IEmploymentRepository<WorkerEmployment> _repository;
         private readonly IAuthService _authService;
+        private readonly IMapper _mapper;
 
-        public GetAllFitnessClubsQueryHandler(
-            IEmploymentRepository<WorkerEmployment> repository, 
-            IAuthService authService)
+        public GetAllWorkerEmploymentsQueryHandler(
+            IEmploymentRepository<WorkerEmployment> repository,
+            IAuthService authService,
+            IMapper mapper)
         {
             _repository = repository;
             _authService = authService;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<WorkerDto>> Handle(GetAllWorkerEmploymentsQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<WorkerEmploymentWithUserDataDto>> Handle(GetAllWorkerEmploymentsQuery request, CancellationToken cancellationToken)
         {
-            var employments = await _repository.GetAllEmployments(request.FitnessClubId, request.IncludeInactive, false);
+            var employments = _mapper.Map<IEnumerable<WorkerEmploymentWithUserDataDto>>(
+                await _repository.GetAllEmployments(request.FitnessClubId, request.IncludeInactive, false));
 
             var userIds = employments.Select(e => e.UserId);
 
@@ -36,7 +39,15 @@ namespace FitnessClubs.Application.WorkoutEmployments.Queries
 
             if (workersResult.IsSuccess)
             {
-                return workersResult.Value;
+                var workersData = workersResult.Value.ToList();
+
+                // assign worker data
+                foreach (var employment in employments)
+                {
+                    employment.WorkerData = workersData.FirstOrDefault(w => w.UserId == employment.UserId);
+                }
+
+                return employments;
             }
 
             throw new BadRequestException(workersResult.ErrorCombined);
