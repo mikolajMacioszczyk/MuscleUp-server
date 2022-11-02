@@ -36,6 +36,11 @@ namespace Carnets.Application.Entries.Commands
 
         public async Task<Result<Entry>> Handle(CreateGymEntryCommand request, CancellationToken cancellationToken)
         {
+            if (!_entryTokenService.ValidateToken(request.EntryTokenDto.EntryToken))
+            {
+                throw new BadRequestException("Invalid entry token format");
+            }
+
             var decoded = _entryTokenService.DecodeToken(request.EntryTokenDto.EntryToken);
 
             if (decoded.ExpiresDate < DateTime.UtcNow)

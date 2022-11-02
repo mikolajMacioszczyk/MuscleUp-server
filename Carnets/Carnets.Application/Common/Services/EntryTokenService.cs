@@ -2,7 +2,6 @@
 using Carnets.Application.Interfaces;
 using Carnets.Application.Models;
 using Common.Consts;
-using Common.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,6 +15,7 @@ namespace Carnets.Application.Services
         private readonly JwtSecurityTokenHandler _jwtTokenHandler;
         private readonly string _secret;
         private readonly int _entryTokenValidityInSeconds;
+        private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
 
         public EntryTokenService(
             IConfiguration configuration, 
@@ -24,6 +24,7 @@ namespace Carnets.Application.Services
             _secret = configuration.GetValue<string>(AuthConsts.JwtSecretKey);
             _entryTokenValidityInSeconds = configuration.GetValue<int>(CarnetsConsts.EntryTokenValidityInSecondsKey);
             _jwtTokenHandler = jwtTokenHandler;
+            _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         }
 
         public string GenerateToken(string gympassId)
@@ -39,9 +40,33 @@ namespace Carnets.Application.Services
             return entryTokenString;
         }
 
+        public bool ValidateToken(string entryToken)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret));
+
+            try
+            {
+                _jwtSecurityTokenHandler.ValidateToken(
+                    entryToken,
+                    new TokenValidationParameters()
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        IssuerSigningKey = securityKey,
+                    },
+                    out var securityToken);
+
+                return securityToken != null;
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+        }
+
         public EntryTokenPayload DecodeToken(string entryToken)
         {
-            var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(entryToken);
+            var jwtToken = _jwtSecurityTokenHandler.ReadJwtToken(entryToken);
             var gympassIdString = GetPayloadValue<string>(CarnetsConsts.GympassIdPayloadKey);
             var expiresDate = GetPayloadValue<DateTime>(CarnetsConsts.ExpiresDatePayloadKey);
 

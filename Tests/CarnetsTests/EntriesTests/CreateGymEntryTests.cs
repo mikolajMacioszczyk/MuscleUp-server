@@ -4,7 +4,6 @@ using Carnets.Application.Interfaces;
 using Carnets.Application.Models;
 using Carnets.Domain.Enums;
 using Carnets.Domain.Models;
-using Common;
 using Common.Exceptions;
 using Common.Models;
 using Moq;
@@ -14,6 +13,14 @@ namespace CarnetsTests.EntriesTests
 {
     public class CreateGymEntryTests
     {
+        private Mock<IEntryTokenService> _entryTokenServiceMock;
+
+        public CreateGymEntryTests()
+        {
+            _entryTokenServiceMock = new Mock<IEntryTokenService>();
+            _entryTokenServiceMock.Setup(m => m.ValidateToken(It.IsAny<string>())).Returns(true);
+        }
+
         [Fact]
         public async Task CreateGymEntry_ExpiredToken()
         {
@@ -24,8 +31,7 @@ namespace CarnetsTests.EntriesTests
 
             var command = new CreateGymEntryCommand(new EntryTokenDto() { EntryToken = entryToken}, string.Empty);
 
-            var entryTokenServiceMock = new Mock<IEntryTokenService>();
-            entryTokenServiceMock.Setup(m => m.DecodeToken(entryToken)).Returns(new EntryTokenPayload()
+            _entryTokenServiceMock.Setup(m => m.DecodeToken(entryToken)).Returns(new EntryTokenPayload()
             {
                 ExpiresDate = exirationDate,
                 GympassId = Guid.NewGuid().ToString()
@@ -33,7 +39,7 @@ namespace CarnetsTests.EntriesTests
 
             var handler = new CreateGymEntryCommandHandler(
                     null, // logger
-                    entryTokenServiceMock.Object, // entryTokenService
+                    _entryTokenServiceMock.Object, // entryTokenService
                     null, // gympassRepository
                     null, // entryRepository
                     null // mapper
@@ -57,8 +63,7 @@ namespace CarnetsTests.EntriesTests
 
             var command = new CreateGymEntryCommand(new EntryTokenDto() { EntryToken = entryToken }, string.Empty);
 
-            var entryTokenServiceMock = new Mock<IEntryTokenService>();
-            entryTokenServiceMock.Setup(m => m.DecodeToken(entryToken)).Returns(new EntryTokenPayload()
+            _entryTokenServiceMock.Setup(m => m.DecodeToken(entryToken)).Returns(new EntryTokenPayload()
             {
                 ExpiresDate = exirationDate,
                 GympassId = testGympassId
@@ -70,7 +75,7 @@ namespace CarnetsTests.EntriesTests
 
             var handler = new CreateGymEntryCommandHandler(
                     null, // logger
-                    entryTokenServiceMock.Object, // entryTokenService
+                    _entryTokenServiceMock.Object, // entryTokenService
                     gympassRepositoryMock.Object, // gympassRepository
                     null, // entryRepository
                     null // mapper
@@ -101,8 +106,7 @@ namespace CarnetsTests.EntriesTests
 
             var command = new CreateGymEntryCommand(new EntryTokenDto() { EntryToken = entryToken }, fitnessClubIdParam);
 
-            var entryTokenServiceMock = new Mock<IEntryTokenService>();
-            entryTokenServiceMock.Setup(m => m.DecodeToken(entryToken)).Returns(new EntryTokenPayload()
+            _entryTokenServiceMock.Setup(m => m.DecodeToken(entryToken)).Returns(new EntryTokenPayload()
             {
                 ExpiresDate = exirationDate,
                 GympassId = testGympassId
@@ -114,7 +118,7 @@ namespace CarnetsTests.EntriesTests
 
             var handler = new CreateGymEntryCommandHandler(
                     null, // logger
-                    entryTokenServiceMock.Object, // entryTokenService
+                    _entryTokenServiceMock.Object, // entryTokenService
                     gympassRepositoryMock.Object, // gympassRepository
                     null, // entryRepository
                     null // mapper
@@ -148,8 +152,7 @@ namespace CarnetsTests.EntriesTests
 
             var command = new CreateGymEntryCommand(new EntryTokenDto() { EntryToken = entryToken }, fitnessClubIdParam);
 
-            var entryTokenServiceMock = new Mock<IEntryTokenService>();
-            entryTokenServiceMock.Setup(m => m.DecodeToken(entryToken)).Returns(new EntryTokenPayload()
+            _entryTokenServiceMock.Setup(m => m.DecodeToken(entryToken)).Returns(new EntryTokenPayload()
             {
                 ExpiresDate = exirationDate,
                 GympassId = testGympassId
@@ -161,7 +164,7 @@ namespace CarnetsTests.EntriesTests
 
             var handler = new CreateGymEntryCommandHandler(
                     null, // logger
-                    entryTokenServiceMock.Object, // entryTokenService
+                    _entryTokenServiceMock.Object, // entryTokenService
                     gympassRepositoryMock.Object, // gympassRepository
                     null, // entryRepository
                     null // mapper
@@ -173,6 +176,30 @@ namespace CarnetsTests.EntriesTests
             // assert
             Assert.False(result.IsSuccess);
             Assert.Equal(expectedError, result.ErrorCombined);
+        }
+
+        [Fact]
+        public async Task CreateGymEntry_InvalidToken()
+        {
+            // arrange
+            var entryToken = "Invalid Entry Token";
+            var exirationDate = DateTime.UtcNow.AddMinutes(-1);
+
+            var command = new CreateGymEntryCommand(new EntryTokenDto() { EntryToken = entryToken }, string.Empty);
+
+            _entryTokenServiceMock.Setup(m => m.ValidateToken(entryToken)).Returns(false);
+
+            var handler = new CreateGymEntryCommandHandler(
+                    null, // logger
+                    _entryTokenServiceMock.Object, // entryTokenService
+                    null, // gympassRepository
+                    null, // entryRepository
+                    null // mapper
+                );
+
+            // assert
+            await Assert.ThrowsAsync<BadRequestException>(
+                async () => await handler.Handle(command, CancellationToken.None));
         }
 
         [Theory]
@@ -207,8 +234,7 @@ namespace CarnetsTests.EntriesTests
 
             var command = new CreateGymEntryCommand(new EntryTokenDto() { EntryToken = entryToken }, fitnessClubIdParam);
 
-            var entryTokenServiceMock = new Mock<IEntryTokenService>();
-            entryTokenServiceMock.Setup(m => m.DecodeToken(entryToken)).Returns(new EntryTokenPayload()
+            _entryTokenServiceMock.Setup(m => m.DecodeToken(entryToken)).Returns(new EntryTokenPayload()
             {
                 ExpiresDate = exirationDate,
                 GympassId = testGympassId
@@ -226,7 +252,7 @@ namespace CarnetsTests.EntriesTests
 
             var handler = new CreateGymEntryCommandHandler(
                     null, // logger
-                    entryTokenServiceMock.Object, // entryTokenService
+                    _entryTokenServiceMock.Object, // entryTokenService
                     gympassRepositoryMock.Object, // gympassRepository
                     entryRepository.Object, // entryRepository
                     null // mapper

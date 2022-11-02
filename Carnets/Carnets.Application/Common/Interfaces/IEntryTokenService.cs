@@ -6,6 +6,8 @@ namespace Carnets.Application.Interfaces
     {
         string GenerateToken(string gympassId);
 
+        bool ValidateToken(string entryToken);
+
         EntryTokenPayload DecodeToken(string entryToken);
     }
 }
