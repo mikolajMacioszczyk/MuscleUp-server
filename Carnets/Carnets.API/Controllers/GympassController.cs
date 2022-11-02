@@ -3,12 +3,12 @@ using Carnets.Application.FitnessClubs.Queries;
 using Carnets.Application.Gympasses.Commands;
 using Carnets.Application.Gympasses.Dtos;
 using Carnets.Application.Gympasses.Queries;
+using Carnets.Domain.Models;
 using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
 using Common.Helpers;
 using Common.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Carnets.API.Controllers
@@ -28,7 +28,26 @@ namespace Carnets.API.Controllers
         [AuthorizeRoles(RoleType.Administrator, RoleType.Member)]
         public async Task<ActionResult<IEnumerable<GympassDto>>> GetAll()
         {
-            var gympasses = await Mediator.Send(new GetAllGympassesQuery());
+            IEnumerable<Gympass> gympasses;
+
+            if (_httpAuthContext.UserRole == RoleType.Member)
+            {
+                var memberId = _httpAuthContext.UserId;
+                gympasses = await Mediator.Send(new GetAllMemberGympassesQuery(memberId));
+            }
+            else
+            {
+                gympasses = await Mediator.Send(new GetAllGympassesQuery());
+            }
+
+            return Ok(_mapper.Map<IEnumerable<GympassDto>>(gympasses));
+        }
+
+        [HttpGet("by-member/{memberId}")]
+        [AuthorizeRoles(RoleType.Administrator, RoleType.Worker)]
+        public async Task<ActionResult<IEnumerable<GympassDto>>> GetAllMembersGympasses([FromRoute] string memberId)
+        {
+            var gympasses = await Mediator.Send(new GetAllMemberGympassesQuery(memberId));
 
             return Ok(_mapper.Map<IEnumerable<GympassDto>>(gympasses));
         }

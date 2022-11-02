@@ -5,14 +5,14 @@ using MediatR;
 
 namespace Carnets.Application.Gympasses.Queries
 {
-    public record GetAllGympassesQuery : IRequest<IEnumerable<Gympass>> { }
+    public record GetAllMemberGympassesQuery(string MemberId) : IRequest<IEnumerable<Gympass>> { }
 
-    public class GetAllGympassesQueryHandler : IRequestHandler<GetAllGympassesQuery, IEnumerable<Gympass>>
+    public class GetAllMemberGympassesQueryHandler : IRequestHandler<GetAllMemberGympassesQuery, IEnumerable<Gympass>>
     {
         private readonly IGympassRepository _gympassRepository;
         private readonly ISender _mediator;
 
-        public GetAllGympassesQueryHandler(
+        public GetAllMemberGympassesQueryHandler(
             IGympassRepository gympassRepository,
             ISender mediator)
         {
@@ -20,9 +20,9 @@ namespace Carnets.Application.Gympasses.Queries
             _mediator = mediator;
         }
 
-        public async Task<IEnumerable<Gympass>> Handle(GetAllGympassesQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Gympass>> Handle(GetAllMemberGympassesQuery request, CancellationToken cancellationToken)
         {
-            IEnumerable<Gympass> all = await _gympassRepository.GetAll(true);
+            IEnumerable<Gympass> all = await _gympassRepository.GetAllForMember(request.MemberId, true);
 
             await GympassHelper.EnsureGympassActivityStatus(_mediator, all);
 

@@ -74,6 +74,7 @@
 | Endpoint Name | Who can | Method type | Purpose |
 | ------- | ------------------------------- | ------- | ------------------------------- |
 | api/carnets/gympass | Member, Admin | GET | returns all logged in Member's Gympasses - for Member or all Gympasses in the system - for Admin |
+| api/carnets/gympass/by-member/{memberId} | Worker, Admin | GET | returns all Member's Gympasses |
 | api/carnets/gympass/from-fitness-club | Worker | GET | returns all Gympasses from FitnessClub |
 | api/carnets/gympass/{gympassId} | LoggedIn | GET | returns single Gympass by id |
 | api/carnets/gympass | Member | POST | creates Gympass |
