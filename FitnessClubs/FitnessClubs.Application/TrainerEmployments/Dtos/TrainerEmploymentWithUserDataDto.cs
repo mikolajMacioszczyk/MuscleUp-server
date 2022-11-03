@@ -4,6 +4,6 @@ namespace FitnessClubs.Application.TrainerEmployments.Dtos
 {
     public class TrainerEmploymentWithUserDataDto : TrainerEmploymentDto
     {
-        public TrainerDto TrainerData { get; set; }
+        public TrainerDto UserData { get; set; }
     }
 }

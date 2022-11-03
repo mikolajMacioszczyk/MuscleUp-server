@@ -44,7 +44,7 @@ namespace FitnessClubs.Application.TrainerEmployments.Queries
                 // assign trainer data
                 foreach (var employment in employments)
                 {
-                    employment.TrainerData = trainersData.FirstOrDefault(w => w.UserId == employment.UserId);
+                    employment.UserData = trainersData.FirstOrDefault(w => w.UserId == employment.UserId);
                 }
 
                 return employments;
