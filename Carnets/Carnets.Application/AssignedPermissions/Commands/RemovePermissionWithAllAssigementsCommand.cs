@@ -59,15 +59,12 @@ namespace Carnets.Application.AssignedPermissions.Commands
             {
                 case PermissionType.PerkPermission:
                     await _perkPermissionRepository.DeletePermission(request.PermissionId, request.FitnessClubId);
-                    await _perkPermissionRepository.SaveChangesAsync();
                     break;
                 case PermissionType.ClassPermission:
                     await _classPermissionRepository.DeletePermission(request.PermissionId, request.FitnessClubId);
-                    await _classPermissionRepository.SaveChangesAsync();
                     break;
             }
 
-            // TODO: Does exists pattern to commit transactions?
             await _assignedPermissionRepository.SaveChangesAsync();
 
             return new Result<bool>(true);
