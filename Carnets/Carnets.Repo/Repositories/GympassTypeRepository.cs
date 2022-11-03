@@ -30,9 +30,7 @@ namespace Carnets.Repo.Repositories
             int pageNumber, int pageSize, bool asTracking)
         {
             var query = _context.GympassTypes
-                .Where(g => g.FitnessClubId == fitnessClubId)
-                .Skip(pageNumber * pageSize)
-                .Take(pageSize);
+                .Where(g => g.FitnessClubId == fitnessClubId);
 
             if (onlyActive)
             {
@@ -43,6 +41,8 @@ namespace Carnets.Repo.Repositories
             {
                 query = query.AsNoTracking();
             }
+
+            query = query.Skip(pageNumber * pageSize).Take(pageSize);
 
             return await query.ToListAsync();
         }
