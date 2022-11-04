@@ -1,5 +1,6 @@
 ﻿using Carnets.Application.Gympasses.Commands;
 using Carnets.Application.Interfaces;
+using Carnets.Application.Subscriptions.Helpers;
 using Carnets.Domain.Enums;
 using Carnets.Domain.Models;
 using Common.Models;
@@ -8,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Carnets.Application.Subscriptions.Commands
 {
-    public record CreateOrExtendGympassSubscriptionCommand(string GympassId, string CustomerId, string PaymentMethodId)
+    public record CreateOrExtendGympassSubscriptionCommand(string GympassId, string CustomerId, string PaymentMethodId, string ExternalSubscriptionId)
         : IRequest<Result<Subscription>>
     { }
 
@@ -64,15 +65,16 @@ namespace Carnets.Application.Subscriptions.Commands
             // already active gympass
             else
             {
-                var activeSubscription = await GetActiveGympassSubscription(gympass.GympassId);
+                var existingSubscription = await SubscriptionHelper.GetActiveGympassSubscriptionByExternalId(
+                    gympass.GympassId, request.ExternalSubscriptionId, _subscriptionRepository);
 
-                if (activeSubscription is null)
+                if (existingSubscription is null)
                 {
                     subscription = await CreateSubscription(request, gympass);
                 }
                 else
                 {
-                    subscription = await RefreshSubscriptionPaymentDate(activeSubscription);
+                    subscription = await RefreshSubscriptionPaymentDate(existingSubscription);
                 }
 
                 gympass = await ExtendGympassValidity(gympass);
@@ -100,6 +102,7 @@ namespace Carnets.Application.Subscriptions.Commands
                 StripeCustomerId = string.IsNullOrEmpty(request.CustomerId) ? string.Empty : request.CustomerId,
                 Gympass = gympass,
                 StripePaymentmethodId = string.IsNullOrEmpty(request.PaymentMethodId) ? string.Empty : request.PaymentMethodId,
+                ExternalSubscriptionId = string.IsNullOrEmpty(request.ExternalSubscriptionId) ? string.Empty : request.ExternalSubscriptionId,
                 CreationDate = DateTime.UtcNow,
                 LastPaymentDate = DateTime.UtcNow,
                 IsActive = true
@@ -113,13 +116,6 @@ namespace Carnets.Application.Subscriptions.Commands
 
             _logger.LogError($"Creation subscription failed");
             throw new ApplicationException();
-        }
-
-        private async Task<Subscription> GetActiveGympassSubscription(string gympassId)
-        {
-            var gympassSubscriptions = await _subscriptionRepository.GetAllGympassSubscriptions(new string[] { gympassId }, true);
-
-            return gympassSubscriptions.FirstOrDefault(g => g.IsActive);
         }
 
         private async Task<Subscription> RefreshSubscriptionPaymentDate(Subscription subscription)

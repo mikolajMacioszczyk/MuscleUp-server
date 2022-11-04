@@ -14,6 +14,8 @@ namespace Carnets.Application.Subscriptions.Dtos
 
         public string StripePaymentmethodId { get; set; }
 
+        public string ExternalSubscriptionId { get; set; }
+
         public DateTime CreationDate { get; set; }
 
         public DateTime LastPaymentDate { get; set; }

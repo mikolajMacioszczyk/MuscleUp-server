@@ -88,8 +88,6 @@
 | api/carnets/gympass/from-fitness-club | Worker | GET | returns all Gympasses from FitnessClub |
 | api/carnets/gympass/{gympassId} | LoggedIn | GET | returns single Gympass by id |
 | api/carnets/gympass | Member | POST | creates Gympass |
-| api/carnets/gympass/cancel/{gympassId} | Member | PUT | cancells the Gympass |
-| api/carnets/gympass/cancel-as-worker/{gympassId} | Worker | PUT | cancells the Gympass |
 | api/carnets/gympass/activate/{gympassId} | Worker | PUT | activates the Gympass |
 | api/carnets/gympass/deactivate/{gympassId} | Worker | PUT | deactivates the Gympass |
 
@@ -121,6 +119,7 @@
 | api/carnets/subscription/{subscriptionId} | Member, Worker, Admin | GET | returns single Subscription by id |
 | api/carnets/subscription | Member | POST | creates Subscription |
 | api/carnets/subscription/as-worker | Worker | POST | creates Subscription |
+| api/carnets/subscription/cancel/{subscriptionId} | Member, Worker | PUT | cancells Subscription both on api and Stripe |
 
 ## Entries
 | Endpoint Name | Who can | Method type | Purpose |

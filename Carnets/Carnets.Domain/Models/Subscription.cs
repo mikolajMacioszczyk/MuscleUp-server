@@ -17,6 +17,10 @@ namespace Carnets.Domain.Models
 
         [Required]
         [MaxLength(50)]
+        public string ExternalSubscriptionId { get; set; }
+
+        [Required]
+        [MaxLength(50)]
         public string StripePaymentmethodId { get; set; }
 
         public DateTime CreationDate { get; set; }

@@ -25,10 +25,6 @@ namespace Carnets.Repo
                 .HasIndex(c => c.PermissionName)
                 .IsUnique();
 
-            modelBuilder.Entity<Subscription>()
-                .HasIndex(s => s.StripeCustomerId)
-                .IsUnique();
-
             base.OnModelCreating(modelBuilder);
         }
     }

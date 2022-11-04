@@ -101,6 +101,19 @@ namespace Carnets.Application.Services
             }
         }
 
+        public async Task CancelSubscription(string externalSubscriptionId)
+        {
+            var service = new SubscriptionService();
+            try
+            {
+                await service.CancelAsync(externalSubscriptionId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical($"Cannot cancel subscription with id = {externalSubscriptionId} on Stripe. Error: {ex.Message}");
+            }
+        }
+
         public async Task DeleteProduct(string gympassTypeId)
         {
             var service = new ProductService();
@@ -162,7 +175,7 @@ namespace Carnets.Application.Services
                 var stripeEvent = EventUtility.ConstructEvent(jsonBody, signature, WebhookSecret);
 
                 PaymentStatus paymentStatus = PaymentStatus.None;
-                Func<Event, (string, string, string)> eventAdapter = null;
+                Func<Event, (string, string, string, string)> eventAdapter = null;
 
                 // Handle the event
                 if (stripeEvent.Type == Events.InvoicePaid)
@@ -191,11 +204,11 @@ namespace Carnets.Application.Services
                     return PaymentResult.Empty();
                 }
 
-                var (gympassId, customerId, paymentMethodId) = eventAdapter(stripeEvent);
+                var (gympassId, customerId, paymentMethodId, subscriptionId) = eventAdapter(stripeEvent);
 
                 if (!string.IsNullOrEmpty(gympassId))
                 {
-                    return new PaymentResult(paymentStatus, gympassId, customerId, paymentMethodId);
+                    return new PaymentResult(paymentStatus, gympassId, customerId, paymentMethodId, subscriptionId);
                 }
                 return ServeMissingPlanMetadata();
             }
@@ -206,7 +219,7 @@ namespace Carnets.Application.Services
             }
         }
 
-        private (string planId, string customerId, string paymentMethodId) GetDataFromSession(Event stripeEvent)
+        private (string planId, string customerId, string paymentMethodId, string subscriptionId) GetDataFromSession(Event stripeEvent)
         {
             var session = stripeEvent.Data.Object as Session;
             string gympassId = string.Empty;
@@ -214,13 +227,13 @@ namespace Carnets.Application.Services
             var hasGympassIdMetadata = session.Metadata?.TryGetValue(CarnetsConsts.GympassIdKey, out gympassId) ?? false;
             if (hasGympassIdMetadata)
             {
-                return (gympassId, session.CustomerId, string.Empty);
+                return (gympassId, session.CustomerId, string.Empty, session.SubscriptionId);
             }
 
-            return (string.Empty, string.Empty, string.Empty);
+            return (string.Empty, string.Empty, string.Empty, string.Empty);
         }
 
-        private (string planId, string customerId, string paymentMethodId) GetDataFromInvoice(Event stripeEvent)
+        private (string planId, string customerId, string paymentMethodId, string subscriptionId) GetDataFromInvoice(Event stripeEvent)
         {
             var invoice = stripeEvent.Data.Object as Invoice;
             string gympassId = string.Empty;
@@ -228,13 +241,13 @@ namespace Carnets.Application.Services
             var hasGympassIdMetadata = invoice.Metadata?.TryGetValue(CarnetsConsts.GympassIdKey, out gympassId) ?? false;
             if (hasGympassIdMetadata)
             {
-                return (gympassId, invoice.CustomerId, invoice.DefaultPaymentMethodId);
+                return (gympassId, invoice.CustomerId, invoice.DefaultPaymentMethodId, invoice.SubscriptionId);
             }
 
-            return (string.Empty, string.Empty, string.Empty);
+            return (string.Empty, string.Empty, string.Empty, string.Empty);
         }
 
-        private (string planId, string customerId, string paymentMethodId) GetDataFromSubscription(Event stripeEvent)
+        private (string planId, string customerId, string paymentMethodId, string subscriptionId) GetDataFromSubscription(Event stripeEvent)
         {
             var subscription = stripeEvent.Data.Object as Stripe.Subscription;
             string gympassId = string.Empty;
@@ -242,10 +255,10 @@ namespace Carnets.Application.Services
             var hasGympassIdMetadata = subscription.Metadata?.TryGetValue(CarnetsConsts.GympassIdKey, out gympassId) ?? false;
             if (hasGympassIdMetadata)
             {
-                return (gympassId, subscription.CustomerId, subscription.DefaultPaymentMethodId);
+                return (gympassId, subscription.CustomerId, subscription.DefaultPaymentMethodId, subscription.Id);
             }
 
-            return (string.Empty, string.Empty, string.Empty);
+            return (string.Empty, string.Empty, string.Empty, string.Empty);
         }
 
         private PaymentResult ServeMissingPlanMetadata()

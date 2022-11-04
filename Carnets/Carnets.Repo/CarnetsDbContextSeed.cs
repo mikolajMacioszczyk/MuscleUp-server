@@ -73,6 +73,7 @@ namespace Carnets.Repo
                 SubscriptionId = SeedConsts.DefaultSubscriptionId,
                 Gympass = defaultGympass,
                 StripeCustomerId = "default stripe customer id",
+                ExternalSubscriptionId = "default stripe subscription id",
                 StripePaymentmethodId = "subscription",
             };
 

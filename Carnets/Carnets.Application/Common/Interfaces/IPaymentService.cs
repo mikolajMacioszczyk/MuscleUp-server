@@ -15,6 +15,8 @@ namespace Carnets.Application.Interfaces
 
         Task<string> CreateCheckoutSession(string gympassId, string customerId, string gympassTypeId, string successUrl, string cancelUrl);
 
+        Task CancelSubscription(string externalSubscriptionId);
+
         Task DeleteProduct(string gympassTypeId);
     }
 }

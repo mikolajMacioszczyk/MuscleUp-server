@@ -1,4 +1,5 @@
 ﻿using Carnets.Application.Interfaces;
+using Carnets.Application.Subscriptions.Helpers;
 using Carnets.Domain.Models;
 using Common;
 using Common.Models;
@@ -7,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Carnets.Application.Subscriptions.Commands
 {
-    public record TerminateGympassSubscriptionCommand(string GympassId, string CustomerId, string PaymentMethodId) 
+    public record TerminateGympassSubscriptionCommand(string GympassId, string ExternalSubscriptionId) 
         : IRequest<Result<Subscription>>
     {}
 
@@ -36,7 +37,8 @@ namespace Carnets.Application.Subscriptions.Commands
                 return new Result<Subscription>(CommonConsts.NOT_FOUND);
             }
 
-            var gympassSubscription = await GetActiveGympassSubscription(request.GympassId);
+            var gympassSubscription = await SubscriptionHelper.GetActiveGympassSubscriptionByExternalId(
+                request.GympassId, request.ExternalSubscriptionId, _subscriptionRepository);
 
             var gympassValidateResult = ValidateSubscription(gympassSubscription, request);
 
@@ -57,28 +59,20 @@ namespace Carnets.Application.Subscriptions.Commands
             return updateResult;
         }
 
-        private async Task<Subscription> GetActiveGympassSubscription(string gympassId)
-        {
-            var allSubscriptions = await _subscriptionRepository.GetAllGympassSubscriptions(new[] { gympassId }, true);
-
-            return allSubscriptions.FirstOrDefault(g => g.IsActive);
-        }
-
         private Result<Subscription> ValidateSubscription(Subscription subscription, TerminateGympassSubscriptionCommand request)
         {
             if (subscription is null)
             {
-                return new Result<Subscription>($"Gympass with id: {request.GympassId} has no active subscription");
+                var message = $"Subscription with external id = {request.ExternalSubscriptionId} " +
+                    $"and associated with gympass with id = {request.GympassId} not found";
+
+                _logger.LogError(message);
+                return new Result<Subscription>(message);
             }
 
-            if (subscription.StripeCustomerId != request.CustomerId)
+            if (!subscription.IsActive)
             {
-                _logger.LogWarning($"Invalid StripeCustomerId. From subscription = {subscription.StripeCustomerId}, from request = {request.CustomerId}");
-            }
-
-            if (subscription.StripePaymentmethodId != request.PaymentMethodId)
-            {
-                _logger.LogWarning($"Invalid StripePaymentmethodId. From subscription = {subscription.StripePaymentmethodId}, from request = {request.PaymentMethodId}");
+                return new Result<Subscription>($"Subscription with id = {subscription.SubscriptionId} is not active");
             }
 
             return new Result<Subscription>(subscription);

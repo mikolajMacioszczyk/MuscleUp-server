@@ -102,51 +102,6 @@ namespace Carnets.API.Controllers
             return BadRequest(createResult.ErrorCombined);
         }
 
-        [HttpPut("cancel/{gympassId}")]
-        [AuthorizeRoles(RoleType.Member)]
-        public async Task<ActionResult<GympassDto>> CancelGympass([FromRoute] string gympassId)
-        {
-            var result = await Mediator.Send(new CancelGympassCommand()
-            {
-                GympassId = gympassId
-            });
-
-            if (result.IsSuccess)
-            {
-                return Ok(_mapper.Map<GympassDto>(result.Value));
-            }
-            else if (result.Errors.Contains(Common.CommonConsts.NOT_FOUND))
-            {
-                return NotFound();
-            }
-
-            return BadRequest(result.ErrorCombined);
-        }
-
-        [HttpPut("cancel-as-worker/{gympassId}")]
-        [AuthorizeRoles(RoleType.Worker)]
-        public async Task<ActionResult<GympassDto>> CancelGympassAsWorker([FromRoute] string gympassId)
-        {
-            var workerId = _httpAuthContext.UserId;
-            await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId});
-
-            var result = await Mediator.Send(new CancelGympassCommand()
-            {
-                GympassId = gympassId
-            });
-
-            if (result.IsSuccess)
-            {
-                return Ok(_mapper.Map<GympassDto>(result.Value));
-            }
-            else if (result.Errors.Contains(Common.CommonConsts.NOT_FOUND))
-            {
-                return NotFound();
-            }
-
-            return BadRequest(result.ErrorCombined);
-        }
-
         [HttpPut("activate/{gympassId}")]
         [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult<GympassDto>> ActivateGympass([FromRoute] string gympassId)

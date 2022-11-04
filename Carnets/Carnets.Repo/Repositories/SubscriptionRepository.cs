@@ -83,6 +83,7 @@ namespace Carnets.Repo.Repositories
             subscriptionFromDb.LastPaymentDate = subscription.LastPaymentDate;
             subscriptionFromDb.StripePaymentmethodId = subscription.StripePaymentmethodId;
             subscriptionFromDb.StripeCustomerId = subscription.StripeCustomerId;
+            subscriptionFromDb.ExternalSubscriptionId = subscription.ExternalSubscriptionId;
             subscriptionFromDb.IsActive = subscription.IsActive;
 
             return new Result<Subscription>(subscription);

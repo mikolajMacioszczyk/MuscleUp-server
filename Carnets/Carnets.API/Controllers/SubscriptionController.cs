@@ -115,7 +115,7 @@ namespace Carnets.API.Controllers
                     return BadRequest(deactivationResult.ErrorCombined);
                 case PaymentStatus.SubscriptionPaid:
                     var subscriptionResult = await Mediator.Send(new CreateOrExtendGympassSubscriptionCommand(
-                        paymentResult.PlanId, paymentResult.CustomerId, paymentResult.PaymentMethodId));
+                        paymentResult.PlanId, paymentResult.CustomerId, paymentResult.PaymentMethodId, paymentResult.ExternalSubscriptionId));
 
                     if (subscriptionResult.IsSuccess)
                     {
@@ -124,7 +124,7 @@ namespace Carnets.API.Controllers
                     return BadRequest(subscriptionResult.ErrorCombined);
                 case PaymentStatus.SubscriptionDeleted:
                     var terminateResult = await Mediator.Send(new TerminateGympassSubscriptionCommand(
-                        paymentResult.PlanId, paymentResult.CustomerId, paymentResult.PaymentMethodId));
+                        paymentResult.PlanId, paymentResult.ExternalSubscriptionId));
                     
                     if (terminateResult.IsSuccess)
                     {
@@ -145,8 +145,11 @@ namespace Carnets.API.Controllers
             var workerId = _httpAuthContext.UserId;
             await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
 
+            // externalSubscriptionId is assigned only by webhook
+            var externalSubscriptionId = string.Empty;
+
             var payResult = await Mediator.Send(new CreateOrExtendGympassSubscriptionCommand(
-                model.GympassId, model.CustomerId, model.PaymentMethodId));
+                model.GympassId, model.CustomerId, model.PaymentMethodId, externalSubscriptionId));
 
             if (payResult.IsSuccess)
             {
@@ -158,6 +161,20 @@ namespace Carnets.API.Controllers
             }
 
             return BadRequest(payResult.ErrorCombined);
+        }
+
+        [HttpPut("cancel/{subscriptionId}")]
+        [AuthorizeRoles(RoleType.Member, RoleType.Worker)]
+        public async Task<ActionResult<SubscriptionDto>> CancelSubscription([FromRoute] string subscriptionId)
+        {
+            var cancellResult = await Mediator.Send(new CancellSubscriptionCommand(subscriptionId));
+
+            if (cancellResult.IsSuccess)
+            {
+                return Ok(_mapper.Map<SubscriptionDto>(cancellResult.Value));
+            }
+
+            return BadRequest(cancellResult.ErrorCombined);
         }
     }
 }
