@@ -193,11 +193,12 @@
 | api/group-workout/delete/{id}              | TODO    | DELETE      | cascade deletes GroupWorkout                           |
 
 ## Schedule
-| Endpoint Name            | Who can | Method type | Purpose                                   |
-|--------------------------|---------|-------------|-------------------------------------------|
-| api/schedule/get/{id}    | TODO    | GET         | returns aggregated info for schedule cell |
-| api/schedule/create/     | TODO    | POST        | create new groups and groupWorkouts       |
-| api/schedule/update/{id} | TODO    | PUT         | updates groups and groupWorkouts          |
+| Endpoint Name            | Who can | Method type | Purpose                                    |
+|--------------------------|---------|-------------|--------------------------------------------|
+| api/schedule/all/        | TODO    | GET         | returns aggregated info for schedule cells |
+| api/schedule/get/{id}    | TODO    | GET         | returns aggregated info for schedule cell  |
+| api/schedule/create/     | TODO    | POST        | create new groups and groupWorkouts        |
+| api/schedule/update/{id} | TODO    | PUT         | updates groups and groupWorkouts           |
 
 ## GroupTrainer
 | Endpoint Name                                    | Who can | Method type | Purpose                                                   |

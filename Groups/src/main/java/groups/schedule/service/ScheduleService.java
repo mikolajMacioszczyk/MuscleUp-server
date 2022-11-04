@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -32,18 +33,30 @@ public class ScheduleService {
         this.scheduleTrainerDtoFactory = new ScheduleTrainerDtoFactory();
     }
 
+    public List<ScheduleCell> composeAllCells() {
+
+        List<ScheduleCellHolder> cellHolders = scheduleRepository.getAll();
+
+        cellHolders.forEach(this::fillTrainerData);
+
+        return cellHolders.stream()
+                .map(ScheduleCellHolder::getValidScheduleCell)
+                .toList();
+
+    }
+
     public ScheduleCell composeCell(UUID groupWorkoutId) {
 
         ScheduleCellHolder cellHolder = scheduleRepository.getById(groupWorkoutId);
 
-        Trainer trainer = trainerRepository.getTrainerById(cellHolder.getTrainerId());
-        fillCellHolder(cellHolder, trainer);
+        fillTrainerData(cellHolder);
 
         return cellHolder.getValidScheduleCell();
     }
 
-    private void fillCellHolder(ScheduleCellHolder cellHolder, Trainer trainer) {
+    private void fillTrainerData(ScheduleCellHolder cellHolder) {
 
+        Trainer trainer = trainerRepository.getTrainerById(cellHolder.getTrainerId());
         ScheduleTrainerDto completeTrainer = scheduleTrainerDtoFactory.create(trainer);
         cellHolder.setTrainer(completeTrainer);
     }

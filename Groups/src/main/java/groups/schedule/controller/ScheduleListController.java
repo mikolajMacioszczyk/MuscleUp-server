@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.OK;
@@ -30,6 +31,14 @@ public class ScheduleListController extends AbstractListController {
         this.scheduleService = scheduleService;
     }
 
+
+    @GetMapping("/all")
+    protected ResponseEntity<?> getScheduleCells() {
+
+        List<ScheduleCell> scheduleCells = scheduleService.composeAllCells();
+
+        return response(OK, scheduleCells);
+    }
 
     @GetMapping("/get/{id}")
     protected ResponseEntity<?> getScheduleCellById(@PathVariable("id") UUID id) {

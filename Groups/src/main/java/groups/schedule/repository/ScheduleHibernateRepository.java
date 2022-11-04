@@ -6,11 +6,13 @@ import groups.schedule.dto.ScheduleCellHolderFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import java.util.List;
 import java.util.UUID;
 
 @Primary
@@ -38,6 +40,17 @@ public class ScheduleHibernateRepository implements ScheduleRepository {
         return scheduleCellHolderFactory.create(
                 getSession().get(GroupWorkout.class, id)
         );
+    }
+
+    public List<ScheduleCellHolder> getAll() {
+
+        return getSession().createCriteria(GroupWorkout.class)
+                .addOrder(Order.asc("id"))
+                .list()
+                .stream()
+                .map(groupWorkout -> scheduleCellHolderFactory.create(
+                        (GroupWorkout) groupWorkout))
+                .toList();
     }
 
     private Session getSession(){
