@@ -28,6 +28,8 @@
 
         public const string DefaultWorkerId = "747f6c50-aabc-4be2-aa43-10cf60aba46b";
 
+        public const string DefaultOwnerId = "644c6d0a-b66b-4332-a954-c9ccc7ec95f6";
+
         public const string DefaultTrainerId = "c7c25024-1997-4c9b-9e37-fe150d0faac1";
 
         public const string DefaultMemberId = "faf314bc-1175-46b0-a57c-d456f09ca139";

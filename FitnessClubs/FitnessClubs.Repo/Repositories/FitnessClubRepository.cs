@@ -40,6 +40,24 @@ namespace FitnessClubs.Repo.Repositories
             return await query.FirstOrDefaultAsync(f => f.FitnessClubId == fitnessClubId);
         }
 
+        public async Task<IEnumerable<FitnessClub>> GetOwnerFitnessClubs(string ownerId, bool onlyActive, bool asTracking)
+        {
+            IQueryable<FitnessClub> query = _context.FitnessClubs
+                .Where(f => f.OwnerId == ownerId);
+
+            if (onlyActive)
+            {
+                query = query.Where(f => !f.IsDeleted);
+            }
+
+            if (!asTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return await query.ToListAsync();
+        }
+
         public async Task<Result<FitnessClub>> Create(FitnessClub fitnessClub)
         {
             if ((await GetByName(fitnessClub.FitnessClubName, false)) != null)

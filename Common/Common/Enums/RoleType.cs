@@ -6,6 +6,7 @@
         Administrator,
         Worker,
         Member,
-        Trainer
+        Trainer,
+        Owner
     }
 }

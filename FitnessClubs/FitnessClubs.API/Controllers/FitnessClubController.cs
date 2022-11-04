@@ -8,7 +8,6 @@ using FitnessClubs.Application.FitnessClubs.Commands;
 using FitnessClubs.Application.FitnessClubs.Dtos;
 using FitnessClubs.Application.FitnessClubs.Queries;
 using FitnessClubs.Domain.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitnessClubs.API.Controllers
@@ -56,7 +55,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpPost()]
-        [AuthorizeRoles(RoleType.Administrator)]
+        [AuthorizeRoles(RoleType.Administrator, RoleType.Owner)]
         public async Task<ActionResult<FitnessClubDto>> CreateFitnessClub([FromBody] CreateFitnessClubDto model)
         {
             var command = new CreateFitnessClubCommand()
@@ -73,7 +72,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpDelete("{fitnessClubId}")]
-        [AuthorizeRoles(RoleType.Administrator)]
+        [AuthorizeRoles(RoleType.Administrator, RoleType.Owner)]
         public async Task<ActionResult> DeleteFitnessClub([FromRoute] string fitnessClubId)
         {
             var command = new DeleteFitnessClubCommand()
@@ -85,6 +84,14 @@ namespace FitnessClubs.API.Controllers
             if (deleteResult.IsSuccess)
             {
                 return NoContent();
+            }
+            else if (deleteResult.Errors.Contains(Common.CommonConsts.NOT_FOUND))
+            {
+                return NotFound();
+            }
+            else if (deleteResult.Errors.Contains(Common.CommonConsts.Unauthorized))
+            {
+                return Unauthorized();
             }
             return BadRequest(deleteResult.ErrorCombined);
         }

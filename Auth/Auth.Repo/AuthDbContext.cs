@@ -15,6 +15,7 @@ namespace Auth.Repo
         public DbSet<Member> Members { get; set; }
         public DbSet<Trainer> Trainers { get; set; }
         public DbSet<Worker> Workers { get; set; }
+        public DbSet<Owner> Owners { get; set; }
         public DbSet<AuthToken> AuthTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

@@ -39,7 +39,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpPost()]
-        [AuthorizeRoles(RoleType.Worker, RoleType.Administrator)]
+        [AuthorizeRoles(RoleType.Owner, RoleType.Administrator)]
         public async Task<ActionResult<WorkerEmploymentDto>> CreateWorkerEmployment(CreateWorkerEmploymentDto model)
         {
             var command = new CreateWorkerEmploymentCommand()
@@ -62,7 +62,7 @@ namespace FitnessClubs.API.Controllers
         }
 
         [HttpPut("{workerEmploymentId}")]
-        [AuthorizeRoles(RoleType.Worker, RoleType.Administrator)]
+        [AuthorizeRoles(RoleType.Owner, RoleType.Administrator)]
         public async Task<ActionResult<WorkerEmploymentDto>> TerminateWorkerEmployment([FromRoute] string workerEmploymentId)
         {
             var command = new TerminateWorkerEmploymentCommand()

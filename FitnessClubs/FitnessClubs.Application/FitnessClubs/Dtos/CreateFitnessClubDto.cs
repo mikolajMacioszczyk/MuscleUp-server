@@ -14,5 +14,8 @@ namespace FitnessClubs.Application.FitnessClubs.Dtos
 
         [MaxLength(500)]
         public string FitnessClubLogoUrl { get; set; }
+
+        [MaxLength(36)]
+        public string OwnerId { get; set; }
     }
 }

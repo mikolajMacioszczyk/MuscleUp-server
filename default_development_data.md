@@ -4,6 +4,11 @@ Available only when environement is "Development".
 
 # Auth
 
+### Owner
+- Email: owner@gmail.com  
+- Password: 123Pa$$word.  
+- Id: 644c6d0a-b66b-4332-a954-c9ccc7ec95f6
+
 ### Worker
 - Email: worker@gmail.com  
 - Password: 123Pa$$word.  

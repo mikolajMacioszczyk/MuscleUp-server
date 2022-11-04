@@ -12,16 +12,28 @@ namespace FitnessClubs.Application.FitnessClubs.Queries
 
     public class GetFitnessClubOfWorkerQueryHandler : IRequestHandler<GetFitnessClubOfWorkerQuery, Result<FitnessClub>>
     {
-        private readonly IEmploymentRepository<WorkerEmployment> _repository;
+        private readonly IEmploymentRepository<WorkerEmployment> _employmentRepository;
+        private readonly IFitnessClubRepository _fitnessClubRepository;
 
-        public GetFitnessClubOfWorkerQueryHandler(IEmploymentRepository<WorkerEmployment> repository)
+        public GetFitnessClubOfWorkerQueryHandler(
+            IEmploymentRepository<WorkerEmployment> repository, 
+            IFitnessClubRepository fitnessClubRepository)
         {
-            _repository = repository;
+            _employmentRepository = repository;
+            _fitnessClubRepository = fitnessClubRepository;
         }
 
-        public Task<Result<FitnessClub>> Handle(GetFitnessClubOfWorkerQuery request, CancellationToken cancellationToken)
+        public async Task<Result<FitnessClub>> Handle(GetFitnessClubOfWorkerQuery request, CancellationToken cancellationToken)
         {
-            return _repository.GetFitnessClubOfEmployee(request.WorkerId, false);
+            var ownerFitnessClubs = await _fitnessClubRepository.GetOwnerFitnessClubs(request.WorkerId, onlyActive: true, asTracking: false);
+
+            if (ownerFitnessClubs.Any())
+            {
+                // TODO: Return all fitness clubs. To be implemented later
+                return new Result<FitnessClub>(ownerFitnessClubs.FirstOrDefault());
+            }
+
+            return await _employmentRepository.GetFitnessClubOfEmployee(request.WorkerId, false);
         }
     }
 }

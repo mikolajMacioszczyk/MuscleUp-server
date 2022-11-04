@@ -4,6 +4,8 @@
     {
         public const string NOT_FOUND = "Item not found";
 
+        public const string Unauthorized = "Unauthorized";
+
         public const string RefreshTokenPath = "/login-with-refresh-token";
 
         public const string UserAgent = "User-Agent";

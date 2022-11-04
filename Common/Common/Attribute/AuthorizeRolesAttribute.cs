@@ -12,6 +12,13 @@ namespace Common.Attribute
 
         public AuthorizeRolesAttribute(params RoleType[] roles) : base()
         {
+            if (roles.Contains(RoleType.Worker))
+            {
+                var rolesWithOwner = new List<RoleType>(roles);
+                rolesWithOwner.Add(RoleType.Owner);
+                roles = rolesWithOwner.ToArray();
+            }
+
             Roles = string.Join(",", roles.Select(r => r.ToString()));
         }
     }

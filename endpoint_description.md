@@ -4,8 +4,9 @@
 - Worker
 - Trainer
 - Member
-- All = Guest, Admin, Worker, Trainer, Member
-- LoggedIn = Admin, Worker, Trainer, Member
+- Owner (is also Worker)
+- All = Guest, Admin, Worker, Trainer, Member, Owner
+- LoggedIn = Admin, Worker, Trainer, Member, Owner
 
 # Auth
 
@@ -47,6 +48,15 @@
 | api/auth/worker/register | Guest | POST | register Worker account |
 | api/auth/worker | Worker | PUT | update data of currently logged in Worker |
 | api/auth/worker/{workerId} | Worker | PUT | update data Worker by id |
+
+## Owner
+| Endpoint Name | Who can | Method type | Purpose |
+| ------- | ------------------------------- | ------- | ------------------------------- |
+| api/auth/owner/all | Admin | GET | get the data of all Owners |
+| api/auth/owner | Owner | GET | get the data of currently logged in Owner |
+| api/auth/owner/find/{userId} | Owner, Admin | GET | get the data of Owner by id |
+| api/auth/owner/register | Guest | POST | register Owner account |
+| api/auth/owner | Owner | PUT | update data of currently logged in Owner |
 
 # Carnets
 

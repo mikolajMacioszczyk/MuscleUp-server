@@ -1,6 +1,5 @@
 ﻿using Common.Consts;
 using Common.Enums;
-using Common.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,8 +8,9 @@ namespace Common.Helpers
 {
     public static class AuthHelper
     {
-        public const string RoleAll = nameof(RoleType.Member) + "," + nameof(RoleType.Trainer) + "," + nameof(RoleType.Worker) + "," + nameof(RoleType.Administrator);
-        public const string RoleAllExceptAdmin = nameof(RoleType.Member) + "," + nameof(RoleType.Trainer) + "," + nameof(RoleType.Worker);
+        public const string RoleAllExceptAdmin = nameof(RoleType.Member) + "," + nameof(RoleType.Trainer) + "," + nameof(RoleType.Worker) + "," + nameof(RoleType.Owner);
+        public const string RoleAll = RoleAllExceptAdmin + "," + nameof(RoleType.Administrator);
+
         public static bool HasAuthorizationBarerToken(HttpRequest request)
         {
             return request.Headers.ContainsKey(HeaderNames.Authorization)

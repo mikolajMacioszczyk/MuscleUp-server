@@ -17,6 +17,7 @@ namespace Auth.Repo
                 await roleManager.CreateAsync(new IdentityRole(RoleType.Worker.ToString()));
                 await roleManager.CreateAsync(new IdentityRole(RoleType.Member.ToString()));
                 await roleManager.CreateAsync(new IdentityRole(RoleType.Trainer.ToString()));
+                await roleManager.CreateAsync(new IdentityRole(RoleType.Owner.ToString()));
             }
         }
 
@@ -115,6 +116,31 @@ namespace Auth.Repo
                     User = defaultTrainer,
                 };
                 await context.Trainers.AddAsync(trainer);
+            }
+
+            //Seed Default Owner
+            var defaultOwner = new ApplicationUser
+            {
+                Id = SeedConsts.DefaultOwnerId,
+                UserName = "owner",
+                Email = "owner@gmail.com",
+                FirstName = "Sergio",
+                LastName = "Perez",
+                BirthDate = DateTime.UtcNow,
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                AvatarUrl = SeedConsts.DefaultUserAvatarUrl
+            };
+
+            var ownerCreated = await SeedUser(userManager, defaultOwner, SeedConsts.DefaultPassword, RoleType.Owner);
+            if (ownerCreated)
+            {
+                var owner = new Owner()
+                {
+                    UserId = SeedConsts.DefaultOwnerId,
+                    User = defaultOwner,
+                };
+                await context.Owners.AddAsync(owner);
             }
 
             await context.SaveChangesAsync();

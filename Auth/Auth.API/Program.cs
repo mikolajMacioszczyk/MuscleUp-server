@@ -13,6 +13,7 @@ using Auth.Application.Members.Dtos;
 using Auth.Application;
 using Auth.Application.Trainer.Dtos;
 using Auth.Application.Workers.Dtos;
+using Auth.Application.Owners.Dtos;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -46,6 +47,7 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISpecificUserRepository<Member, RegisterMemberDto>, MemberRepository>();
 builder.Services.AddScoped<ISpecificUserRepository<Worker, RegisterWorkerDto>, WorkerRepository>();
 builder.Services.AddScoped<ISpecificUserRepository<Trainer, RegisterTrainerDto>, TrainerRepository>();
+builder.Services.AddScoped<ISpecificUserRepository<Owner, RegisterOwnerDto>, OwnerRepository>();
 builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
 builder.Services.AddScoped<IApplicationUserManager, ApplicationUserManager>();
 builder.Services.AddScoped<IAuthTokenService, AuthTokenService>();
