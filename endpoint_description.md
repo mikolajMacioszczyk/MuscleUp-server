@@ -138,7 +138,8 @@
 ## Fitness Club
 | Endpoint Name | Who can | Method type | Purpose |
 | ------- | ------------------------------- | ------- | ------------------------------- |
-| api/fitness-clubs/fitness-club | All | GET | returns all FitnessClubs in application |
+| api/fitness-clubs/fitness-club | All | GET | returns all User's FitnessClubs |
+| api/fitness-clubs/fitness-club/all | All | GET | returns all FitnessClubs in application |
 | api/fitness-clubs/fitness-club/{fitnessClubId} | All | GET | returns single FitnessClub by id |
 | api/fitness-clubs/fitness-club/worker/{workerId} | Worker, Admin | GET | returns FitnessClub of worker |
 | api/fitness-clubs/fitness-club | Admin | POST | creates FitnessClub |

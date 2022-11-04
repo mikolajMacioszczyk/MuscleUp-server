@@ -26,6 +26,19 @@ namespace FitnessClubs.Repo.Repositories
             return query.FirstOrDefaultAsync();
         }
 
+        public async Task<IEnumerable<Membership>> GetAllMembershipsByMember(string memberId, bool asTracking)
+        {
+            var query = _context.Memberships
+                .Where(m => m.MemberId == memberId);
+
+            if (!asTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return await query.ToListAsync();
+        }
+
         public async Task<IEnumerable<Membership>> GetAllMembershipsFromFitnessClub(string fitnessClubId, bool asTracking)
         {
             var query = _context.Memberships

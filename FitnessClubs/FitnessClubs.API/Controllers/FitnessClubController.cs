@@ -23,6 +23,14 @@ namespace FitnessClubs.API.Controllers
 
         [HttpGet()]
         [AuthorizeRoles(AuthHelper.RoleAll)]
+        public async Task<ActionResult<IEnumerable<FitnessClubDto>>> GetUserFitnessClubs()
+        {
+            var all = await Mediator.Send(new GetAllUserFitnessClubsQuery());
+            return Ok(_mapper.Map<IEnumerable<FitnessClubDto>>(all));
+        }
+
+        [HttpGet("all")]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<IEnumerable<FitnessClubDto>>> GetAll()
         {
             var all = await Mediator.Send(new GetAllFitnessClubsQuery());

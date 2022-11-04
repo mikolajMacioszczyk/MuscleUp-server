@@ -10,7 +10,9 @@ namespace FitnessClubs.Application.Interfaces
 
         Task<IEnumerable<TEmployment>> GetAllEmployments(string fitnessClubId, bool includeInactive, bool asTracking);
 
-        Task<Result<FitnessClub>> GetFitnessClubOfEmployee(string workerId, bool asTracking);
+        Task<Result<FitnessClub>> GetFitnessClubOfEmployee(string employeeId, bool asTracking);
+
+        Task<IEnumerable<FitnessClub>> GetAllFitnessClubsOfEmployee(string employeeId, bool onlyActive, bool asTracking);
 
         Task<Result<TEmployment>> CreateEmployment(TEmployment employment);
 

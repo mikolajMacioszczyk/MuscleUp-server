@@ -77,6 +77,27 @@ namespace FitnessClubs.Repo.Repositories
             return new Result<FitnessClub>(activeEmployment.FitnessClub);
         }
 
+        public async Task<IEnumerable<FitnessClub>> GetAllFitnessClubsOfEmployee(
+            string employeeId, 
+            bool onlyActive, 
+            bool asTracking)
+        {
+            IQueryable<TEmployment> query = Employments
+                .Include(w => w.FitnessClub)
+                .Where(w => w.UserId == employeeId);
+
+            if (!asTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            var employments = await query.ToListAsync();
+
+            var resultEmployments = onlyActive ? employments.Where(e => e.IsActive) : employments;
+
+            return resultEmployments.Select(e => e.FitnessClub);
+        }
+
         public async Task<Result<TEmployment>> CreateEmployment(TEmployment employment)
         {
             var existingEmployment = await GetActiveEmployment(employment.FitnessClubId, employment.UserId, false);

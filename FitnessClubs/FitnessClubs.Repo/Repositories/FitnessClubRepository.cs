@@ -58,6 +58,20 @@ namespace FitnessClubs.Repo.Repositories
             return await query.ToListAsync();
         }
 
+        public async Task<IEnumerable<FitnessClub>> GetBatchByIds(IEnumerable<string> fitnessClubIds, bool asTracking)
+        {
+            IQueryable<FitnessClub> query = _context.FitnessClubs
+                .Where(f => !f.IsDeleted)
+                .Where(f => fitnessClubIds.Contains(f.FitnessClubId));
+
+            if (!asTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return await query.ToListAsync();
+        }
+
         public async Task<Result<FitnessClub>> Create(FitnessClub fitnessClub)
         {
             if ((await GetByName(fitnessClub.FitnessClubName, false)) != null)
