@@ -12,4 +12,10 @@ public @interface MustExist {
     Reason[] reason() default Reason.OTHER;
 
     String description() default "";
+
+    enum Reason {
+
+        HIBERNATE,
+        OTHER
+    }
 }

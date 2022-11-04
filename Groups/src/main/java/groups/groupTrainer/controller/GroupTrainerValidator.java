@@ -1,7 +1,7 @@
 package groups.groupTrainer.controller;
 
 import groups.common.innerCommunicators.resolver.ResolvedStatus;
-import groups.common.validation.ValidationError;
+import groups.common.errors.ValidationError;
 import groups.common.wrappers.ValidationErrors;
 import groups.group.repository.GroupQuery;
 import groups.groupTrainer.controller.form.GroupTrainerForm;

@@ -1,6 +1,6 @@
 package groups.common.wrappers;
 
-import groups.common.validation.ValidationError;
+import groups.common.errors.ValidationError;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;

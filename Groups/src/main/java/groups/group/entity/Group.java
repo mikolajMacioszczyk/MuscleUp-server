@@ -2,7 +2,6 @@ package groups.group.entity;
 
 import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
-import groups.common.annotation.Reason;
 import groups.groupPermission.entity.GroupPermission;
 import groups.groupTrainer.entity.GroupTrainer;
 import groups.groupWorkout.entity.GroupWorkout;
@@ -15,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static groups.common.annotation.MustExist.Reason.HIBERNATE;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 
@@ -53,7 +53,7 @@ public class Group extends AbstractEntity {
     private GroupTrainer groupTrainer;
 
 
-    @MustExist(reason = Reason.HIBERNATE)
+    @MustExist(reason = HIBERNATE)
     public Group() {
     }
 

@@ -1,6 +1,6 @@
 package groups.group.controller;
 
-import groups.common.validation.ValidationError;
+import groups.common.errors.ValidationError;
 import groups.common.wrappers.ValidationErrors;
 import groups.group.controller.form.GroupFullForm;
 import groups.group.entity.GroupFullDto;

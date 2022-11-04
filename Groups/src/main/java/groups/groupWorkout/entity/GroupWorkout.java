@@ -2,7 +2,6 @@ package groups.groupWorkout.entity;
 
 import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
-import groups.common.annotation.Reason;
 import groups.common.annotation.UnknownForeignKey;
 import groups.group.entity.Group;
 import groups.workoutParticipant.entity.WorkoutParticipant;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static groups.common.annotation.MustExist.Reason.HIBERNATE;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 
@@ -45,7 +45,7 @@ public class GroupWorkout extends AbstractEntity {
     private final List<WorkoutParticipant> workoutParticipants = new ArrayList<>();
 
 
-    @MustExist(reason = Reason.HIBERNATE)
+    @MustExist(reason = HIBERNATE)
     public GroupWorkout() {
     }
 

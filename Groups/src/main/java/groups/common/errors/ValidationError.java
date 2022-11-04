@@ -1,4 +1,4 @@
-package groups.common.validation;
+package groups.common.errors;
 
 import org.springframework.http.HttpStatus;
 

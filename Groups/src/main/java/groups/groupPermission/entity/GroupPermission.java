@@ -2,7 +2,6 @@ package groups.groupPermission.entity;
 
 import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
-import groups.common.annotation.Reason;
 import groups.common.annotation.UnknownForeignKey;
 import groups.group.entity.Group;
 import org.hibernate.annotations.GenericGenerator;
@@ -10,6 +9,8 @@ import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.util.UUID;
+
+import static groups.common.annotation.MustExist.Reason.HIBERNATE;
 
 @Entity
 @Table(name = "class_permission")
@@ -30,7 +31,7 @@ public class GroupPermission extends AbstractEntity {
     private UUID permissionId;
 
 
-    @MustExist(reason = Reason.HIBERNATE)
+    @MustExist(reason = HIBERNATE)
     public GroupPermission() {
     }
 

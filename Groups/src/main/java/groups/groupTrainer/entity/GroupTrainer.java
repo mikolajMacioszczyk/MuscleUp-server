@@ -2,7 +2,6 @@ package groups.groupTrainer.entity;
 
 import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
-import groups.common.annotation.Reason;
 import groups.common.annotation.UnknownForeignKey;
 import groups.group.entity.Group;
 import org.hibernate.annotations.GenericGenerator;
@@ -11,6 +10,7 @@ import org.springframework.util.Assert;
 import javax.persistence.*;
 import java.util.UUID;
 
+import static groups.common.annotation.MustExist.Reason.HIBERNATE;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -32,7 +32,7 @@ public class GroupTrainer extends AbstractEntity {
     private UUID trainerId;
 
 
-    @MustExist(reason = Reason.HIBERNATE)
+    @MustExist(reason = HIBERNATE)
     public GroupTrainer() {
     }
 
