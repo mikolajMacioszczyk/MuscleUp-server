@@ -11,17 +11,19 @@ import org.springframework.util.Assert;
 import javax.persistence.*;
 import java.util.UUID;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Table(name = "class_trainer")
 public class GroupTrainer extends AbstractEntity {
 
     @Id
-    @Column(name = "group_trainer_id")
+    @Column(name = "class_trainer_id")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "class_id", nullable = false)
     private Group group;
 

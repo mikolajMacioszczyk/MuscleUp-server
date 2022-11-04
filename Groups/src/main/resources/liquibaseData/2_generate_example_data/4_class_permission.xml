@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_example_class_permission_data" author="Mateusz_Kleinowski">
+        <sql>
+            INSERT INTO class_permission (
+                class_permission_id,
+                permission_id,
+                class_id
+            )
+            VALUES (
+                '69096c1a-4f82-11ed-bdc3-0242ac120002',
+                '0e737124-da70-40d5-b3fb-37f474050240',
+                '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

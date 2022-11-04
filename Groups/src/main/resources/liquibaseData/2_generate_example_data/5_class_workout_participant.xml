@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_example_class_workout_participant_data" author="Mateusz_Kleinowski">
+        <sql>
+            INSERT INTO class_workout_participant (
+                class_workout_participant_id,
+                gympass_id,
+                class_workout_id
+            )
+            VALUES (
+                'df5943c8-4f81-11ed-bdc3-0242ac120002',
+                'b967911e-7c9c-4f8e-b55e-8a5b46b8abfb',
+                '163cc334-4f81-11ed-bdc3-0242ac120002'
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

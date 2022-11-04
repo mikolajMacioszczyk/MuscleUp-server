@@ -5,11 +5,17 @@ import groups.common.annotation.MustExist;
 import groups.common.annotation.Reason;
 import groups.common.annotation.UnknownForeignKey;
 import groups.group.entity.Group;
+import groups.workoutParticipant.entity.WorkoutParticipant;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "class_workout")
@@ -34,6 +40,9 @@ public class GroupWorkout extends AbstractEntity {
 
     @Column(name = "max_participants", nullable = false)
     private int maxParticipants;
+
+    @OneToMany(mappedBy = "groupWorkout", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+    private final List<WorkoutParticipant> workoutParticipants = new ArrayList<>();
 
 
     @MustExist(reason = Reason.HIBERNATE)
@@ -84,5 +93,9 @@ public class GroupWorkout extends AbstractEntity {
 
     public int getMaxParticipants() {
         return maxParticipants;
+    }
+
+    public List<WorkoutParticipant> getWorkoutParticipants() {
+        return workoutParticipants;
     }
 }

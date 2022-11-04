@@ -13,5 +13,4 @@ public abstract class AbstractListController {
 
         return new ResponseEntity<>(result, responseStatus);
     }
-
 }

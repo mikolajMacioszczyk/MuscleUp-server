@@ -22,13 +22,21 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	//testImplementation 'org.springframework.security:spring-security-test'
 
-	// databases
+	// database
 	runtimeOnly 'org.postgresql:postgresql'
 
-	// additional
-	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11' // swagger
-	implementation 'org.liquibase:liquibase-core:4.16.1' // liquibase
-	implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1' // jwt
+	// liquibase
+	implementation 'org.liquibase:liquibase-core:4.16.1'
+
+	// swagger
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
+
+	 // jwt
+	implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
+
+	// json mapper
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4'
 }
 
 tasks.named('test') {

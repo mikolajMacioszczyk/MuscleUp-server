@@ -9,5 +9,5 @@ public record GroupFullDto(
         String description,
         LocalDateTime startTime,
         LocalDateTime endTime,
-        Boolean repeatable
+        boolean repeatable
 ) { }

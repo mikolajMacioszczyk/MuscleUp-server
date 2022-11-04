@@ -13,6 +13,4 @@ public interface WorkoutParticipantRepository {
     void unassign(UUID workoutParticipantId);
 
     void unassign(UUID groupWorkoutId, UUID gympassId);
-
-    void unassignAllByGroupWorkoutId(UUID groupWorkoutId);
 }

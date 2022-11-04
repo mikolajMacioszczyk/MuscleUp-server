@@ -14,7 +14,7 @@ public class GroupFullDtoFactory {
                 group.getDescription(),
                 group.getStartTime(),
                 group.getEndTime(),
-                group.getRepeatable()
+                group.isRepeatable()
         );
     }
 }

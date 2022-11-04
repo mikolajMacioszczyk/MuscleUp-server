@@ -3,13 +3,20 @@ package groups.group.entity;
 import groups.common.abstracts.AbstractEntity;
 import groups.common.annotation.MustExist;
 import groups.common.annotation.Reason;
+import groups.groupPermission.entity.GroupPermission;
+import groups.groupTrainer.entity.GroupTrainer;
+import groups.groupWorkout.entity.GroupWorkout;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "class")
@@ -35,6 +42,15 @@ public class Group extends AbstractEntity {
 
     @Column(name="repeatable", nullable = false)
     private boolean repeatable;
+
+    @OneToMany(mappedBy = "group", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+    private List<GroupPermission> groupPermissions;
+
+    @OneToMany(mappedBy = "group", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+    private List<GroupWorkout> groupWorkouts;
+
+    @OneToOne(mappedBy = "group", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+    private GroupTrainer groupTrainer;
 
 
     @MustExist(reason = Reason.HIBERNATE)
@@ -91,7 +107,19 @@ public class Group extends AbstractEntity {
         return endTime;
     }
 
-    public Boolean getRepeatable() {
+    public boolean isRepeatable() {
         return repeatable;
+    }
+
+    public List<GroupPermission> getGroupPermissions() {
+        return groupPermissions;
+    }
+
+    public GroupTrainer getGroupTrainer() {
+        return groupTrainer;
+    }
+
+    public List<GroupWorkout> getGroupWorkouts() {
+        return groupWorkouts;
     }
 }

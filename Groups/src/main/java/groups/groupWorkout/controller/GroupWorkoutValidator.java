@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.*;
 @Service
 public class GroupWorkoutValidator {
 
-    private static final int MIN_PARTICIPANTS = 1;
+    public static final int MIN_PARTICIPANTS = 1;
 
     private final GroupWorkoutQuery groupWorkoutQuery;
     private final GroupQuery groupQuery;

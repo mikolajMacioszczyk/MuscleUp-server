@@ -22,10 +22,11 @@ public class SwaggerConfiguration {
                 .group("swagger.json")
                 .packagesToScan(
                         "groups.group.controller",
+                        "groups.groupWorkout.controller",
                         "groups.groupTrainer.controller",
-                        "groups.workoutGroup.controller",
+                        "groups.groupPermission.controller",
                         "groups.workoutParticipant.controller",
-                        "groups.workoutPermission.controller"
+                        "groups.schedule.controller"
                 )
                 .build();
     }

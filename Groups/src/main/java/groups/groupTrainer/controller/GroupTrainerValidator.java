@@ -6,7 +6,7 @@ import groups.common.wrappers.ValidationErrors;
 import groups.group.repository.GroupQuery;
 import groups.groupTrainer.controller.form.GroupTrainerForm;
 import groups.groupTrainer.repository.GroupTrainerQuery;
-import groups.groupTrainer.trainer.TrainerValidator;
+import groups.groupTrainer.trainer.TrainerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,21 +22,21 @@ public class GroupTrainerValidator {
 
     private final GroupQuery groupQuery;
     private final GroupTrainerQuery groupTrainerQuery;
-    private final TrainerValidator trainerValidator;
+    private final TrainerRepository trainerRepository;
 
 
     @Autowired
     private GroupTrainerValidator(GroupQuery groupQuery,
                                   GroupTrainerQuery groupTrainerQuery,
-                                  TrainerValidator trainerValidator) {
+                                  TrainerRepository trainerRepository) {
 
         Assert.notNull(groupQuery, "groupQuery must not be null");
         Assert.notNull(groupTrainerQuery, "groupTrainerQuery must not be null");
-        Assert.notNull(trainerValidator, "trainerValidator must not be null");
+        Assert.notNull(trainerRepository, "trainerValidator must not be null");
 
         this.groupQuery = groupQuery;
         this.groupTrainerQuery = groupTrainerQuery;
-        this.trainerValidator = trainerValidator;
+        this.trainerRepository = trainerRepository;
     }
 
 
@@ -71,7 +71,7 @@ public class GroupTrainerValidator {
 
     private void checkTrainerId(UUID id, ValidationErrors errors) {
 
-        HttpStatus validationStatus = trainerValidator.checkTrainerId(id);
+        HttpStatus validationStatus = trainerRepository.checkTrainerId(id);
 
         ResolvedStatus resolvedStatus = resolveIdCheckStatus(validationStatus, "Trainer");
 

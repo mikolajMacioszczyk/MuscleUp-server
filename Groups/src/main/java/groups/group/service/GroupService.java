@@ -5,8 +5,6 @@ import groups.group.entity.Group;
 import groups.group.entity.GroupFactory;
 import groups.group.entity.GroupFullDto;
 import groups.group.repository.GroupRepository;
-import groups.groupTrainer.service.GroupTrainerService;
-import groups.groupWorkout.service.GroupWorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -18,22 +16,14 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final GroupFactory groupFactory;
-    private final GroupTrainerService groupTrainerService;
-    private final GroupWorkoutService groupWorkoutService;
 
 
     @Autowired
-    private GroupService(GroupRepository groupRepository,
-                         GroupTrainerService groupTrainerService,
-                         GroupWorkoutService groupWorkoutService) {
+    private GroupService(GroupRepository groupRepository) {
 
         Assert.notNull(groupRepository, "groupRepository must not be null");
-        Assert.notNull(groupTrainerService, "groupTrainerService must not be null");
-        Assert.notNull(groupWorkoutService, "groupWorkoutService must not be null");
 
         this.groupRepository = groupRepository;
-        this.groupTrainerService = groupTrainerService;
-        this.groupWorkoutService = groupWorkoutService;
         this.groupFactory = new GroupFactory();
     }
 
@@ -68,8 +58,6 @@ public class GroupService {
 
         Assert.notNull(idToRemove, "idToRemove must not be null");
 
-        groupTrainerService.unassignAllByGroupId(idToRemove);
-        groupWorkoutService.deleteAllByGroupId(idToRemove);
         groupRepository.delete(idToRemove);
     }
 }
