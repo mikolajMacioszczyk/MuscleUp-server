@@ -21,6 +21,14 @@ namespace Carnets.Domain.Models
         [Range(0, double.MaxValue)]
         public double Price { get; set; }
 
+        [Required]
+        [MaxLength(100)]
+        public string OneTimePriceId { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string ReccuringPriceId { get; set; }
+
         [MaxLength(10_000)]
         public string Description { get; set; }
 

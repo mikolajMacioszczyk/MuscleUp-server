@@ -13,7 +13,7 @@ namespace Carnets.Application.Interfaces
 
         PaymentResult HandlePaidResult(string jsonBody, string signature);
 
-        Task<string> CreateCheckoutSession(string gympassId, string customerId, string gympassTypeId, string successUrl, string cancelUrl);
+        Task<string> CreateCheckoutSession(CheckoutSessionParams checkoutSessionParams);
 
         Task CancelSubscription(string externalSubscriptionId);
 

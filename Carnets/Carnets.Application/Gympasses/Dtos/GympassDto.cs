@@ -21,5 +21,7 @@ namespace Carnets.Application.Gympasses.Dtos
         public GympassTypeValidation ValidationType { get; set; }
 
         public int RemainingEntries { get; set; }
+
+        public PaymentType PaymentType { get; set; }
     }
 }

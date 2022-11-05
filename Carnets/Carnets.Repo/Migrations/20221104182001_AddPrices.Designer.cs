@@ -3,6 +3,7 @@ using System;
 using Carnets.Repo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Carnets.Repo.Migrations
 {
     [DbContext(typeof(CarnetsDbContext))]
-    partial class CarnetsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221104182001_AddPrices")]
+    partial class AddPrices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,8 +120,8 @@ namespace Carnets.Repo.Migrations
 
                     b.Property<string>("FitnessClubId")
                         .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("character varying(36)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("GympassTypeName")
                         .IsRequired()
@@ -146,7 +148,7 @@ namespace Carnets.Repo.Migrations
                     b.Property<string>("ReccuringPriceId")
                         .IsRequired()
                         .HasMaxLength(36)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("character varying(36)");
 
                     b.Property<int>("ValidationType")
                         .HasColumnType("integer");

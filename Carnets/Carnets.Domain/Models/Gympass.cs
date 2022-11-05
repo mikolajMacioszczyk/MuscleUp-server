@@ -24,5 +24,7 @@ namespace Carnets.Domain.Models
 
         [Range(0, int.MaxValue)]
         public int RemainingEntries { get; set; }
+
+        public PaymentType PaymentType { get; set; }
     }
 }

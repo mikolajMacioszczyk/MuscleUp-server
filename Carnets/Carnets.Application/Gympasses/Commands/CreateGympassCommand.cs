@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Carnets.Application.Models;
 using Carnets.Application.Gympasses.Dtos;
 using Carnets.Application.Interfaces;
 using Carnets.Domain.Enums;
@@ -6,6 +7,7 @@ using Carnets.Domain.Models;
 using Common.Models;
 using Common.Models.Dtos;
 using MediatR;
+using Carnets.Application.Enums;
 
 namespace Carnets.Application.Gympasses.Commands
 {
@@ -48,18 +50,14 @@ namespace Carnets.Application.Gympasses.Commands
                 Status = GympassStatus.New,
                 ActivationDate = DateTime.UtcNow,
                 ValidityDate = DateTime.UtcNow,
+                PaymentType = request.Model.PaymentType
             };
 
             var createResult = await _gympassRepository.CreateGympass(request.Model.GympassTypeId, created);
 
             if (createResult.IsSuccess)
             {
-                var gympassTypeId = createResult.Value.GympassType.GympassTypeId;
-                var gympassId = createResult.Value.GympassId;
-                var customerId = await _paymentService.GetOrCreateCustomer(request.UserId);
-
-                var checkoutSessionUrl = await _paymentService.CreateCheckoutSession(gympassId, customerId,
-                    gympassTypeId, request.Model.SuccessUrl, request.Model.CancelUrl);
+                var checkoutSessionUrl = await CreateCheckoutSession(createResult.Value, request);
 
                 await _gympassRepository.SaveChangesAsync();
                 await _membershipService.CreateMembership(new CreateMembershipDto
@@ -75,6 +73,36 @@ namespace Carnets.Application.Gympasses.Commands
             }
 
             return new Result<GympassWithSessionDto>(createResult.Errors);
+        }
+
+        public async Task<string> CreateCheckoutSession(Gympass createdGympass, CreateGympassCommand request)
+        {
+            var priceId = createdGympass.PaymentType switch
+            {
+                PaymentType.OneTime => createdGympass.GympassType.OneTimePriceId,
+                PaymentType.Recurring => createdGympass.GympassType.ReccuringPriceId,
+                _ => throw new ArgumentOutOfRangeException(nameof(createdGympass.PaymentType))
+            };
+
+            var paymentModeType = createdGympass.PaymentType switch
+            {
+                PaymentType.OneTime => PaymentModeType.payment,
+                PaymentType.Recurring => PaymentModeType.subscription,
+                _ => throw new ArgumentOutOfRangeException(nameof(createdGympass.PaymentType))
+            };
+
+            var checkoutSessionParams = new CheckoutSessionParams(
+                gympassId: createdGympass.GympassId,
+                customerId: await _paymentService.GetOrCreateCustomer(request.UserId),
+                gympassTypeId: createdGympass.GympassType.GympassTypeId,
+                successUrl: request.Model.SuccessUrl,
+                cancelUrl: request.Model.CancelUrl,
+                priceId: priceId,
+                paymentModeType: paymentModeType);
+
+            var checkoutSessionUrl = await _paymentService.CreateCheckoutSession(checkoutSessionParams);
+
+            return checkoutSessionUrl;
         }
     }
 }

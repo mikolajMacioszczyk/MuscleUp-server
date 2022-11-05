@@ -54,30 +54,58 @@ namespace Carnets.Application.Services
 
         public async Task CreateProduct(GympassType gympassType)
         {
-            var options = new ProductCreateOptions
+            var productOptions = new ProductCreateOptions
             {
                 // will be used by stripe
                 Id = gympassType.GympassTypeId,
                 Name = gympassType.GympassTypeName,
                 Active = true,
-                DefaultPriceData = new ProductDefaultPriceDataOptions()
-                {
-                    Currency = DefaultCurrency,
-                    UnitAmountDecimal = Convert.ToDecimal(gympassType.Price * 100),
-                    Recurring = new ProductDefaultPriceDataRecurringOptions { 
-                        Interval = gympassType.Interval.ToString().ToLower(),
-                        IntervalCount = gympassType.IntervalCount
-                    }
-                },
                 Description = string.IsNullOrEmpty(gympassType.Description) ? null : gympassType.Description,
             };
-            var service = new ProductService();
-            var product = await service.CreateAsync(options);
+            var productService = new ProductService();
+            var product = await productService.CreateAsync(productOptions);
 
             if (product.Id != gympassType.GympassTypeId)
             {
                 _logger.LogError($"Incompatible productId = {product.Id} with gympassTypeId = {gympassType.GympassTypeId}");
             }
+
+            await CreateReccuringPrice(gympassType);
+
+            await CreateOneTimePrice(gympassType);
+        }
+
+        private async Task CreateReccuringPrice(GympassType gympassType)
+        {
+            var priceService = new PriceService();
+
+            var reccuringPriceOptions = new PriceCreateOptions
+            {
+                UnitAmountDecimal = Convert.ToDecimal(gympassType.Price * 100),
+                Currency = DefaultCurrency,
+                Recurring = new PriceRecurringOptions
+                {
+                    Interval = gympassType.Interval.ToString().ToLower(),
+                    IntervalCount = gympassType.IntervalCount
+                },
+                Product = gympassType.GympassTypeId,
+            };
+            var reccuringPrice = await priceService.CreateAsync(reccuringPriceOptions);
+            gympassType.ReccuringPriceId = reccuringPrice.Id;
+        }
+
+        private async Task CreateOneTimePrice(GympassType gympassType)
+        {
+            var priceService = new PriceService();
+
+            var oneTimePriceOptions = new PriceCreateOptions
+            {
+                UnitAmountDecimal = Convert.ToDecimal(gympassType.Price * 100),
+                Currency = DefaultCurrency,
+                Product = gympassType.GympassTypeId,
+            };
+            var oneTimePrice = await priceService.CreateAsync(oneTimePriceOptions);
+            gympassType.OneTimePriceId = oneTimePrice.Id;
         }
 
         public async Task EnsureProductCreated(GympassType gympassType)
@@ -126,40 +154,26 @@ namespace Carnets.Application.Services
             await service.UpdateAsync(gympassTypeId, options);
         }
 
-        public async Task<string> CreateCheckoutSession(
-            string gympassId,
-            string customerId,
-            string gympassTypeId,
-            string successUrl,
-            string cancelUrl)
+        public async Task<string> CreateCheckoutSession(CheckoutSessionParams param)
         {
-            var productService = new ProductService();
-            var product = productService.Get(gympassTypeId);
-
-            if (product is null || string.IsNullOrEmpty(product.DefaultPriceId))
-            {
-                _logger.LogError("Getting empty product or price when creating checkout session");
-                throw new ArgumentException(nameof(product));
-            }
-
             var options = new SessionCreateOptions
             {
                 LineItems = new List<SessionLineItemOptions>
                 {
-                  new SessionLineItemOptions
-                  {
-                    Price = product.DefaultPriceId,
-                    Quantity = 1,
-                  },
+                    new SessionLineItemOptions
+                    {
+                        Price = param.PriceId,
+                        Quantity = 1,
+                    },
                 },
-                Mode = PaymentModeType.subscription.ToString().ToLower(),
-                SuccessUrl = UriHelper.AppendQueryParamToUri(successUrl, CarnetsConsts.GympassIdKey, gympassId),
-                CancelUrl = UriHelper.AppendQueryParamToUri(cancelUrl, CarnetsConsts.GympassIdKey, gympassId),
-                ClientReferenceId = customerId,
+                Mode = param.PaymentModeType.ToString().ToLower(),
+                SuccessUrl = UriHelper.AppendQueryParamToUri(param.SuccessUrl, CarnetsConsts.GympassIdKey, param.GympassId),
+                CancelUrl = UriHelper.AppendQueryParamToUri(param.CancelUrl, CarnetsConsts.GympassIdKey, param.GympassId),
+                ClientReferenceId = param.CustomerId,
             };
             options.Metadata = new Dictionary<string, string>()
             {
-                [CarnetsConsts.GympassIdKey] = gympassId
+                [CarnetsConsts.GympassIdKey] = param.GympassId
             };
 
             var sessionService = new SessionService();

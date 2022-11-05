@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Carnets.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Carnets.Application.Gympasses.Dtos
 {
@@ -13,5 +14,7 @@ namespace Carnets.Application.Gympasses.Dtos
 
         [MaxLength(100)]
         public string CancelUrl { get; set; }
+
+        public PaymentType PaymentType { get; set; }
     }
 }
