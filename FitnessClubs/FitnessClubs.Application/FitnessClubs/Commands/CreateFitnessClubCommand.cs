@@ -1,4 +1,5 @@
 ﻿using Common.Consts;
+using Common.Interfaces;
 using Common.Models;
 using FitnessClubs.Application.Interfaces;
 using FitnessClubs.Domain.Models;
@@ -15,13 +16,16 @@ namespace FitnessClubs.Application.FitnessClubs.Commands
     {
         private readonly IFitnessClubRepository _repository;
         private readonly HttpAuthContext _httpAuthContext;
+        private readonly IAuthService _authService;
 
         public CreateFitnessClubCommandHandler(
-            IFitnessClubRepository repository, 
-            HttpAuthContext httpAuthContext)
+            IFitnessClubRepository repository,
+            HttpAuthContext httpAuthContext,
+            IAuthService authService)
         {
             _repository = repository;
             _httpAuthContext = httpAuthContext;
+            _authService = authService;
         }
 
         public async Task<Result<FitnessClub>> Handle(CreateFitnessClubCommand request, CancellationToken cancellationToken)
@@ -33,7 +37,10 @@ namespace FitnessClubs.Application.FitnessClubs.Commands
 
             if (_httpAuthContext.UserRole == Common.Enums.RoleType.Administrator)
             {
-                // TODO: Validate owner exists
+                if (!(await _authService.DoesOwnerExists(request.FitnessClub.OwnerId)))
+                {
+                    return new Result<FitnessClub>($"Owner with id \"{request.FitnessClub.OwnerId}\" does not exists");
+                }
             }
             else if (_httpAuthContext.UserRole == Common.Enums.RoleType.Owner)
             {

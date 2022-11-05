@@ -1,7 +1,7 @@
 ﻿using Auth.Application.Common.Dtos;
 using Common.Enums;
 
-namespace Auth.Application.Owners.Dtos
+namespace Common.Models.Dtos
 {
     public class OwnerDto : UserDto
     {

@@ -2,6 +2,7 @@
 using Auth.Application.Owners.Dtos;
 using Auth.Domain.Models;
 using AutoMapper;
+using Common.Models.Dtos;
 using MediatR;
 
 namespace Auth.Application.Owners.Queries

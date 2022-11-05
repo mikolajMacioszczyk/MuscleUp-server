@@ -37,7 +37,7 @@ namespace Common.Services
 
         public Task<bool> DoesMemberExists(string userId)
         {
-            return DoesUserExists<MemberDto>("member/by-ids/" + userId);
+            return DoesUserExists<MemberDto>("member/find/", userId);
         }
 
         public async Task<Result<IEnumerable<TrainerDto>>> GetAllTrainersWithIds(IEnumerable<string> userIds)
@@ -52,7 +52,7 @@ namespace Common.Services
 
         public Task<bool> DoesTrainerExists(string userId)
         {
-            return DoesUserExists<TrainerDto>("trainer/by-ids/" + userId);
+            return DoesUserExists<TrainerDto>("trainer/find/", userId);
         }
 
         public async Task<Result<IEnumerable<WorkerDto>>> GetAllWorkersWithIds(IEnumerable<string> userIds)
@@ -67,19 +67,35 @@ namespace Common.Services
 
         public Task<bool> DoesWorkerExists(string userId)
         {
-            return DoesUserExists<WorkerDto>("worker/by-ids/" + userId);
+            return DoesUserExists<WorkerDto>("worker/find/", userId);
         }
 
-        public async Task<bool> DoesUserExists<TUserDto>(string path)
+        public Task<bool> DoesOwnerExists(string userId)
         {
-            var userData = await SendGetRequestAsync<IEnumerable<TUserDto>>(path);
+            return DoesUserExists<OwnerDto>("owner/find/", userId);
+        }
+
+        public async Task<bool> DoesUserExists<TUserDto>(string methodPath, string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return false;
+            }
+
+            var path = methodPath + userId;
+
+            var userData = await SendGetRequestAsync<TUserDto>(path);
 
             if (!userData.IsSuccess)
             {
+                if (userData.Errors.Contains(Common.CommonConsts.NOT_FOUND))
+                {
+                    return false;
+                }
                 throw new BadRequestException(userData.ErrorCombined);
             }
 
-            return userData.Value.Any();
+            return userData.Value != null;
         }
 
         private string JoinUserIds(IEnumerable<string> userIds)

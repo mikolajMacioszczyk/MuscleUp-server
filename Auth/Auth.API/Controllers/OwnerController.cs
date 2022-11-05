@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Auth.Application.Owners.Dtos;
 using Auth.Application.Owners.Queries;
 using Auth.Application.Owners.Commands;
+using Common.Models.Dtos;
 
 namespace Auth.API.Controllers
 {

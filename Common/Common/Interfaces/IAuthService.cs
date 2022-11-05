@@ -13,5 +13,7 @@ namespace Common.Interfaces
 
         Task<Result<IEnumerable<TrainerDto>>> GetAllTrainersWithIds(IEnumerable<string> userIds);
         Task<bool> DoesTrainerExists(string userId);
+
+        Task<bool> DoesOwnerExists(string userId);
     }
 }
