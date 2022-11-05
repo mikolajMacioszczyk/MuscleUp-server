@@ -119,7 +119,8 @@
 | api/carnets/subscription/{subscriptionId} | Member, Worker, Admin | GET | returns single Subscription by id |
 | api/carnets/subscription | Member | POST | creates Subscription |
 | api/carnets/subscription/as-worker | Worker | POST | creates Subscription |
-| api/carnets/subscription/cancel/{subscriptionId} | Member, Worker | PUT | cancells Subscription both on api and Stripe |
+| api/carnets/subscription/cancel/{subscriptionId} | Member, Worker | PUT | cancels Subscription both on api and Stripe |
+| api/carnets/subscription/cancel-by-gympass/{gympassId} | Member, Worker | PUT | cancels all Gympass Subscriptions both on api and Stripe |
 
 ## Entries
 | Endpoint Name | Who can | Method type | Purpose |

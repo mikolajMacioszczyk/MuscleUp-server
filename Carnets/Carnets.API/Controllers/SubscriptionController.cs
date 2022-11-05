@@ -176,5 +176,23 @@ namespace Carnets.API.Controllers
 
             return BadRequest(cancellResult.ErrorCombined);
         }
+
+        [HttpPut("cancel-by-gympass/{gympassId}")]
+        [AuthorizeRoles(RoleType.Member, RoleType.Worker)]
+        public async Task<ActionResult<SubscriptionDto>> CancelAllGympassSubscriptions([FromRoute] string gympassId)
+        {
+            var cancellAllResult = await Mediator.Send(new CancellAllGympassSubscriptionsCommand(gympassId));
+
+            if (cancellAllResult.IsSuccess)
+            {
+                return Ok(_mapper.Map<IEnumerable<SubscriptionDto>>(cancellAllResult.Value));
+            }
+            else if (cancellAllResult.Errors.Contains(Common.CommonConsts.NOT_FOUND))
+            {
+                return NotFound();
+            }
+
+            return BadRequest(cancellAllResult.ErrorCombined);
+        }
     }
 }
