@@ -87,6 +87,7 @@
 | api/carnets/gympass/by-member/{memberId} | Worker, Admin | GET | returns all Member's Gympasses |
 | api/carnets/gympass/from-fitness-club | Worker | GET | returns all Gympasses from FitnessClub |
 | api/carnets/gympass/{gympassId} | LoggedIn | GET | returns single Gympass by id |
+| api/carnets/gympass/has-active/{memberId}/{fitnessClubId} | LoggedIn | GET | verifies if Member has active gympass in Fitness Club |
 | api/carnets/gympass | Member | POST | creates Gympass |
 | api/carnets/gympass/activate/{gympassId} | Worker | PUT | activates the Gympass |
 | api/carnets/gympass/deactivate/{gympassId} | Worker | PUT | deactivates the Gympass |

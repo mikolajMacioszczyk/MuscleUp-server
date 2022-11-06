@@ -82,6 +82,17 @@ namespace Carnets.API.Controllers
             return gympass is null ? NotFound() : Ok(_mapper.Map<GympassDto>(gympass));
         }
 
+        [HttpGet("has-active/{memberId}/{fitnessClubId}")]
+        [AuthorizeRoles(AuthHelper.RoleAll)]
+        public async Task<ActionResult<GympassDto>> VerifyMemberHasActiveGympass(
+            [FromRoute] string memberId, [FromRoute] string fitnessClubId)
+        {
+            var activeGympasses = await Mediator.Send(new GetActiveMemberGympassesQuery(memberId, fitnessClubId));
+
+            // returns HTTP 200 if member has any active gympass in FitnessClub, else 404
+            return activeGympasses.Any() ? Ok() : NotFound();
+        }
+
         [HttpPost()]
         [AuthorizeRoles(RoleType.Member)]
         public async Task<ActionResult<GympassWithSessionDto>> Create([FromBody] CreateGympassDto model)

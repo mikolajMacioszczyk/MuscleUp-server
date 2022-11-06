@@ -32,7 +32,17 @@ namespace Carnets.Repo
             await context.GympassTypes.AddAsync(defaultGympassType);
 
             await _paymentService.EnsureProductCreated(defaultGympassType);
-
+            if (string.IsNullOrEmpty(defaultGympassType.OneTimePriceId))
+            {
+                // From stripe
+                defaultGympassType.OneTimePriceId = "price_1LuHuPHq27pxo8Kw044EXE5E";
+            }
+            if (string.IsNullOrEmpty(defaultGympassType.ReccuringPriceId))
+            {
+                // From stripe
+                defaultGympassType.ReccuringPriceId = "price_1Lz4qLHq27pxo8KwmCvc1yY1";
+            }
+            
             // seed gympass permission data
             var defaultClassPermission = new ClassPermission()
             {
