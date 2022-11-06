@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_example_workout_body_part_data" author="Mateusz_Kleinowski">
+        <sql>
+            INSERT INTO workout_body_part (
+                workout_id,
+                body_part_id
+            )
+            VALUES (
+                '7c5229f6-5d4c-11ed-9b6a-0242ac120002',
+                'aab9251c-5d4a-11ed-9b6a-0242ac120002'
+            ),
+            (
+                '7c5229f6-5d4c-11ed-9b6a-0242ac120002',
+                'c28057f6-5d4a-11ed-9b6a-0242ac120002'
+            ),
+            (
+                '4c545a32-5d4a-11ed-9b6a-0242ac120002',
+                'd3d339ba-5d4a-11ed-9b6a-0242ac120002'
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

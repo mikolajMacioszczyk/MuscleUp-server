@@ -130,9 +130,6 @@
 | api/carnets/entry/generate-token/{gympassId} | Member | GET | returns entry token |
 | api/carnets/entry | Worker | POST | creates entry based on entry token |
 
-
-# Content
-
 # Fitness Clubs
 
 ## Fitness Club
@@ -221,6 +218,26 @@
 | api/group-workout-participant/unassign/{groupWorkoutId}/{gympassId} | TODO     | DELETE      | delete user(gympassId) from groupWorkout based on groupWorkoutId and gympassId |
 
 
+# Content
 
+## Workout
+| Endpoint Name                                         | Who can | Method type | Purpose                      |
+|-------------------------------------------------------|---------|-------------|------------------------------|
+| api/workout/{id}                                      | TODO    | GET         | returns single Workout by id |
+| api/workout/all                                       | TODO    | GET         | return all Workouts          |
+| api/workout/save                                      | TODO    | POST        | saves new Workout            |
+| api/workout/update/{id}                               | TODO    | PUT         | updates Workout              |
+| api/workout/delete/{id}                               | TODO    | DELETE      | deletes Workout              |
+| api/workout/{workoutId}/add-body-part/{bodyPartId}    | TODO    | PUT         | adds BodyPart to Workout     |
+| api/workout/{workoutId}/remove-body-part/{bodyPartId} | TODO    | DELETE      | removes BodyPart             |
+
+## BodyPart
+| Endpoint Name             | Who can | Method type | Purpose                       |
+|---------------------------|---------|-------------|-------------------------------|
+| api/body-part/{id}        | TODO    | GET         | returns single BodyPart by id |
+| api/body-part/all         | TODO    | GET         | return all BodyParts          |
+| api/body-part/save        | TODO    | POST        | saves new BodyPart            |
+| api/body-part/update/{id} | TODO    | PUT         | updates BodyPart              |
+| api/body-part/delete/{id} | TODO    | DELETE      | deletes BodyPart              |
 
 # Notifications

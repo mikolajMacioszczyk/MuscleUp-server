@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_example_workout_data" author="Mateusz_Kleinowski">
+        <sql>
+            INSERT INTO workout (
+                workout_id,
+                description,
+                video_url,
+                expected_perform_time
+            )
+            VALUES (
+                '4c545a32-5d4a-11ed-9b6a-0242ac120002',
+                'Mocne nogi to podstawa',
+                'https://www.youtube.com/watch?v=rAV5_URhsYc',
+                60
+            ),
+            (
+                '7c5229f6-5d4c-11ed-9b6a-0242ac120002',
+                'Wielka łapa w dwa miesiące - wielka łapa to wielki szacun na dzielni',
+                'https://www.youtube.com/watch?v=vQ1zoFtsU-I',
+                30
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_example_body_part_data" author="Mateusz_Kleinowski">
+        <sql>
+            INSERT INTO body_part (
+                body_part_id,
+                name
+            )
+            VALUES (
+                'aab9251c-5d4a-11ed-9b6a-0242ac120002',
+                'Bicepsy'
+            ),
+            (
+                'c28057f6-5d4a-11ed-9b6a-0242ac120002',
+                'Tricepsy'
+            ),
+            (
+                'd3d339ba-5d4a-11ed-9b6a-0242ac120002',
+                'Łydki'
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

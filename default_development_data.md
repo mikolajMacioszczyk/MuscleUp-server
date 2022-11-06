@@ -63,3 +63,12 @@ Available only when environement is "Development".
 
 ### GroupWorkoutPermission
 - Id: '69096c1a-4f82-11ed-bdc3-0242ac120002'
+
+
+# Content
+
+### Workout
+- Id: '7c5229f6-5d4c-11ed-9b6a-0242ac120002'
+
+### BodyPart
+- Id: 'd3d339ba-5d4a-11ed-9b6a-0242ac120002'

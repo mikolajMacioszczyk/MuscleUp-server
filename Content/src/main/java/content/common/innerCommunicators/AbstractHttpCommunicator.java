@@ -1,6 +1,6 @@
-package groups.common.innerCommunicators;
+package content.common.innerCommunicators;
 
-import groups.common.innerCommunicators.errors.InnerCommunicationException;
+import content.common.innerCommunicators.errors.InnerCommunicationException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -11,9 +11,9 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Objects;
 
-import static groups.common.utils.EnvironmentUtils.getApplicationContext;
-import static groups.common.utils.JwtUtils.getRequestJwtToken;
-import static groups.common.utils.StringUtils.concatenate;
+import static content.common.utils.EnvironmentUtils.getApplicationContext;
+import static content.common.utils.JwtUtils.getRequestJwtToken;
+import static content.common.utils.StringUtils.concatenate;
 import static java.net.http.HttpClient.newHttpClient;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
