@@ -37,7 +37,8 @@ builder.Services.AddScoped<IAuthService, AuthHttpService>();
 
 // RabbitMq
 builder.Services.AddRabbitMqClient(builder.Configuration.GetSection("Broker:Host"))
-    .AddProductionExchange(Common.CommonConsts.ExchangeName, builder.Configuration.GetSection("Broker:Exchange"));
+    .AddProductionExchange(Common.CommonConsts.MembershipExchangeName, builder.Configuration.GetSection("Broker:MembershipProductionExchange"))
+    .AddProductionExchange(Common.CommonConsts.DeletedPermissionExchangeName, builder.Configuration.GetSection("Broker:DeletedPermissionProductionExchange"));
 
 var app = builder.Build();
 

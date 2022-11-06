@@ -12,8 +12,16 @@
 
         public const int DefaultPageSize = 10;
 
-        public const string ExchangeName = "muscleUpExchange";
+        public const string MembershipExchangeName = "membershipExchange";
 
         public const string MembershipQueueName = "memberships";
+        
+        public const string TerminatedEmploymentExchangeName = "terminatedEmploymentExchange";
+
+        public const string TerminatedEmploymentQueueName = "terminatedEmployment";
+
+        public const string DeletedPermissionExchangeName = "deletedPermissionExchange";
+
+        public const string DeletedPermissionQueueName = "deletedPermission";
     }
 }

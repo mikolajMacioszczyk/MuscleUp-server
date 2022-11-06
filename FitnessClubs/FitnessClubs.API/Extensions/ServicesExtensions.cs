@@ -9,11 +9,13 @@ namespace FitnessClubs.API.Extensions
         public static void AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
         {
             var brokerSection = configuration.GetSection("Broker:Host");
-            var exchangeSection = configuration.GetSection("Broker:Exchange");
+            var consumptionExchangeSection = configuration.GetSection("Broker:ConsumptionExchange");
+            var productionExchangeSection = configuration.GetSection("Broker:ProductionExchange");
 
             services.AddRabbitMqClient(brokerSection)
-                .AddConsumptionExchange(Common.CommonConsts.ExchangeName, exchangeSection)
-                .AddAsyncMessageHandlerSingleton<NewMembershipHandler>(Common.CommonConsts.MembershipQueueName);
+                .AddConsumptionExchange(Common.CommonConsts.MembershipExchangeName, consumptionExchangeSection)
+                .AddAsyncMessageHandlerSingleton<NewMembershipHandler>(Common.CommonConsts.MembershipQueueName)
+                .AddProductionExchange(Common.CommonConsts.TerminatedEmploymentExchangeName, productionExchangeSection);
 
             var isRabbitMqAvailable = false;
             var retryCount = 0;

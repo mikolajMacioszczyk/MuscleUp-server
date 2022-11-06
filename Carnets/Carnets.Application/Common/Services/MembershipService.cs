@@ -17,7 +17,7 @@ namespace Carnets.Application.Services
         {
             await _queueService.SendAsync(
                 @object: membershipDto,
-                exchangeName: Common.CommonConsts.ExchangeName,
+                exchangeName: Common.CommonConsts.MembershipExchangeName,
                 routingKey: Common.CommonConsts.MembershipQueueName
                 );
         }
