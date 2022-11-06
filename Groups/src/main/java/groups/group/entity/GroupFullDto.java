@@ -1,13 +1,12 @@
 package groups.group.entity;
 
-import java.time.LocalDateTime;
+import org.springframework.lang.Nullable;
+
 import java.util.UUID;
 
 public record GroupFullDto(
         UUID id,
         String name,
-        String description,
-        LocalDateTime startTime,
-        LocalDateTime endTime,
+        @Nullable String description,
         boolean repeatable
 ) { }

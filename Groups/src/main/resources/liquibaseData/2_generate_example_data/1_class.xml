@@ -10,17 +10,25 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
                 class_id,
                 name,
                 description,
-                start_time,
-                end_time,
                 repeatable
             )
             VALUES (
                 '3fa85f64-5717-4562-b3fc-2c963f66afa6',
                 'Brazilian butt',
                 'No pain no gain',
-                '2022-11-04T07:00:00+02:00',
-                '2022-11-04T08:00:00+02:00',
+                true
+            ),
+            (
+                'b2f2b1f6-5d06-11ed-9b6a-0242ac120002',
+                'Only for real man',
+                null,
                 false
+            ),
+            (
+                '703e8884-5d07-11ed-9b6a-0242ac120002',
+                'Free weights fever',
+                'Watch Your feet!',
+                true
             );
         </sql>
     </changeSet>

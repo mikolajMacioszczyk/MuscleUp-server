@@ -10,8 +10,6 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
                 class_id uuid not null,
                 name varchar(255) not null,
                 description varchar(255),
-                start_time timestamp not null,
-                end_time timestamp not null,
                 repeatable boolean not null,
 
                 PRIMARY KEY (class_id)

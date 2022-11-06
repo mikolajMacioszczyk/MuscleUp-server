@@ -1,6 +1,7 @@
 package groups.groupTrainer.repository;
 
 import groups.common.abstracts.AbstractHibernateQuery;
+import groups.common.wrappers.UuidWrapper;
 import groups.groupTrainer.entity.GroupTrainer;
 import groups.groupTrainer.entity.GroupTrainerFullDto;
 import groups.groupTrainer.entity.GroupTrainerFullDtoFactory;
@@ -70,6 +71,53 @@ public class GroupTrainerHibernateQuery extends AbstractHibernateQuery<GroupTrai
                 .getResultList()
                 .stream()
                 .findFirst();
+    }
+
+    @Override
+    public UUID getGroupTrainerIdByGroupId(UUID id) {
+
+        Assert.notNull(id, "id must not be null");
+
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaQuery<UuidWrapper> criteriaQuery = criteriaBuilder.createQuery(UuidWrapper.class);
+        Root<GroupTrainer> root = criteriaQuery.from(GroupTrainer.class);
+
+        criteriaQuery.multiselect(
+                root.get("id")
+        ).where(
+                criteriaBuilder.equal(root.get("group").get("id"), id)
+        );
+
+        return getSession().createQuery(criteriaQuery)
+                .setComment(
+                        concatenate("GroupTrainer with id = ", id.toString())
+                )
+                .getSingleResult()
+                .uuid();
+    }
+
+
+    @Override
+    public UUID getTrainerIdByGroupId(UUID id) {
+
+        Assert.notNull(id, "id must not be null");
+
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaQuery<UuidWrapper> criteriaQuery = criteriaBuilder.createQuery(UuidWrapper.class);
+        Root<GroupTrainer> root = criteriaQuery.from(GroupTrainer.class);
+
+        criteriaQuery.multiselect(
+                root.get("trainerId")
+        ).where(
+                criteriaBuilder.equal(root.get("group").get("id"), id)
+        );
+
+        return getSession().createQuery(criteriaQuery)
+                .setComment(
+                        concatenate("TrainerId based on groupId = ", id.toString())
+                )
+                .getSingleResult()
+                .uuid();
     }
 
     @Override

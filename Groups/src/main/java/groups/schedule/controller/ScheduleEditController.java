@@ -2,7 +2,7 @@ package groups.schedule.controller;
 
 import groups.common.abstracts.AbstractEditController;
 import groups.schedule.controller.form.ScheduleCellForm;
-import groups.schedule.service.ScheduleService;
+import groups.schedule.service.ScheduleEditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
@@ -16,35 +16,55 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("schedule")
 public class ScheduleEditController extends AbstractEditController {
 
-    private final ScheduleService scheduleService;
+    private final ScheduleEditService scheduleEditService;
     private final ScheduleValidator scheduleValidator;
 
 
     @Autowired
-    private ScheduleEditController(ScheduleService scheduleService) {
+    private ScheduleEditController(ScheduleEditService scheduleEditService, ScheduleValidator scheduleValidator) {
 
-        Assert.notNull(scheduleService, "scheduleService must not be null");
+        Assert.notNull(scheduleEditService, "scheduleEditService must not be null");
+        Assert.notNull(scheduleValidator, "scheduleValidator must not be null");
 
-        this.scheduleService = scheduleService;
-        this.scheduleValidator = new ScheduleValidator();
+        this.scheduleEditService = scheduleEditService;
+        this.scheduleValidator = scheduleValidator;
     }
 
 
-    @PostMapping("/create")
-    protected ResponseEntity<?> createScheduleCell(@RequestBody ScheduleCellForm scheduleCellForm) {
+    @PostMapping("/save")
+    protected ResponseEntity<?> saveScheduleCell(@RequestBody ScheduleCellForm scheduleCellForm) {
 
         scheduleValidator.validateBeforeSave(scheduleCellForm, errors);
 
-        return hasErrors() ? errors() : response(OK, "");
+        return hasErrors() ? errors() : response(OK, scheduleEditService.save(scheduleCellForm));
     }
 
-    // TODO zmiany dla wszystkich ktore beda kopiowane, albo tylko dla pojedynczego scheduleCell
-    @PutMapping("/update/{id}")
-    protected ResponseEntity<?> updateScheduleCell(@PathVariable UUID id, @RequestBody ScheduleCellForm scheduleCellForm) {
+    @PutMapping("/single-update/{id}")
+    protected ResponseEntity<?> singleUpdateScheduleCell(@PathVariable UUID id, @RequestBody ScheduleCellForm scheduleCellForm) {
 
-        scheduleValidator.validateBeforeUpdate(id, scheduleCellForm, errors);
+        scheduleValidator.validateBeforeSingleUpdate(id, scheduleCellForm, errors);
 
-        return hasErrors() ? errors() : response(OK, "");
+        return hasErrors() ? errors() : response(OK, scheduleEditService.singleUpdate(id, scheduleCellForm));
+    }
+
+    @PutMapping("/cascade-update/{id}")
+    protected ResponseEntity<?> cascadeUpdateScheduleCell(@PathVariable UUID id, @RequestBody ScheduleCellForm scheduleCellForm) {
+
+        scheduleValidator.validateBeforeCascadeUpdate(id, scheduleCellForm, errors);
+
+        return hasErrors() ? errors() : response(OK, scheduleEditService.cascadeUpdate(id, scheduleCellForm));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    protected ResponseEntity<?> deleteScheduleCell(@PathVariable UUID id) {
+
+        scheduleValidator.validateBeforeDelete(id, errors);
+
+        if (hasErrors()) return errors();
+
+        scheduleEditService.delete(id);
+
+        return response(OK);
     }
 }
 

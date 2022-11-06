@@ -1,20 +1,18 @@
 package groups.group.entity;
 
-import groups.group.controller.form.GroupFullForm;
+import groups.group.controller.form.GroupForm;
 import org.springframework.util.Assert;
 
 public class GroupFactory {
 
-    public Group create(GroupFullForm groupFullForm) {
+    public Group create(GroupForm groupForm) {
 
-        Assert.notNull(groupFullForm, "groupFullForm must not be null");
+        Assert.notNull(groupForm, "groupFullForm must not be null");
 
         return new Group(
-                groupFullForm.name(),
-                groupFullForm.description(),
-                groupFullForm.startTime(),
-                groupFullForm.endTime(),
-                groupFullForm.repeatable()
+                groupForm.name(),
+                groupForm.description(),
+                groupForm.repeatable()
         );
     }
 }

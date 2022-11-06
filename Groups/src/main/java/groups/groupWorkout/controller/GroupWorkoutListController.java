@@ -32,16 +32,7 @@ public class GroupWorkoutListController extends AbstractListController {
 
 
     // TODO danego klubu
-    @GetMapping("/full-group-workout-info")
-    protected ResponseEntity<?> getAllGroupWorkouts() {
-
-        List<GroupWorkoutFullDto> groupsWorkouts = groupWorkoutQuery.getAllGroupsWorkouts();
-
-        return response(OK, groupsWorkouts);
-    }
-
-    // TODO danego klubu
-    @GetMapping("/find/{id}")
+    @GetMapping("/{id}")
     protected ResponseEntity<?> findGroupWorkoutById(@PathVariable("id") UUID id) {
 
         Optional<GroupWorkoutFullDto> groupWorkoutFullDto = groupWorkoutQuery.findGroupWorkoutById(id);
@@ -50,19 +41,10 @@ public class GroupWorkoutListController extends AbstractListController {
     }
 
     // TODO danego klubu
-    @GetMapping("/find-by-workout/{id}")
-    protected ResponseEntity<?> findAllGroupWorkoutsByWorkoutId(@PathVariable("id") UUID id) {
+    @GetMapping("/all")
+    protected ResponseEntity<?> getAllGroupWorkouts() {
 
-        List<GroupWorkoutFullDto> groupsWorkouts = groupWorkoutQuery.getAllGroupWorkoutByWorkoutId(id);
-
-        return response(OK, groupsWorkouts);
-    }
-
-    // TODO danego klubu
-    @GetMapping("/find-by-group/{id}")
-    protected ResponseEntity<?> findAllGroupWorkoutsByGroupId(@PathVariable("id") UUID id) {
-
-        List<GroupWorkoutFullDto> groupsWorkouts = groupWorkoutQuery.getAllGroupWorkoutByGroupId(id);
+        List<GroupWorkoutFullDto> groupsWorkouts = groupWorkoutQuery.getAllGroupsWorkouts();
 
         return response(OK, groupsWorkouts);
     }

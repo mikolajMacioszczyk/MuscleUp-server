@@ -1,8 +1,7 @@
 package groups.groupWorkout.controller;
 
 import groups.common.abstracts.AbstractEditController;
-import groups.groupWorkout.controller.form.GroupWorkoutFullForm;
-import groups.groupWorkout.entity.GroupWorkoutFullDto;
+import groups.groupWorkout.controller.form.GroupWorkoutForm;
 import groups.groupWorkout.service.GroupWorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,19 +32,19 @@ public class GroupWorkoutEditController extends AbstractEditController {
 
 
     @PostMapping("/save")
-    protected ResponseEntity<?> saveGroupWorkout(@RequestBody GroupWorkoutFullForm groupWorkoutFullForm) {
+    protected ResponseEntity<?> saveGroupWorkout(@RequestBody GroupWorkoutForm groupWorkoutForm) {
 
-        groupWorkoutValidator.validateBeforeSave(groupWorkoutFullForm, errors);
+        groupWorkoutValidator.validateBeforeSave(groupWorkoutForm, errors);
 
-        return hasErrors()? errors() : response(OK, groupWorkoutService.saveGroupWorkout(groupWorkoutFullForm));
+        return hasErrors()? errors() : response(OK, groupWorkoutService.saveGroupWorkout(groupWorkoutForm));
     }
 
-    @PutMapping("/update")
-    protected ResponseEntity<?> updateGroupWorkout(@RequestBody GroupWorkoutFullDto groupWorkoutFullDto) {
+    @PutMapping("/update/{id}")
+    protected ResponseEntity<?> updateGroupWorkout(@PathVariable("id") UUID id, @RequestBody GroupWorkoutForm groupWorkoutForm) {
 
-        groupWorkoutValidator.validateBeforeUpdate(groupWorkoutFullDto, errors);
+        groupWorkoutValidator.validateBeforeUpdate(id, groupWorkoutForm, errors);
 
-        return hasErrors()? errors() : response(OK, groupWorkoutService.updateGroupWorkout(groupWorkoutFullDto));
+        return hasErrors()? errors() : response(OK, groupWorkoutService.updateGroupWorkout(id, groupWorkoutForm));
     }
 
     @DeleteMapping("/delete/{id}")

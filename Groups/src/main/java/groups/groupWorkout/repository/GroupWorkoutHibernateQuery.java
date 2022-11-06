@@ -1,6 +1,7 @@
 package groups.groupWorkout.repository;
 
 import groups.common.abstracts.AbstractHibernateQuery;
+import groups.common.wrappers.UuidWrapper;
 import groups.groupWorkout.entity.GroupWorkout;
 import groups.groupWorkout.entity.GroupWorkoutFullDto;
 import groups.groupWorkout.entity.GroupWorkoutFullDtoFactory;
@@ -14,6 +15,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,8 +52,11 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
         criteriaQuery.multiselect(
                 root.get("id"),
                 root.get("group").get("id"),
+                root.get("workoutId"),
                 root.get("location"),
-                root.get("maxParticipants")
+                root.get("maxParticipants"),
+                root.get("startTime"),
+                root.get("endTime")
         ).where(
                 criteriaBuilder.equal(root.get("id"), id)
         );
@@ -80,7 +85,9 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
                 root.get("group").get("id"),
                 root.get("workoutId"),
                 root.get("location"),
-                root.get("maxParticipants")
+                root.get("maxParticipants"),
+                root.get("startTime"),
+                root.get("endTime")
         ).where(
                 criteriaBuilder.equal(root.get("group").get("id"), groupId)
         );
@@ -107,7 +114,9 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
                 root.get("group").get("id"),
                 root.get("workoutId"),
                 root.get("location"),
-                root.get("maxParticipants")
+                root.get("maxParticipants"),
+                root.get("startTime"),
+                root.get("endTime")
             ).where(
                 criteriaBuilder.equal(root.get("workoutId"), workoutId)
             );
@@ -125,6 +134,58 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
         return getAll().stream()
                 .map(groupWorkoutFullDtoFactory::create)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public UUID getParentIdById(UUID id) {
+
+        Assert.notNull(id, "id must not be null");
+
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaQuery<UuidWrapper> criteriaQuery = criteriaBuilder.createQuery(UuidWrapper.class);
+        Root<GroupWorkout> root = criteriaQuery.from(GroupWorkout.class);
+
+        criteriaQuery.multiselect(
+                root.get("parentId")
+        ).where(
+                criteriaBuilder.equal(root.get("id"), id)
+        );
+
+        return getSession().createQuery(criteriaQuery)
+                .setComment(
+                        concatenate("GroupWorkout parentId by id = ", id.toString())
+                )
+                .getSingleResult()
+                .uuid();
+    }
+
+    @Override
+    public List<UUID> getFutureGroupWorkoutsByParentId(UUID id) {
+
+        Assert.notNull(id, "id must not be null");
+
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaQuery<UuidWrapper> criteriaQuery = criteriaBuilder.createQuery(UuidWrapper.class);
+        Root<GroupWorkout> root = criteriaQuery.from(GroupWorkout.class);
+
+        criteriaQuery.multiselect(
+                root.get("id")
+        ).where(
+                criteriaBuilder.or(
+                        criteriaBuilder.equal(root.get("parentId"), id),
+                        criteriaBuilder.equal(root.get("id"), id)
+                ),
+                criteriaBuilder.greaterThan(root.get("startTime"), LocalDateTime.now())
+        );
+
+        return getSession().createQuery(criteriaQuery)
+                .setComment(
+                        concatenate("GroupWorkout ids by parentId = ", id.toString())
+                )
+                .getResultList()
+                .stream()
+                .map(UuidWrapper::uuid)
+                .toList();
     }
 }
 

@@ -10,6 +10,8 @@ public interface GroupTrainerRepository {
 
     UUID assign(GroupTrainer groupTrainer);
 
+    UUID update(GroupTrainer groupTrainer);
+
     void unassign(UUID groupTrainerId);
 
     void unassign(UUID trainerId, UUID groupId);

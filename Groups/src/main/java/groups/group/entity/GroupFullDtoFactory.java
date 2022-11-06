@@ -12,8 +12,6 @@ public class GroupFullDtoFactory {
                 group.getId(),
                 group.getName(),
                 group.getDescription(),
-                group.getStartTime(),
-                group.getEndTime(),
                 group.isRepeatable()
         );
     }

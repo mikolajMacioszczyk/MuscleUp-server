@@ -18,4 +18,8 @@ public interface GroupWorkoutQuery {
     List<GroupWorkoutFullDto> getAllGroupWorkoutByWorkoutId(UUID workoutId);
 
     List<GroupWorkoutFullDto> getAllGroupsWorkouts();
+
+    UUID getParentIdById(UUID id);
+
+    List<UUID> getFutureGroupWorkoutsByParentId(UUID id);
 }

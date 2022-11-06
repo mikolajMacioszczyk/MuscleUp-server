@@ -13,7 +13,9 @@ public class ScheduleGroupWorkoutDtoFactory {
                 groupWorkout.getId(),
                 groupWorkout.getWorkoutId(),
                 groupWorkout.getLocation(),
-                groupWorkout.getMaxParticipants()
+                groupWorkout.getMaxParticipants(),
+                groupWorkout.getStartTime(),
+                groupWorkout.getEndTime()
         );
     }
 }

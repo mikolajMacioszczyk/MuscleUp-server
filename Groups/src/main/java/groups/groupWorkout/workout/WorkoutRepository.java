@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
 
-public interface WorkoutValidator {
+public interface WorkoutRepository {
 
     HttpStatus checkWorkoutId(UUID workoutId);
 }

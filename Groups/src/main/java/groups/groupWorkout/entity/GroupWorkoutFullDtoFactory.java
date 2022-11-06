@@ -13,7 +13,9 @@ public class GroupWorkoutFullDtoFactory {
                 groupWorkout.getGroup().getId(),
                 groupWorkout.getWorkoutId(),
                 groupWorkout.getLocation(),
-                groupWorkout.getMaxParticipants()
+                groupWorkout.getMaxParticipants(),
+                groupWorkout.getStartTime(),
+                groupWorkout.getEndTime()
         );
     }
 }

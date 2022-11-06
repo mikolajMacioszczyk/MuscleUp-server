@@ -34,8 +34,8 @@ public class GroupListController extends AbstractListController {
     }
 
 
-    @GetMapping("/find/{id}")
-    protected ResponseEntity<?> findGroupById(@PathVariable("id") UUID id) {
+    @GetMapping("/{id}")
+    protected ResponseEntity<?> getGroupById(@PathVariable("id") UUID id) {
 
         Optional<GroupFullDto> groupFullDto = groupQuery.findGroupById(id);
 
@@ -43,7 +43,7 @@ public class GroupListController extends AbstractListController {
     }
 
     // TODO dla danego klubu
-    @GetMapping("/full-group-info")
+    @GetMapping("/all")
     protected ResponseEntity<?> getAllGroups() {
 
         List<GroupFullDto> groups = groupQuery.getAllGroups();

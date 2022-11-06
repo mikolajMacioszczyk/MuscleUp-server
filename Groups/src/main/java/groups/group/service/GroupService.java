@@ -1,9 +1,8 @@
 package groups.group.service;
 
-import groups.group.controller.form.GroupFullForm;
+import groups.group.controller.form.GroupForm;
 import groups.group.entity.Group;
 import groups.group.entity.GroupFactory;
-import groups.group.entity.GroupFullDto;
 import groups.group.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,37 +27,36 @@ public class GroupService {
     }
 
 
-    public UUID updateGroup(GroupFullDto groupFullDto) {
+    public UUID saveGroup(GroupForm groupForm) {
 
-        Assert.notNull(groupFullDto, "groupFullDto must not be null");
+        Assert.notNull(groupForm, "groupForm must not be null");
 
-        Group group = groupRepository.getById(groupFullDto.id());
+        Group group = groupFactory.create(groupForm);
+
+        return groupRepository.save(group);
+    }
+
+    public UUID updateGroup(UUID id, GroupForm groupForm) {
+
+        Assert.notNull(id, "id must not be null");
+        Assert.notNull(groupForm, "groupForm must not be null");
+
+        Group group = groupRepository.getById(id);
 
         group.update(
-                groupFullDto.name(),
-                groupFullDto.description(),
-                groupFullDto.startTime(),
-                groupFullDto.endTime(),
-                groupFullDto.repeatable()
+                groupForm.name(),
+                groupForm.description(),
+                groupForm.repeatable()
         );
 
         return groupRepository.update(group);
     }
 
-    public UUID saveGroup(GroupFullForm groupFullForm) {
+    public void deleteGroup(UUID id) {
 
-        Assert.notNull(groupFullForm, "groupForm must not be null");
+        Assert.notNull(id, "id must not be null");
 
-        Group group = groupFactory.create(groupFullForm);
-
-        return groupRepository.save(group);
-    }
-
-    public void deleteGroup(UUID idToRemove) {
-
-        Assert.notNull(idToRemove, "idToRemove must not be null");
-
-        groupRepository.delete(idToRemove);
+        groupRepository.delete(id);
     }
 }
 

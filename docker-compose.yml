@@ -61,6 +61,7 @@ services:
       DATASOURCE_PORT: 'postgres:5432'
       DATASOURCE_USERNAME: 'postgres'
       DATASOURCE_PASSWORD: 'Pa55w0rd'
+      APPLICATION_CONTEXT: 'prod'
     depends_on:
       - postgres
 
@@ -71,6 +72,8 @@ services:
       DATASOURCE_PORT: 'postgres:5432'
       DATASOURCE_USERNAME: 'postgres'
       DATASOURCE_PASSWORD: 'Pa55w0rd'
+      APPLICATION_CONTEXT: 'prod'
+      FUTURE_GROUP_CREATIONS: 2
     depends_on:
       - postgres
 
@@ -81,6 +84,7 @@ services:
       DATASOURCE_PORT: 'postgres:5432'
       DATASOURCE_USERNAME: 'postgres'
       DATASOURCE_PASSWORD: 'Pa55w0rd'
+      APPLICATION_CONTEXT: 'prod'
     depends_on:
       - postgres
 

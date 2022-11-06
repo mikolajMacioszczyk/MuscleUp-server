@@ -2,8 +2,7 @@ package groups.group.controller;
 
 import groups.common.errors.ValidationError;
 import groups.common.wrappers.ValidationErrors;
-import groups.group.controller.form.GroupFullForm;
-import groups.group.entity.GroupFullDto;
+import groups.group.controller.form.GroupForm;
 import groups.group.repository.GroupQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,23 +29,22 @@ public class GroupValidator {
     }
 
 
-    void validateBeforeSave(GroupFullForm groupFullForm, ValidationErrors errors) {
+    void validateBeforeSave(GroupForm groupForm, ValidationErrors errors) {
 
-        Assert.notNull(groupFullForm, "groupFullForm must not be null");
+        Assert.notNull(groupForm, "groupFullForm must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkName(groupFullForm.name(), errors);
-        checkDates(groupFullForm.startTime(), groupFullForm.endTime(), errors);
+        checkName(groupForm.name(), errors);
     }
 
-    void validateBeforeUpdate(GroupFullDto groupFullDto, ValidationErrors errors) {
+    void validateBeforeUpdate(UUID id, GroupForm groupForm, ValidationErrors errors) {
 
-        Assert.notNull(groupFullDto, "groupFullDto must not be null");
+        Assert.notNull(id, "id must not be null");
+        Assert.notNull(groupForm, "groupForm must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkGroupId(groupFullDto.id(), errors);
-        checkName(groupFullDto.name(), errors);
-        checkDates(groupFullDto.startTime(), groupFullDto.endTime(), errors);
+        checkGroupId(id, errors);
+        checkName(groupForm.name(), errors);
     }
 
     void validateBeforeDelete(UUID id, ValidationErrors errors) {
@@ -63,14 +61,6 @@ public class GroupValidator {
         if (isNullOrEmpty(name)) {
 
             errors.addError(new ValidationError(BAD_REQUEST, "Group name can not be empty"));
-        }
-    }
-
-    private void checkDates(LocalDateTime dateFrom, LocalDateTime dateTo, ValidationErrors errors) {
-
-        if (!dateFrom.isBefore(dateTo)) {
-
-            errors.addError(new ValidationError(BAD_REQUEST, "Start time can not be equal or after end time"));
         }
     }
 

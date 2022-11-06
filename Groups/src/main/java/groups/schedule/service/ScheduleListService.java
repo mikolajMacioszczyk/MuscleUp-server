@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class ScheduleService {
+public class ScheduleListService {
 
     private final ScheduleRepository scheduleRepository;
     private final TrainerRepository trainerRepository;
@@ -23,7 +23,7 @@ public class ScheduleService {
 
 
     @Autowired
-    public ScheduleService(ScheduleRepository scheduleRepository, TrainerRepository trainerRepository) {
+    public ScheduleListService(ScheduleRepository scheduleRepository, TrainerRepository trainerRepository) {
 
         Assert.notNull(scheduleRepository, "scheduleRepository must not be null");
         Assert.notNull(trainerRepository, "trainerRepository must not be null");

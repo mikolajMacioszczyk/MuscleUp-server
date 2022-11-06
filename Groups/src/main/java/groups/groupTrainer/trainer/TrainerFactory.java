@@ -28,7 +28,7 @@ public class TrainerFactory {
         }
         catch (JsonProcessingException e) {
 
-            throw new TrainerParserException("Trainer structure has changed");
+            throw new TrainerParseException("Trainer structure has changed");
         }
     }
 }

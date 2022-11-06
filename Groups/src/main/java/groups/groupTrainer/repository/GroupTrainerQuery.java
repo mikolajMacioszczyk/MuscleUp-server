@@ -15,6 +15,10 @@ public interface GroupTrainerQuery {
 
     Optional<GroupTrainerFullDto> findGroupTrainerById(UUID id);
 
+    UUID getGroupTrainerIdByGroupId(UUID id);
+
+    UUID getTrainerIdByGroupId(UUID id);
+
     List<GroupTrainerFullDto> getAllGroupTrainerByGroupId(UUID groupId);
 
     List<GroupTrainerFullDto> getAllGroupTrainerByTrainerId(UUID trainerId);

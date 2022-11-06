@@ -1,8 +1,7 @@
 package groups.group.controller;
 
 import groups.common.abstracts.AbstractEditController;
-import groups.group.controller.form.GroupFullForm;
-import groups.group.entity.GroupFullDto;
+import groups.group.controller.form.GroupForm;
 import groups.group.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,19 +33,19 @@ class GroupEditController extends AbstractEditController {
 
 
     @PostMapping("/save")
-    protected ResponseEntity<?> saveGroup(@RequestBody GroupFullForm groupFullForm) {
+    protected ResponseEntity<?> saveGroup(@RequestBody GroupForm groupForm) {
 
-        groupValidator.validateBeforeSave(groupFullForm, errors);
+        groupValidator.validateBeforeSave(groupForm, errors);
 
-        return hasErrors()? errors() : response(OK, groupService.saveGroup(groupFullForm));
+        return hasErrors()? errors() : response(OK, groupService.saveGroup(groupForm));
     }
 
-    @PutMapping("/update")
-    protected ResponseEntity<?> updateGroup(@RequestBody GroupFullDto groupFullDto) {
+    @PutMapping("/update/{id}")
+    protected ResponseEntity<?> updateGroup(@PathVariable("id") UUID id, @RequestBody GroupForm groupForm) {
 
-        groupValidator.validateBeforeUpdate(groupFullDto, errors);
+        groupValidator.validateBeforeUpdate(id, groupForm, errors);
 
-        return hasErrors()? errors() : response(OK, groupService.updateGroup(groupFullDto));
+        return hasErrors()? errors() : response(OK, groupService.updateGroup(id, groupForm));
     }
 
     @DeleteMapping("/delete/{id}")

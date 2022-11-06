@@ -65,11 +65,7 @@ public class ScheduleCellHolder {
 
         return !isNull(scheduleCell.getGroup())
                 && !isNull(scheduleCell.getGroup().id())
-                && !isNullOrEmpty(scheduleCell.getGroup().name())
-                && !isNull(scheduleCell.getGroup().startTime())
-                && !isNull(scheduleCell.getGroup().endTime())
-                && scheduleCell.getGroup().startTime().isBefore(
-                        scheduleCell.getGroup().endTime());
+                && !isNullOrEmpty(scheduleCell.getGroup().name());
     }
 
     private boolean validWorkout() {
@@ -78,7 +74,11 @@ public class ScheduleCellHolder {
                 && !isNull(scheduleCell.getWorkout().groupWorkoutId())
                 && !isNull(scheduleCell.getWorkout().workoutId())
                 && !isNullOrEmpty(scheduleCell.getWorkout().location())
-                && scheduleCell.getWorkout().maxParticipants() > MIN_PARTICIPANTS;
+                && scheduleCell.getWorkout().maxParticipants() > MIN_PARTICIPANTS
+                && !isNull(scheduleCell.getWorkout().startTime())
+                && !isNull(scheduleCell.getWorkout().endTime())
+                && scheduleCell.getWorkout().startTime().isBefore(
+                        scheduleCell.getWorkout().endTime());
     }
 
     private boolean validTrainer() {

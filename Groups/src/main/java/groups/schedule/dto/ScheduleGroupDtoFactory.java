@@ -13,8 +13,6 @@ public class ScheduleGroupDtoFactory {
                 group.getId(),
                 group.getName(),
                 group.getDescription(),
-                group.getStartTime(),
-                group.getEndTime(),
                 group.isRepeatable()
         );
     }

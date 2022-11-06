@@ -49,8 +49,6 @@ public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implement
                 root.get("id"),
                 root.get("name"),
                 root.get("description"),
-                root.get("startTime"),
-                root.get("endTime"),
                 root.get("repeatable")
         ).where(
                 criteriaBuilder.equal(root.get("id"), id)
@@ -71,5 +69,30 @@ public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implement
         return getAll().stream()
                 .map(groupFullDtoFactory::create)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public GroupFullDto getGroupByGroupWorkoutId(UUID id) {
+
+        Assert.notNull(id, "id must not be null");
+
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaQuery<GroupFullDto> criteriaQuery = criteriaBuilder.createQuery(GroupFullDto.class);
+        Root<Group> root = criteriaQuery.from(Group.class);
+
+        criteriaQuery.multiselect(
+                root.get("id"),
+                root.get("name"),
+                root.get("description"),
+                root.get("repeatable")
+        ).where(
+                criteriaBuilder.equal(root.get("groupWorkouts").get("id"), id)
+        );
+
+        return getSession().createQuery(criteriaQuery)
+                .setComment(
+                        concatenate("Group with GroupWorkoutId = ", id.toString())
+                )
+                .getSingleResult();
     }
 }

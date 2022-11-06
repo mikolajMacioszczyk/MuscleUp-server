@@ -2,7 +2,7 @@ package groups.schedule.controller;
 
 import groups.common.abstracts.AbstractListController;
 import groups.schedule.dto.ScheduleCell;
-import groups.schedule.service.ScheduleService;
+import groups.schedule.service.ScheduleListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
@@ -20,31 +20,31 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("schedule")
 public class ScheduleListController extends AbstractListController {
 
-    private final ScheduleService scheduleService;
+    private final ScheduleListService scheduleListService;
 
 
     @Autowired
-    private ScheduleListController(ScheduleService scheduleService) {
+    private ScheduleListController(ScheduleListService scheduleListService) {
 
-        Assert.notNull(scheduleService, "scheduleService must not be null");
+        Assert.notNull(scheduleListService, "scheduleService must not be null");
 
-        this.scheduleService = scheduleService;
+        this.scheduleListService = scheduleListService;
     }
 
+
+    @GetMapping("/{id}")
+    protected ResponseEntity<?> getScheduleCellById(@PathVariable("id") UUID id) {
+
+        ScheduleCell scheduleCell = scheduleListService.composeCell(id);
+
+        return response(OK, scheduleCell);
+    }
 
     @GetMapping("/all")
     protected ResponseEntity<?> getScheduleCells() {
 
-        List<ScheduleCell> scheduleCells = scheduleService.composeAllCells();
+        List<ScheduleCell> scheduleCells = scheduleListService.composeAllCells();
 
         return response(OK, scheduleCells);
-    }
-
-    @GetMapping("/get/{id}")
-    protected ResponseEntity<?> getScheduleCellById(@PathVariable("id") UUID id) {
-
-        ScheduleCell scheduleCell = scheduleService.composeCell(id);
-
-        return response(OK, scheduleCell);
     }
 }

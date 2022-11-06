@@ -9,7 +9,7 @@ import java.util.UUID;
 import static org.springframework.http.HttpStatus.OK;
 
 @Service
-public class WorkoutHttpValidator extends AbstractHttpRepository implements WorkoutValidator {
+public class WorkoutHttpRepository extends AbstractHttpRepository implements WorkoutRepository {
 
     // TODO IMPLEMENT AFTER WORKOUT SERVICE
     private static final String GET_WORKOUT_BY_ID_PATH = "";

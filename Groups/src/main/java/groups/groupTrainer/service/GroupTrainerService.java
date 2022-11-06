@@ -1,5 +1,6 @@
 package groups.groupTrainer.service;
 
+import groups.group.repository.GroupRepository;
 import groups.groupTrainer.controller.form.GroupTrainerForm;
 import groups.groupTrainer.entity.GroupTrainer;
 import groups.groupTrainer.entity.GroupTrainerFactory;
@@ -15,16 +16,21 @@ public class GroupTrainerService {
 
     private final GroupTrainerRepository groupTrainerRepository;
     private final GroupTrainerFactory groupTrainerFactory;
+    private final GroupRepository groupRepository;
 
 
     @Autowired
-    private GroupTrainerService(GroupTrainerRepository groupTrainerRepository, GroupTrainerFactory groupTrainerFactory) {
+    private GroupTrainerService(GroupTrainerRepository groupTrainerRepository,
+                                GroupTrainerFactory groupTrainerFactory,
+                                GroupRepository groupRepository) {
 
         Assert.notNull(groupTrainerRepository, "groupTrainerRepository must not be null");
         Assert.notNull(groupTrainerFactory, "groupTrainerFactory must not be null");
+        Assert.notNull(groupRepository, "groupRepository must not be null");
 
         this.groupTrainerRepository = groupTrainerRepository;
         this.groupTrainerFactory = groupTrainerFactory;
+        this.groupRepository = groupRepository;
     }
 
 
@@ -35,6 +41,21 @@ public class GroupTrainerService {
         GroupTrainer groupTrainer = groupTrainerFactory.create(groupTrainerForm);
 
         return groupTrainerRepository.assign(groupTrainer);
+    }
+
+    public UUID update(UUID id, GroupTrainerForm groupTrainerForm) {
+
+        Assert.notNull(id, "id must not be null");
+        Assert.notNull(groupTrainerForm, "groupTrainerForm must not be null");
+
+        GroupTrainer groupTrainer = groupTrainerRepository.getById(id);
+
+        groupTrainer.update(
+                groupRepository.getById(groupTrainerForm.groupId()),
+                groupTrainerForm.trainerId()
+        );
+
+        return groupTrainerRepository.update(groupTrainer);
     }
 
     public void unassign(UUID groupTrainerId) {

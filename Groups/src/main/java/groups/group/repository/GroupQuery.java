@@ -15,4 +15,6 @@ public interface GroupQuery {
     Optional<GroupFullDto> findGroupById(UUID id);
 
     List<GroupFullDto> getAllGroups();
+
+    GroupFullDto getGroupByGroupWorkoutId(UUID id);
 }

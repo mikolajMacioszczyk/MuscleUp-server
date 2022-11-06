@@ -1,10 +1,9 @@
 package groups.groupWorkout.service;
 
 import groups.group.repository.GroupRepository;
-import groups.groupWorkout.controller.form.GroupWorkoutFullForm;
+import groups.groupWorkout.controller.form.GroupWorkoutForm;
 import groups.groupWorkout.entity.GroupWorkout;
 import groups.groupWorkout.entity.GroupWorkoutFactory;
-import groups.groupWorkout.entity.GroupWorkoutFullDto;
 import groups.groupWorkout.repository.GroupWorkoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,29 +34,43 @@ public class GroupWorkoutService {
     }
 
 
-    public UUID updateGroupWorkout(GroupWorkoutFullDto groupWorkoutFullDto) {
+    public UUID saveGroupWorkout(GroupWorkoutForm groupWorkoutForm) {
 
-        Assert.notNull(groupWorkoutFullDto, "groupWorkoutFullDto must not be null");
+        Assert.notNull(groupWorkoutForm, "groupWorkoutFullForm must not be null");
 
-        GroupWorkout groupWorkout = groupWorkoutRepository.getById(groupWorkoutFullDto.id());
+        GroupWorkout groupWorkout = groupWorkoutFactory.create(groupWorkoutForm);
+
+        return groupWorkoutRepository.save(groupWorkout);
+    }
+
+    public void saveGroupWorkout(GroupWorkoutForm groupWorkoutForm, UUID parentId) {
+
+        Assert.notNull(groupWorkoutForm, "groupWorkoutFullForm must not be null");
+        Assert.notNull(parentId, "parentId must not be null");
+
+        GroupWorkout groupWorkout = groupWorkoutFactory.create(groupWorkoutForm, parentId);
+
+        groupWorkoutRepository.save(groupWorkout);
+    }
+
+    public UUID updateGroupWorkout(UUID id, GroupWorkoutForm groupWorkoutForm) {
+
+        Assert.notNull(id, "id must not be null");
+        Assert.notNull(groupWorkoutForm, "groupWorkoutForm must not be null");
+
+        GroupWorkout groupWorkout = groupWorkoutRepository.getById(id);
 
         groupWorkout.update(
-                groupRepository.getById(groupWorkoutFullDto.groupId()),
-                groupWorkoutFullDto.workoutId(),
-                groupWorkout.getLocation(),
-                groupWorkout.getMaxParticipants()
+                groupRepository.getById(groupWorkoutForm.groupId()),
+                groupWorkoutForm.workoutId(),
+                groupWorkoutForm.location(),
+                groupWorkoutForm.maxParticipants(),
+                groupWorkoutForm.startTime(),
+                groupWorkoutForm.endTime(),
+                groupWorkout.getParentId()
         );
 
         return groupWorkoutRepository.update(groupWorkout);
-    }
-
-    public UUID saveGroupWorkout(GroupWorkoutFullForm groupWorkoutFullForm) {
-
-        Assert.notNull(groupWorkoutFullForm, "groupWorkoutFullForm must not be null");
-
-        GroupWorkout groupWorkout = groupWorkoutFactory.create(groupWorkoutFullForm);
-
-        return groupWorkoutRepository.save(groupWorkout);
     }
 
     public void deleteGroupWorkout(UUID idToRemove) {
@@ -65,5 +78,24 @@ public class GroupWorkoutService {
         Assert.notNull(idToRemove, "idToRemove must not be null");
 
         groupWorkoutRepository.delete(idToRemove);
+    }
+
+    public void removeParent(UUID id) {
+
+        Assert.notNull(id, "id must not be null");
+
+        GroupWorkout groupWorkout = groupWorkoutRepository.getById(id);
+
+        groupWorkout.update(
+                groupWorkout.getGroup(),
+                groupWorkout.getWorkoutId(),
+                groupWorkout.getLocation(),
+                groupWorkout.getMaxParticipants(),
+                groupWorkout.getStartTime(),
+                groupWorkout.getEndTime(),
+                null
+        );
+
+        groupWorkoutRepository.update(groupWorkout);
     }
 }

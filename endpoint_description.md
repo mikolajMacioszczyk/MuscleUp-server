@@ -173,46 +173,44 @@
 # Groups
 
 ## Group
-| Endpoint Name             | Who can   | Method type | Purpose                         |
-|---------------------------|-----------|-------------|---------------------------------|
-| api/group/find/{id}       | TODO      | GET         | returns single Group by id      |
-| api/group/full-group-info | TODO      | GET         | returns list of all Groups      |
-| api/group/group-names     | TODO      | GET         | returns list of all Group names |
-| api/group/save            | TODO      | POST        | creates Group                   |
-| api/group/update          | TODO      | PUT         | updates existing Group          |
-| api/group/delete/{id}     | TODO      | DELETE      | cascade deletes Group           |
+| Endpoint Name         | Who can   | Method type | Purpose                         |
+|-----------------------|-----------|-------------|---------------------------------|
+| api/group/{id}        | TODO      | GET         | returns single Group by id      |
+| api/group/all         | TODO      | GET         | returns list of all Groups      |
+| api/group/save        | TODO      | POST        | creates Group                   |
+| api/group/update      | TODO      | PUT         | updates existing Group          |
+| api/group/delete/{id} | TODO      | DELETE      | cascade deletes Group           |
 
 ## GroupWorkout
-| Endpoint Name                              | Who can | Method type | Purpose                                                |
-|--------------------------------------------|---------|-------------|--------------------------------------------------------|
-| api/group-workout/find/{id}                | TODO    | GET         | returns single GroupWorkout by id                      |
-| api/group-workout/full-group-workout-info  | TODO    | GET         | returns list of all GroupWorkouts                      |
-| api/group-workout/find-by-workout          | TODO    | GET         | returns list of all GroupWorkouts with given workoutId |
-| api/group-workout/find-by-group            | TODO    | GET         | returns list of all GroupWorkouts with given groupId   |
-| api/group-workout/update                   | TODO    | PUT         | updates existing GroupWorkout                          |
-| api/group-workout/delete/{id}              | TODO    | POST        | creates GroupWorkout                                   |
-| api/group-workout/delete/{id}              | TODO    | DELETE      | cascade deletes GroupWorkout                           |
+| Endpoint Name                 | Who can | Method type | Purpose                           |
+|-------------------------------|---------|-------------|-----------------------------------|
+| api/group-workout/{id}        | TODO    | GET         | returns single GroupWorkout by id |
+| api/group-workout/all         | TODO    | GET         | returns list of all GroupWorkouts |
+| api/group-workout/save        | TODO    | POST        | crates GroupWorkout               |
+| api/group-workout/update      | TODO    | PUT         | updates GroupWorkout              |
+| api/group-workout/delete/{id} | TODO    | DELETE      | cascade deletes GroupWorkout      |
 
 ## Schedule
-| Endpoint Name            | Who can | Method type | Purpose                                    |
-|--------------------------|---------|-------------|--------------------------------------------|
-| api/schedule/all/        | TODO    | GET         | returns aggregated info for schedule cells |
-| api/schedule/get/{id}    | TODO    | GET         | returns aggregated info for schedule cell  |
-| api/schedule/create/     | TODO    | POST        | create new groups and groupWorkouts        |
-| api/schedule/update/{id} | TODO    | PUT         | updates groups and groupWorkouts           |
+| Endpoint Name            | Who can | Method type | Purpose                                        |
+|--------------------------|---------|-------------|------------------------------------------------|
+| api/schedule/{id}        | TODO    | GET         | returns aggregated info for schedule cell      |
+| api/schedule/all         | TODO    | GET         | returns aggregated info for all schedule cells |
+| api/schedule/save        | TODO    | POST        | create new groups and groupWorkouts            |
+| api/schedule/update/{id} | TODO    | PUT         | updates groups and groupWorkouts               |
+| api/schedule/delete/{id} | TODO    | DELETE      | cascade deletes groupWorkout                   |
 
 ## GroupTrainer
-| Endpoint Name                                    | Who can | Method type | Purpose                                                   |
-|--------------------------------------------------|---------|-------------|-----------------------------------------------------------|
-| api/group-trainer/assign                         | TODO    | POST        | assign trainer to group                                   |
-| api/group-trainer/unassign/{id}                  | TODO    | DELETE      | delete trainer from group based on groupTrainerId         |
-| api/group-trainer/unassign/{trainerId}/{groupId} | TODO    | DELETE      | delete trainer from group based on trainerId and groupId  |
+| Endpoint Name                                    | Who can | Method type | Purpose                                                  |
+|--------------------------------------------------|---------|-------------|----------------------------------------------------------|
+| api/group-trainer/assign                         | TODO    | POST        | assign trainer to group                                  |
+| api/group-trainer/unassign/{id}                  | TODO    | DELETE      | delete trainer from group based on groupTrainerId        |
+| api/group-trainer/unassign/{trainerId}/{groupId} | TODO    | DELETE      | delete trainer from group based on trainerId and groupId |
 
 ## GroupWorkoutPermission
-| Endpoint Name                                                    | Who can | Method type | Purpose                                                                     |
-|------------------------------------------------------------------|---------|-------------|-----------------------------------------------------------------------------|
-| api/group-permission/add                                   | TODO    | POST        | add permission to groupWorkout                                              |
-| api/group-permission/remove/{id}                           | TODO    | DELETE      | remove permission from group based on groupPermissionId        |
+| Endpoint Name                                               | Who can | Method type | Purpose                                                        |
+|-------------------------------------------------------------|---------|-------------|----------------------------------------------------------------|
+| api/group-permission/add                                    | TODO    | POST        | add permission to groupWorkout                                 |
+| api/group-permission/remove/{id}                            | TODO    | DELETE      | remove permission from group based on groupPermissionId        |
 | api/group-permission/remove/{groupWorkoutId}/{permissionId} | TODO    | DELETE      | remove permission from group based on groupId and permissionId |
 
 ## GroupWorkoutParticipant
