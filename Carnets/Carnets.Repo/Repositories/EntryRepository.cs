@@ -1,5 +1,6 @@
 ﻿using Carnets.Application.Interfaces;
 using Carnets.Domain.Models;
+using Common.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Carnets.Repo.Repositories
@@ -17,6 +18,7 @@ namespace Carnets.Repo.Repositories
         {
             var query = _context.Entries
                 .Include(e => e.Gympass)
+                .ThenInclude(g => g.GympassType)
                 .Where(e => e.EntryId == entryId);
 
             if (!asTracking)
@@ -52,6 +54,23 @@ namespace Carnets.Repo.Repositories
             await _context.Entries.AddAsync(entry);
 
             return entry;
+        }
+
+        public async Task<Result<Entry>> UpdateEntry(string entryId, Entry entry)
+        {
+            var entryFromDb = await GetEntryById(entryId, true);
+
+            if (entryFromDb is null)
+            {
+                return new Result<Entry>(Common.CommonConsts.NOT_FOUND);
+            }
+
+            entryFromDb.CheckInTime = entry.CheckInTime;
+            entryFromDb.CheckOutTime = entry.CheckOutTime; 
+            entryFromDb.Entered = entry.Entered;
+            entryFromDb.EntryExpirationTime = entry.EntryExpirationTime;
+
+            return new Result<Entry>(entryFromDb);
         }
 
         public Task SaveChangesAsync() => _context.SaveChangesAsync();

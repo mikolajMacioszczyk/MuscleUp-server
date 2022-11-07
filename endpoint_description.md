@@ -128,8 +128,8 @@
 | ------- | ------------------------------- | ------- | ------------------------------- |
 | api/carnets/entry/{entryId} | LoggedIn | GET | returns Entry by id |
 | api/carnets/entry/by-gympass/{gympassId}?pageNumber=<int>&pageSize=<int> | Member, Worker, Admin | GET | returns Entries assigned to gympass |
-| api/carnets/entry/generate-token/{gympassId} | Member | GET | returns entry token |
-| api/carnets/entry | Worker | POST | creates entry based on entry token |
+| api/carnets/entry/generate-token | Member | POST | returns entry token |
+| api/carnets/entry | Worker | PUT | creates entry based on entry token |
 
 # Fitness Clubs
 

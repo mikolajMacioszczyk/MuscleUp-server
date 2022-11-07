@@ -14,5 +14,9 @@ namespace Carnets.Domain.Models
         public DateTime CheckInTime { get; set; }
 
         public DateTime? CheckOutTime { get; set; }
+
+        public bool Entered { get; set; }
+
+        public DateTime EntryExpirationTime { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Carnets.Domain.Models;
+﻿using Carnets.Application.Gympasses.Dtos;
 using Common.Models.Dtos;
 
 namespace Carnets.Application.Entries.Dtos
@@ -7,7 +7,7 @@ namespace Carnets.Application.Entries.Dtos
     {
         public string EntryId { get; set; }
 
-        public Gympass Gympass { get; set; }
+        public GympassDto Gympass { get; set; }
 
         public DateTime CheckInTime { get; set; }
 

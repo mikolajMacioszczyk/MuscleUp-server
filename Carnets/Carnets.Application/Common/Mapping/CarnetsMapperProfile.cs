@@ -59,7 +59,9 @@ namespace Carnets.Application.Mapping
                 opt => opt.MapFrom(src => src.Gympass.Status));
 
             // Entries
-            CreateMap<Entry, CreatedEntryDto>();
+            CreateMap<Entry, CreatedEntryDto>()
+                .ForMember(e => e.Gympass,
+                opt => opt.MapFrom(src => src.Gympass));
             CreateMap<Entry, EntryDto>()
                 .ForMember(e => e.GympassId,
                 opt => opt.MapFrom(src => src.Gympass.GympassId));

@@ -1,4 +1,5 @@
 ﻿using Carnets.Domain.Models;
+using Common.Models;
 
 namespace Carnets.Application.Interfaces
 {
@@ -9,6 +10,8 @@ namespace Carnets.Application.Interfaces
         Task<IEnumerable<Entry>> GetGympassEntries(string gympassId, int pageNumber, int pageSize, bool asTracking);
 
         Task<Entry> CreateEntry(Entry entry);
+
+        Task<Result<Entry>> UpdateEntry(string entryId, Entry entry);
 
         Task SaveChangesAsync();
     }

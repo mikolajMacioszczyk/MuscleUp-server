@@ -45,16 +45,16 @@ namespace Carnets.API.Controllers
         public async Task<ActionResult<IEnumerable<EntryDto>>> GetGympassEntries([FromRoute] string gympassId, 
             [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = CommonConsts.DefaultPageSize)
         {
-            var entry = await Mediator.Send(new GetGympassEntriesQuery(gympassId, pageNumber, pageSize));
+            var entry = await Mediator.Send(new GetEnteredGympassEntriesQuery(gympassId, pageNumber, pageSize));
 
             return Ok(_mapper.Map<IEnumerable<EntryDto>>(entry));
         }
 
-        [HttpGet("generate-token/{gympassId}")]
+        [HttpPost("generate-token")]
         [AuthorizeRoles(RoleType.Member)]
-        public async Task<ActionResult<GeneratedEndtryTokenDto>> GenerateEntryToken([FromRoute] string gympassId)
+        public async Task<ActionResult<GeneratedEndtryTokenDto>> GenerateEntryToken([FromBody] GenerateEntryTokenDto model)
         {
-            var tokenGenerationResult = await Mediator.Send(new GenerateEntryTokenQuery(gympassId));
+            var tokenGenerationResult = await Mediator.Send(new GenerateEntryTokenCommand(model.GympassId));
 
             if (tokenGenerationResult.IsSuccess)
             {
@@ -64,7 +64,7 @@ namespace Carnets.API.Controllers
             return BadRequest(tokenGenerationResult.ErrorCombined);
         }
 
-        [HttpPost()]
+        [HttpPut()]
         [AuthorizeRoles(RoleType.Worker)]
         public async Task<ActionResult> CreateEntry([FromBody] EntryTokenDto entryTokenDto)
         {
@@ -73,7 +73,7 @@ namespace Carnets.API.Controllers
                 WorkerId = _httpAuthContext.UserId
             });
 
-            var entryResult = await Mediator.Send(new CreateGymEntryCommand(entryTokenDto, fitnessClub.FitnessClubId));
+            var entryResult = await Mediator.Send(new EnterGymCommand(entryTokenDto, fitnessClub.FitnessClubId));
         
             if (entryResult.IsSuccess)
             {
