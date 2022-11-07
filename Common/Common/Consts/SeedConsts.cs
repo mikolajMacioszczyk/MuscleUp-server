@@ -18,6 +18,12 @@
 
         public const string DefaultWorkerEmploymentId = "6fae2655-a372-4fe1-9949-5574d78dc85f";
 
+        public const string DefaultTrainer1EmploymentId = "10700304-0f60-41b7-9ec7-35d8072cf753";
+
+        public const string DefaultTrainer2EmploymentId = "b1cd2538-c15c-46b9-b0a0-a3e56b5fda7a";
+
+        public const string DefaultTrainer3EmploymentId = "389c1e05-f355-47e9-9f57-450442935ef4";
+
         #endregion
 
         #region Auth
@@ -31,6 +37,10 @@
         public const string DefaultOwnerId = "644c6d0a-b66b-4332-a954-c9ccc7ec95f6";
 
         public const string DefaultTrainerId = "c7c25024-1997-4c9b-9e37-fe150d0faac1";
+
+        public const string DefaultTrainer2Id = "73d155d3-4138-4047-8d91-a933815a4a0a";
+
+        public const string DefaultTrainer3Id = "e24c7a76-62ad-4547-bc86-cc53b722417b";
 
         public const string DefaultMemberId = "faf314bc-1175-46b0-a57c-d456f09ca139";
 

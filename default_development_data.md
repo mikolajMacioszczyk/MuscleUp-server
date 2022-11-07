@@ -14,10 +14,20 @@ Available only when environement is "Development".
 - Password: 123Pa$$word.  
 - Id: 747f6c50-aabc-4be2-aa43-10cf60aba46b  
 
-### Trainer
+### Trainer 1
 - Email: trainer@gmail.com  
 - Password: 123Pa$$word.  
 - Id: c7c25024-1997-4c9b-9e37-fe150d0faac1  
+
+### Trainer 2
+- Email: trainer2@gmail.com  
+- Password: 123Pa$$word.  
+- Id: 73d155d3-4138-4047-8d91-a933815a4a0a  
+
+### Trainer 3
+- Email: trainer3@gmail.com  
+- Password: 123Pa$$word.  
+- Id: e24c7a76-62ad-4547-bc86-cc53b722417b  
 
 ### Member
 - Email: member@gmail.com  

@@ -118,6 +118,56 @@ namespace Auth.Repo
                 await context.Trainers.AddAsync(trainer);
             }
 
+            //Seed Default Trainer 2
+            var defaultTrainer2 = new ApplicationUser
+            {
+                Id = SeedConsts.DefaultTrainer2Id,
+                UserName = "trainer2",
+                Email = "trainer2@gmail.com",
+                FirstName = "Nicholas",
+                LastName = "Latifi",
+                BirthDate = DateTime.UtcNow,
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                AvatarUrl = SeedConsts.DefaultUserAvatarUrl
+            };
+
+            var trainer2Created = await SeedUser(userManager, defaultTrainer2, SeedConsts.DefaultPassword, RoleType.Trainer);
+            if (trainer2Created)
+            {
+                var trainer2 = new Trainer()
+                {
+                    UserId = SeedConsts.DefaultTrainer2Id,
+                    User = defaultTrainer2,
+                };
+                await context.Trainers.AddAsync(trainer2);
+            }
+
+            //Seed Default Trainer 3
+            var defaultTrainer3 = new ApplicationUser
+            {
+                Id = SeedConsts.DefaultTrainer3Id,
+                UserName = "trainer3",
+                Email = "trainer3@gmail.com",
+                FirstName = "Alex",
+                LastName = "Albon",
+                BirthDate = DateTime.UtcNow,
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                AvatarUrl = SeedConsts.DefaultUserAvatarUrl
+            };
+
+            var trainer3Created = await SeedUser(userManager, defaultTrainer3, SeedConsts.DefaultPassword, RoleType.Trainer);
+            if (trainer3Created)
+            {
+                var trainer3 = new Trainer()
+                {
+                    UserId = SeedConsts.DefaultTrainer3Id,
+                    User = defaultTrainer3,
+                };
+                await context.Trainers.AddAsync(trainer3);
+            }
+
             //Seed Default Owner
             var defaultOwner = new ApplicationUser
             {

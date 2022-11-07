@@ -38,6 +38,41 @@ namespace FitnessClubs.Repo
 
             await context.WorkerEmployments.AddAsync(defaultWorkerEmployment);
 
+            // seed trainers employments
+            var defaultTrainer1Employment = new TrainerEmployment()
+            {
+                EmploymentId = SeedConsts.DefaultTrainer1EmploymentId,
+                FitnessClubId = SeedConsts.DefaultFitnessClubId,
+                FitnessClub = defaultFitnessClub,
+                UserId = SeedConsts.DefaultTrainerId,
+                EmployedFrom = DateTime.UtcNow,
+                EmployedTo = null
+            };
+
+            var defaultTrainer2Employment = new TrainerEmployment()
+            {
+                EmploymentId = SeedConsts.DefaultTrainer2EmploymentId,
+                FitnessClubId = SeedConsts.DefaultFitnessClubId,
+                FitnessClub = defaultFitnessClub,
+                UserId = SeedConsts.DefaultTrainer2Id,
+                EmployedFrom = DateTime.UtcNow,
+                EmployedTo = null
+            };
+
+            var defaultTrainer3Employment = new TrainerEmployment()
+            {
+                EmploymentId = SeedConsts.DefaultTrainer3EmploymentId,
+                FitnessClubId = SeedConsts.DefaultFitnessClubId,
+                FitnessClub = defaultFitnessClub,
+                UserId = SeedConsts.DefaultTrainer3Id,
+                EmployedFrom = DateTime.UtcNow,
+                EmployedTo = null
+            };
+
+            await context.TrainerEmployments.AddAsync(defaultTrainer1Employment);
+            await context.TrainerEmployments.AddAsync(defaultTrainer2Employment);
+            await context.TrainerEmployments.AddAsync(defaultTrainer3Employment);
+
             // seed memberships
             var defaultMembership = new Membership()
             {
