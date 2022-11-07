@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Common.Extensions;
 using System.IdentityModel.Tokens.Jwt;
-using Auth.Application.Common.Services;
 using Auth.Application.Common.Managers;
 using Auth.Application.Common.Interfaces;
 using Auth.Application.Common.Models;
@@ -43,17 +42,14 @@ builder.Services.ConfigureRouting();
 // Application services
 builder.Services.AddScoped<JwtSecurityTokenHandler>();
 builder.Services.AddScoped<IAccountHttpManager, AccountHttpManager>();
-builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISpecificUserRepository<Member, RegisterMemberDto>, MemberRepository>();
 builder.Services.AddScoped<ISpecificUserRepository<Worker, RegisterWorkerDto>, WorkerRepository>();
 builder.Services.AddScoped<ISpecificUserRepository<Trainer, RegisterTrainerDto>, TrainerRepository>();
 builder.Services.AddScoped<ISpecificUserRepository<Owner, RegisterOwnerDto>, OwnerRepository>();
 builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
 builder.Services.AddScoped<IApplicationUserManager, ApplicationUserManager>();
-builder.Services.AddScoped<IAuthTokenService, AuthTokenService>();
 builder.Services.AddScoped<IAuthTokenManager, AuthTokenManager>();
 builder.Services.AddScoped<IAuthTokenRepository, AuthTokenRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

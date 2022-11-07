@@ -2,6 +2,7 @@
 using Auth.Application.Common.Models;
 using Auth.Domain.Models;
 using Common.Models;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -41,7 +42,33 @@ namespace Auth.Application.Common.Services
             }
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
-            if (!isPasswordValid)
+            if (!isPasswordValid || 
+                // users with account created by external authentication provider cannot log in by password
+                user.PreventPasswordLogin)
+            {
+                result.IsInvalidPassword = true;
+                return result;
+            }
+
+            await CreateAndAssignAuthToken(result, () => _authTokenService.CreateAuthToken(user));
+
+            LogLoginIfSuccessful(result, user);
+
+            return result;
+        }
+
+        public async Task<LoginResult> Login(ApplicationUser externalUser, string userAgent)
+        {
+            if (externalUser == null) throw new ArgumentNullException(nameof(externalUser));
+
+            var (user, result) = await GetUserByEmail(externalUser.Email);
+
+            if (result.UserNotFound)
+            {
+                return result;
+            }
+
+            if (user.PasswordHash != externalUser.PasswordHash)
             {
                 result.IsInvalidPassword = true;
                 return result;

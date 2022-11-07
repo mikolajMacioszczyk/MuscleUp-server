@@ -14,6 +14,7 @@
 | Endpoint Name | Who can | Method type | Purpose |
 | ------- | ------------------------------- | ------- | ------------------------------- |
 | api/auth/account/login | Guest | POST | logging in to get access and refresh token |
+| api/auth/account/login-with-facebook | Guest | POST | logging in using facebook. If user with given email does not exists, creates one (Member) |
 | api/auth/account/login-with-refresh-token | All  | POST | extension of the login validity time, generates new tokens |
 | api/auth/account/chanage-password | LoggedIn | POST | changes user password |
 | api/auth/account/logout | LoggedIn | PUT | Revocation of access and refresh token before the standard time has elapsed |

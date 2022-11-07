@@ -10,7 +10,7 @@ namespace Auth.Application.Common.Interfaces
 
         Task<IEnumerable<TUser>> GetUsersByIds(string[] userIds);
 
-        Task<Result<TUser>> Register(TRegistrationUser registerDto);
+        Task<Result<TUser>> Register(TRegistrationUser registerDto, string userId = null, bool preventPasswordLogin = false);
 
         Task<Result<TUser>> UpdateData(string userId, TUser user);
     }

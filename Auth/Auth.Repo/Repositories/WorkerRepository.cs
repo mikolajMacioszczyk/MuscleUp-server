@@ -25,9 +25,9 @@ namespace Auth.Repo.Repositories
 
         protected override DbSet<Worker> Users => _context.Workers;
 
-        public async Task<Result<Worker>> Register(RegisterWorkerDto registerDto)
+        public async Task<Result<Worker>> Register(RegisterWorkerDto registerDto, string userId, bool preventPasswordLogin)
         {
-            var userResult = await RegisterUser(registerDto, RoleType.Worker);
+            var userResult = await RegisterUser(registerDto, RoleType.Worker, userId, preventPasswordLogin);
             if (userResult.IsSuccess)
             {
                 var worker = new Worker()

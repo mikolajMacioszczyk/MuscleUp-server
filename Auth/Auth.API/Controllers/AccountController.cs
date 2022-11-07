@@ -1,6 +1,8 @@
 ﻿using Auth.Application.Common.Dtos;
 using Auth.Application.Common.Interfaces;
 using Auth.Application.Common.Models;
+using Auth.Application.Dtos;
+using Auth.Application.Members.Commands;
 using Common.Attribute;
 using Common.BaseClasses;
 using Common.Extensions;
@@ -16,11 +18,16 @@ namespace Auth.API.Controllers
     {
         private readonly IAccountHttpManager _accountHttpManager;
         private readonly IUserService _userService;
+        private readonly IFacebookLoginService _facebookLoginService;
 
-        public AccountController(IAccountHttpManager accountHttpManager, IUserService userService)
+        public AccountController(
+            IAccountHttpManager accountHttpManager, 
+            IUserService userService, 
+            IFacebookLoginService facebookLoginService)
         {
             _accountHttpManager = accountHttpManager;
             _userService = userService;
+            _facebookLoginService = facebookLoginService;
         }
 
         [AllowAnonymous]
@@ -33,6 +40,29 @@ namespace Auth.API.Controllers
             }
 
             return Ok(await _accountHttpManager.Login(request, HttpContext.GetUserAgent()));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login-with-facebook")]
+        public async Task<ActionResult<AuthResponse>> LoginWithFacebook([FromBody] FacebookLoginViewModel request)
+        {
+            if (!(await _facebookLoginService.ValidateToken(request.AccessToken, request.UserId, request.Email)))
+            {
+                return Unauthorized();
+            }
+
+            // get user by UserId from Facebook
+            var user = await _userService.GetUserById(request.UserId);
+            if (user == null)
+            {
+                var command = new RegisterMemberFromExternalServiceCommand(request);
+                // UserId MUST be the same as user from Facebook!
+                var createdMember = await Mediator.Send(command);
+                user = createdMember.User;
+            }
+
+            var authResponse = await _accountHttpManager.LoginExistingUser(user, HttpContext.GetUserAgent());
+            return Ok(authResponse);
         }
 
         [AllowAnonymous]

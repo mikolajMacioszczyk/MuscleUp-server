@@ -58,15 +58,16 @@ namespace Auth.Application.Common.Services
             var refreshToken = await CreateRefreshToken(user, now, signingCredentials);
             var refreshTokenString = _jwtTokenHandler.WriteToken(refreshToken);
 
-            var existingAuthToken = _authTokenManager.GetByUser(Guid.Parse(user.Id));
-            if (existingAuthToken != null)
-            {
-                await _authTokenManager.UpdateAsync(PopulateAuthToken(existingAuthToken));
-            }
-            else
-            {
-                await _authTokenManager.AddAsync(PopulateAuthToken(new AuthToken()));
-            }
+            // TODO: Change Guid to string in tokens => Will be done in later PR
+            //var existingAuthToken = _authTokenManager.GetByUser(Guid.Parse(user.Id));
+            //if (existingAuthToken != null)
+            //{
+            //    await _authTokenManager.UpdateAsync(PopulateAuthToken(existingAuthToken));
+            //}
+            //else
+            //{
+            //    await _authTokenManager.AddAsync(PopulateAuthToken(new AuthToken()));
+            //}
 
             return (accessTokenString, refreshTokenString);
 
@@ -91,7 +92,14 @@ namespace Auth.Application.Common.Services
 
         public async Task RemoveAuthToken(string userId)
         {
-            await _authTokenManager.DeleteAsync(Guid.Parse(userId));
+            try
+            {
+                await _authTokenManager.DeleteAsync(Guid.Parse(userId));
+            }
+            catch (Exception)
+            {
+                // TODO: Replace guid with string
+            }
         }
 
         private async Task<JwtSecurityToken> CreateAccessToken(

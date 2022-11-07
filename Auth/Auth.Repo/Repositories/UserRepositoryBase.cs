@@ -45,7 +45,11 @@ namespace Auth.Repo.Repositories
                 .ToListAsync();
         }
 
-        protected async Task<Result<ApplicationUser>> RegisterUser(RegisterUserDto registerDto, RoleType role)
+        protected async Task<Result<ApplicationUser>> RegisterUser(
+            RegisterUserDto registerDto, 
+            RoleType role, 
+            string userId = null,
+            bool preventPasswordLogin = true)
         {
             var userByEmail = await _userManager.FindByEmailAsync(registerDto.Email);
             if (userByEmail != null)
@@ -64,7 +68,13 @@ namespace Auth.Repo.Repositories
                 RegisterDate = DateTime.UtcNow,
                 Gender = registerDto.Gender,
                 AvatarUrl = avatarUrl,
+                PreventPasswordLogin = preventPasswordLogin
             };
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                user.Id = userId;
+            }
 
             await _userStore.SetUserNameAsync(user, registerDto.Email, CancellationToken.None);
             var result = await _userManager.CreateAsync(user, registerDto.Password);

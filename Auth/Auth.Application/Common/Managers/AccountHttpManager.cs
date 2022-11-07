@@ -1,5 +1,6 @@
 ﻿using Auth.Application.Common.Interfaces;
 using Auth.Application.Common.Models;
+using Auth.Domain.Models;
 using Common.Exceptions;
 using Common.Models;
 
@@ -22,6 +23,16 @@ namespace Auth.Application.Common.Managers
 
             var result = await _accountService.Login(request, userAgent);
             ValidateResult(result, request.Email);
+
+            return CreateResponse(result);
+        }
+
+        public async Task<AuthResponse> LoginExistingUser(ApplicationUser applicationUser, string userAgent)
+        {
+            if (applicationUser is null) throw new ArgumentException(nameof(applicationUser));
+
+            var result = await _accountService.Login(applicationUser, userAgent);
+            ValidateResult(result, applicationUser.Email);
 
             return CreateResponse(result);
         }

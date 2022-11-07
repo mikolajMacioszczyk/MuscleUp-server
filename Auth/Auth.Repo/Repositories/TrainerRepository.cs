@@ -27,9 +27,9 @@ namespace Auth.Repo.Repositories
 
         protected override DbSet<Trainer> Users => _context.Trainers;
 
-        public async Task<Result<Trainer>> Register(RegisterTrainerDto registerDto)
+        public async Task<Result<Trainer>> Register(RegisterTrainerDto registerDto, string userId, bool preventPasswordLogin)
         {
-            var userResult = await RegisterUser(registerDto, RoleType.Trainer);
+            var userResult = await RegisterUser(registerDto, RoleType.Trainer, userId, preventPasswordLogin);
             if (userResult.IsSuccess)
             {
                 var trainer = new Trainer()

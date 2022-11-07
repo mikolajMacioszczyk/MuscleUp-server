@@ -53,5 +53,10 @@ namespace Auth.Application.Common.Services
             (authReponse.AccessToken, authReponse.RefreshToken) = await _authTokenService.CreateAuthToken(applicationUser);
             return authReponse;
         }
+
+        public Task<ApplicationUser> GetUserById(string userId)
+        {
+            return _userManager.FindByIdAsync(userId);
+        }
     }
 }

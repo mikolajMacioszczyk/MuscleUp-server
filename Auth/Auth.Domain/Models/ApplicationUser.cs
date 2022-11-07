@@ -23,5 +23,7 @@ namespace Auth.Domain.Models
         [Required]
         [MaxLength(500)]
         public string AvatarUrl { get; set; }
+
+        public bool PreventPasswordLogin { get; set; }
     }
 }

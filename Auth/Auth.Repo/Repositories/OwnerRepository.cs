@@ -26,9 +26,9 @@ namespace Auth.Repo.Repositories
 
         protected override DbSet<Owner> Users => _context.Owners;
 
-        public async Task<Result<Owner>> Register(RegisterOwnerDto registerDto)
+        public async Task<Result<Owner>> Register(RegisterOwnerDto registerDto, string userId, bool preventPasswordLogin)
         {
-            var userResult = await RegisterUser(registerDto, RoleType.Trainer);
+            var userResult = await RegisterUser(registerDto, RoleType.Trainer, userId, preventPasswordLogin);
             if (userResult.IsSuccess)
             {
                 var owner = new Owner()
