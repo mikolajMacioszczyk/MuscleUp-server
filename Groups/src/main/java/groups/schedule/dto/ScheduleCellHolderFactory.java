@@ -33,7 +33,7 @@ public class ScheduleCellHolderFactory {
                 groupWorkout
                         .getWorkoutParticipants()
                         .stream()
-                        .map(WorkoutParticipant::getGympassId)
+                        .map(WorkoutParticipant::getUserId)
                         .toList()
         );
         cellHolder.setPermissions(

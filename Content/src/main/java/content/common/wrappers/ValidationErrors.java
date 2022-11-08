@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static content.common.utils.StringUtils.NEW_LINE;
+import static content.common.utils.StringUtils.concatenate;
 
 public class ValidationErrors {
 
@@ -42,13 +43,13 @@ public class ValidationErrors {
 
     public String getAllErrorsDescription() {
 
-        StringBuilder description = new StringBuilder("Errors:" + NEW_LINE);
+        String description = "Errors:" + NEW_LINE;
 
         for (ValidationError error : errors) {
 
-            description.append(error.description()).append(NEW_LINE);
+            description = concatenate(description, error.description(), NEW_LINE);
         }
 
-        return description.toString();
+        return description;
     }
 }

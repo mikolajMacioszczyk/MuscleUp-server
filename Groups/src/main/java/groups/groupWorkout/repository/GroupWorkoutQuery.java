@@ -1,7 +1,8 @@
 package groups.groupWorkout.repository;
 
+import groups.common.wrappers.TimeWrapper;
 import groups.groupWorkout.entity.GroupWorkout;
-import groups.groupWorkout.entity.GroupWorkoutFullDto;
+import groups.groupWorkout.entity.GroupWorkoutDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,15 +12,15 @@ public interface GroupWorkoutQuery {
 
     GroupWorkout getById(UUID id);
 
-    Optional<GroupWorkoutFullDto> findGroupWorkoutById(UUID id);
+    TimeWrapper getTimeById(UUID id);
 
-    List<GroupWorkoutFullDto> getAllGroupWorkoutByGroupId(UUID groupId);
+    Optional<GroupWorkoutDto> findGroupWorkoutById(UUID id);
 
-    List<GroupWorkoutFullDto> getAllGroupWorkoutByWorkoutId(UUID workoutId);
+    List<GroupWorkoutDto> getAllGroupsWorkouts();
 
-    List<GroupWorkoutFullDto> getAllGroupsWorkouts();
+    UUID getCloneIdById(UUID id);
 
-    UUID getParentIdById(UUID id);
+    List<UUID> getFutureGroupWorkoutsByCloneId(UUID id);
 
-    List<UUID> getFutureGroupWorkoutsByParentId(UUID id);
+    UUID getFitnessClubIdByGroupWorkoutId(UUID id);
 }

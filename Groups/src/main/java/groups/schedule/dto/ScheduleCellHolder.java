@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static groups.common.utils.StringUtils.isNullOrEmpty;
-import static groups.groupWorkout.controller.GroupWorkoutValidator.MIN_PARTICIPANTS;
+import static groups.group.controller.GroupValidator.MIN_PARTICIPANTS;
 import static java.util.Objects.isNull;
 
 public class ScheduleCellHolder {
@@ -65,7 +65,9 @@ public class ScheduleCellHolder {
 
         return !isNull(scheduleCell.getGroup())
                 && !isNull(scheduleCell.getGroup().id())
-                && !isNullOrEmpty(scheduleCell.getGroup().name());
+                && !isNullOrEmpty(scheduleCell.getGroup().name())
+                && !isNullOrEmpty(scheduleCell.getGroup().location())
+                && scheduleCell.getGroup().maxParticipants() > MIN_PARTICIPANTS;
     }
 
     private boolean validWorkout() {
@@ -73,8 +75,6 @@ public class ScheduleCellHolder {
         return !isNull(scheduleCell.getWorkout())
                 && !isNull(scheduleCell.getWorkout().groupWorkoutId())
                 && !isNull(scheduleCell.getWorkout().workoutId())
-                && !isNullOrEmpty(scheduleCell.getWorkout().location())
-                && scheduleCell.getWorkout().maxParticipants() > MIN_PARTICIPANTS
                 && !isNull(scheduleCell.getWorkout().startTime())
                 && !isNull(scheduleCell.getWorkout().endTime())
                 && scheduleCell.getWorkout().startTime().isBefore(

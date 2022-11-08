@@ -6,41 +6,38 @@ import groups.common.wrappers.ValidationErrors;
 import groups.group.repository.GroupQuery;
 import groups.groupWorkout.controller.form.GroupWorkoutForm;
 import groups.groupWorkout.repository.GroupWorkoutQuery;
-import groups.groupWorkout.workout.WorkoutRepository;
+import groups.groupWorkout.workout.WorkoutQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import static groups.common.innerCommunicators.resolver.InnerCommunicationStatusResolver.resolveIdCheckStatus;
-import static groups.common.utils.StringUtils.isNullOrEmpty;
 import static org.springframework.http.HttpStatus.*;
 
 @Service
 public class GroupWorkoutValidator {
 
-    public static final int MIN_PARTICIPANTS = 1;
-
     private final GroupWorkoutQuery groupWorkoutQuery;
     private final GroupQuery groupQuery;
-    private final WorkoutRepository workoutRepository;
+    private final WorkoutQuery workoutQuery;
 
 
     @Autowired
     private GroupWorkoutValidator(GroupWorkoutQuery groupWorkoutQuery,
                                   GroupQuery groupQuery,
-                                  WorkoutRepository workoutRepository) {
+                                  WorkoutQuery workoutQuery) {
 
         Assert.notNull(groupWorkoutQuery, "groupWorkoutQuery must not be null");
         Assert.notNull(groupQuery, "groupQuery must not be null");
-        Assert.notNull(workoutRepository, "workoutValidator must not be null");
+        Assert.notNull(workoutQuery, "workoutValidator must not be null");
 
         this.groupWorkoutQuery = groupWorkoutQuery;
         this.groupQuery = groupQuery;
-        this.workoutRepository = workoutRepository;
+        this.workoutQuery = workoutQuery;
     }
 
 
@@ -49,11 +46,7 @@ public class GroupWorkoutValidator {
         Assert.notNull(groupWorkoutForm, "groupWorkoutFullForm must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkGroupId(groupWorkoutForm.groupId(), errors);
-        checkWorkoutId(groupWorkoutForm.workoutId(), errors);
-        checkoutLocation(groupWorkoutForm.location(), errors);
-        checkoutMaxParticipants(groupWorkoutForm.maxParticipants(), errors);
-        checkDates(groupWorkoutForm.startTime(), groupWorkoutForm.endTime(), errors);
+        checkFields(groupWorkoutForm, errors);
     }
 
     void validateBeforeUpdate(UUID id, GroupWorkoutForm groupWorkoutForm, ValidationErrors errors) {
@@ -63,11 +56,7 @@ public class GroupWorkoutValidator {
         Assert.notNull(errors, "errors must not be null");
 
         checkGroupWorkoutId(id, errors);
-        checkGroupId(groupWorkoutForm.groupId(), errors);
-        checkWorkoutId(groupWorkoutForm.workoutId(), errors);
-        checkoutLocation(groupWorkoutForm.location(), errors);
-        checkoutMaxParticipants(groupWorkoutForm.maxParticipants(), errors);
-        checkDates(groupWorkoutForm.startTime(), groupWorkoutForm.endTime(), errors);
+        checkFields(groupWorkoutForm, errors);
     }
 
     void validateBeforeDelete(UUID id, ValidationErrors errors) {
@@ -79,7 +68,15 @@ public class GroupWorkoutValidator {
     }
 
 
-    private void checkGroupWorkoutId(UUID id, ValidationErrors errors) {
+    public void checkFields(GroupWorkoutForm groupWorkoutForm, ValidationErrors errors) {
+
+        checkGroupId(groupWorkoutForm.groupId(), errors);
+        checkWorkoutId(groupWorkoutForm.workoutId(), errors);
+        checkDates(groupWorkoutForm.startTime(), groupWorkoutForm.endTime(), errors);
+    }
+
+
+    public void checkGroupWorkoutId(UUID id, ValidationErrors errors) {
 
         if (groupWorkoutQuery.findGroupWorkoutById(id).isEmpty()) {
 
@@ -87,7 +84,7 @@ public class GroupWorkoutValidator {
         }
     }
 
-    private void checkGroupId(UUID id, ValidationErrors errors) {
+    public void checkGroupId(UUID id, ValidationErrors errors) {
 
         if (groupQuery.findGroupById(id).isEmpty()) {
 
@@ -95,9 +92,9 @@ public class GroupWorkoutValidator {
         }
     }
 
-    private void checkWorkoutId(UUID id, ValidationErrors errors) {
+    public void checkWorkoutId(UUID id, ValidationErrors errors) {
 
-        HttpStatus validationStatus = workoutRepository.checkWorkoutId(id);
+        HttpStatus validationStatus = workoutQuery.checkWorkoutId(id);
 
         ResolvedStatus resolvedStatus = resolveIdCheckStatus(validationStatus, "Workout");
 
@@ -107,23 +104,7 @@ public class GroupWorkoutValidator {
         }
     }
 
-    private void checkoutLocation(String location, ValidationErrors errors) {
-
-        if (isNullOrEmpty(location)) {
-
-            errors.addError(new ValidationError(BAD_REQUEST, "GroupWorkout localization can not be empty"));
-        }
-    }
-
-    private void checkoutMaxParticipants(int maxParticipants, ValidationErrors errors) {
-
-        if (maxParticipants < MIN_PARTICIPANTS) {
-
-            errors.addError(new ValidationError(BAD_REQUEST, "GroupWorkout max participant limit can not be below " + MIN_PARTICIPANTS));
-        }
-    }
-
-    private void checkDates(LocalDateTime dateFrom, LocalDateTime dateTo, ValidationErrors errors) {
+    public void checkDates(ZonedDateTime dateFrom, ZonedDateTime dateTo, ValidationErrors errors) {
 
         if (!dateFrom.isBefore(dateTo)) {
 

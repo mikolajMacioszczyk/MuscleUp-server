@@ -1,7 +1,7 @@
 package groups.groupWorkout.controller;
 
 import groups.common.abstracts.AbstractListController;
-import groups.groupWorkout.entity.GroupWorkoutFullDto;
+import groups.groupWorkout.entity.GroupWorkoutDto;
 import groups.groupWorkout.repository.GroupWorkoutQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +35,7 @@ public class GroupWorkoutListController extends AbstractListController {
     @GetMapping("/{id}")
     protected ResponseEntity<?> findGroupWorkoutById(@PathVariable("id") UUID id) {
 
-        Optional<GroupWorkoutFullDto> groupWorkoutFullDto = groupWorkoutQuery.findGroupWorkoutById(id);
+        Optional<GroupWorkoutDto> groupWorkoutFullDto = groupWorkoutQuery.findGroupWorkoutById(id);
 
         return groupWorkoutFullDto.isPresent() ? response(OK, groupWorkoutFullDto.get()) : response(NOT_FOUND);
     }
@@ -44,7 +44,7 @@ public class GroupWorkoutListController extends AbstractListController {
     @GetMapping("/all")
     protected ResponseEntity<?> getAllGroupWorkouts() {
 
-        List<GroupWorkoutFullDto> groupsWorkouts = groupWorkoutQuery.getAllGroupsWorkouts();
+        List<GroupWorkoutDto> groupsWorkouts = groupWorkoutQuery.getAllGroupsWorkouts();
 
         return response(OK, groupsWorkouts);
     }

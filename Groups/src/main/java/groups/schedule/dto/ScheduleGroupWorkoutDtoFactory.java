@@ -12,8 +12,6 @@ public class ScheduleGroupWorkoutDtoFactory {
         return new ScheduleGroupWorkoutDto(
                 groupWorkout.getId(),
                 groupWorkout.getWorkoutId(),
-                groupWorkout.getLocation(),
-                groupWorkout.getMaxParticipants(),
                 groupWorkout.getStartTime(),
                 groupWorkout.getEndTime()
         );

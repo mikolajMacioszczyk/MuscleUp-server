@@ -1,14 +1,13 @@
 package groups.schedule.service;
 
+import groups.common.wrappers.TimeWrapper;
 import groups.group.controller.form.GroupForm;
 import groups.group.service.GroupService;
-import groups.groupPermission.controller.form.GroupPermissionForm;
 import groups.groupPermission.service.GroupPermissionService;
-import groups.groupTrainer.controller.form.GroupTrainerForm;
-import groups.groupTrainer.service.GroupTrainerService;
 import groups.groupWorkout.controller.form.GroupWorkoutForm;
 import groups.groupWorkout.repository.GroupWorkoutQuery;
 import groups.groupWorkout.service.GroupWorkoutService;
+import groups.groupWorkout.service.form.GroupWorkoutUpdateForm;
 import groups.schedule.controller.form.ScheduleCellForm;
 import groups.schedule.dto.ScheduleCell;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,8 @@ import org.springframework.util.Assert;
 import java.util.List;
 import java.util.UUID;
 
-import static java.util.Objects.isNull;
+import static groups.common.utils.TimeUtils.calculateTimeDiff;
+import static java.util.UUID.randomUUID;
 
 @Service
 public class ScheduleUpdater {
@@ -27,7 +27,6 @@ public class ScheduleUpdater {
     private final GroupWorkoutService groupWorkoutService;
     private final GroupWorkoutQuery groupWorkoutQuery;
     private final GroupPermissionService groupPermissionService;
-    private final GroupTrainerService groupTrainerService;
     private final ScheduleListService scheduleListService;
 
 
@@ -36,21 +35,18 @@ public class ScheduleUpdater {
                            GroupWorkoutService groupWorkoutService,
                            GroupWorkoutQuery groupWorkoutQuery,
                            GroupPermissionService groupPermissionService,
-                           GroupTrainerService groupTrainerService,
                            ScheduleListService scheduleListService) {
 
         Assert.notNull(groupService, "groupService must not be null");
         Assert.notNull(groupWorkoutService, "groupWorkoutService must not be null");
         Assert.notNull(groupWorkoutQuery, "groupWorkoutQuery must not be null");
         Assert.notNull(groupPermissionService, "groupPermissionService must not be null");
-        Assert.notNull(groupTrainerService, "groupTrainerService must not be null");
         Assert.notNull(scheduleListService, "scheduleListService must not be null");
 
         this.groupService = groupService;
         this.groupWorkoutService = groupWorkoutService;
         this.groupWorkoutQuery = groupWorkoutQuery;
         this.groupPermissionService = groupPermissionService;
-        this.groupTrainerService = groupTrainerService;
         this.scheduleListService = scheduleListService;
     }
 
@@ -62,7 +58,6 @@ public class ScheduleUpdater {
         if (form.hasGroupChanged(currentCell)) {
 
             UUID newGroupId = createNewGroupAndReassign(currentCell, form);
-            groupWorkoutService.removeParent(id);
 
             return cascade?
                     cascadeUpdateGroupWorkout(id, newGroupId, form) :
@@ -82,25 +77,27 @@ public class ScheduleUpdater {
 
         UUID newGroupId = createGroup(form);
 
-        if (form.hasTrainerChanged(currentCell)) {
-
-            assignTrainer(form.trainerId(), newGroupId);
-        }
-        else {
-
-            assignTrainer(currentCell.getTrainer().trainerId(), newGroupId);
-        }
-
         reassignPermissions(currentCell.getPermissions(), newGroupId);
 
         return newGroupId;
+    }
+
+    private void reassignPermissions(List<UUID> permissionIds, UUID groupId) {
+
+        permissionIds.forEach( permissionId ->
+                groupPermissionService.assign(groupId, permissionId)
+        );
     }
 
     private UUID createGroup(ScheduleCellForm form) {
 
         GroupForm groupForm = new GroupForm(
                 form.name(),
+                form.trainerId(),
+                form.fitnessClubId(),
                 form.description(),
+                form.location(),
+                form.maxParticipants(),
                 form.repeatable()
         );
 
@@ -112,8 +109,6 @@ public class ScheduleUpdater {
         GroupWorkoutForm groupWorkoutForm = new GroupWorkoutForm(
                 groupId,
                 form.workoutId(),
-                form.location(),
-                form.maxParticipants(),
                 form.startTime(),
                 form.endTime()
         );
@@ -121,49 +116,27 @@ public class ScheduleUpdater {
         return groupWorkoutService.updateGroupWorkout(groupWorkoutId, groupWorkoutForm);
     }
 
-    // TODO add subquery to reduce database connections
     private UUID cascadeUpdateGroupWorkout(UUID groupWorkoutId, UUID groupId, ScheduleCellForm form) {
 
-        UUID parentId = groupWorkoutQuery.getParentIdById(groupWorkoutId);
+        UUID cloneId = groupWorkoutQuery.getCloneIdById(groupWorkoutId);
+        List<UUID> clonesWithOriginal = groupWorkoutQuery.getFutureGroupWorkoutsByCloneId(cloneId);
+        UUID newCloneId = randomUUID();
 
-        if (isNull(parentId)) {
+        TimeWrapper originalTime = groupWorkoutQuery.getTimeById(groupWorkoutId);
 
-            parentId = groupWorkoutId;
-        }
+        clonesWithOriginal.forEach(id -> {
 
-        List<UUID> originalWithClones = groupWorkoutQuery.getFutureGroupWorkoutsByParentId(parentId);
-
-        originalWithClones.forEach(id -> {
-
-            GroupWorkoutForm groupWorkoutForm = new GroupWorkoutForm(
+            GroupWorkoutUpdateForm groupWorkoutUpdateForm = new GroupWorkoutUpdateForm(
                     groupId,
                     form.workoutId(),
-                    form.location(),
-                    form.maxParticipants(),
-                    form.startTime(),
-                    form.endTime()
+                    calculateTimeDiff(originalTime.startTime(), form.startTime()),
+                    calculateTimeDiff(originalTime.endTime(), form.endTime()),
+                    newCloneId
             );
 
-            groupWorkoutService.updateGroupWorkout(id, groupWorkoutForm);
+            groupWorkoutService.updateGroupWorkout(id, groupWorkoutUpdateForm);
         });
 
         return groupWorkoutId;
-    }
-
-    private void assignTrainer(UUID trainerId, UUID groupId) {
-
-        GroupTrainerForm groupTrainerForm = new GroupTrainerForm(
-                trainerId,
-                groupId
-        );
-
-        groupTrainerService.assign(groupTrainerForm);
-    }
-
-    private void reassignPermissions(List<UUID> permissionIds, UUID groupId) {
-
-        permissionIds.forEach( permissionId ->
-                groupPermissionService.add(new GroupPermissionForm(groupId, permissionId))
-        );
     }
 }

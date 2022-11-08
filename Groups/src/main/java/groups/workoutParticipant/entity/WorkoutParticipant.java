@@ -27,21 +27,21 @@ public class WorkoutParticipant extends AbstractEntity {
     private GroupWorkout groupWorkout;
 
     @UnknownForeignKey
-    @Column(name = "gympass_id", nullable = false)
-    private UUID gympassId;
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
 
 
     @MustExist(reason = HIBERNATE)
     public WorkoutParticipant() {
     }
 
-    public WorkoutParticipant(GroupWorkout groupWorkout, UUID gympassId) {
+    public WorkoutParticipant(GroupWorkout groupWorkout, UUID userId) {
 
         Assert.notNull(groupWorkout, "groupWorkout must not be null");
-        Assert.notNull(gympassId, "gympassId must not be null");
+        Assert.notNull(userId, "userId must not be null");
 
         this.groupWorkout = groupWorkout;
-        this.gympassId = gympassId;
+        this.userId = userId;
     }
 
 
@@ -54,7 +54,7 @@ public class WorkoutParticipant extends AbstractEntity {
         return groupWorkout;
     }
 
-    public UUID getGympassId() {
-        return gympassId;
+    public UUID getUserId() {
+        return userId;
     }
 }

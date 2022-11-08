@@ -13,7 +13,10 @@ public class ScheduleGroupDtoFactory {
                 group.getId(),
                 group.getName(),
                 group.getDescription(),
-                group.isRepeatable()
+                group.getLocation(),
+                group.getMaxParticipants(),
+                group.isRepeatable(),
+                group.getFitnessClubId()
         );
     }
 }

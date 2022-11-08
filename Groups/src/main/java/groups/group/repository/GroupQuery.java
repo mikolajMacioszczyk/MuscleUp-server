@@ -2,7 +2,7 @@ package groups.group.repository;
 
 
 import groups.group.entity.Group;
-import groups.group.entity.GroupFullDto;
+import groups.group.entity.GroupDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,9 +12,7 @@ public interface GroupQuery {
 
     Group getById(UUID id);
 
-    Optional<GroupFullDto> findGroupById(UUID id);
+    Optional<GroupDto> findGroupById(UUID id);
 
-    List<GroupFullDto> getAllGroups();
-
-    GroupFullDto getGroupByGroupWorkoutId(UUID id);
+    List<GroupDto> getAllGroups();
 }

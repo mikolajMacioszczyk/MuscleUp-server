@@ -23,7 +23,7 @@ import static groups.common.utils.StringUtils.concatenate;
 @Repository
 public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implements GroupQuery {
 
-    private final GroupFullDtoFactory groupFullDtoFactory;
+    private final GroupDtoFactory groupDtoFactory;
 
 
     @Autowired
@@ -31,24 +31,28 @@ public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implement
 
         super(Group.class, sessionFactory);
 
-        this.groupFullDtoFactory = new GroupFullDtoFactory();
+        this.groupDtoFactory = new GroupDtoFactory();
     }
 
 
     @Override
     @Transactional
-    public Optional<GroupFullDto> findGroupById(UUID id) {
+    public Optional<GroupDto> findGroupById(UUID id) {
 
         Assert.notNull(id, "id must not be null");
 
         CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<GroupFullDto> criteriaQuery = criteriaBuilder.createQuery(GroupFullDto.class);
+        CriteriaQuery<GroupDto> criteriaQuery = criteriaBuilder.createQuery(GroupDto.class);
         Root<Group> root = criteriaQuery.from(Group.class);
 
         criteriaQuery.multiselect(
                 root.get("id"),
                 root.get("name"),
+                root.get("trainerId"),
+                root.get("fitnessClubId"),
                 root.get("description"),
+                root.get("location"),
+                root.get("maxParticipants"),
                 root.get("repeatable")
         ).where(
                 criteriaBuilder.equal(root.get("id"), id)
@@ -64,35 +68,10 @@ public class GroupHibernateQuery extends AbstractHibernateQuery<Group> implement
     }
 
     @Override
-    public List<GroupFullDto> getAllGroups() {
+    public List<GroupDto> getAllGroups() {
 
         return getAll().stream()
-                .map(groupFullDtoFactory::create)
+                .map(groupDtoFactory::create)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public GroupFullDto getGroupByGroupWorkoutId(UUID id) {
-
-        Assert.notNull(id, "id must not be null");
-
-        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<GroupFullDto> criteriaQuery = criteriaBuilder.createQuery(GroupFullDto.class);
-        Root<Group> root = criteriaQuery.from(Group.class);
-
-        criteriaQuery.multiselect(
-                root.get("id"),
-                root.get("name"),
-                root.get("description"),
-                root.get("repeatable")
-        ).where(
-                criteriaBuilder.equal(root.get("groupWorkouts").get("id"), id)
-        );
-
-        return getSession().createQuery(criteriaQuery)
-                .setComment(
-                        concatenate("Group with GroupWorkoutId = ", id.toString())
-                )
-                .getSingleResult();
     }
 }

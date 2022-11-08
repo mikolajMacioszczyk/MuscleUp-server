@@ -113,7 +113,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/Groups/{everything}",
+      "UpstreamPathTemplate": "/api/groups/{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
       "SwaggerKey": "groups"
     },
@@ -126,7 +126,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/Groups",
+      "UpstreamPathTemplate": "/api/groups",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
 

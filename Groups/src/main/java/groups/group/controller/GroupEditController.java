@@ -32,7 +32,7 @@ class GroupEditController extends AbstractEditController {
     }
 
 
-    @PostMapping("/save")
+    @PostMapping
     protected ResponseEntity<?> saveGroup(@RequestBody GroupForm groupForm) {
 
         groupValidator.validateBeforeSave(groupForm, errors);
@@ -40,7 +40,7 @@ class GroupEditController extends AbstractEditController {
         return hasErrors()? errors() : response(OK, groupService.saveGroup(groupForm));
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     protected ResponseEntity<?> updateGroup(@PathVariable("id") UUID id, @RequestBody GroupForm groupForm) {
 
         groupValidator.validateBeforeUpdate(id, groupForm, errors);
@@ -48,7 +48,7 @@ class GroupEditController extends AbstractEditController {
         return hasErrors()? errors() : response(OK, groupService.updateGroup(id, groupForm));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     protected ResponseEntity<?> deleteGroup(@PathVariable("id") UUID id) {
 
         groupValidator.validateBeforeDelete(id, errors);

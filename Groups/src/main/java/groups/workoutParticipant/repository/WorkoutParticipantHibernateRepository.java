@@ -39,26 +39,17 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
 
     @Override
     @Transactional
-    public void unassign(UUID workoutParticipantId) {
-
-        Assert.notNull(workoutParticipantId, "workoutParticipantId must not be null");
-
-        delete(workoutParticipantId);
-    }
-
-    @Override
-    @Transactional
-    public void unassign(UUID groupWorkoutId, UUID gympassId) {
+    public void unassign(UUID groupWorkoutId, UUID userId) {
 
         Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
-        Assert.notNull(gympassId, "gympassId must not be null");
+        Assert.notNull(userId, "userId must not be null");
 
         CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
         CriteriaDelete<WorkoutParticipant> criteriaDelete = criteriaBuilder.createCriteriaDelete(WorkoutParticipant.class);
         Root<WorkoutParticipant> root = criteriaDelete.from(WorkoutParticipant.class);
 
         criteriaDelete.where(
-                criteriaBuilder.equal(root.get("gympassId"), gympassId),
+                criteriaBuilder.equal(root.get("userId"), userId),
                 criteriaBuilder.equal(root.get("groupWorkout").get("id"), groupWorkoutId)
         );
 
@@ -66,8 +57,8 @@ public class WorkoutParticipantHibernateRepository extends AbstractHibernateRepo
                 .setComment(
                         concatenate("Delete WorkoutParticipant with GroupWorkoutId = ",
                                 groupWorkoutId.toString(),
-                                " and GympassId = ",
-                                gympassId.toString()
+                                " and UserId = ",
+                                userId.toString()
                         )
                 )
                 .executeUpdate();

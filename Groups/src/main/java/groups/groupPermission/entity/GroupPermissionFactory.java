@@ -1,10 +1,11 @@
 package groups.groupPermission.entity;
 
 import groups.group.repository.GroupQuery;
-import groups.groupPermission.controller.form.GroupPermissionForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+
+import java.util.UUID;
 
 @Component
 public class GroupPermissionFactory {
@@ -21,13 +22,14 @@ public class GroupPermissionFactory {
     }
 
 
-    public GroupPermission create(GroupPermissionForm groupPermissionForm) {
+    public GroupPermission create(UUID groupId, UUID permissionId) {
 
-        Assert.notNull(groupPermissionForm, "groupPermissionForm must not be null");
+        Assert.notNull(groupId, "groupId must not be null");
+        Assert.notNull(permissionId, "permissionId must not be null");
 
         return new GroupPermission(
-                groupQuery.getById(groupPermissionForm.groupId()),
-                groupPermissionForm.permissionId()
+                groupQuery.getById(groupId),
+                permissionId
         );
     }
 }

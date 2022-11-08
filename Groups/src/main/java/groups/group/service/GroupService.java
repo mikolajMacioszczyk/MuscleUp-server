@@ -45,7 +45,11 @@ public class GroupService {
 
         group.update(
                 groupForm.name(),
+                groupForm.trainerId(),
+                groupForm.fitnessClubId(),
                 groupForm.description(),
+                groupForm.location(),
+                groupForm.maxParticipants(),
                 groupForm.repeatable()
         );
 

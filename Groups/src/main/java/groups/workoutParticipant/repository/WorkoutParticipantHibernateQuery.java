@@ -2,8 +2,7 @@ package groups.workoutParticipant.repository;
 
 import groups.common.abstracts.AbstractHibernateQuery;
 import groups.workoutParticipant.entity.WorkoutParticipant;
-import groups.workoutParticipant.entity.WorkoutParticipantFullDto;
-import groups.workoutParticipant.entity.WorkoutParticipantFullDtoFactory;
+import groups.workoutParticipant.entity.WorkoutParticipantDto;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -15,9 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static groups.common.utils.StringUtils.concatenate;
 
@@ -25,129 +22,39 @@ import static groups.common.utils.StringUtils.concatenate;
 @Repository
 public class WorkoutParticipantHibernateQuery extends AbstractHibernateQuery<WorkoutParticipant> implements WorkoutParticipantQuery {
 
-    private final WorkoutParticipantFullDtoFactory workoutParticipantFullDtoFactory;
-
 
     @Autowired
     WorkoutParticipantHibernateQuery(SessionFactory sessionFactory) {
 
         super(WorkoutParticipant.class, sessionFactory);
-
-        this.workoutParticipantFullDtoFactory = new WorkoutParticipantFullDtoFactory();
     }
 
-
-    @Override
-    public List<WorkoutParticipantFullDto> getAllWorkoutParticipants() {
-
-        return getAll().stream()
-                .map(workoutParticipantFullDtoFactory::create)
-                .collect(Collectors.toList());
-    }
 
     @Override
     @Transactional
-    public Optional<WorkoutParticipantFullDto> findWorkoutParticipantById(UUID id) {
-
-        Assert.notNull(id, "id must not be null");
-
-        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<WorkoutParticipantFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutParticipantFullDto.class);
-        Root<WorkoutParticipant> root = criteriaQuery.from(WorkoutParticipant.class);
-
-        criteriaQuery.multiselect(
-                root.get("id"),
-                root.get("groupWorkout").get("id"),
-                root.get("gympassId")
-        ).where(
-                criteriaBuilder.equal(root.get("id"), id)
-        );
-
-        return getSession().createQuery(criteriaQuery)
-                .setComment(
-                        concatenate("WorkoutParticipant with id = ", id.toString())
-                )
-                .getResultList()
-                .stream()
-                .findFirst();
-    }
-
-    @Override
-    @Transactional
-    public List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGroupWorkoutId(UUID groupWorkoutId) {
+    public List<WorkoutParticipantDto> getAllWorkoutParticipantsByGroupWorkoutIdAndUserId(UUID groupWorkoutId, UUID userId) {
 
         Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
+        Assert.notNull(userId, "userId must not be null");
 
         CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<WorkoutParticipantFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutParticipantFullDto.class);
+        CriteriaQuery<WorkoutParticipantDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutParticipantDto.class);
         Root<WorkoutParticipant> root = criteriaQuery.from(WorkoutParticipant.class);
 
         criteriaQuery.multiselect(
-                root.get("id"),
                 root.get("groupWorkout").get("id"),
-                root.get("gympassId")
-        ).where(
-                criteriaBuilder.equal(root.get("groupWorkout").get("id"), groupWorkoutId)
-        );
-
-        return getSession().createQuery(criteriaQuery)
-                .setComment(
-                        concatenate("WorkoutParticipant with groupWorkoutId =", groupWorkoutId.toString())
-                )
-                .getResultList();
-    }
-
-    @Override
-    @Transactional
-    public List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGympassId(UUID gympassId) {
-
-        Assert.notNull(gympassId, "gympassId must not be null");
-
-        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<WorkoutParticipantFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutParticipantFullDto.class);
-        Root<WorkoutParticipant> root = criteriaQuery.from(WorkoutParticipant.class);
-
-        criteriaQuery.multiselect(
-                root.get("id"),
-                root.get("groupWorkout").get("id"),
-                root.get("gympassId")
-        ).where(
-                criteriaBuilder.equal(root.get("gympassId"), gympassId)
-        );
-
-        return getSession().createQuery(criteriaQuery)
-                .setComment(
-                        concatenate("WorkoutParticipant with gympassId =", gympassId.toString())
-                )
-                .getResultList();
-    }
-
-    @Override
-    @Transactional
-    public List<WorkoutParticipantFullDto> getAllWorkoutParticipantsByGroupWorkoutIdAndGympassId(UUID groupWorkoutId, UUID gympassId) {
-
-        Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
-        Assert.notNull(gympassId, "gympassId must not be null");
-
-        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<WorkoutParticipantFullDto> criteriaQuery = criteriaBuilder.createQuery(WorkoutParticipantFullDto.class);
-        Root<WorkoutParticipant> root = criteriaQuery.from(WorkoutParticipant.class);
-
-        criteriaQuery.multiselect(
-                root.get("id"),
-                root.get("groupWorkout").get("id"),
-                root.get("gympassId")
+                root.get("userId")
         ).where(
                 criteriaBuilder.equal(root.get("groupWorkout").get("id"), groupWorkoutId),
-                criteriaBuilder.equal(root.get("gympassId"), gympassId)
+                criteriaBuilder.equal(root.get("userId"), userId)
         );
 
         return getSession().createQuery(criteriaQuery)
                 .setComment(
                         concatenate("WorkoutParticipant with groupWorkoutId = ",
                                 groupWorkoutId.toString(),
-                                " and gympassId =",
-                                gympassId.toString()
+                                " and userId =",
+                                userId.toString()
                         )
                 )
                 .getResultList();

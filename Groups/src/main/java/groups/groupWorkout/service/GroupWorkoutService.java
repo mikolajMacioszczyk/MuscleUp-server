@@ -5,11 +5,15 @@ import groups.groupWorkout.controller.form.GroupWorkoutForm;
 import groups.groupWorkout.entity.GroupWorkout;
 import groups.groupWorkout.entity.GroupWorkoutFactory;
 import groups.groupWorkout.repository.GroupWorkoutRepository;
+import groups.groupWorkout.service.form.GroupWorkoutUpdateForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.UUID;
+
+import static groups.common.utils.TimeUtils.addTimeDiff;
+import static java.util.UUID.randomUUID;
 
 @Service
 public class GroupWorkoutService {
@@ -43,14 +47,14 @@ public class GroupWorkoutService {
         return groupWorkoutRepository.save(groupWorkout);
     }
 
-    public void saveGroupWorkout(GroupWorkoutForm groupWorkoutForm, UUID parentId) {
+    public UUID saveGroupWorkout(GroupWorkoutForm groupWorkoutForm, UUID cloneId) {
 
         Assert.notNull(groupWorkoutForm, "groupWorkoutFullForm must not be null");
-        Assert.notNull(parentId, "parentId must not be null");
+        Assert.notNull(cloneId, "cloneId must not be null");
 
-        GroupWorkout groupWorkout = groupWorkoutFactory.create(groupWorkoutForm, parentId);
+        GroupWorkout groupWorkout = groupWorkoutFactory.create(groupWorkoutForm, cloneId);
 
-        groupWorkoutRepository.save(groupWorkout);
+        return groupWorkoutRepository.save(groupWorkout);
     }
 
     public UUID updateGroupWorkout(UUID id, GroupWorkoutForm groupWorkoutForm) {
@@ -63,14 +67,30 @@ public class GroupWorkoutService {
         groupWorkout.update(
                 groupRepository.getById(groupWorkoutForm.groupId()),
                 groupWorkoutForm.workoutId(),
-                groupWorkoutForm.location(),
-                groupWorkoutForm.maxParticipants(),
                 groupWorkoutForm.startTime(),
                 groupWorkoutForm.endTime(),
-                groupWorkout.getParentId()
+                randomUUID()
         );
 
         return groupWorkoutRepository.update(groupWorkout);
+    }
+
+    public void updateGroupWorkout(UUID id, GroupWorkoutUpdateForm form) {
+
+        Assert.notNull(id, "id must not be null");
+        Assert.notNull(form, "form must not be null");
+
+        GroupWorkout groupWorkout = groupWorkoutRepository.getById(id);
+
+        groupWorkout.update(
+                groupRepository.getById(form.groupId()),
+                form.workoutId(),
+                addTimeDiff(groupWorkout.getStartTime(), form.startTimeDiff()),
+                addTimeDiff(groupWorkout.getEndTime(), form.endTimeDiff()),
+                form.cloneId()
+        );
+
+        groupWorkoutRepository.update(groupWorkout);
     }
 
     public void deleteGroupWorkout(UUID idToRemove) {
@@ -78,24 +98,5 @@ public class GroupWorkoutService {
         Assert.notNull(idToRemove, "idToRemove must not be null");
 
         groupWorkoutRepository.delete(idToRemove);
-    }
-
-    public void removeParent(UUID id) {
-
-        Assert.notNull(id, "id must not be null");
-
-        GroupWorkout groupWorkout = groupWorkoutRepository.getById(id);
-
-        groupWorkout.update(
-                groupWorkout.getGroup(),
-                groupWorkout.getWorkoutId(),
-                groupWorkout.getLocation(),
-                groupWorkout.getMaxParticipants(),
-                groupWorkout.getStartTime(),
-                groupWorkout.getEndTime(),
-                null
-        );
-
-        groupWorkoutRepository.update(groupWorkout);
     }
 }

@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -35,9 +37,17 @@ public class ScheduleListController extends AbstractListController {
     @GetMapping("/{id}")
     protected ResponseEntity<?> getScheduleCellById(@PathVariable("id") UUID id) {
 
-        ScheduleCell scheduleCell = scheduleListService.composeCell(id);
+        Optional<ScheduleCell> scheduleCell = scheduleListService.tryComposeCell(id);
 
-        return response(OK, scheduleCell);
+        return scheduleCell.isPresent() ? response(OK, scheduleCell.get()) : response(NOT_FOUND);
+    }
+
+    @GetMapping("/clones/{id}")
+    protected ResponseEntity<?> getScheduleCellWithClonesById(@PathVariable("id") UUID id) {
+
+        List<ScheduleCell> scheduleCells = scheduleListService.composeCellWithClones(id);
+
+        return response(OK, scheduleCells);
     }
 
     @GetMapping("/all")

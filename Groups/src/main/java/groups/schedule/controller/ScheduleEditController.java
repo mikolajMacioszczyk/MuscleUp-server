@@ -1,6 +1,7 @@
 package groups.schedule.controller;
 
 import groups.common.abstracts.AbstractEditController;
+import groups.groupWorkout.controller.form.GroupWorkoutForm;
 import groups.schedule.controller.form.ScheduleCellForm;
 import groups.schedule.service.ScheduleEditService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,20 @@ public class ScheduleEditController extends AbstractEditController {
     }
 
 
-    @PostMapping("/save")
+    @PostMapping
     protected ResponseEntity<?> saveScheduleCell(@RequestBody ScheduleCellForm scheduleCellForm) {
 
         scheduleValidator.validateBeforeSave(scheduleCellForm, errors);
 
         return hasErrors() ? errors() : response(OK, scheduleEditService.save(scheduleCellForm));
+    }
+
+    @PostMapping("/copy/{id}")
+    protected ResponseEntity<?> saveScheduleCellAsCopy(@PathVariable UUID id, @RequestBody GroupWorkoutForm groupWorkoutForm) {
+
+        scheduleValidator.validateBeforeSaveAsCopy(id, groupWorkoutForm, errors);
+
+        return hasErrors() ? errors() : response(OK, scheduleEditService.saveAsCopy(id, groupWorkoutForm));
     }
 
     @PutMapping("/single-update/{id}")
@@ -55,7 +64,7 @@ public class ScheduleEditController extends AbstractEditController {
         return hasErrors() ? errors() : response(OK, scheduleEditService.cascadeUpdate(id, scheduleCellForm));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     protected ResponseEntity<?> deleteScheduleCell(@PathVariable UUID id) {
 
         scheduleValidator.validateBeforeDelete(id, errors);

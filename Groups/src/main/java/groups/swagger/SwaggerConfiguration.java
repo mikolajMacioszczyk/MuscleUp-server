@@ -23,7 +23,6 @@ public class SwaggerConfiguration {
                 .packagesToScan(
                         "groups.group.controller",
                         "groups.groupWorkout.controller",
-                        "groups.groupTrainer.controller",
                         "groups.groupPermission.controller",
                         "groups.workoutParticipant.controller",
                         "groups.schedule.controller"

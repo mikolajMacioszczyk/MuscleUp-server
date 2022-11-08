@@ -5,7 +5,7 @@ import groups.common.errors.ValidationError;
 import groups.common.wrappers.ValidationErrors;
 import groups.group.repository.GroupQuery;
 import groups.groupPermission.controller.form.GroupPermissionForm;
-import groups.groupPermission.permission.PermissionValidator;
+import groups.groupPermission.permission.PermissionQuery;
 import groups.groupPermission.repository.GroupPermissionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,57 +22,48 @@ public class GroupPermissionValidator {
 
     private final GroupQuery groupQuery;
     private final GroupPermissionQuery groupPermissionQuery;
-    private final PermissionValidator permissionValidator;
+    private final PermissionQuery permissionQuery;
 
 
     @Autowired
     private GroupPermissionValidator(GroupQuery groupQuery,
                                      GroupPermissionQuery groupPermissionQuery,
-                                     PermissionValidator permissionValidator) {
+                                     PermissionQuery permissionQuery) {
 
         Assert.notNull(groupQuery, "groupQuery must not be null");
         Assert.notNull(groupPermissionQuery, "workoutPermissionQuery must not be null");
-        Assert.notNull(permissionValidator, "permissionValidator must not be null");
+        Assert.notNull(permissionQuery, "permissionValidator must not be null");
 
         this.groupQuery = groupQuery;
         this.groupPermissionQuery = groupPermissionQuery;
-        this.permissionValidator = permissionValidator;
+        this.permissionQuery = permissionQuery;
     }
 
 
-    void validateBeforeAdd(GroupPermissionForm groupPermissionForm, ValidationErrors errors) {
+    void validateBeforeAssign(GroupPermissionForm form, ValidationErrors errors) {
 
-        Assert.notNull(groupPermissionForm, "workoutPermissionForm must not be null");
+        Assert.notNull(form, "form must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkGroupWorkoutId(groupPermissionForm.groupId(), errors);
-        checkPermissionId(groupPermissionForm.permissionId(), errors);
-        checkIfAssigned(groupPermissionForm.groupId(), groupPermissionForm.permissionId(), errors);
+        checkGroupId(form.groupId(), errors);
+        checkPermissionId(form.permissionId(), errors);
+        checkIfAssigned(form.groupId(), form.permissionId(), errors);
     }
 
-    void validateBeforeRemove(UUID groupWorkoutId, UUID permissionId, ValidationErrors errors) {
+    void validateBeforeUnassign(GroupPermissionForm form, ValidationErrors errors) {
 
-        Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
-        Assert.notNull(permissionId, "permissionId must not be null");
+        Assert.notNull(form, "form must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkGroupWorkoutId(groupWorkoutId, errors);
-        checkPermissionId(permissionId, errors);
-        checkIfNotAssigned(groupWorkoutId, permissionId, errors);
-    }
-
-    void validateBeforeRemove(UUID id, ValidationErrors errors) {
-
-        Assert.notNull(id, "id must not be null");
-        Assert.notNull(errors, "errors must not be null");
-
-        checkGroupPermissionId(id, errors);
+        checkGroupId(form.groupId(), errors);
+        checkPermissionId(form.permissionId(), errors);
+        checkIfNotAssigned(form.groupId(), form.permissionId(), errors);
     }
 
 
     private void checkPermissionId(UUID permissionId, ValidationErrors errors) {
 
-        HttpStatus validationStatus = permissionValidator.checkPermissionId(permissionId);
+        HttpStatus validationStatus = permissionQuery.checkPermissionId(permissionId);
 
         ResolvedStatus resolvedStatus = resolveIdCheckStatus(validationStatus, "Permission");
 
@@ -82,35 +73,27 @@ public class GroupPermissionValidator {
         }
     }
 
-    private void checkGroupWorkoutId(UUID groupWorkoutId, ValidationErrors errors) {
+    private void checkGroupId(UUID groupId, ValidationErrors errors) {
 
-        if (groupQuery.findGroupById(groupWorkoutId).isEmpty()) {
+        if (groupQuery.findGroupById(groupId).isEmpty()) {
 
-            errors.addError(new ValidationError(BAD_REQUEST, "GroupWorkout with given ID does not exist"));
+            errors.addError(new ValidationError(BAD_REQUEST, "Group with given ID does not exist"));
         }
     }
 
-    private void checkGroupPermissionId(UUID id, ValidationErrors errors) {
+    private void checkIfAssigned(UUID groupId, UUID permissionId, ValidationErrors errors) {
 
-        if (groupPermissionQuery.findGroupPermissionById(id).isEmpty()) {
+        if (!groupPermissionQuery.getAllGroupPermissionsByGroupIdAndPermissionId(groupId, permissionId).isEmpty()) {
 
-            errors.addError(new ValidationError(BAD_REQUEST, "GroupPermission with given ID does not exist"));
+            errors.addError(new ValidationError(BAD_REQUEST, "Given permissionID is already assigned to this groupID"));
         }
     }
 
-    private void checkIfAssigned(UUID groupWorkoutId, UUID permissionId, ValidationErrors errors) {
+    private void checkIfNotAssigned(UUID groupId, UUID permissionId, ValidationErrors errors) {
 
-        if (!groupPermissionQuery.getAllGroupPermissionsByGroupIdAndPermissionId(groupWorkoutId, permissionId).isEmpty()) {
+        if (groupPermissionQuery.getAllGroupPermissionsByGroupIdAndPermissionId(groupId, permissionId).isEmpty()) {
 
-            errors.addError(new ValidationError(BAD_REQUEST, "Given permissionID is already assigned to this groupWorkoutID"));
-        }
-    }
-
-    private void checkIfNotAssigned(UUID groupWorkoutId, UUID permissionId, ValidationErrors errors) {
-
-        if (groupPermissionQuery.getAllGroupPermissionsByGroupIdAndPermissionId(groupWorkoutId, permissionId).isEmpty()) {
-
-            errors.addError(new ValidationError(BAD_REQUEST, "Given permissionID is not assigned to this groupWorkoutID"));
+            errors.addError(new ValidationError(BAD_REQUEST, "Given permissionID is not assigned to this groupID"));
         }
     }
 }

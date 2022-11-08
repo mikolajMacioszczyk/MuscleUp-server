@@ -2,7 +2,7 @@ package groups.schedule.dto;
 
 
 import groups.group.entity.Group;
-import groups.groupTrainer.trainer.Trainer;
+import groups.group.trainer.Trainer;
 import org.springframework.util.Assert;
 
 public class ScheduleTrainerDtoFactory {
@@ -12,7 +12,7 @@ public class ScheduleTrainerDtoFactory {
         Assert.notNull(group, "group must not be null");
 
         return new ScheduleTrainerDto(
-                group.getGroupTrainer().getTrainerId(),
+                group.getTrainerId(),
                 "",
                 "",
                 ""

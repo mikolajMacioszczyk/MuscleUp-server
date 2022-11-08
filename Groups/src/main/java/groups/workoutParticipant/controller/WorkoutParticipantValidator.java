@@ -5,7 +5,7 @@ import groups.common.errors.ValidationError;
 import groups.common.wrappers.ValidationErrors;
 import groups.groupWorkout.repository.GroupWorkoutQuery;
 import groups.workoutParticipant.controller.form.WorkoutParticipantForm;
-import groups.workoutParticipant.participant.ParticipantValidator;
+import groups.workoutParticipant.participant.ParticipantQuery;
 import groups.workoutParticipant.repository.WorkoutParticipantQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,61 +22,60 @@ public class WorkoutParticipantValidator {
 
     private final GroupWorkoutQuery groupWorkoutQuery;
     private final WorkoutParticipantQuery workoutParticipantQuery;
-    private final ParticipantValidator participantValidator;
+    private final ParticipantQuery participantQuery;
 
 
     @Autowired
     private WorkoutParticipantValidator(GroupWorkoutQuery groupWorkoutQuery,
                                         WorkoutParticipantQuery workoutParticipantQuery,
-                                        ParticipantValidator participantValidator) {
+                                        ParticipantQuery participantQuery) {
 
         Assert.notNull(groupWorkoutQuery, "groupWorkoutQuery must not be null");
         Assert.notNull(workoutParticipantQuery, "workoutParticipantQuery must not be null");
-        Assert.notNull(participantValidator, "participantValidator must not be null");
+        Assert.notNull(participantQuery, "participantValidator must not be null");
 
         this.groupWorkoutQuery = groupWorkoutQuery;
         this.workoutParticipantQuery = workoutParticipantQuery;
-        this.participantValidator = participantValidator;
+        this.participantQuery = participantQuery;
     }
 
 
-    void validateBeforeAssign(WorkoutParticipantForm workoutParticipantForm, ValidationErrors errors) {
+    void validateBeforeAssign(WorkoutParticipantForm form, ValidationErrors errors) {
 
-        Assert.notNull(workoutParticipantForm, "workoutParticipantForm must not be null");
+        Assert.notNull(form, "form must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkGroupWorkoutId(workoutParticipantForm.groupWorkoutId(), errors);
-        checkGympassId(workoutParticipantForm.gympassId(), errors);
-        checkIfAssigned(workoutParticipantForm.groupWorkoutId(), workoutParticipantForm.gympassId(), errors);
+        checkGroupWorkoutId(form.groupWorkoutId(), errors);
+        if (errors.hasErrors()) return;
+        checkUserId(form.userId(), form.groupWorkoutId(), errors);
+        checkIfAssigned(form.groupWorkoutId(), form.userId(), errors);
     }
 
-    void validateBeforeUnassign(UUID groupWorkoutId, UUID gympassId, ValidationErrors errors) {
+    void validateBeforeUnassign(WorkoutParticipantForm form, ValidationErrors errors) {
 
-        Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
-        Assert.notNull(gympassId, "gympassId must not be null");
+        Assert.notNull(form, "form must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkGroupWorkoutId(groupWorkoutId, errors);
-        checkGympassId(gympassId, errors);
-        checkIfNotAssigned(groupWorkoutId, gympassId, errors);
-    }
-
-    void validateBeforeUnassign(UUID id, ValidationErrors errors) {
-
-        Assert.notNull(id, "id must not be null");
-        Assert.notNull(errors, "errors must not be null");
-
-        checkWorkoutParticipantId(id, errors);
+        checkGroupWorkoutId(form.groupWorkoutId(), errors);
+        if (errors.hasErrors()) return;
+        checkUserId(form.userId(), form.groupWorkoutId(), errors);
+        checkIfNotAssigned(form.groupWorkoutId(), form.userId(), errors);
     }
 
 
-    private void checkGympassId(UUID gympassId, ValidationErrors errors) {
+    private void checkUserId(UUID userId, UUID groupWorkoutId,  ValidationErrors errors) {
 
-        HttpStatus validationStatus = participantValidator.checkGympassId(gympassId);
+        UUID fitnessClubId = groupWorkoutQuery.getFitnessClubIdByGroupWorkoutId(groupWorkoutId);
 
-        ResolvedStatus resolvedStatus = resolveIdCheckStatus(validationStatus, "Gympass");
+        HttpStatus validationStatus = participantQuery.checkUserId(userId, fitnessClubId);
 
-        if (resolvedStatus.httpStatus() != OK) {
+        ResolvedStatus resolvedStatus = resolveIdCheckStatus(validationStatus, "User");
+
+        if (resolvedStatus.httpStatus() == NOT_FOUND) {
+
+            errors.addError(new ValidationError(NOT_FOUND, "User is not assigned to FitnessClub that organize these classes"));
+        }
+        else if (resolvedStatus.httpStatus() != OK) {
 
             errors.addError(new ValidationError(resolvedStatus.httpStatus(), resolvedStatus.description()));
         }
@@ -90,27 +89,19 @@ public class WorkoutParticipantValidator {
         }
     }
 
-    private void checkWorkoutParticipantId(UUID id, ValidationErrors errors) {
+    private void checkIfAssigned(UUID groupWorkoutId, UUID userId, ValidationErrors errors) {
 
-        if (workoutParticipantQuery.findWorkoutParticipantById(id).isEmpty()) {
+        if (!workoutParticipantQuery.getAllWorkoutParticipantsByGroupWorkoutIdAndUserId(groupWorkoutId, userId).isEmpty()) {
 
-            errors.addError(new ValidationError(BAD_REQUEST, "WorkoutParticipant with given ID does not exist"));
+            errors.addError(new ValidationError(BAD_REQUEST, "Given userID is already assigned to this groupWorkoutID"));
         }
     }
 
-    private void checkIfAssigned(UUID groupWorkoutId, UUID gympassId, ValidationErrors errors) {
+    private void checkIfNotAssigned(UUID groupWorkoutId, UUID userId, ValidationErrors errors) {
 
-        if (!workoutParticipantQuery.getAllWorkoutParticipantsByGroupWorkoutIdAndGympassId(groupWorkoutId, gympassId).isEmpty()) {
+        if (workoutParticipantQuery.getAllWorkoutParticipantsByGroupWorkoutIdAndUserId(groupWorkoutId, userId).isEmpty()) {
 
-            errors.addError(new ValidationError(BAD_REQUEST, "Given gympassID is already assigned to this groupWorkoutID"));
-        }
-    }
-
-    private void checkIfNotAssigned(UUID groupWorkoutId, UUID gympassId, ValidationErrors errors) {
-
-        if (workoutParticipantQuery.getAllWorkoutParticipantsByGroupWorkoutIdAndGympassId(groupWorkoutId, gympassId).isEmpty()) {
-
-            errors.addError(new ValidationError(BAD_REQUEST, "Given gympassID is not assigned to this groupWorkoutID"));
+            errors.addError(new ValidationError(BAD_REQUEST, "Given userID is not assigned to this groupWorkoutID"));
         }
     }
 }

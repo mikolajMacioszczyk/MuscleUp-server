@@ -6,5 +6,8 @@ public record ScheduleGroupDto(
     UUID id,
     String name,
     String description,
-    boolean repeatable
+    String location,
+    int maxParticipants,
+    boolean repeatable,
+    UUID fitnessClub
 ) { }

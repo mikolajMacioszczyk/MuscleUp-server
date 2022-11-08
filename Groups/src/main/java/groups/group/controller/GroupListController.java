@@ -1,7 +1,7 @@
 package groups.group.controller;
 
 import groups.common.abstracts.AbstractListController;
-import groups.group.entity.GroupFullDto;
+import groups.group.entity.GroupDto;
 import groups.group.repository.GroupQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,7 @@ public class GroupListController extends AbstractListController {
     @GetMapping("/{id}")
     protected ResponseEntity<?> getGroupById(@PathVariable("id") UUID id) {
 
-        Optional<GroupFullDto> groupFullDto = groupQuery.findGroupById(id);
+        Optional<GroupDto> groupFullDto = groupQuery.findGroupById(id);
 
         return groupFullDto.isPresent() ? response(OK, groupFullDto.get()) : response(NOT_FOUND);
     }
@@ -46,7 +46,7 @@ public class GroupListController extends AbstractListController {
     @GetMapping("/all")
     protected ResponseEntity<?> getAllGroups() {
 
-        List<GroupFullDto> groups = groupQuery.getAllGroups();
+        List<GroupDto> groups = groupQuery.getAllGroups();
 
         return response(OK, groups);
     }

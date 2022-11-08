@@ -1,10 +1,11 @@
 package groups.groupWorkout.repository;
 
 import groups.common.abstracts.AbstractHibernateQuery;
+import groups.common.wrappers.TimeWrapper;
 import groups.common.wrappers.UuidWrapper;
 import groups.groupWorkout.entity.GroupWorkout;
-import groups.groupWorkout.entity.GroupWorkoutFullDto;
-import groups.groupWorkout.entity.GroupWorkoutFullDtoFactory;
+import groups.groupWorkout.entity.GroupWorkoutDto;
+import groups.groupWorkout.entity.GroupWorkoutDtoFactory;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -15,7 +16,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +28,7 @@ import static groups.common.utils.StringUtils.concatenate;
 @Repository
 public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWorkout> implements GroupWorkoutQuery {
 
-    private final GroupWorkoutFullDtoFactory groupWorkoutFullDtoFactory;
+    private final GroupWorkoutDtoFactory groupWorkoutDtoFactory;
 
 
     @Autowired
@@ -35,28 +36,50 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
 
         super(GroupWorkout.class, sessionFactory);
 
-        this.groupWorkoutFullDtoFactory = new GroupWorkoutFullDtoFactory();
+        this.groupWorkoutDtoFactory = new GroupWorkoutDtoFactory();
     }
 
 
     @Override
-    @Transactional
-    public Optional<GroupWorkoutFullDto> findGroupWorkoutById(UUID id) {
+    public TimeWrapper getTimeById(UUID id) {
 
         Assert.notNull(id, "id must not be null");
 
         CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<GroupWorkoutFullDto> criteriaQuery = criteriaBuilder.createQuery(GroupWorkoutFullDto.class);
+        CriteriaQuery<TimeWrapper> criteriaQuery = criteriaBuilder.createQuery(TimeWrapper.class);
+        Root<GroupWorkout> root = criteriaQuery.from(GroupWorkout.class);
+
+        criteriaQuery.multiselect(
+                root.get("startTime"),
+                root.get("endTime")
+        ).where(
+                criteriaBuilder.equal(root.get("id"), id)
+        );
+
+        return getSession().createQuery(criteriaQuery)
+                .setComment(
+                        concatenate("Time based on id = ", id.toString())
+                )
+                .getSingleResult();
+    }
+
+    @Override
+    @Transactional
+    public Optional<GroupWorkoutDto> findGroupWorkoutById(UUID id) {
+
+        Assert.notNull(id, "id must not be null");
+
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaQuery<GroupWorkoutDto> criteriaQuery = criteriaBuilder.createQuery(GroupWorkoutDto.class);
         Root<GroupWorkout> root = criteriaQuery.from(GroupWorkout.class);
 
         criteriaQuery.multiselect(
                 root.get("id"),
                 root.get("group").get("id"),
                 root.get("workoutId"),
-                root.get("location"),
-                root.get("maxParticipants"),
                 root.get("startTime"),
-                root.get("endTime")
+                root.get("endTime"),
+                root.get("cloneId")
         ).where(
                 criteriaBuilder.equal(root.get("id"), id)
         );
@@ -71,73 +94,15 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
     }
 
     @Override
-    @Transactional
-    public List<GroupWorkoutFullDto> getAllGroupWorkoutByGroupId(UUID groupId) {
-
-        Assert.notNull(groupId, "groupId must not be null");
-
-        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<GroupWorkoutFullDto> criteriaQuery = criteriaBuilder.createQuery(GroupWorkoutFullDto.class);
-        Root<GroupWorkout> root = criteriaQuery.from(GroupWorkout.class);
-
-        criteriaQuery.multiselect(
-                root.get("id"),
-                root.get("group").get("id"),
-                root.get("workoutId"),
-                root.get("location"),
-                root.get("maxParticipants"),
-                root.get("startTime"),
-                root.get("endTime")
-        ).where(
-                criteriaBuilder.equal(root.get("group").get("id"), groupId)
-        );
-
-        return getSession().createQuery(criteriaQuery)
-                .setComment(
-                        concatenate("GroupWorkout with groupId = ", groupId.toString())
-                )
-                .getResultList();
-    }
-
-    @Override
-    @Transactional
-    public List<GroupWorkoutFullDto> getAllGroupWorkoutByWorkoutId(UUID workoutId) {
-
-        Assert.notNull(workoutId, "workoutId must not be null");
-
-        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<GroupWorkoutFullDto> criteriaQuery = criteriaBuilder.createQuery(GroupWorkoutFullDto.class);
-        Root<GroupWorkout> root = criteriaQuery.from(GroupWorkout.class);
-
-        criteriaQuery.multiselect(
-                root.get("id"),
-                root.get("group").get("id"),
-                root.get("workoutId"),
-                root.get("location"),
-                root.get("maxParticipants"),
-                root.get("startTime"),
-                root.get("endTime")
-            ).where(
-                criteriaBuilder.equal(root.get("workoutId"), workoutId)
-            );
-
-        return getSession().createQuery(criteriaQuery)
-                .setComment(
-                        concatenate("GroupWorkout with workoutId = ", workoutId.toString())
-                )
-                .getResultList();
-    }
-
-    @Override
-    public List<GroupWorkoutFullDto> getAllGroupsWorkouts() {
+    public List<GroupWorkoutDto> getAllGroupsWorkouts() {
 
         return getAll().stream()
-                .map(groupWorkoutFullDtoFactory::create)
+                .map(groupWorkoutDtoFactory::create)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public UUID getParentIdById(UUID id) {
+    public UUID getCloneIdById(UUID id) {
 
         Assert.notNull(id, "id must not be null");
 
@@ -146,21 +111,21 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
         Root<GroupWorkout> root = criteriaQuery.from(GroupWorkout.class);
 
         criteriaQuery.multiselect(
-                root.get("parentId")
+                root.get("cloneId")
         ).where(
                 criteriaBuilder.equal(root.get("id"), id)
         );
 
         return getSession().createQuery(criteriaQuery)
                 .setComment(
-                        concatenate("GroupWorkout parentId by id = ", id.toString())
+                        concatenate("GroupWorkout cloneId by id = ", id.toString())
                 )
                 .getSingleResult()
                 .uuid();
     }
 
     @Override
-    public List<UUID> getFutureGroupWorkoutsByParentId(UUID id) {
+    public List<UUID> getFutureGroupWorkoutsByCloneId(UUID id) {
 
         Assert.notNull(id, "id must not be null");
 
@@ -171,21 +136,43 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
         criteriaQuery.multiselect(
                 root.get("id")
         ).where(
-                criteriaBuilder.or(
-                        criteriaBuilder.equal(root.get("parentId"), id),
-                        criteriaBuilder.equal(root.get("id"), id)
-                ),
-                criteriaBuilder.greaterThan(root.get("startTime"), LocalDateTime.now())
+                criteriaBuilder.equal(root.get("cloneId"), id),
+                criteriaBuilder.greaterThan(root.get("startTime"), ZonedDateTime.now())
         );
 
         return getSession().createQuery(criteriaQuery)
                 .setComment(
-                        concatenate("GroupWorkout ids by parentId = ", id.toString())
+                        concatenate("GroupWorkout ids by cloneId = ", id.toString())
                 )
                 .getResultList()
                 .stream()
                 .map(UuidWrapper::uuid)
                 .toList();
     }
+
+    @Override
+    public UUID getFitnessClubIdByGroupWorkoutId(UUID id) {
+
+        Assert.notNull(id, "id must not be null");
+
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaQuery<UuidWrapper> criteriaQuery = criteriaBuilder.createQuery(UuidWrapper.class);
+        Root<GroupWorkout> root = criteriaQuery.from(GroupWorkout.class);
+
+        criteriaQuery.multiselect(
+                root.get("group").get("fitnessClubId")
+        ).where(
+                criteriaBuilder.equal(root.get("id"), id)
+        );
+
+        return getSession().createQuery(criteriaQuery)
+                .setComment(
+                        concatenate("FitnessClubId by GroupWorkoutId = ", id.toString())
+                )
+                .getSingleResult()
+                .uuid();
+    }
 }
+
+
 

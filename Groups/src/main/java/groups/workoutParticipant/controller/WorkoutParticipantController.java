@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -40,27 +38,14 @@ class WorkoutParticipantController extends AbstractEditController {
         return hasErrors()? errors() : response(OK, workoutParticipantService.assign(workoutParticipantForm));
     }
 
-    @DeleteMapping("/unassign/{groupWorkoutId}/{gympassId}")
-    protected ResponseEntity<?> deleteGroup(@PathVariable("groupWorkoutId") UUID groupWorkoutId,
-                                            @PathVariable("gympassId") UUID gympassId) {
+    @PutMapping("/unassign")
+    protected ResponseEntity<?> deleteGroup(@RequestBody WorkoutParticipantForm workoutParticipantForm) {
 
-        workoutParticipantValidator.validateBeforeUnassign(groupWorkoutId, gympassId, errors);
-
-        if (hasErrors()) return errors();
-
-        workoutParticipantService.unassign(groupWorkoutId, gympassId);
-
-        return response(OK);
-    }
-
-    @DeleteMapping("/unassign/{id}")
-    protected ResponseEntity<?> deleteGroup(@PathVariable("id") UUID id) {
-
-        workoutParticipantValidator.validateBeforeUnassign(id, errors);
+        workoutParticipantValidator.validateBeforeUnassign(workoutParticipantForm, errors);
 
         if (hasErrors()) return errors();
 
-        workoutParticipantService.unassign(id);
+        workoutParticipantService.unassign(workoutParticipantForm);
 
         return response(OK);
     }

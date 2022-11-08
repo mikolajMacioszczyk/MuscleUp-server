@@ -51,6 +51,21 @@ services:
       - postgres
       - broker
 
+  fitnessclubs:
+    build:
+      context: .
+      dockerfile: ./FitnessClubs/FitnessClubs.API/Dockerfile
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT
+      - JwtSecret
+      - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;
+      - Broker:Host:HostName=broker
+      - Api:AuthHost=http://auth/
+    depends_on:
+      - postgres
+      - broker
+
   apigateway:
     build:
       context: .
@@ -64,3 +79,4 @@ services:
     depends_on:
       - auth
       - carnets
+      - fitnessclubs

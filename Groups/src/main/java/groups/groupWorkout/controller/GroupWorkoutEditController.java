@@ -31,7 +31,7 @@ public class GroupWorkoutEditController extends AbstractEditController {
     }
 
 
-    @PostMapping("/save")
+    @PostMapping
     protected ResponseEntity<?> saveGroupWorkout(@RequestBody GroupWorkoutForm groupWorkoutForm) {
 
         groupWorkoutValidator.validateBeforeSave(groupWorkoutForm, errors);
@@ -39,7 +39,7 @@ public class GroupWorkoutEditController extends AbstractEditController {
         return hasErrors()? errors() : response(OK, groupWorkoutService.saveGroupWorkout(groupWorkoutForm));
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     protected ResponseEntity<?> updateGroupWorkout(@PathVariable("id") UUID id, @RequestBody GroupWorkoutForm groupWorkoutForm) {
 
         groupWorkoutValidator.validateBeforeUpdate(id, groupWorkoutForm, errors);
@@ -47,7 +47,7 @@ public class GroupWorkoutEditController extends AbstractEditController {
         return hasErrors()? errors() : response(OK, groupWorkoutService.updateGroupWorkout(id, groupWorkoutForm));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     protected ResponseEntity<?> deleteGroupWorkout(@PathVariable("id") UUID id) {
 
         groupWorkoutValidator.validateBeforeDelete(id, errors);

@@ -10,7 +10,5 @@ public interface GroupPermissionRepository {
 
     UUID add(GroupPermission groupPermission);
 
-    void remove(UUID groupPermissionId);
-
     void remove(UUID groupId, UUID permissionId);
 }

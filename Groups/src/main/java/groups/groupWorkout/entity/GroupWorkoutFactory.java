@@ -3,7 +3,6 @@ package groups.groupWorkout.entity;
 import groups.group.repository.GroupQuery;
 import groups.groupWorkout.controller.form.GroupWorkoutForm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -31,26 +30,22 @@ public class GroupWorkoutFactory {
         return new GroupWorkout(
                 groupQuery.getById(groupWorkoutForm.groupId()),
                 groupWorkoutForm.workoutId(),
-                groupWorkoutForm.location(),
-                groupWorkoutForm.maxParticipants(),
                 groupWorkoutForm.startTime(),
                 groupWorkoutForm.endTime(),
-                null
+                UUID.randomUUID()
         );
     }
 
-    public GroupWorkout create(GroupWorkoutForm groupWorkoutForm, @Nullable UUID parentId) {
+    public GroupWorkout create(GroupWorkoutForm groupWorkoutForm, UUID cloneId) {
 
         Assert.notNull(groupWorkoutForm, "groupWorkoutFullForm must not be null");
 
         return new GroupWorkout(
                 groupQuery.getById(groupWorkoutForm.groupId()),
                 groupWorkoutForm.workoutId(),
-                groupWorkoutForm.location(),
-                groupWorkoutForm.maxParticipants(),
                 groupWorkoutForm.startTime(),
                 groupWorkoutForm.endTime(),
-                parentId
+                cloneId
         );
     }
 }

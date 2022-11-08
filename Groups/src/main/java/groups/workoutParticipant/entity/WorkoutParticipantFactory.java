@@ -1,10 +1,11 @@
 package groups.workoutParticipant.entity;
 
 import groups.groupWorkout.repository.GroupWorkoutQuery;
-import groups.workoutParticipant.controller.form.WorkoutParticipantForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+
+import java.util.UUID;
 
 @Component
 public class WorkoutParticipantFactory {
@@ -21,13 +22,14 @@ public class WorkoutParticipantFactory {
     }
 
 
-    public WorkoutParticipant create(WorkoutParticipantForm workoutParticipantForm) {
+    public WorkoutParticipant create(UUID groupWorkoutId, UUID userId) {
 
-        Assert.notNull(workoutParticipantForm, "workoutParticipantForm must not be null");
+        Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
+        Assert.notNull(userId, "userId must not be null");
 
         return new WorkoutParticipant(
-                groupWorkoutQuery.getById(workoutParticipantForm.groupWorkoutId()),
-                workoutParticipantForm.gympassId()
+                groupWorkoutQuery.getById(groupWorkoutId),
+                userId
         );
     }
 }

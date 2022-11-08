@@ -2,9 +2,8 @@ package groups.schedule.service;
 
 import groups.group.controller.form.GroupForm;
 import groups.group.service.GroupService;
-import groups.groupTrainer.controller.form.GroupTrainerForm;
-import groups.groupTrainer.service.GroupTrainerService;
 import groups.groupWorkout.controller.form.GroupWorkoutForm;
+import groups.groupWorkout.repository.GroupWorkoutQuery;
 import groups.groupWorkout.service.GroupWorkoutService;
 import groups.schedule.controller.form.ScheduleCellForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,29 +20,26 @@ public class ScheduleSaver {
     private static final int FUTURE_CREATIONS = getFutureCreations();
 
     private final GroupService groupService;
+    private final GroupWorkoutQuery groupWorkoutQuery;
     private final GroupWorkoutService groupWorkoutService;
-    private final GroupTrainerService groupTrainerService;
 
 
     @Autowired
-    public ScheduleSaver(GroupService groupService,
-                               GroupWorkoutService groupWorkoutService,
-                               GroupTrainerService groupTrainerService) {
+    public ScheduleSaver(GroupService groupService, GroupWorkoutQuery groupWorkoutQuery, GroupWorkoutService groupWorkoutService) {
 
         Assert.notNull(groupService, "groupService must not be null");
+        Assert.notNull(groupWorkoutQuery, "groupWorkoutQuery must not be null");
         Assert.notNull(groupWorkoutService, "groupWorkoutService must not be null");
-        Assert.notNull(groupTrainerService, "groupTrainerService must not be null");
 
         this.groupService = groupService;
+        this.groupWorkoutQuery = groupWorkoutQuery;
         this.groupWorkoutService = groupWorkoutService;
-        this.groupTrainerService = groupTrainerService;
     }
 
 
     public UUID save(ScheduleCellForm scheduleCellForm) {
 
         UUID groupId = createGroup(scheduleCellForm);
-        assignTrainer(groupId, scheduleCellForm.trainerId());
 
         return scheduleCellForm.repeatable()?
                 createRepeatableGroupWorkouts(groupId, scheduleCellForm) :
@@ -55,7 +51,11 @@ public class ScheduleSaver {
 
         GroupForm groupForm = new GroupForm(
                 scheduleCellForm.name(),
+                scheduleCellForm.trainerId(),
+                scheduleCellForm.fitnessClubId(),
                 scheduleCellForm.description(),
+                scheduleCellForm.location(),
+                scheduleCellForm.maxParticipants(),
                 scheduleCellForm.repeatable()
         );
 
@@ -67,8 +67,6 @@ public class ScheduleSaver {
         GroupWorkoutForm groupWorkoutForm = new GroupWorkoutForm(
                 groupId,
                 scheduleCellForm.workoutId(),
-                scheduleCellForm.location(),
-                scheduleCellForm.maxParticipants(),
                 scheduleCellForm.startTime(),
                 scheduleCellForm.endTime()
         );
@@ -78,32 +76,21 @@ public class ScheduleSaver {
 
     private UUID createRepeatableGroupWorkouts(UUID groupId, ScheduleCellForm scheduleCellForm) {
 
-        UUID parentId = createSingleGroupWorkout(groupId, scheduleCellForm);
+        UUID createdId = createSingleGroupWorkout(groupId, scheduleCellForm);
+        UUID cloneId = groupWorkoutQuery.getCloneIdById(createdId);
 
         for (long i=1; i<FUTURE_CREATIONS; i++) {
 
             GroupWorkoutForm groupWorkoutForm = new GroupWorkoutForm(
                     groupId,
                     scheduleCellForm.workoutId(),
-                    scheduleCellForm.location(),
-                    scheduleCellForm.maxParticipants(),
                     scheduleCellForm.startTime().plusWeeks(i),
                     scheduleCellForm.endTime().plusWeeks(i)
             );
 
-            groupWorkoutService.saveGroupWorkout(groupWorkoutForm, parentId);
+            groupWorkoutService.saveGroupWorkout(groupWorkoutForm, cloneId);
         }
 
-        return parentId;
-    }
-
-    private void assignTrainer(UUID trainerId, UUID groupId) {
-
-        GroupTrainerForm groupTrainerForm = new GroupTrainerForm(
-                groupId,
-                trainerId
-        );
-
-        groupTrainerService.assign(groupTrainerForm);
+        return cloneId;
     }
 }

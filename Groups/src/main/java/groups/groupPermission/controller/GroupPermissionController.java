@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -32,35 +30,22 @@ class GroupPermissionController extends AbstractEditController {
     }
 
 
-    @PostMapping("/add")
-    protected ResponseEntity<?> addGroupPermission(@RequestBody GroupPermissionForm groupPermissionForm) {
+    @PostMapping("/assign")
+    protected ResponseEntity<?> assignGroupPermission(@RequestBody GroupPermissionForm groupPermissionForm) {
 
-        groupPermissionValidator.validateBeforeAdd(groupPermissionForm, errors);
+        groupPermissionValidator.validateBeforeAssign(groupPermissionForm, errors);
 
-        return hasErrors()? errors() : response(OK, groupPermissionService.add(groupPermissionForm));
+        return hasErrors()? errors() : response(OK, groupPermissionService.assign(groupPermissionForm));
     }
 
-    @DeleteMapping("/remove/{groupId}/{permissionId}")
-    protected ResponseEntity<?> removeGroupPermission(@PathVariable("groupId") UUID groupId,
-                                                      @PathVariable("permissionId") UUID permissionId) {
+    @PutMapping("/unassign")
+    protected ResponseEntity<?> unassignGroupPermission(@RequestBody GroupPermissionForm groupPermissionForm) {
 
-        groupPermissionValidator.validateBeforeRemove(groupId, permissionId, errors);
+        groupPermissionValidator.validateBeforeUnassign(groupPermissionForm, errors);
 
         if (hasErrors()) return errors();
 
-        groupPermissionService.remove(groupId, permissionId);
-
-        return response(OK);
-    }
-
-    @DeleteMapping("/remove/{id}")
-    protected ResponseEntity<?> removeGroupPermission(@PathVariable("id") UUID id) {
-
-        groupPermissionValidator.validateBeforeRemove(id, errors);
-
-        if (hasErrors()) return errors();
-
-        groupPermissionService.remove(id);
+        groupPermissionService.unassign(groupPermissionForm);
 
         return response(OK);
     }

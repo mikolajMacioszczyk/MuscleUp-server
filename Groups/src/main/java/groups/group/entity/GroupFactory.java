@@ -11,7 +11,11 @@ public class GroupFactory {
 
         return new Group(
                 groupForm.name(),
+                groupForm.trainerId(),
+                groupForm.fitnessClubId(),
                 groupForm.description(),
+                groupForm.location(),
+                groupForm.maxParticipants(),
                 groupForm.repeatable()
         );
     }

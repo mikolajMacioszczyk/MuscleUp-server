@@ -28,27 +28,27 @@ public class GroupPermissionService {
     }
 
 
-    public UUID add(GroupPermissionForm groupPermissionForm) {
+    public UUID assign(UUID groupId, UUID permissionId) {
 
-        Assert.notNull(groupPermissionForm, "workoutPermissionForm must not be null");
+        Assert.notNull(groupId, "groupId must not be null");
+        Assert.notNull(permissionId, "permissionId must not be null");
 
-        GroupPermission groupPermission = groupPermissionFactory.create(groupPermissionForm);
+        GroupPermission groupPermission = groupPermissionFactory.create(groupId, permissionId);
 
         return groupPermissionRepository.add(groupPermission);
     }
 
-    public void remove(UUID workoutPermissionId) {
+    public UUID assign(GroupPermissionForm form) {
 
-        Assert.notNull(workoutPermissionId, "workoutPermissionId must not be null");
+        Assert.notNull(form, "form must not be null");
 
-        groupPermissionRepository.remove(workoutPermissionId);
+        return assign(form.groupId(), form.permissionId());
     }
 
-    public void remove(UUID groupWorkoutId, UUID permissionId) {
+    public void unassign(GroupPermissionForm form) {
 
-        Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
-        Assert.notNull(permissionId, "permissionId must not be null");
+        Assert.notNull(form, "form must not be null");
 
-        groupPermissionRepository.remove(groupWorkoutId, permissionId);
+        groupPermissionRepository.remove(form.groupId(), form.permissionId());
     }
 }

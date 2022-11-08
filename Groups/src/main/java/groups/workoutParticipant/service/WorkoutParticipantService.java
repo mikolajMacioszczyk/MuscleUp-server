@@ -28,27 +28,22 @@ public class WorkoutParticipantService {
     }
 
 
-    public UUID assign(WorkoutParticipantForm workoutParticipantForm) {
+    public UUID assign(WorkoutParticipantForm form) {
 
-        Assert.notNull(workoutParticipantForm, "workoutParticipantForm must not be null");
+        Assert.notNull(form, "form must not be null");
 
-        WorkoutParticipant workoutParticipant = workoutParticipantFactory.create(workoutParticipantForm);
+        WorkoutParticipant workoutParticipant = workoutParticipantFactory.create(
+                form.groupWorkoutId(),
+                form.userId()
+        );
 
         return workoutParticipantRepository.assign(workoutParticipant);
     }
 
-    public void unassign(UUID workoutParticipantId) {
+    public void unassign(WorkoutParticipantForm form) {
 
-        Assert.notNull(workoutParticipantId, "workoutParticipantId must not be null");
+        Assert.notNull(form, "form must not be null");
 
-        workoutParticipantRepository.unassign(workoutParticipantId);
-    }
-
-    public void unassign(UUID groupWorkoutId, UUID gympassId) {
-
-        Assert.notNull(groupWorkoutId, "groupWorkoutId must not be null");
-        Assert.notNull(gympassId, "gympassId must not be null");
-
-        workoutParticipantRepository.unassign(groupWorkoutId, gympassId);
+        workoutParticipantRepository.unassign(form.groupWorkoutId(), form.userId());
     }
 }

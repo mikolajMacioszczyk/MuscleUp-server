@@ -6,6 +6,7 @@ public class StringUtils {
 
     public static final String EMPTY_STRING = "";
     public static final String NEW_LINE = "\n";
+    public static final String SLASH = "/";
 
 
     public static boolean isNullOrEmpty(String target) {

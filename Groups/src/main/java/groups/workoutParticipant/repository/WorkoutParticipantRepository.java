@@ -10,7 +10,5 @@ public interface WorkoutParticipantRepository {
 
     UUID assign(WorkoutParticipant workoutParticipant);
 
-    void unassign(UUID workoutParticipantId);
-
-    void unassign(UUID groupWorkoutId, UUID gympassId);
+    void unassign(UUID groupWorkoutId, UUID userId);
 }

@@ -39,15 +39,6 @@ public class GroupPermissionHibernateRepository extends AbstractHibernateReposit
 
     @Override
     @Transactional
-    public void remove(UUID groupPermissionId) {
-
-        Assert.notNull(groupPermissionId, "groupPermissionId must not be null");
-
-        delete(groupPermissionId);
-    }
-
-    @Override
-    @Transactional
     public void remove(UUID groupId, UUID permissionId) {
 
         Assert.notNull(groupId, "groupId must not be null");
