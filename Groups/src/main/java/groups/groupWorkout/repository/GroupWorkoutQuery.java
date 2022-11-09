@@ -22,5 +22,7 @@ public interface GroupWorkoutQuery {
 
     List<UUID> getFutureGroupWorkoutsByCloneId(UUID id);
 
+    List<GroupWorkoutDto> getAllRepeatableGroupWorkoutsDayAhead();
+
     UUID getFitnessClubIdByGroupWorkoutId(UUID id);
 }

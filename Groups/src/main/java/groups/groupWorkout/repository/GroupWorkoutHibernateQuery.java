@@ -151,6 +151,33 @@ public class GroupWorkoutHibernateQuery extends AbstractHibernateQuery<GroupWork
     }
 
     @Override
+    public List<GroupWorkoutDto> getAllRepeatableGroupWorkoutsDayAhead() {
+
+        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
+        CriteriaQuery<GroupWorkoutDto> criteriaQuery = criteriaBuilder.createQuery(GroupWorkoutDto.class);
+        Root<GroupWorkout> root = criteriaQuery.from(GroupWorkout.class);
+
+        criteriaQuery.multiselect(
+                root.get("id"),
+                root.get("group").get("id"),
+                root.get("workoutId"),
+                root.get("startTime"),
+                root.get("endTime"),
+                root.get("cloneId")
+        ).where(
+                criteriaBuilder.greaterThan(root.get("startTime"), ZonedDateTime.now()),
+                criteriaBuilder.lessThan(root.get("startTime"), ZonedDateTime.now().plusDays(1)),
+                criteriaBuilder.equal(root.get("group").get("repeatable"), true)
+        );
+
+        return getSession().createQuery(criteriaQuery)
+                .setComment(
+                        concatenate("GroupWorkout day ahead")
+                )
+                .getResultList();
+    }
+
+    @Override
     public UUID getFitnessClubIdByGroupWorkoutId(UUID id) {
 
         Assert.notNull(id, "id must not be null");
