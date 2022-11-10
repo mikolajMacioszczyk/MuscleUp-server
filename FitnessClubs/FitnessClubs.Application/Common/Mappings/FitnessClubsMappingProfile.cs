@@ -27,7 +27,11 @@ namespace FitnessClubs.Application.Mappings
             CreateMap<Membership, MembershipDto>();
             CreateMap<CreateMembershipDto, Membership>();
 
-            CreateMap<UserInvitation, UserInvitationDto>();
+            CreateMap<UserInvitation, UserInvitationDto>()
+                .ForMember(a => a.FitnessClubId,
+                opt => opt.MapFrom(src => src.FitnessClub.FitnessClubId))
+                .ForMember(a => a.FitnessClubName,
+                opt => opt.MapFrom(src => src.FitnessClub.FitnessClubName));
         }
     }
 }

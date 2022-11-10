@@ -1,5 +1,4 @@
 ﻿using Common.Enums;
-using FitnessClubs.Domain.Models;
 
 namespace FitnessClubs.Application.UserInvitations.Dtos
 {
@@ -9,7 +8,9 @@ namespace FitnessClubs.Application.UserInvitations.Dtos
 
         public RoleType UserType { get; set; }
 
-        public FitnessClub FitnessClub { get; set; }
+        public string FitnessClubId { get; set; }
+
+        public string FitnessClubName { get; set; }
 
         public DateTime ExpirationDateTime { get; set; }
 
