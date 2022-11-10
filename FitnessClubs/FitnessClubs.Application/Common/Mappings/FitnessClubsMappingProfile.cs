@@ -3,6 +3,7 @@ using Common.Models.Dtos;
 using FitnessClubs.Application.FitnessClubs.Dtos;
 using FitnessClubs.Application.Memberships.Dtos;
 using FitnessClubs.Application.TrainerEmployments.Dtos;
+using FitnessClubs.Application.UserInvitations.Dtos;
 using FitnessClubs.Application.WorkoutEmployments.Dtos;
 using FitnessClubs.Domain.Models;
 
@@ -25,6 +26,8 @@ namespace FitnessClubs.Application.Mappings
 
             CreateMap<Membership, MembershipDto>();
             CreateMap<CreateMembershipDto, Membership>();
+
+            CreateMap<UserInvitation, UserInvitationDto>();
         }
     }
 }

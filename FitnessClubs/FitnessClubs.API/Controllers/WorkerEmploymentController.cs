@@ -2,7 +2,10 @@
 using Common.Attribute;
 using Common.BaseClasses;
 using Common.Enums;
+using Common.Models;
 using Common.Models.Dtos;
+using FitnessClubs.Application.UserInvitations.Commands;
+using FitnessClubs.Application.UserInvitations.Dtos;
 using FitnessClubs.Application.WorkoutEmployments.Commands;
 using FitnessClubs.Application.WorkoutEmployments.Dtos;
 using FitnessClubs.Application.WorkoutEmployments.Queries;
@@ -14,10 +17,12 @@ namespace FitnessClubs.API.Controllers
     public class WorkerEmploymentController : ApiControllerBase
     {
         private readonly IMapper _mapper;
+        private readonly HttpAuthContext _httpAuthContext;
 
-        public WorkerEmploymentController(IMapper mapper)
+        public WorkerEmploymentController(IMapper mapper, HttpAuthContext httpAuthContext)
         {
             _mapper = mapper;
+            _httpAuthContext = httpAuthContext;
         }
 
         [HttpGet("{fitnessClubId}")]
@@ -59,6 +64,36 @@ namespace FitnessClubs.API.Controllers
             }
 
             return BadRequest(createResult.ErrorCombined);
+        }
+
+        [HttpPost("worker-invitation")]
+        [AuthorizeRoles(RoleType.Owner, RoleType.Administrator)]
+        public async Task<ActionResult<UserInvitationDto>> GenerateWorkerInvitation(GenerateUserInvitationDto model)
+        {
+            var invitationResult = await Mediator.Send(
+                new GenerateWorkerInvitationCommand(model.FitnessClubId, model.Email, model.BaseInvitationLink));
+
+            if (invitationResult.IsSuccess)
+            {
+                return Ok(_mapper.Map<UserInvitationDto>(invitationResult.Value));
+            }
+
+            return BadRequest(invitationResult.ErrorCombined);
+        }
+
+        [HttpPut("worker-invitation")]
+        [AuthorizeRoles(RoleType.Worker)]
+        public async Task<ActionResult<WorkerEmploymentDto>> ConsumeWorkerInvitation(ConsumeUserInvitationDto model)
+        {
+            var workerId = _httpAuthContext.UserId;
+            var employmentResult = await Mediator.Send(new ConsumeWorkerInvitationCommand(model.InvitationId, workerId));
+
+            if (employmentResult.IsSuccess)
+            {
+                return Ok(_mapper.Map<WorkerEmploymentDto>(employmentResult.Value));
+            }
+
+            return BadRequest(employmentResult.ErrorCombined);
         }
 
         [HttpPut("{workerEmploymentId}")]

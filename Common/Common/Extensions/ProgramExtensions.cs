@@ -119,6 +119,13 @@ namespace Common.Extensions
             services.AddSingleton<IAuthorizationService, AuthService>();
         }
 
+        public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
+            services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+            return services.AddScoped<IEmailService, EmailService>();
+        }
+
         #endregion
 
 

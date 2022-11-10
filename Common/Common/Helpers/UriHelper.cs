@@ -4,7 +4,7 @@ namespace Common.Helpers
 {
     public static class UriHelper
     {
-        public static string AppendQueryParamToUri(string uri, string key, string value)
+        public static string AppendQueryParamToUri(this string uri, string key, string value)
         {
             var uriBuilder = new UriBuilder(uri);
 

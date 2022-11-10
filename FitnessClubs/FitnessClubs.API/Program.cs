@@ -27,6 +27,8 @@ builder.Services.AddScoped<IEmploymentRepository<WorkerEmployment>, WorkerEmploy
 builder.Services.AddScoped<IEmploymentRepository<TrainerEmployment>, TrainerEmploymentRepository>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 builder.Services.AddScoped<IAuthService, AuthHttpService>();
+builder.Services.AddScoped<IUserInvitationRepository, UserInvitationRepository>();
+builder.Services.AddEmailService(builder.Configuration);
 
 // RabbitMQ configuration
 builder.Services.AddRabbitMq(builder.Configuration);

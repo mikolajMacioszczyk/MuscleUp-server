@@ -16,6 +16,8 @@ namespace FitnessClubs.Repo
 
         public DbSet<Membership> Memberships { get; set; }
 
+        public DbSet<UserInvitation> UserInvitations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Membership>()
