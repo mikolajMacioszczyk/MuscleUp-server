@@ -30,7 +30,8 @@ namespace Carnets.Repo.Repositories
 
         public async Task<IEnumerable<Gympass>> GetAllFromFitnessClub(string fitnessClubId, bool asTracking)
         {
-            var interestedGympassTypesIds = (await _gympassTypeRepository.GetAllGympassTypes(fitnessClubId, false, 0, int.MaxValue, asTracking))
+            var interestedGympassTypesIds = (await _gympassTypeRepository
+                .GetAllGympassTypes(fitnessClubId, false, 0, int.MaxValue, asTracking, orderBy: g => g.GympassTypeName))
                 .Select(g => g.GympassTypeId);
 
             var query = _context.Gympasses

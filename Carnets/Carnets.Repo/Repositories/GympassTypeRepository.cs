@@ -2,6 +2,7 @@
 using Carnets.Domain.Models;
 using Common.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Carnets.Repo.Repositories
 {
@@ -26,8 +27,13 @@ namespace Carnets.Repo.Repositories
             return await query.FirstOrDefaultAsync(g => g.GympassTypeId == gympassId);
         }
 
-        public async Task<IEnumerable<GympassType>> GetAllGympassTypes(string fitnessClubId, bool onlyActive,
-            int pageNumber, int pageSize, bool asTracking)
+        public async Task<IEnumerable<GympassType>> GetAllGympassTypes<T>(
+            string fitnessClubId, 
+            bool onlyActive,
+            int pageNumber, 
+            int pageSize,
+            bool asTracking,
+            Expression<Func<GympassType, T>> orderBy)
         {
             var query = _context.GympassTypes
                 .Where(g => g.FitnessClubId == fitnessClubId);
@@ -40,6 +46,11 @@ namespace Carnets.Repo.Repositories
             if (!asTracking)
             {
                 query = query.AsNoTracking();
+            }
+
+            if (orderBy != null)
+            {
+                query = query.OrderBy(orderBy);
             }
 
             query = query.Skip(pageNumber * pageSize).Take(pageSize);

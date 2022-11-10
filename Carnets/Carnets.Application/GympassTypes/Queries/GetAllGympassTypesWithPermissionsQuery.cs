@@ -30,7 +30,8 @@ namespace Carnets.Application.GympassTypes.Queries
                 request.OnlyActive, 
                 request.PageNumber,
                 request.PageSize, 
-                asTracking: false);
+                asTracking: false,
+                orderBy: g => g.GympassTypeName);
 
             var allWithPermissions = new List<GympassTypeWithPermissions>();
 
