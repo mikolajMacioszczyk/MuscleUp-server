@@ -50,7 +50,6 @@ namespace Auth.Application.Common.Services
             var jwtSecret = _configuration.GetValue<string>(AuthConsts.JwtSecretKey);
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
-            // TODO: Handle user settings here if needed
 
             var accessToken = await CreateAccessToken(user, now, signingCredentials);
             var accessTokenString = _jwtTokenHandler.WriteToken(accessToken);
@@ -58,22 +57,21 @@ namespace Auth.Application.Common.Services
             var refreshToken = await CreateRefreshToken(user, now, signingCredentials);
             var refreshTokenString = _jwtTokenHandler.WriteToken(refreshToken);
 
-            // TODO: Change Guid to string in tokens => Will be done in later PR
-            //var existingAuthToken = _authTokenManager.GetByUser(Guid.Parse(user.Id));
-            //if (existingAuthToken != null)
-            //{
-            //    await _authTokenManager.UpdateAsync(PopulateAuthToken(existingAuthToken));
-            //}
-            //else
-            //{
-            //    await _authTokenManager.AddAsync(PopulateAuthToken(new AuthToken()));
-            //}
+            var existingAuthToken = _authTokenManager.GetByUser(user.Id);
+            if (existingAuthToken != null)
+            {
+                await _authTokenManager.UpdateAsync(PopulateAuthToken(existingAuthToken));
+            }
+            else
+            {
+                await _authTokenManager.AddAsync(PopulateAuthToken(new AuthToken()));
+            }
 
             return (accessTokenString, refreshTokenString);
 
             AuthToken PopulateAuthToken(AuthToken token)
             {
-                token.Id = Guid.Parse(user.Id);
+                token.Id = user.Id;
                 token.AccessTokenId = Guid.Parse(accessToken.Id);
                 token.AccessTokenExpiration = now.AddMinutes(_jwtOptions.Value.AccessExpirationMinutes);
                 token.RefreshTokenId = Guid.Parse(refreshToken.Id);
@@ -92,14 +90,7 @@ namespace Auth.Application.Common.Services
 
         public async Task RemoveAuthToken(string userId)
         {
-            try
-            {
-                await _authTokenManager.DeleteAsync(Guid.Parse(userId));
-            }
-            catch (Exception)
-            {
-                // TODO: Replace guid with string
-            }
+            await _authTokenManager.DeleteAsync(userId);
         }
 
         private async Task<JwtSecurityToken> CreateAccessToken(

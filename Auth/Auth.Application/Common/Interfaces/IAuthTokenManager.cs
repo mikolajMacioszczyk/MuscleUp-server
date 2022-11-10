@@ -6,9 +6,9 @@ namespace Auth.Application.Common.Interfaces
     {
         Task UpdateAsync(AuthToken authToken);
         Task AddAsync(AuthToken authToken);
-        Task DeleteAsync(Guid userId);
-        AuthToken GetByUser(Guid userId);
-        AuthToken GetByAccessTokenId(Guid userId, Guid accessTokenId);
-        AuthToken GetByRefreshTokenId(Guid userId, Guid refreshTokenId);
+        Task DeleteAsync(string userId);
+        AuthToken GetByUser(string userId);
+        AuthToken GetByAccessTokenId(string userId, Guid accessTokenId);
+        AuthToken GetByRefreshTokenId(string userId, Guid refreshTokenId);
     }
 }

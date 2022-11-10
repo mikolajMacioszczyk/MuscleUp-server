@@ -24,19 +24,19 @@ namespace Auth.Application.Common.Managers
             await _authTokenRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Guid userId)
+        public async Task DeleteAsync(string userId)
         {
             _authTokenRepository.Delete(userId);
             await _authTokenRepository.SaveChangesAsync();
         }
 
-        public AuthToken GetByAccessTokenId(Guid userId, Guid accessTokenId) =>
+        public AuthToken GetByAccessTokenId(string userId, Guid accessTokenId) =>
             _authTokenRepository.GetByAccessTokenId(userId, accessTokenId);
 
-        public AuthToken GetByRefreshTokenId(Guid userId, Guid refreshTokenId) =>
+        public AuthToken GetByRefreshTokenId(string userId, Guid refreshTokenId) =>
             _authTokenRepository.GetByRefreshTokenId(userId, refreshTokenId);
 
-        public AuthToken GetByUser(Guid userId) =>
+        public AuthToken GetByUser(string userId) =>
             _authTokenRepository.GetById(userId);
     }
 }
