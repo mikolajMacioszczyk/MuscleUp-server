@@ -40,16 +40,6 @@ public class WorkoutValidator {
         checkDescription(workoutForm.description(), errors);
     }
 
-    void validateBeforeUpdate(UUID id, WorkoutForm workoutForm, ValidationErrors errors) {
-
-        Assert.notNull(id, "id must not be null");
-        Assert.notNull(workoutForm, "workoutForm must not be null");
-        Assert.notNull(errors, "errors must not be null");
-
-        checkWorkoutId(id, errors);
-        checkDescription(workoutForm.description(), errors);
-    }
-
     void validateBeforeDelete(UUID id, ValidationErrors errors) {
 
         Assert.notNull(id, "id must not be null");

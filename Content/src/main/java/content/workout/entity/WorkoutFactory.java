@@ -5,14 +5,14 @@ import org.springframework.util.Assert;
 
 public class WorkoutFactory {
 
-    public Workout create(WorkoutForm workoutForm) {
+    public Workout create(WorkoutForm workoutForm, boolean latest) {
 
         Assert.notNull(workoutForm, "workoutForm must not be null");
 
         return new Workout(
+                workoutForm.creatorId(),
                 workoutForm.description(),
-                workoutForm.videoUrl(),
-                workoutForm.expectedPerformTime()
+                workoutForm.videoUrl()
         );
     }
 }

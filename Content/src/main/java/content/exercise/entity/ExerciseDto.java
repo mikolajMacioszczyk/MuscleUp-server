@@ -1,15 +1,15 @@
-package content.workout.entity;
+package content.exercise.entity;
 
-import content.bodyPart.entity.BodyPartNameDto;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 
-public record WorkoutDto(
+public record ExerciseDto(
         UUID id,
-        UUID creatorId,
+        String name,
         String description,
+        @Nullable String imageUrl,
         @Nullable String videoUrl,
-        List<BodyPartNameDto> bodyParts
+        List<UUID> criterionIds
 ) { }

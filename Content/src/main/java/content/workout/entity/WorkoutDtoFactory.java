@@ -20,9 +20,9 @@ public class WorkoutDtoFactory {
 
         return new WorkoutDto(
                 workout.getId(),
+                workout.getCreatorId(),
                 workout.getDescription(),
                 workout.getVideoUrl(),
-                workout.getExpectedPerformTime(),
                 workout.getBodyParts()
                         .stream()
                         .map(bodyPartNameDtoFactory::create)

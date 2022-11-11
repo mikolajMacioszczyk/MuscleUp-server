@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_example_exercise_criterion_data" author="Mateusz_Kleinowski">
+        <sql>
+            INSERT INTO exercise_criterion (
+                exercise_id,
+                criterion_id
+            )
+            VALUES (
+                '4bfc16aa-5fad-11ed-9b6a-0242ac120002',
+                '0f03be3e-6132-11ed-9b6a-0242ac120002'
+            ),
+            (
+                '4bfc16aa-5fad-11ed-9b6a-0242ac120002',
+                '280ac18e-6132-11ed-9b6a-0242ac120002'
+            ),
+            (
+                'd1873070-5fad-11ed-9b6a-0242ac120002',
+                '280ac18e-6132-11ed-9b6a-0242ac120002'
+            ),
+            (
+                'd1873070-5fad-11ed-9b6a-0242ac120002',
+                '0f03be3e-6132-11ed-9b6a-0242ac120002'
+            ),
+            (
+                '1d545960-5fae-11ed-9b6a-0242ac120002',
+                '3a0f2df2-6132-11ed-9b6a-0242ac120002'
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -4,14 +4,16 @@ xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="create_workout_body_part_table" author="Mateusz_Kleinowski">
+    <changeSet id="create_performed_workout_table" author="Mateusz_Kleinowski">
         <sql>
-            CREATE TABLE IF NOT EXISTS workout_body_part (
+            CREATE TABLE IF NOT EXISTS performed_workout (
+                performed_workout_id uuid not null,
                 workout_id uuid not null,
-                body_part_id uuid not null,
+                user_id uuid not null,
+                time timestamp not null,
+                entry_id uuid,
 
-                FOREIGN KEY (workout_id) REFERENCES workout(workout_id),
-                FOREIGN KEY (body_part_id) REFERENCES body_part(body_part_id)
+                PRIMARY KEY (performed_workout_id)
             )
         </sql>
     </changeSet>

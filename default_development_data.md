@@ -82,3 +82,9 @@ Available only when environement is "Development".
 
 ### BodyPart
 - Id: 'd3d339ba-5d4a-11ed-9b6a-0242ac120002'
+
+### Exercise
+- Id: '4bfc16aa-5fad-11ed-9b6a-0242ac120002'
+
+### WorkoutCriterion
+- Id: '280ac18e-6132-11ed-9b6a-0242ac120002'

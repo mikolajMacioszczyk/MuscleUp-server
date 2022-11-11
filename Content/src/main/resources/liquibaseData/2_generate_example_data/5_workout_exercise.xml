@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_example_workout_exercise_data" author="Mateusz_Kleinowski">
+        <sql>
+            INSERT INTO workout_exercise (
+                workout_exercise_id,
+                sequence_number,
+                exercise_id,
+                workout_id
+            )
+            VALUES (
+                'f80d2b2c-5fae-11ed-9b6a-0242ac120002',
+                1,
+                '4bfc16aa-5fad-11ed-9b6a-0242ac120002',
+                '7c5229f6-5d4c-11ed-9b6a-0242ac120002'
+            ),
+            (
+                'fb37b862-5fae-11ed-9b6a-0242ac120002',
+                2,
+                'd1873070-5fad-11ed-9b6a-0242ac120002',
+                '7c5229f6-5d4c-11ed-9b6a-0242ac120002'
+            ),
+            (
+                'fe81f082-5fae-11ed-9b6a-0242ac120002',
+                3,
+                '1d545960-5fae-11ed-9b6a-0242ac120002',
+                '7c5229f6-5d4c-11ed-9b6a-0242ac120002'
+            ),
+            (
+                '846f44f0-5fb0-11ed-9b6a-0242ac120002',
+                1,
+                'd1873070-5fad-11ed-9b6a-0242ac120002',
+                '4c545a32-5d4a-11ed-9b6a-0242ac120002'
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

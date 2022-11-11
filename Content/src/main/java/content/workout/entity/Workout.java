@@ -3,6 +3,7 @@ package content.workout.entity;
 import content.bodyPart.entity.BodyPart;
 import content.common.abstracts.AbstractEntity;
 import content.common.annotation.MustExist;
+import content.workoutExercise.entity.WorkoutExercise;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.Assert;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static content.common.annotation.MustExist.Reason.HIBERNATE;
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -24,14 +26,18 @@ public class Workout extends AbstractEntity {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
+    // userId
+    @Column(name = "creator_id")
+    private UUID creatorId;
+
     @Column(name = "description", nullable = false)
     private String description;
 
     @Column(name = "video_url")
     private String videoUrl;
 
-    @Column(name = "expected_perform_time")
-    private Long expectedPerformTime;
+    @OneToMany(mappedBy = "workout", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+    private final List<WorkoutExercise> workoutExercises = new ArrayList<>();
 
     @ManyToMany(fetch = LAZY)
     @JoinTable(
@@ -46,23 +52,17 @@ public class Workout extends AbstractEntity {
     public Workout() {
     }
 
-    public Workout(String description, String videoUrl, Long expectedPerformTime) {
+    public Workout(
+            UUID creatorId,
+            String description,
+            String videoUrl) {
 
+        Assert.notNull(creatorId, "creatorId must not be null");
         Assert.notNull(description, "description must not be null");
 
+        this.creatorId = creatorId;
         this.description = description;
         this.videoUrl = videoUrl;
-        this.expectedPerformTime = expectedPerformTime;
-    }
-
-
-    public void update(String description, String videoUrl, Long expectedPerformTime) {
-
-        Assert.notNull(description, "description must not be null");
-
-        this.description = description;
-        this.videoUrl = videoUrl;
-        this.expectedPerformTime = expectedPerformTime;
     }
 
 
@@ -71,16 +71,16 @@ public class Workout extends AbstractEntity {
         return id;
     }
 
+    public UUID getCreatorId() {
+        return creatorId;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public String getVideoUrl() {
         return videoUrl;
-    }
-
-    public Long getExpectedPerformTime() {
-        return expectedPerformTime;
     }
 
     public List<BodyPart> getBodyParts() {

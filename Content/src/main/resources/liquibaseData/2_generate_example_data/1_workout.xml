@@ -8,21 +8,21 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
         <sql>
             INSERT INTO workout (
                 workout_id,
+                creator_id,
                 description,
-                video_url,
-                expected_perform_time
+                video_url
             )
             VALUES (
                 '4c545a32-5d4a-11ed-9b6a-0242ac120002',
+                'c7c25024-1997-4c9b-9e37-fe150d0faac1',
                 'Mocne nogi to podstawa',
-                'https://www.youtube.com/watch?v=rAV5_URhsYc',
-                60
+                'https://www.youtube.com/watch?v=rAV5_URhsYc'
             ),
             (
                 '7c5229f6-5d4c-11ed-9b6a-0242ac120002',
+                'faf314bc-1175-46b0-a57c-d456f09ca139',
                 'Wielka łapa w dwa miesiące - wielka łapa to wielki szacun na dzielni',
-                'https://www.youtube.com/watch?v=vQ1zoFtsU-I',
-                30
+                'https://www.youtube.com/watch?v=vQ1zoFtsU-I'
             );
         </sql>
     </changeSet>

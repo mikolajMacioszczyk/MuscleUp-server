@@ -39,15 +39,6 @@ class WorkoutEditController extends AbstractEditController {
         return hasErrors()? errors() : response(OK, workoutService.saveWorkout(workoutForm));
     }
 
-    @PutMapping("/update")
-    protected ResponseEntity<?> updateWorkout(@PathVariable("id") UUID id,
-                                               @RequestBody WorkoutForm workoutForm) {
-
-        workoutValidator.validateBeforeUpdate(id, workoutForm, errors);
-
-        return hasErrors()? errors() : response(OK, workoutService.updateWorkout(id, workoutForm));
-    }
-
     @DeleteMapping("/delete/{id}")
     protected ResponseEntity<?> deleteWorkout(@PathVariable("id") UUID id) {
 

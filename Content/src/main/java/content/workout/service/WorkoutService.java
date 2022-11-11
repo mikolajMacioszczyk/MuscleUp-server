@@ -1,7 +1,6 @@
 package content.workout.service;
 
 import content.bodyPart.entity.BodyPart;
-import content.bodyPart.entity.BodyPartFactory;
 import content.bodyPart.repository.BodyPartRepository;
 import content.workout.controller.form.WorkoutForm;
 import content.workout.entity.Workout;
@@ -19,7 +18,6 @@ public class WorkoutService {
     private final WorkoutRepository workoutRepository;
     private final WorkoutFactory workoutFactory;
     private final BodyPartRepository bodyPartRepository;
-    private final BodyPartFactory bodyPartFactory;
 
 
     @Autowired
@@ -31,7 +29,6 @@ public class WorkoutService {
         this.workoutRepository = workoutRepository;
         this.bodyPartRepository = bodyPartRepository;
         this.workoutFactory = new WorkoutFactory();
-        this.bodyPartFactory = new BodyPartFactory();
     }
 
 
@@ -39,24 +36,9 @@ public class WorkoutService {
 
         Assert.notNull(workoutForm, "workoutForm must not be null");
 
-        Workout workout = workoutFactory.create(workoutForm);
+        Workout workout = workoutFactory.create(workoutForm, true);
 
         return workoutRepository.save(workout);
-    }
-
-    public UUID updateWorkout(UUID id, WorkoutForm workoutForm) {
-
-        Assert.notNull(workoutForm, "workoutForm must not be null");
-
-        Workout workout = workoutRepository.getById(id);
-
-        workout.update(
-                workoutForm.description(),
-                workoutForm.videoUrl(),
-                workoutForm.expectedPerformTime()
-        );
-
-        return workoutRepository.update(workout);
     }
 
     public void deleteWorkout(UUID id) {

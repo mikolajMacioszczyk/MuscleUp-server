@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_workout_exercise_criterion_result_table" author="Mateusz_Kleinowski">
+        <sql>
+            CREATE TABLE IF NOT EXISTS workout_exercise_criterion_result (
+                workout_exercise_criterion_result_id uuid not null,
+                user_id uuid not null,
+                workout_exercise_id uuid not null,
+                criterion_id uuid not null,
+                value int8 not null,
+
+                PRIMARY KEY (workout_exercise_criterion_result_id)
+            )
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

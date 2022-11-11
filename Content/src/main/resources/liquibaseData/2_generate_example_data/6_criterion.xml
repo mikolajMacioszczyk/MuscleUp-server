@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_example_criterion_data" author="Mateusz_Kleinowski">
+        <sql>
+            INSERT INTO criterion (
+                criterion_id,
+                name,
+                unit
+            )
+            VALUES (
+                '0f03be3e-6132-11ed-9b6a-0242ac120002',
+                'powtórzenia',
+                'szt.'
+            ),
+            (
+                '280ac18e-6132-11ed-9b6a-0242ac120002',
+                'ciężar',
+                'kg'
+            ),
+            (
+                '3a0f2df2-6132-11ed-9b6a-0242ac120002',
+                'czas trwania',
+                'sek'
+            ),
+            (
+                '4db41d18-6132-11ed-9b6a-0242ac120002',
+                'odległość',
+                'm'
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
