@@ -18,7 +18,11 @@ namespace Carnets.Application.Entries.Queries
 
         public async Task<IEnumerable<Entry>> Handle(GetEnteredGympassEntriesQuery request, CancellationToken cancellationToken)
         {
-            var entries = await _entryRepository.GetGympassEntries(request.GympassId, request.PageNumber, request.PageSize, false);
+            var entries = await _entryRepository.GetGympassEntries(
+                g => g.Gympass.GympassId == request.GympassId, 
+                request.PageNumber, 
+                request.PageSize, 
+                asTracking: false);
 
             return entries.Where(e => e.Entered);
         }

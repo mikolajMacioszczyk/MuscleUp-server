@@ -2,6 +2,7 @@
 using Carnets.Domain.Models;
 using Common.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Carnets.Repo.Repositories
 {
@@ -29,11 +30,16 @@ namespace Carnets.Repo.Repositories
             return query.FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Entry>> GetGympassEntries(string gympassId, int pageNumber, int pageSize, bool asTracking)
+        public async Task<IEnumerable<Entry>> GetGympassEntries(
+            Expression<Func<Entry, bool>> predicate, 
+            int pageNumber, 
+            int pageSize, 
+            bool asTracking)
         {
             var query = _context.Entries
                 .Include(e => e.Gympass)
-                .Where(e => e.Gympass.GympassId == gympassId)
+                .ThenInclude(e => e.GympassType)
+                .Where(predicate)
                 .Skip(pageNumber * pageSize)
                 .Take(pageSize);
 

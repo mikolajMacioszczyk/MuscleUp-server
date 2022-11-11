@@ -1,5 +1,6 @@
 ﻿using Carnets.Domain.Models;
 using Common.Models;
+using System.Linq.Expressions;
 
 namespace Carnets.Application.Interfaces
 {
@@ -7,7 +8,11 @@ namespace Carnets.Application.Interfaces
     {
         Task<Entry> GetEntryById(string entryId, bool asTracking);
 
-        Task<IEnumerable<Entry>> GetGympassEntries(string gympassId, int pageNumber, int pageSize, bool asTracking);
+        Task<IEnumerable<Entry>> GetGympassEntries(
+            Expression<Func<Entry, bool>> predicate, 
+            int pageNumber, 
+            int pageSize, 
+            bool asTracking);
 
         Task<Entry> CreateEntry(Entry entry);
 

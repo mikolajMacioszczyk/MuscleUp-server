@@ -50,6 +50,27 @@ namespace Carnets.API.Controllers
             return Ok(_mapper.Map<IEnumerable<EntryDto>>(entry));
         }
 
+        [HttpGet("by-member")]
+        [AuthorizeRoles(RoleType.Member)]
+        public async Task<ActionResult<IEnumerable<EntryDto>>> GetMemberEntries(
+            [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = CommonConsts.DefaultPageSize)
+        {
+            var memberId = _httpAuthContext.UserId;
+            var entries = await Mediator.Send(new GetEnteredMembersEntriesQuery(memberId, pageNumber, pageSize));
+
+            return Ok(_mapper.Map<IEnumerable<EntryDto>>(entries));
+        }
+
+        [HttpGet("by-member/{memberId}")]
+        [AuthorizeRoles(RoleType.Worker, RoleType.Administrator)]
+        public async Task<ActionResult<IEnumerable<EntryDto>>> GetMemberEntries([FromRoute] string memberId,
+            [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = CommonConsts.DefaultPageSize)
+        {
+            var entries = await Mediator.Send(new GetEnteredMembersEntriesQuery(memberId, pageNumber, pageSize));
+
+            return Ok(_mapper.Map<IEnumerable<EntryDto>>(entries));
+        }
+
         [HttpPost("generate-token")]
         [AuthorizeRoles(RoleType.Member)]
         public async Task<ActionResult<GeneratedEndtryTokenDto>> GenerateEntryToken([FromBody] GenerateEntryTokenDto model)
