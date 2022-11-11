@@ -9,27 +9,32 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
             INSERT INTO criterion (
                 criterion_id,
                 name,
-                unit
+                unit,
+                active
             )
             VALUES (
                 '0f03be3e-6132-11ed-9b6a-0242ac120002',
                 'powtórzenia',
-                'szt.'
+                'szt.',
+                true
             ),
             (
                 '280ac18e-6132-11ed-9b6a-0242ac120002',
                 'ciężar',
-                'kg'
+                'kg',
+                true
             ),
             (
                 '3a0f2df2-6132-11ed-9b6a-0242ac120002',
                 'czas trwania',
-                'sek'
+                'sek',
+                true
             ),
             (
                 '4db41d18-6132-11ed-9b6a-0242ac120002',
                 'odległość',
-                'm'
+                'm',
+                false
             );
         </sql>
     </changeSet>

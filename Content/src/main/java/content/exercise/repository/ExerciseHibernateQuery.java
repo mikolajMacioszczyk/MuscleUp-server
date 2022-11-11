@@ -10,14 +10,14 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 
 @Primary
@@ -37,30 +37,20 @@ public class ExerciseHibernateQuery extends AbstractHibernateQuery<Exercise> imp
 
 
     @Override
+    public ExerciseDto get(UUID id) {
+
+        return exerciseDtoFactory.create(getById(id));
+    }
+
+    @Override
     @Transactional
     public Optional<ExerciseDto> findById(UUID id) {
 
         Assert.notNull(id, "id must not be null");
 
-        CriteriaBuilder criteriaBuilder = getSession().getCriteriaBuilder();
-        CriteriaQuery<ExerciseDto> criteriaQuery = criteriaBuilder.createQuery(ExerciseDto.class);
-        Root<Exercise> root = criteriaQuery.from(Exercise.class);
+        Exercise exercise = getById(id);
 
-        criteriaQuery.multiselect(
-                root.get("id"),
-                root.get("name"),
-                root.get("description"),
-                root.get("imageUrl"),
-                root.get("videoUrl")
-        ).where(
-                criteriaBuilder.equal(root.get("id"), id)
-        );
-
-        return getSession().createQuery(criteriaQuery)
-                .setComment("Workout with id = " +  id)
-                .getResultList()
-                .stream()
-                .findFirst();
+        return isNull(exercise)? empty() : of(exerciseDtoFactory.create(exercise));
     }
 
     @Override
@@ -68,6 +58,15 @@ public class ExerciseHibernateQuery extends AbstractHibernateQuery<Exercise> imp
 
         return getAll().stream()
                 .map(exerciseDtoFactory::create)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    @Override
+    public List<ExerciseDto> getAllActiveExercises() {
+
+        return getAll().stream()
+                .filter(Exercise::isLatest)
+                .map(exerciseDtoFactory::create)
+                .toList();
     }
 }

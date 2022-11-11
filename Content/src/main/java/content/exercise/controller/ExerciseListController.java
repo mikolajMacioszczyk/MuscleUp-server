@@ -49,4 +49,12 @@ public class ExerciseListController extends AbstractListController {
 
         return response(OK, exercises);
     }
+
+    @GetMapping("/all-active")
+    protected ResponseEntity<?> getAllActiveExercises() {
+
+        List<ExerciseDto> exercises = exerciseQuery.getAllActiveExercises();
+
+        return response(OK, exercises);
+    }
 }

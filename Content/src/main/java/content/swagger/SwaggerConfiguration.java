@@ -22,7 +22,12 @@ public class SwaggerConfiguration {
                 .group("swagger.json")
                 .packagesToScan(
                         "content.workout.controller",
-                        "content.bodyPart.controller"
+                        "content.bodyPart.controller",
+                        "content.criterion.controller",
+                        "content.exercise.controller",
+                        "content.performedWorkout.controller",
+                        "content.workoutExercise.controller",
+                        "content.workoutExerciseCriterionResult.controller"
                 )
                 .build();
     }

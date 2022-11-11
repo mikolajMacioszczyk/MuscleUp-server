@@ -31,12 +31,20 @@ class ExerciseEditController extends AbstractEditController {
     }
 
 
-    @PostMapping("/save")
+    @PostMapping()
     protected ResponseEntity<?> saveExercise(@RequestBody ExerciseForm exerciseForm) {
 
         exerciseValidator.validateBeforeSave(exerciseForm, errors);
 
         return hasErrors()? errors() : response(OK, exerciseService.saveExercise(exerciseForm));
+    }
+
+    @PutMapping()
+    protected ResponseEntity<?> updateExercise(@PathVariable("id") UUID id, @RequestBody ExerciseForm exerciseForm) {
+
+        exerciseValidator.validateBeforeUpdate(id, exerciseForm, errors);
+
+        return hasErrors()? errors() : response(OK, exerciseService.updateExercise(id, exerciseForm));
     }
 
     @DeleteMapping("/delete/{id}")

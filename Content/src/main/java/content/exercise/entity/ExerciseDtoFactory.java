@@ -1,6 +1,6 @@
 package content.exercise.entity;
 
-import java.util.Collections;
+import content.criterion.entity.Criterion;
 
 public class ExerciseDtoFactory {
 
@@ -12,7 +12,14 @@ public class ExerciseDtoFactory {
                 exercise.getDescription(),
                 exercise.getImageUrl(),
                 exercise.getVideoUrl(),
-                Collections.emptyList()
+                exercise.getCriteria()
+                        .stream()
+                        .map(Criterion::getId)
+                        .toList(),
+                exercise.getCriteria()
+                        .stream()
+                        .map(Criterion::getName)
+                        .toList()
         );
     }
 }
