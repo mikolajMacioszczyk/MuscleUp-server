@@ -2,6 +2,7 @@
 using Carnets.Domain.Enums;
 using Carnets.Domain.Models;
 using Common.Models;
+using Common.Models.Dtos;
 using MediatR;
 
 namespace Carnets.Application.Gympasses.Commands
@@ -12,10 +13,14 @@ namespace Carnets.Application.Gympasses.Commands
     public class ActivateGympassCommandHandler : IRequestHandler<ActivateGympassCommand, Result<Gympass>>
     {
         private readonly IGympassRepository _gympassRepository;
+        private readonly IMembershipService _membershipService;
 
-        public ActivateGympassCommandHandler(IGympassRepository gympassRepository)
+        public ActivateGympassCommandHandler(
+            IGympassRepository gympassRepository, 
+            IMembershipService membershipService)
         {
             _gympassRepository = gympassRepository;
+            _membershipService = membershipService;
         }
 
         public async Task<Result<Gympass>> Handle(ActivateGympassCommand request, CancellationToken cancellationToken)
@@ -53,9 +58,17 @@ namespace Carnets.Application.Gympasses.Commands
 
             var updateResult = await _gympassRepository.UpdateGympass(gympass);
 
-            if (updateResult.IsSuccess && request.SaveChanges)
+            if (updateResult.IsSuccess)
             {
-                await _gympassRepository.SaveChangesAsync();
+                if (request.SaveChanges)
+                {
+                    await _gympassRepository.SaveChangesAsync();
+                }
+                await _membershipService.CreateMembership(new CreateMembershipDto
+                {
+                    MemberId = updateResult.Value.UserId,
+                    FitnessClubId = updateResult.Value.GympassType.FitnessClubId
+                });
             }
 
             return updateResult;

@@ -21,18 +21,15 @@ namespace Carnets.Application.Gympasses.Commands
     {
         private readonly IGympassRepository _gympassRepository;
         private readonly IPaymentService _paymentService;
-        private readonly IMembershipService _membershipService;
         private readonly IMapper _mapper;
 
         public CreateGympassCommandHandler(
             IGympassRepository gympassRepository,
             IPaymentService paymentService,
-            IMembershipService membershipService, 
             IMapper mapper)
         {
             _gympassRepository = gympassRepository;
             _paymentService = paymentService;
-            _membershipService = membershipService;
             _mapper = mapper;
         }
 
@@ -60,12 +57,7 @@ namespace Carnets.Application.Gympasses.Commands
                 var checkoutSessionUrl = await CreateCheckoutSession(createResult.Value, request);
 
                 await _gympassRepository.SaveChangesAsync();
-                await _membershipService.CreateMembership(new CreateMembershipDto
-                {
-                    MemberId = request.UserId,
-                    FitnessClubId = createResult.Value.GympassType.FitnessClubId
-                });
-
+                
                 var gympassWithSession = _mapper.Map<GympassWithSessionDto>(createResult.Value);
                 gympassWithSession.CheckoutSessionUrl = checkoutSessionUrl;
 
