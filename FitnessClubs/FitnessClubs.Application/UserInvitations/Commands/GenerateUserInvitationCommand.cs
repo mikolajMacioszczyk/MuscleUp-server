@@ -1,4 +1,5 @@
-﻿using Common.Helpers;
+﻿using Common.Enums;
+using Common.Helpers;
 using Common.Interfaces;
 using Common.Models;
 using FitnessClubs.Application.Interfaces;
@@ -8,11 +9,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace FitnessClubs.Application.UserInvitations.Commands
 {
-    public record GenerateWorkerInvitationCommand(string FitnessClubId, string Email, string BaseInvitationLink)
+    public record GenerateUserInvitationCommand(string FitnessClubId, string Email, string BaseInvitationLink, RoleType RoleType)
         : IRequest<Result<UserInvitation>>
     { }
 
-    public class GenerateWorkerInvitationCommandHandler : IRequestHandler<GenerateWorkerInvitationCommand, Result<UserInvitation>>
+    public class GenerateWorkerInvitationCommandHandler : IRequestHandler<GenerateUserInvitationCommand, Result<UserInvitation>>
     {
         private const string InvitationTokenParamName = "token";
         private const string FitnessClubParamName = "fitness-club"; 
@@ -38,7 +39,7 @@ namespace FitnessClubs.Application.UserInvitations.Commands
             _authService = authService;
         }
 
-        public async Task<Result<UserInvitation>> Handle(GenerateWorkerInvitationCommand request, CancellationToken cancellationToken)
+        public async Task<Result<UserInvitation>> Handle(GenerateUserInvitationCommand request, CancellationToken cancellationToken)
         {
             var fitnessClub = await _fitnessClubRepository.GetById(request.FitnessClubId, true);
 
@@ -48,9 +49,14 @@ namespace FitnessClubs.Application.UserInvitations.Commands
             }
 
             // Validate if user with provided email does not exists
-            if (await _authService.GetUserByEmail(request.Email) != null)
+            var existingUser = await _authService.GetUserByEmail(request.Email);
+            if (existingUser != null)
             {
-                return new Result<UserInvitation>($"User with email = {request.Email} already exists");
+                // worker cannot have multiple employment
+                if (existingUser.Role != request.RoleType || existingUser.Role == RoleType.Worker)
+                {
+                    return new Result<UserInvitation>($"User with email = {request.Email} already exists");
+                }
             }
 
             var invitation = new UserInvitation()
@@ -58,7 +64,7 @@ namespace FitnessClubs.Application.UserInvitations.Commands
                 Email = request.Email,
                 FitnessClub = fitnessClub,
                 IsUsed = false,
-                UserType = Common.Enums.RoleType.Worker,
+                UserType = request.RoleType,
                 ExpirationDateTime = DateTime.UtcNow.AddDays(_invitationValidityInDays),
             };
 
@@ -87,7 +93,7 @@ namespace FitnessClubs.Application.UserInvitations.Commands
                 "Zespół MuscleUp",
                 $"Dzień dobry,<br />" +
                 $"<br />" +
-                $"Zaproszenie do stworzenia konta pracownika w klubie \"{fitnessClub.FitnessClubName}\".<br />" +
+                $"Zaproszenie do stworzenia konta w klubie \"{fitnessClub.FitnessClubName}\".<br />" +
                 $"Twój link: {invitationLink}<br />" +
                 $"<br />" +
                 $"Pozdrawiamy,<br />" +

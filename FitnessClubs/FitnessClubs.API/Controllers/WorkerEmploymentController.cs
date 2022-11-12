@@ -71,7 +71,7 @@ namespace FitnessClubs.API.Controllers
         public async Task<ActionResult<UserInvitationDto>> GenerateWorkerInvitation(GenerateUserInvitationDto model)
         {
             var invitationResult = await Mediator.Send(
-                new GenerateWorkerInvitationCommand(model.FitnessClubId, model.Email, model.BaseInvitationLink));
+                new GenerateUserInvitationCommand(model.FitnessClubId, model.Email, model.BaseInvitationLink, RoleType.Worker));
 
             if (invitationResult.IsSuccess)
             {

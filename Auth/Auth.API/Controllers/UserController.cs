@@ -21,9 +21,17 @@ namespace Auth.API.Controllers
         [AuthorizeRoles(AuthHelper.RoleAll)]
         public async Task<ActionResult<AnyUserDto>> GetUserByEmail([FromRoute] string email)
         {
-            var user = await Mediator.Send(new GetUserByEmailQuery(email));
+            var (user, userRole) = await Mediator.Send(new GetUserByEmailQuery(email));
 
-            return user is null ? NotFound() : Ok(_mapper.Map<AnyUserDto>(user));
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            var dto = _mapper.Map<AnyUserDto>(user);
+            dto.UserRole = userRole;
+
+            return Ok(dto);
         }
     }
 }

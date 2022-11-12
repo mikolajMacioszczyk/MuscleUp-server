@@ -5,6 +5,8 @@ namespace Common.Models.Dtos
 {
     public class AnyUserDto : UserDto
     {
-        public override RoleType Role => RoleType.None;
+        public override RoleType Role => UserRole;
+
+        public RoleType UserRole { get; set; }
     }
 }

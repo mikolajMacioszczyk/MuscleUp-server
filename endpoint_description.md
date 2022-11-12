@@ -167,7 +167,9 @@
 | api/fitness-clubs/trainer-employment/{fitnessClubId} | Trainer, Worker, Admin | GET | returns all Trainer from FitnessClub |
 | api/fitness-clubs/trainer-employment/details/{fitnessClubId} | Worker, Admin | GET | returns all TrainerEmployments with Trainer's data from FitnessClub |
 | api/fitness-clubs/trainer-employment | Worker, Admin | POST | creates TrainerEmployment |
+| api/fitness-clubs/trainer-employment/trainer-invitation | Worker, Admin | POST | creates trainer invitation and send email to provided address |
 | api/fitness-clubs/trainer-employment/{trainerEmploymentId} | Worker, Admin | PUT | sets an end date for employment, making it inactive |
+| api/fitness-clubs/worker-employment/trainer-invitation | Trainer | PUT | creates trainer employment based on invitation token |
 
 ## Membership
 | Endpoint Name | Who can | Method type | Purpose |

@@ -2,6 +2,7 @@
 using Common.Interfaces;
 using Common.Models;
 using FitnessClubs.Application.Interfaces;
+using FitnessClubs.Application.UserInvitations.Helpers;
 using FitnessClubs.Domain.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -40,9 +41,13 @@ namespace FitnessClubs.Application.UserInvitations.Commands
             }
             var invitation = invitationResult.Value;
 
-            var workerEmploymentResult = await CreateWorkerEmployment(invitation, request.WorkerId);
+            var workerEmployment = await InvitationHelper.CreateEmploymentFromInvitation(
+                invitation, 
+                request.WorkerId,
+                new WorkerEmployment(),
+                _workerEmploymentRepository);
 
-            var invitationUpdateResult = await SetInvitationUsed(invitation);
+            var invitationUpdate = await InvitationHelper.SetInvitationUsed(invitation, _userInvitationRepository);
 
             try
             {
@@ -54,7 +59,7 @@ namespace FitnessClubs.Application.UserInvitations.Commands
                 _logger.LogCritical($"Error while saving changes in {nameof(ConsumeWorkerInvitationCommandHandler)}.\nError = {ex.Message}");
             }
 
-            return workerEmploymentResult;
+            return new Result<WorkerEmployment>(workerEmployment);
         }
 
         private async Task<Result<UserInvitation>> ValidateWorkerInvitation(string invitationId, string workerId)
@@ -105,40 +110,6 @@ namespace FitnessClubs.Application.UserInvitations.Commands
             }
 
             return new Result<UserInvitation>(invitation);
-        }
-
-        private async Task<Result<WorkerEmployment>> CreateWorkerEmployment(UserInvitation invitation, string workerId)
-        {
-            var workerEmployment = new WorkerEmployment()
-            {
-                FitnessClub = invitation.FitnessClub,
-                FitnessClubId = invitation.FitnessClub.FitnessClubId,
-                UserId = workerId,
-                EmployedFrom = DateTime.UtcNow,
-                EmployedTo = null,
-            };
-
-            var workerEmploymentResult = await _workerEmploymentRepository.CreateEmployment(workerEmployment);
-
-            if (!workerEmploymentResult.IsSuccess)
-            {
-                throw new BadRequestException(workerEmploymentResult.ErrorCombined);
-            }
-
-            return workerEmploymentResult;
-        }
-
-        private async Task<Result<UserInvitation>> SetInvitationUsed(UserInvitation invitation)
-        {
-            invitation.IsUsed = true;
-            var updateResult = await _userInvitationRepository.UpdateUserInvitation(invitation.InvitationId, invitation);
-
-            if (!updateResult.IsSuccess)
-            {
-                throw new BadRequestException(updateResult.ErrorCombined);
-            }
-
-            return updateResult;
         }
     }
 }
