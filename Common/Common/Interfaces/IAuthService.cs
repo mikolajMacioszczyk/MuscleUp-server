@@ -5,6 +5,8 @@ namespace Common.Interfaces
 {
     public interface IAuthService
     {
+        Task<AnyUserDto> GetUserByEmail(string email);
+
         Task<Result<IEnumerable<WorkerDto>>> GetAllWorkersWithIds(IEnumerable<string> userIds);
         Task<bool> DoesWorkerExists(string userId);
 

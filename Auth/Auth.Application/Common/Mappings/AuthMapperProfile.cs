@@ -14,6 +14,7 @@ namespace Auth.API
         public AuthMapperProfile()
         {
             CreateMap<UpdateUserDto, ApplicationUser>();
+            CreateMap<ApplicationUser, AnyUserDto>();
 
             CreateMap<Member, MemberDto>().AddApplicationUserMapping();
             CreateMap<UpdateMemberDto, Member>();

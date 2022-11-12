@@ -20,19 +20,22 @@ namespace FitnessClubs.Application.UserInvitations.Commands
         private readonly IUserInvitationRepository _userInvitationRepository;
         private readonly IFitnessClubRepository _fitnessClubRepository;
         private readonly IEmailService _emailService;
+        private readonly IAuthService _authService;
         private readonly int _invitationValidityInDays;
 
         public GenerateWorkerInvitationCommandHandler(
             IUserInvitationRepository userInvitationRepository,
             IFitnessClubRepository fitnessClubRepository,
             IEmailService emailService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IAuthService authService)
         {
             _userInvitationRepository = userInvitationRepository;
             _fitnessClubRepository = fitnessClubRepository;
 
             _invitationValidityInDays = configuration.GetValue<int>("InvitationValidityInDays");
             _emailService = emailService;
+            _authService = authService;
         }
 
         public async Task<Result<UserInvitation>> Handle(GenerateWorkerInvitationCommand request, CancellationToken cancellationToken)
@@ -44,7 +47,11 @@ namespace FitnessClubs.Application.UserInvitations.Commands
                 return new Result<UserInvitation>($"Fitness club with id = {request.FitnessClubId} does not exists");
             }
 
-            // TODO: Validate if user with provided email does not exists. Will be implemented later
+            // Validate if user with provided email does not exists
+            if (await _authService.GetUserByEmail(request.Email) != null)
+            {
+                return new Result<UserInvitation>($"User with email = {request.Email} already exists");
+            }
 
             var invitation = new UserInvitation()
             {

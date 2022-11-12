@@ -19,6 +19,11 @@
 | api/auth/account/chanage-password | LoggedIn | POST | changes user password |
 | api/auth/account/logout | LoggedIn | PUT | Revocation of access and refresh token before the standard time has elapsed |
 
+# User
+| Endpoint Name | Who can | Method type | Purpose |
+| ------- | ------------------------------- | ------- | ------------------------------- |
+| api/auth/user/{email} | LoggedIn | GET | get the data of user by id |
+
 ## Member
 | Endpoint Name | Who can | Method type | Purpose |
 | ------- | ------------------------------- | ------- | ------------------------------- |

@@ -25,6 +25,20 @@ namespace Common.Services
             _baseAddress = configuration.GetSection("Api").GetValue<string>("AuthHost");
         }
 
+        public async Task<AnyUserDto> GetUserByEmail(string email)
+        {
+            if (email is null) throw new ArgumentException(nameof(email));
+
+            var userResult = await SendGetRequestAsync<AnyUserDto>($"user/{email}");
+
+            if (userResult.IsSuccess && userResult.Value != null)
+            {
+                return userResult.Value;
+            }
+
+            return null;
+        }
+
         public async Task<Result<IEnumerable<MemberDto>>> GetAllMembersWithIds(IEnumerable<string> userIds)
         {
             if (userIds is null || !userIds.Any())
