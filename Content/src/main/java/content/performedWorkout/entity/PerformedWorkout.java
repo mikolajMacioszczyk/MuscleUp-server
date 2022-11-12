@@ -1,6 +1,7 @@
 package content.performedWorkout.entity;
 
 import content.common.abstracts.AbstractEntity;
+import content.common.annotation.MustExist;
 import content.workout.entity.Workout;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.Assert;
@@ -8,6 +9,8 @@ import org.springframework.util.Assert;
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.UUID;
+
+import static content.common.annotation.MustExist.Reason.HIBERNATE;
 
 @Entity
 @Table(name = "performed_workout")
@@ -33,6 +36,10 @@ public class PerformedWorkout extends AbstractEntity {
     private UUID entryId;
 
 
+    @MustExist(reason = HIBERNATE)
+    public PerformedWorkout() {
+    }
+
     public PerformedWorkout(Workout workout, UUID userId, ZonedDateTime time, UUID entryId) {
 
         Assert.notNull(workout, "workout must not be null");
@@ -49,6 +56,10 @@ public class PerformedWorkout extends AbstractEntity {
     @Override
     protected UUID getId() {
         return id;
+    }
+
+    public Workout getWorkout() {
+        return workout;
     }
 
     public UUID getUserId() {

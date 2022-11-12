@@ -13,7 +13,7 @@ import static content.common.annotation.MustExist.Reason.HIBERNATE;
 
 @Entity
 @Table(name = "workout_exercise")
-public class WorkoutExercise extends AbstractEntity {
+public class WorkoutExercise extends AbstractEntity implements Comparable<WorkoutExercise> {
 
     @Id
     @Column(name = "workout_exercise_id")
@@ -50,7 +50,26 @@ public class WorkoutExercise extends AbstractEntity {
         return id;
     }
 
+    public Exercise getExercise() {
+        return exercise;
+    }
+
     public int getSequenceNumber() {
         return sequenceNumber;
+    }
+
+    public void setWorkout(Workout workout) {
+        this.workout = workout;
+    }
+
+    public void setExercise(Exercise exercise) {
+        this.exercise = exercise;
+    }
+
+
+    @Override
+    public int compareTo(WorkoutExercise other) {
+
+        return Integer.compare(sequenceNumber, other.getSequenceNumber());
     }
 }

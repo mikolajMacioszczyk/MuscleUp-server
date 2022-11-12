@@ -31,7 +31,7 @@ class BodyPartEditController extends AbstractEditController {
     }
 
 
-    @PostMapping("/save")
+    @PostMapping
     protected ResponseEntity<?> saveBodyPart(@RequestBody BodyPartForm bodyPartForm) {
 
         bodyPartValidator.validateBeforeSave(bodyPartForm, errors);
@@ -39,7 +39,7 @@ class BodyPartEditController extends AbstractEditController {
         return hasErrors()? errors() : response(OK, bodyPartService.saveBodyPart(bodyPartForm));
     }
 
-    @PutMapping("/update")
+    @PutMapping("/{id}")
     protected ResponseEntity<?> updateBodyPart(@PathVariable("id") UUID id,
                                                @RequestBody BodyPartForm bodyPartForm) {
 
@@ -48,7 +48,7 @@ class BodyPartEditController extends AbstractEditController {
         return hasErrors()? errors() : response(OK, bodyPartService.updateBodyPart(id, bodyPartForm));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     protected ResponseEntity<?> deleteBodyPart(@PathVariable("id") UUID id) {
 
         bodyPartValidator.validateBeforeDelete(id, errors);

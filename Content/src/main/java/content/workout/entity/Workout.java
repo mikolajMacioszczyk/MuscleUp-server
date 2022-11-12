@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static content.common.annotation.MustExist.Reason.HIBERNATE;
+import static java.util.Collections.sort;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 
@@ -37,7 +38,7 @@ public class Workout extends AbstractEntity {
     private String videoUrl;
 
     @OneToMany(mappedBy = "workout", fetch = LAZY, cascade = ALL, orphanRemoval = true)
-    private final List<WorkoutExercise> workoutExercises = new ArrayList<>();
+    private List<WorkoutExercise> workoutExercises = new ArrayList<>();
 
     @ManyToMany(fetch = LAZY)
     @JoinTable(
@@ -45,7 +46,7 @@ public class Workout extends AbstractEntity {
             joinColumns = @JoinColumn(name = "workout_id"),
             inverseJoinColumns = @JoinColumn(name = "body_part_id")
     )
-    private final List<BodyPart> bodyParts = new ArrayList<>();
+    private List<BodyPart> bodyParts = new ArrayList<>();
 
 
     @MustExist(reason = HIBERNATE)
@@ -55,20 +56,32 @@ public class Workout extends AbstractEntity {
     public Workout(
             UUID creatorId,
             String description,
-            String videoUrl) {
+            String videoUrl,
+            List<WorkoutExercise> workoutExercises,
+            List<BodyPart> bodyParts) {
 
         Assert.notNull(creatorId, "creatorId must not be null");
         Assert.notNull(description, "description must not be null");
+        Assert.notNull(workoutExercises, "workoutExercises must not be null");
+        Assert.notNull(bodyParts, "bodyParts must not be null");
+        workoutExercises.forEach(workoutExercise -> Assert.notNull(workoutExercise, "workoutExercise must not be null"));
+        bodyParts.forEach(workoutExercise -> Assert.notNull(workoutExercise, "workoutExercise must not be null"));
 
         this.creatorId = creatorId;
         this.description = description;
         this.videoUrl = videoUrl;
+        this.workoutExercises = workoutExercises;
+        this.bodyParts = bodyParts;
     }
 
 
     @Override
-    protected UUID getId() {
+    public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public UUID getCreatorId() {
@@ -79,23 +92,37 @@ public class Workout extends AbstractEntity {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getVideoUrl() {
         return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 
     public List<BodyPart> getBodyParts() {
         return bodyParts;
     }
 
-    public void addBodyPart(BodyPart bodyPart) {
+    public List<WorkoutExercise> getWorkoutExercises() {
 
-        bodyPart.addWorkout(this);
-        bodyParts.add(bodyPart);
+        sort(workoutExercises);
+
+        return workoutExercises;
     }
 
-    public void removeBodyPart(BodyPart bodyPart) {
+    public void addWorkoutExercise(WorkoutExercise workoutExercise) {
 
-        bodyPart.removeWorkout(this);
-        bodyParts.remove(bodyPart);
+        workoutExercises.add(workoutExercise);
+        workoutExercise.setWorkout(this);
+    }
+
+    public void addBodyPart(BodyPart bodyPart) {
+
+        bodyParts.add(bodyPart);
     }
 }

@@ -1,34 +1,47 @@
 package content.workout.controller;
 
-import content.bodyPart.repository.BodyPartQuery;
+import content.bodyPart.controller.BodyPartValidator;
 import content.common.errors.ValidationError;
 import content.common.wrappers.ValidationErrors;
+import content.exercise.controller.ExerciseValidator;
+import content.performedWorkout.repository.PerformedWorkoutQuery;
 import content.workout.controller.form.WorkoutForm;
 import content.workout.repository.WorkoutQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.List;
 import java.util.UUID;
 
 import static content.common.utils.StringUtils.isNullOrEmpty;
+import static java.util.Collections.frequency;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class WorkoutValidator {
 
     private final WorkoutQuery workoutQuery;
-    private final BodyPartQuery bodyPartQuery;
+    private final PerformedWorkoutQuery performedWorkoutQuery;
+    private final BodyPartValidator bodyPartValidator;
+    private final ExerciseValidator exerciseValidator;
 
 
     @Autowired
-    private WorkoutValidator(WorkoutQuery workoutQuery, BodyPartQuery bodyPartQuery) {
+    private WorkoutValidator(WorkoutQuery workoutQuery,
+                             PerformedWorkoutQuery performedWorkoutQuery,
+                             BodyPartValidator bodyPartValidator,
+                             ExerciseValidator exerciseValidator) {
 
         Assert.notNull(workoutQuery, "workoutQuery must not be null");
-        Assert.notNull(bodyPartQuery, "bodyPartQuery must not be null");
+        Assert.notNull(performedWorkoutQuery, "performedWorkoutQuery must not be null");
+        Assert.notNull(bodyPartValidator, "bodyPartValidator must not be null");
+        Assert.notNull(exerciseValidator, "exerciseValidator must not be null");
 
         this.workoutQuery = workoutQuery;
-        this.bodyPartQuery = bodyPartQuery;
+        this.performedWorkoutQuery = performedWorkoutQuery;
+        this.bodyPartValidator = bodyPartValidator;
+        this.exerciseValidator = exerciseValidator;
     }
 
 
@@ -37,7 +50,16 @@ public class WorkoutValidator {
         Assert.notNull(workoutForm, "workoutForm must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkDescription(workoutForm.description(), errors);
+        checkFields(workoutForm, errors);
+    }
+
+    void validateBeforeUpdate(UUID id, WorkoutForm workoutForm, ValidationErrors errors) {
+
+        Assert.notNull(workoutForm, "workoutForm must not be null");
+        Assert.notNull(errors, "errors must not be null");
+
+        checkWorkoutId(id, errors);
+        checkFields(workoutForm, errors);
     }
 
     void validateBeforeDelete(UUID id, ValidationErrors errors) {
@@ -46,28 +68,14 @@ public class WorkoutValidator {
         Assert.notNull(errors, "errors must not be null");
 
         checkWorkoutId(id, errors);
+        checkWorkoutConnection(id, errors);
     }
 
-    void validateBeforeAddBodyPart(UUID workoutId, UUID bodyPartId, ValidationErrors errors) {
+    private void checkFields(WorkoutForm workoutForm, ValidationErrors errors) {
 
-        Assert.notNull(workoutId, "workoutId must not be null");
-        Assert.notNull(bodyPartId, "bodyPartId must not be null");
-        Assert.notNull(errors, "errors must not be null");
-
-        checkWorkoutId(workoutId, errors);
-        checkBodyPartId(bodyPartId, errors);
-        checkIfBodyPartIsNotAdded(workoutId, bodyPartId, errors);
-    }
-
-    void validateBeforeRemoveBodyPart(UUID workoutId, UUID bodyPartId, ValidationErrors errors) {
-
-        Assert.notNull(workoutId, "workoutId must not be null");
-        Assert.notNull(bodyPartId, "bodyPartId must not be null");
-        Assert.notNull(errors, "errors must not be null");
-
-        checkWorkoutId(workoutId, errors);
-        checkBodyPartId(bodyPartId, errors);
-        checkIfBodyPartIsAdded(workoutId, bodyPartId, errors);
+        checkDescription(workoutForm.description(), errors);
+        checkBodyParts(workoutForm.bodyParts(), errors);
+        checkExercises(workoutForm.exercises(), errors);
     }
 
 
@@ -87,27 +95,29 @@ public class WorkoutValidator {
         }
     }
 
-    private void checkBodyPartId(UUID id, ValidationErrors errors) {
+    private void checkWorkoutConnection(UUID id, ValidationErrors errors) {
 
-        if (bodyPartQuery.findById(id).isEmpty()) {
+        if (!performedWorkoutQuery.getAllPerformedWorkoutsByWorkoutId(id).isEmpty()) {
 
-            errors.addError(new ValidationError(BAD_REQUEST, "BodyPart with given ID does not exist"));
+            errors.addError(new ValidationError(BAD_REQUEST, "This workout can not be deleted. Appears in somebody's history"));
         }
     }
 
-    private void checkIfBodyPartIsNotAdded(UUID workoutId, UUID bodyPartId, ValidationErrors errors) {
+    private void checkBodyParts(List<UUID> bodyParts, ValidationErrors errors) {
 
-        if (workoutQuery.getBodyPartsByWorkoutId(workoutId).contains(bodyPartId)) {
+        bodyParts.forEach(id -> bodyPartValidator.checkBodyPartId(id, errors));
 
-            errors.addError(new ValidationError(BAD_REQUEST, "BodyPart with given ID is already assigned to this Workout"));
-        }
+        bodyParts.forEach(id -> {
+
+            if (frequency(bodyParts, id) > 1 ) {
+
+                errors.addError(new ValidationError(BAD_REQUEST, "Body part can be included only once"));
+            }
+        });
     }
 
-    private void checkIfBodyPartIsAdded(UUID workoutId, UUID bodyPartId, ValidationErrors errors) {
+    private void checkExercises(List<UUID> exercises, ValidationErrors errors) {
 
-        if (!workoutQuery.getBodyPartsByWorkoutId(workoutId).contains(bodyPartId)) {
-
-            errors.addError(new ValidationError(BAD_REQUEST, "BodyPart with given ID is not assigned to this Workout"));
-        }
+        exercises.forEach(id -> exerciseValidator.checkExerciseId(id, errors));
     }
 }

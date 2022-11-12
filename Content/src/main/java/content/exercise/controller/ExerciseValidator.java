@@ -67,6 +67,14 @@ public class ExerciseValidator {
     }
 
 
+    public void checkExerciseId(UUID id, ValidationErrors errors) {
+
+        if (exerciseQuery.findById(id).isEmpty()) {
+
+            errors.addError(new ValidationError(BAD_REQUEST, "Exercise with ID " + id + " does not exist"));
+        }
+    }
+
     private void checkName(String name, ValidationErrors errors) {
 
         if (isNullOrEmpty(name)) {
@@ -80,14 +88,6 @@ public class ExerciseValidator {
         if (isNullOrEmpty(name)) {
 
             errors.addError(new ValidationError(BAD_REQUEST, "Exercise description can not be empty"));
-        }
-    }
-
-    private void checkExerciseId(UUID id, ValidationErrors errors) {
-
-        if (exerciseQuery.findById(id).isEmpty()) {
-
-            errors.addError(new ValidationError(BAD_REQUEST, "Exercise with given ID does not exist"));
         }
     }
 

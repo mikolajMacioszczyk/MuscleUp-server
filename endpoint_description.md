@@ -224,24 +224,62 @@
 
 # Content
 
-## Workout
-| Endpoint Name                                         | Who can | Method type | Purpose                      |
-|-------------------------------------------------------|---------|-------------|------------------------------|
-| api/workout/{id}                                      | TODO    | GET         | returns single Workout by id |
-| api/workout/all                                       | TODO    | GET         | return all Workouts          |
-| api/workout/save                                      | TODO    | POST        | saves new Workout            |
-| api/workout/update/{id}                               | TODO    | PUT         | updates Workout              |
-| api/workout/delete/{id}                               | TODO    | DELETE      | deletes Workout              |
-| api/workout/{workoutId}/add-body-part/{bodyPartId}    | TODO    | PUT         | adds BodyPart to Workout     |
-| api/workout/{workoutId}/remove-body-part/{bodyPartId} | TODO    | DELETE      | removes BodyPart             |
-
 ## BodyPart
-| Endpoint Name             | Who can | Method type | Purpose                       |
-|---------------------------|---------|-------------|-------------------------------|
-| api/body-part/{id}        | TODO    | GET         | returns single BodyPart by id |
-| api/body-part/all         | TODO    | GET         | return all BodyParts          |
-| api/body-part/save        | TODO    | POST        | saves new BodyPart            |
-| api/body-part/update/{id} | TODO    | PUT         | updates BodyPart              |
-| api/body-part/delete/{id} | TODO    | DELETE      | deletes BodyPart              |
+| Endpoint Name       | Who can | Method type | Purpose                       |
+|---------------------|---------|-------------|-------------------------------|
+| api/body-part/{id}  | TODO    | GET         | returns single BodyPart by id |
+| api/body-part/all   | TODO    | GET         | return all BodyParts          |
+| api/body-part       | TODO    | POST        | saves new BodyPart            |
+| api/body-part/{id}  | TODO    | PUT         | updates BodyPart              |
+| api/body-part/{id}  | TODO    | DELETE      | deletes BodyPart              |
+
+
+## ExerciseCriterion
+| Endpoint Name                 | Who can | Method type | Purpose                        |
+|-------------------------------|---------|-------------|--------------------------------|
+| api/criterion/{id}            | TODO    | GET         | returns single Criterion by id |
+| api/criterion/all             | TODO    | GET         | returns all Criteria           |
+| api/criterion/all-active      | TODO    | GET         | returns all active Criteria    |
+| api/criterion                 | TODO    | POST        | creates Criterion              |
+| api/criterion/activate/{id}   | TODO    | PUT         | activates Criterion            |
+| api/criterion/deactivate/{id} | TODO    | PUT         | deactivates Criterion          |
+
+## Exercise
+| Endpoint Name           | Who can | Method type | Purpose                                        |
+|-------------------------|---------|-------------|------------------------------------------------|
+| api/exercise/{id}       | TODO    | GET         | returns single Exercise by id                  |
+| api/exercise/all        | TODO    | GET         | returns all Exercises                          |
+| api/exercise/all-active | TODO    | GET         | returns all active Exercises                   |
+| api/exercise            | TODO    | POST        | creates Exercise                               |
+| api/exercise            | TODO    | PUT         | deactivate orginal Exercise and replace it     |
+| api/exercise/{id}       | TODO    | DELETE      | deactivates Exercise or deleteted if is unused |
+
+## PerformedWorkout
+| Endpoint Name                        | Who can | Method type | Purpose                                    |
+|--------------------------------------|---------|-------------|--------------------------------------------|
+| api/performed-workout/all            | TODO    | GET         | returns all PerformedWorkouts              |
+| api/performed-workout/performer/{id} | TODO    | GET         | returns all PerformedWorkouts by performer |
+| api/performed-workout/creator/{id}   | TODO    | GET         | returns all PerformedWorkouts by creator   |
+| api/performed-workout                | TODO    | POST        | creates PerformedWorkout                   |
+
+## Workout
+| Endpoint Name                     | Who can | Method type | Purpose                                                                            |
+|-----------------------------------|---------|-------------|------------------------------------------------------------------------------------|
+| api/workout/{id}                  | TODO    | GET         | returns single Workout by id                                                       |
+| api/workout/all                   | TODO    | GET         | return all Workouts                                                                |
+| api/workout/most-popular/{pieces} | TODO    | GET         | return given ammount of most performed workout                                     |
+| api/workout                       | TODO    | POST        | saves new Workout                                                                  |
+| api/workout/{id}                  | TODO    | PUT         | updates Workout. Creator can update description and video, others creates own copy |
+| api/workout/{id}                  | TODO    | DELETE      | deletes Workout if nobody performed it                                             |
+
+## Workout
+| Endpoint Name                     | Who can | Method type | Purpose                                        |
+|-----------------------------------|---------|-------------|------------------------------------------------|
+| api/workout/{id}                  | TODO    | GET         | returns single Workout by id                   |
+| api/workout/all                   | TODO    | GET         | return all Workouts                            |
+| api/workout/most-popular/{pieces} | TODO    | GET         | return given ammount of most performed workout |
+| api/workout                       | TODO    | POST        | saves new Workout                              |
+| api/workout/{id}                  | TODO    | PUT         | updates Workout                                |
+| api/workout/{id}                  | TODO    | DELETE      | deletes Workout                                |
 
 # Notifications

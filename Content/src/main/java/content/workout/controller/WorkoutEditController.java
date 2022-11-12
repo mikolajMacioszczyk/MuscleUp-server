@@ -31,15 +31,23 @@ class WorkoutEditController extends AbstractEditController {
     }
 
 
-    @PostMapping("/save")
-    protected ResponseEntity<?> saveWorkout(@RequestBody WorkoutForm workoutForm) {
+    @PostMapping
+    protected ResponseEntity<?> saveWorkout(@RequestBody WorkoutForm form) {
 
-        workoutValidator.validateBeforeSave(workoutForm, errors);
+        workoutValidator.validateBeforeSave(form, errors);
 
-        return hasErrors()? errors() : response(OK, workoutService.saveWorkout(workoutForm));
+        return hasErrors()? errors() : response(OK, workoutService.saveWorkout(form));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PutMapping
+    protected ResponseEntity<?> updateWorkout(UUID id, @RequestBody WorkoutForm form) {
+
+        workoutValidator.validateBeforeUpdate(id, form, errors);
+
+        return hasErrors()? errors() : response(OK, workoutService.updateWorkout(id, form));
+    }
+
+    @DeleteMapping("/{id}")
     protected ResponseEntity<?> deleteWorkout(@PathVariable("id") UUID id) {
 
         workoutValidator.validateBeforeDelete(id, errors);
@@ -49,23 +57,5 @@ class WorkoutEditController extends AbstractEditController {
         workoutService.deleteWorkout(id);
 
         return response(OK);
-    }
-
-    @PutMapping("/{workoutId}/add-body-part/{bodyPartId}")
-    protected ResponseEntity<?> addBodyPart(@PathVariable("workoutId") UUID workoutId,
-                                            @PathVariable("bodyPartId") UUID bodyPartId) {
-
-        workoutValidator.validateBeforeAddBodyPart(workoutId, bodyPartId, errors);
-
-        return hasErrors()? errors() : response(OK, workoutService.addBodyPart(workoutId, bodyPartId));
-    }
-
-    @DeleteMapping("/{workoutId}/remove-body-part/{bodyPartId}")
-    protected ResponseEntity<?> removeBodyPart(@PathVariable("workoutId") UUID workoutId,
-                                               @PathVariable("bodyPartId") UUID bodyPartId) {
-
-        workoutValidator.validateBeforeRemoveBodyPart(workoutId, bodyPartId, errors);
-
-        return hasErrors()? errors() : response(OK, workoutService.removeBodyPart(workoutId, bodyPartId));
     }
 }

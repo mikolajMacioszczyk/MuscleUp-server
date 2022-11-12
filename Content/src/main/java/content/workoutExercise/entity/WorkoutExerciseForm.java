@@ -1,4 +1,4 @@
-package content.workoutExercise.controller.form;
+package content.workoutExercise.entity;
 
 import java.util.UUID;
 

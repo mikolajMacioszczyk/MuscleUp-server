@@ -31,7 +31,7 @@ class ExerciseEditController extends AbstractEditController {
     }
 
 
-    @PostMapping()
+    @PostMapping
     protected ResponseEntity<?> saveExercise(@RequestBody ExerciseForm exerciseForm) {
 
         exerciseValidator.validateBeforeSave(exerciseForm, errors);
@@ -39,7 +39,7 @@ class ExerciseEditController extends AbstractEditController {
         return hasErrors()? errors() : response(OK, exerciseService.saveExercise(exerciseForm));
     }
 
-    @PutMapping()
+    @PutMapping
     protected ResponseEntity<?> updateExercise(@PathVariable("id") UUID id, @RequestBody ExerciseForm exerciseForm) {
 
         exerciseValidator.validateBeforeUpdate(id, exerciseForm, errors);
@@ -47,7 +47,7 @@ class ExerciseEditController extends AbstractEditController {
         return hasErrors()? errors() : response(OK, exerciseService.updateExercise(id, exerciseForm));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     protected ResponseEntity<?> deleteExercise(@PathVariable("id") UUID id) {
 
         exerciseValidator.validateBeforeDelete(id, errors);

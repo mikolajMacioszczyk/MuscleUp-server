@@ -42,7 +42,7 @@ public class BodyPartService {
 
         BodyPart bodyPart = bodyPartRepository.getById(id);
 
-        bodyPart.update(bodyPartForm.name());
+        bodyPart.setName(bodyPartForm.name());
 
         return bodyPartRepository.update(bodyPart);
     }

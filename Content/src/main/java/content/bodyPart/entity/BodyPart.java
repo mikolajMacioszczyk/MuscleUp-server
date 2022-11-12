@@ -41,14 +41,15 @@ public class BodyPart extends AbstractEntity {
 
         this.name = name;
     }
+    public BodyPart(UUID id, String name) {
 
-
-    public void update(String name) {
-
+        Assert.notNull(id, "id must not be null");
         Assert.notNull(name, "name must not be null");
 
+        this.id = id;
         this.name = name;
     }
+
 
     @Override
     public UUID getId() {
@@ -59,13 +60,7 @@ public class BodyPart extends AbstractEntity {
         return name;
     }
 
-    public void addWorkout(Workout workout) {
-
-        workouts.add(workout);
-    }
-
-    public void removeWorkout(Workout workout) {
-
-        workouts.remove(workout);
+    public void setName(String name) {
+        this.name = name;
     }
 }

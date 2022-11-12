@@ -2,32 +2,52 @@ package content.workout.service;
 
 import content.bodyPart.entity.BodyPart;
 import content.bodyPart.repository.BodyPartRepository;
+import content.performedWorkout.repository.PerformedWorkoutQuery;
 import content.workout.controller.form.WorkoutForm;
-import content.workout.entity.Workout;
-import content.workout.entity.WorkoutFactory;
+import content.workout.entity.*;
+import content.workout.repository.WorkoutQuery;
 import content.workout.repository.WorkoutRepository;
+import content.workoutExercise.entity.WorkoutExercise;
+import content.workoutExercise.service.WorkoutExerciseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import static java.util.Collections.sort;
 
 @Service
 public class WorkoutService {
 
     private final WorkoutRepository workoutRepository;
-    private final WorkoutFactory workoutFactory;
+    private final WorkoutExerciseService workoutExerciseService;
     private final BodyPartRepository bodyPartRepository;
+    private final WorkoutFactory workoutFactory;
+    private final WorkoutQuery workoutQuery;
+    private final PerformedWorkoutQuery performedWorkoutQuery;
 
 
     @Autowired
-    public WorkoutService(WorkoutRepository workoutRepository, BodyPartRepository bodyPartRepository) {
+    public WorkoutService(WorkoutRepository workoutRepository,
+                          WorkoutExerciseService workoutExerciseService,
+                          BodyPartRepository bodyPartRepository,
+                          WorkoutQuery workoutQuery,
+                          PerformedWorkoutQuery performedWorkoutQuery) {
 
         Assert.notNull(workoutRepository, "workoutRepository must not be null");
+        Assert.notNull(workoutExerciseService, "workoutExerciseService must not be null");
         Assert.notNull(bodyPartRepository, "bodyPartRepository must not be null");
+        Assert.notNull(workoutQuery, "workoutQuery must not be null");
+        Assert.notNull(performedWorkoutQuery, "performedWorkoutQuery must not be null");
 
         this.workoutRepository = workoutRepository;
+        this.workoutExerciseService = workoutExerciseService;
         this.bodyPartRepository = bodyPartRepository;
+        this.workoutQuery = workoutQuery;
+        this.performedWorkoutQuery = performedWorkoutQuery;
         this.workoutFactory = new WorkoutFactory();
     }
 
@@ -36,9 +56,38 @@ public class WorkoutService {
 
         Assert.notNull(workoutForm, "workoutForm must not be null");
 
-        Workout workout = workoutFactory.create(workoutForm, true);
+        Workout workout = workoutFactory.createWithoutConnections(workoutForm);
 
-        return workoutRepository.save(workout);
+        workout.setId(workoutRepository.save(workout));
+
+        List<WorkoutExercise> workoutExercises = workoutExerciseService.collectiveSave(workout, workoutForm.exercises());
+        List<BodyPart> bodyParts = bodyPartRepository.getByIds(workoutForm.bodyParts());
+
+        workoutExercises.forEach(workout::addWorkoutExercise);
+        bodyParts.forEach(workout::addBodyPart);
+
+        return workoutRepository.update(workout);
+    }
+
+    public UUID updateWorkout(UUID id, WorkoutForm form) {
+
+        WorkoutComparisonDto original = workoutQuery.getForComparison(id);
+
+        if (form.isSimpleChange(original)) {
+
+            Workout workout = workoutRepository.getById(id);
+
+            workout.setDescription(form.description());
+            workout.setVideoUrl(form.videoUrl());
+
+            return workoutRepository.update(workout);
+        }
+        else if (form.hasChanged(original)) {
+
+            return saveWorkout(form);
+        }
+
+        else return original.id();
     }
 
     public void deleteWorkout(UUID id) {
@@ -48,29 +97,25 @@ public class WorkoutService {
         workoutRepository.delete(id);
     }
 
-    public UUID addBodyPart(UUID workoutId, UUID bodyPartId) {
+    public List<WorkoutPopularDto> getPopularWorkouts(int pieces) {
 
-        Assert.notNull(workoutId, "workoutId must not be null");
-        Assert.notNull(bodyPartId, "bodyPartId must not be null");
+        List<WorkoutPopularDto> popularityRanking = new ArrayList<>();
 
-        Workout workout = workoutRepository.getById(workoutId);
-        BodyPart bodyPart = bodyPartRepository.getById(bodyPartId);
+        List<WorkoutDto> workouts = workoutQuery.getAllWorkouts();
 
-        workout.addBodyPart(bodyPart);
+        workouts.forEach(workout ->
+                popularityRanking.add(
+                        new WorkoutPopularDto(
+                                workout.description(),
+                                performedWorkoutQuery.getPerformancesByWorkoutId(workout.id())
+                        )
+                )
+        );
 
-        return workoutRepository.update(workout);
-    }
+        sort(popularityRanking);
 
-    public UUID removeBodyPart(UUID workoutId, UUID bodyPartId) {
-
-        Assert.notNull(workoutId, "workoutId must not be null");
-        Assert.notNull(bodyPartId, "bodyPartId must not be null");
-
-        Workout workout = workoutRepository.getById(workoutId);
-        BodyPart bodyPart = bodyPartRepository.getById(bodyPartId);
-
-        workout.removeBodyPart(bodyPart);
-
-        return workoutRepository.update(workout);
+        return pieces > popularityRanking.size()?
+                popularityRanking :
+                popularityRanking.subList(0, pieces-1);
     }
 }

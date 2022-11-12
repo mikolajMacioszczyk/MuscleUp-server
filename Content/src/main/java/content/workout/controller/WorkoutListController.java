@@ -2,7 +2,9 @@ package content.workout.controller;
 
 import content.common.abstracts.AbstractListController;
 import content.workout.entity.WorkoutDto;
+import content.workout.entity.WorkoutPopularDto;
 import content.workout.repository.WorkoutQuery;
+import content.workout.service.WorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
@@ -23,14 +25,17 @@ import static org.springframework.http.HttpStatus.OK;
 public class WorkoutListController extends AbstractListController {
 
     private final WorkoutQuery workoutQuery;
+    private final WorkoutService workoutService;
 
 
     @Autowired
-    private WorkoutListController(WorkoutQuery workoutQuery) {
+    private WorkoutListController(WorkoutQuery workoutQuery, WorkoutService workoutService) {
 
         Assert.notNull(workoutQuery, "workoutQuery must not be null");
+        Assert.notNull(workoutService, "workoutService must not be null");
 
         this.workoutQuery = workoutQuery;
+        this.workoutService = workoutService;
     }
 
 
@@ -46,6 +51,14 @@ public class WorkoutListController extends AbstractListController {
     protected ResponseEntity<?> getAllWorkouts() {
 
         List<WorkoutDto> workouts = workoutQuery.getAllWorkouts();
+
+        return response(OK, workouts);
+    }
+
+    @GetMapping("/most-popular/{pieces}")
+    protected ResponseEntity<?> getMostPopularWorkouts(@PathVariable("pieces") Integer pieces) {
+
+        List<WorkoutPopularDto> workouts = workoutService.getPopularWorkouts(pieces);
 
         return response(OK, workouts);
     }

@@ -81,7 +81,7 @@ public class Exercise extends AbstractEntity {
 
 
     @Override
-    protected UUID getId() {
+    public UUID getId() {
         return id;
     }
 

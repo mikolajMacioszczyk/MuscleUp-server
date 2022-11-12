@@ -31,7 +31,7 @@ class CriterionEditController extends AbstractEditController {
     }
 
 
-    @PostMapping()
+    @PostMapping
     protected ResponseEntity<?> saveCriterion(@RequestBody CriterionForm criterionForm) {
 
         criterionValidator.validateBeforeSave(criterionForm, errors);

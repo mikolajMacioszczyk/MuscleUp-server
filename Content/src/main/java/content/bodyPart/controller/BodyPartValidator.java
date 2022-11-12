@@ -55,19 +55,19 @@ public class BodyPartValidator {
     }
 
 
+    public void checkBodyPartId(UUID id, ValidationErrors errors) {
+
+        if (bodyPartQuery.findById(id).isEmpty()) {
+
+            errors.addError(new ValidationError(BAD_REQUEST, "BodyPart with ID " + id + " does not exist"));
+        }
+    }
+
     private void checkName(String name, ValidationErrors errors) {
 
         if (isNullOrEmpty(name)) {
 
             errors.addError(new ValidationError(BAD_REQUEST, "BodyPart name can not be empty"));
-        }
-    }
-
-    private void checkBodyPartId(UUID id, ValidationErrors errors) {
-
-        if (bodyPartQuery.findById(id).isEmpty()) {
-
-            errors.addError(new ValidationError(BAD_REQUEST, "BodyPart with given ID does not exist"));
         }
     }
 }
