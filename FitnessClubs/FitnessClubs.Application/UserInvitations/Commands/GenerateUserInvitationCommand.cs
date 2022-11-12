@@ -72,7 +72,7 @@ namespace FitnessClubs.Application.UserInvitations.Commands
 
             await _userInvitationRepository.SaveChangesAsync();
 
-            await SendInvitationEmail(request.Email, created.InvitationId, fitnessClub, request.BaseInvitationLink);
+            await SendInvitationEmail(request.Email, created.InvitationId, fitnessClub, request.BaseInvitationLink, request.RoleType);
 
             return new Result<UserInvitation>(created);
         }
@@ -81,23 +81,26 @@ namespace FitnessClubs.Application.UserInvitations.Commands
             string recipientEmailAddress, 
             string invitationId,
             FitnessClub fitnessClub,
-            string baseInvitationLink)
+            string baseInvitationLink,
+            RoleType roleType)
         {
+            var invitationRole = roleType.ToString();
+
             var invitationLink = baseInvitationLink
                 .AppendQueryParamToUri(InvitationTokenParamName, invitationId)
                 .AppendQueryParamToUri(FitnessClubParamName, fitnessClub.FitnessClubId);
 
             await _emailService.SendEmailAsync(
-                "Link aktywacyjny",
+                $"{invitationRole} activation Link",
                 recipientEmailAddress,
-                "Zespół MuscleUp",
-                $"Dzień dobry,<br />" +
+                recipientEmailAddress,
+                $"Hello,<br />" +
                 $"<br />" +
-                $"Zaproszenie do stworzenia konta w klubie \"{fitnessClub.FitnessClubName}\".<br />" +
-                $"Twój link: {invitationLink}<br />" +
+                $"you've been invited to the '{fitnessClub.FitnessClubName}' club for a {invitationRole} role. " +
+                $"You can create an account using the following link: {invitationLink}<br />" +
                 $"<br />" +
-                $"Pozdrawiamy,<br />" +
-                $"Zespół MuscleUp");
+                $"With kindest regards,<br />" +
+                $"MuscleUp Team");
         }
     }
 }
