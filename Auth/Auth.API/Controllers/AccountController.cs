@@ -51,8 +51,8 @@ namespace Auth.API.Controllers
                 return Unauthorized();
             }
 
-            // get user by UserId from Facebook
-            var user = await _userService.GetUserById(request.UserId);
+            // get user by provided Email
+            var user = await _userService.GetUserByEmail(request.Email);
             if (user == null)
             {
                 var command = new RegisterMemberFromExternalServiceCommand(request);

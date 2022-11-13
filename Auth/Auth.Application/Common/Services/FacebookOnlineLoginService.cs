@@ -14,9 +14,13 @@ namespace Auth.Application.Common.Services
         private readonly string _appId;
         private readonly string _appSecret;
 
-        private const string ValidationBasePath = "https://graph.facebook.com/debug_token";
+        private const string FacebookBasePath = "https://graph.facebook.com/";
+        private const string ValidationBasePath = $"{FacebookBasePath}debug_token";
+        private const string UserDataBasePath = $"{FacebookBasePath}me";
         private const string InputTokenKey = "input_token";
         private const string AccessTokenKey = "access_token";
+        private const string FieldsKey = "fields";
+        private const string FieldsValue = "email";
 
         public FacebookOnlineLoginService(
             ILogger<FacebookOnlineLoginService> logger, 
@@ -31,7 +35,7 @@ namespace Auth.Application.Common.Services
             _appSecret = facebookSection.GetValue<string>("AppSecret");
         }
 
-        public async Task<bool> ValidateToken(string accessToken, string userId, string email)
+        public async Task<bool> ValidateToken(string accessToken, string userId, string providedEmail)
         {
             var now = DateTime.UtcNow;
             try
@@ -48,7 +52,16 @@ namespace Auth.Application.Common.Services
                         result.data.user_id == userId &&
                         CheckTokenNotExpired(result.data.expires_at, now))
                     {
-                        return true;
+                        // Validate user email
+                        (isSuccess, contentString) = await SendUserDataRequest(accessToken);
+
+                        if (isSuccess)
+                        {
+                            var emailHolder = JsonSerializer.Deserialize<EmailDataHolder>(contentString);
+
+                            return emailHolder.email == providedEmail;
+                        }
+                        return false;
                     }
                 }
                 return false;
@@ -69,11 +82,24 @@ namespace Auth.Application.Common.Services
             return expirationDate.ToUniversalTime() > now.ToUniversalTime();
         }
 
-        private async Task<(bool isSuccess, string content)> SendVerificationRequest(string accessToken)
+        private Task<(bool isSuccess, string content)> SendVerificationRequest(string accessToken)
         {
             var uri = UriHelper.AppendQueryParamToUri(ValidationBasePath, InputTokenKey, accessToken);
             uri = UriHelper.AppendQueryParamToUri(uri, AccessTokenKey, $"{_appId}|{_appSecret}");
 
+            return SendGetRequest(uri);
+        }
+
+        private Task<(bool isSuccess, string content)> SendUserDataRequest(string accessToken)
+        {
+            var uri = UriHelper.AppendQueryParamToUri(UserDataBasePath, AccessTokenKey, accessToken);
+            uri = UriHelper.AppendQueryParamToUri(uri, FieldsKey, FieldsValue);
+
+            return SendGetRequest(uri);
+        }
+
+        private async Task<(bool isSuccess, string content)> SendGetRequest(string uri)
+        { 
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
 
             var httpClient = _httpClientFactory.CreateClient();

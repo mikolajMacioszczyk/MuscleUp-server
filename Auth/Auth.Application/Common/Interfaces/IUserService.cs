@@ -9,5 +9,7 @@ namespace Auth.Application.Common.Interfaces
         Task<AuthResponse> ChangePasswordAsync(ChangePasswordRequestDto request);
 
         Task<ApplicationUser> GetUserById(string userId);
+
+        Task<ApplicationUser> GetUserByEmail(string email);
     }
 }

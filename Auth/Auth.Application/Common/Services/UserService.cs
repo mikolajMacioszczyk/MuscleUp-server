@@ -13,17 +13,20 @@ namespace Auth.Application.Common.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAuthTokenService _authTokenService;
         protected readonly IUserStore<ApplicationUser> _userStore;
+        private readonly IApplicationUserRepository _applicationUserRepository;
 
         public UserService(
             HttpAuthContext httpAuthContext,
             UserManager<ApplicationUser> userManager,
             IAuthTokenService authTokenService,
-            IUserStore<ApplicationUser> userStore)
+            IUserStore<ApplicationUser> userStore,
+            IApplicationUserRepository applicationUserRepository)
         {
             _httpAuthContext = httpAuthContext;
             _userManager = userManager;
             _authTokenService = authTokenService;
             _userStore = userStore;
+            _applicationUserRepository = applicationUserRepository;
         }
 
         public async Task<AuthResponse> ChangePasswordAsync(ChangePasswordRequestDto request)
@@ -57,6 +60,11 @@ namespace Auth.Application.Common.Services
         public Task<ApplicationUser> GetUserById(string userId)
         {
             return _userManager.FindByIdAsync(userId);
+        }
+
+        public Task<ApplicationUser> GetUserByEmail(string email)
+        {
+            return _applicationUserRepository.GetByEmail(email);
         }
     }
 }
