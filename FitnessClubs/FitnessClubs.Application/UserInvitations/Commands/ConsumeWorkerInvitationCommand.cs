@@ -1,4 +1,5 @@
-﻿using Common.Exceptions;
+﻿using Common.BaseClasses;
+using Common.Exceptions;
 using Common.Interfaces;
 using Common.Models;
 using FitnessClubs.Application.Interfaces;
@@ -12,8 +13,10 @@ namespace FitnessClubs.Application.UserInvitations.Commands
     public record ConsumeWorkerInvitationCommand(string InvitationId, string WorkerId) : IRequest<Result<WorkerEmployment>>
     { }
 
-    public class ConsumeWorkerInvitationCommandHandler : IRequestHandler<ConsumeWorkerInvitationCommand, Result<WorkerEmployment>>
+    public class ConsumeWorkerInvitationCommandHandler : ConcurrentTokenHandlerBase,
+        IRequestHandler<ConsumeWorkerInvitationCommand, Result<WorkerEmployment>>
     {
+
         private readonly IUserInvitationRepository _userInvitationRepository;
         private readonly IEmploymentRepository<WorkerEmployment> _workerEmploymentRepository;
         private readonly ILogger<ConsumeWorkerInvitationCommandHandler> _logger;
@@ -32,6 +35,26 @@ namespace FitnessClubs.Application.UserInvitations.Commands
         }
 
         public async Task<Result<WorkerEmployment>> Handle(ConsumeWorkerInvitationCommand request, CancellationToken cancellationToken)
+        {
+            while (!LockToken(request.InvitationId))
+            {
+                Thread.Sleep(WaitMiliseconds);
+            }
+
+            try
+            {
+                var result = await HandleWithoutConcurrency(request, cancellationToken);
+                ReleaseToken(request.InvitationId);
+                return result;
+            }
+            catch (Exception)
+            {
+                ReleaseToken(request.InvitationId);
+                throw;
+            }
+        }
+
+        private async Task<Result<WorkerEmployment>> HandleWithoutConcurrency(ConsumeWorkerInvitationCommand request, CancellationToken cancellationToken)
         {
             var invitationResult = await ValidateWorkerInvitation(request.InvitationId, request.WorkerId);
 

@@ -2,6 +2,7 @@
 using Carnets.Application.Entries.Helpers;
 using Carnets.Application.Interfaces;
 using Carnets.Domain.Models;
+using Common.BaseClasses;
 using Common.Exceptions;
 using Common.Models;
 using MediatR;
@@ -12,7 +13,8 @@ namespace Carnets.Application.Entries.Commands
     public record EnterGymCommand(EntryTokenDto EntryTokenDto, string FitnessClubId) : IRequest<Result<Entry>>
     { }
 
-    public class EnterGymCommandHandler : IRequestHandler<EnterGymCommand, Result<Entry>>
+    public class EnterGymCommandHandler : ConcurrentTokenHandlerBase,
+        IRequestHandler<EnterGymCommand, Result<Entry>>
     {
         private readonly ILogger<EnterGymCommandHandler> _logger;
         private readonly IGympassRepository _gympassRepository;
@@ -29,6 +31,26 @@ namespace Carnets.Application.Entries.Commands
         }
 
         public async Task<Result<Entry>> Handle(EnterGymCommand request, CancellationToken cancellationToken)
+        {
+            while (!LockToken(request.EntryTokenDto.EntryToken))
+            {
+                Thread.Sleep(WaitMiliseconds);
+            }
+
+            try
+            {
+                var result = await HandleWithoutConcurrency(request, cancellationToken);
+                ReleaseToken(request.EntryTokenDto.EntryToken);
+                return result;
+            }
+            catch (Exception)
+            {
+                ReleaseToken(request.EntryTokenDto.EntryToken);
+                throw;
+            }
+        }
+
+        public async Task<Result<Entry>> HandleWithoutConcurrency(EnterGymCommand request, CancellationToken cancellationToken)
         {
             var entryResult = await ReadEntryToken(request.EntryTokenDto.EntryToken, request.FitnessClubId);
             if (!entryResult.IsSuccess)

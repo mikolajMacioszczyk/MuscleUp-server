@@ -1,4 +1,5 @@
-﻿using Common.Exceptions;
+﻿using Common.BaseClasses;
+using Common.Exceptions;
 using Common.Interfaces;
 using Common.Models;
 using FitnessClubs.Application.Interfaces;
@@ -12,7 +13,8 @@ namespace FitnessClubs.Application.UserInvitations.Commands
     public record ConsumeTrainerInvitationCommand(string InvitationId, string TrainerId) : IRequest<Result<TrainerEmployment>>
     { }
 
-    public class ConsumeTrainerInvitationCommandHandler : IRequestHandler<ConsumeTrainerInvitationCommand, Result<TrainerEmployment>>
+    public class ConsumeTrainerInvitationCommandHandler : ConcurrentTokenHandlerBase,
+        IRequestHandler<ConsumeTrainerInvitationCommand, Result<TrainerEmployment>>
     {
         private readonly IUserInvitationRepository _userInvitationRepository;
         private readonly IEmploymentRepository<TrainerEmployment> _trainerEmploymentRepository;
@@ -32,6 +34,26 @@ namespace FitnessClubs.Application.UserInvitations.Commands
         }
 
         public async Task<Result<TrainerEmployment>> Handle(ConsumeTrainerInvitationCommand request, CancellationToken cancellationToken)
+        {
+            while (!LockToken(request.InvitationId))
+            {
+                Thread.Sleep(WaitMiliseconds);
+            }
+
+            try
+            {
+                var result = await HandleWithoutConcurrency(request, cancellationToken);
+                ReleaseToken(request.InvitationId);
+                return result;
+            }
+            catch (Exception)
+            {
+                ReleaseToken(request.InvitationId);
+                throw;
+            }
+        }
+
+        public async Task<Result<TrainerEmployment>> HandleWithoutConcurrency(ConsumeTrainerInvitationCommand request, CancellationToken cancellationToken)
         {
             var invitationResult = await ValidateTrainerInvitation(request.InvitationId, request.TrainerId);
 
