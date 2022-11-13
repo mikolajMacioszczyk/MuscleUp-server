@@ -18,6 +18,7 @@ namespace FitnessClubs.Application.UserInvitations.Commands
         private const string InvitationTokenParamName = "token";
         private const string FitnessClubParamName = "fitness-club"; 
         private const string UserTypeParamName = "user-type";
+        private const string EmailParamName = "email";
 
         private readonly IUserInvitationRepository _userInvitationRepository;
         private readonly IFitnessClubRepository _fitnessClubRepository;
@@ -90,7 +91,8 @@ namespace FitnessClubs.Application.UserInvitations.Commands
             var invitationLink = baseInvitationLink
                 .AppendQueryParamToUri(InvitationTokenParamName, invitationId)
                 .AppendQueryParamToUri(FitnessClubParamName, fitnessClub.FitnessClubId)
-                .AppendQueryParamToUri(UserTypeParamName, invitationRole.ToLower());
+                .AppendQueryParamToUri(UserTypeParamName, invitationRole.ToLower())
+                .AppendQueryParamToUri(EmailParamName, recipientEmailAddress);
 
             await _emailService.SendEmailAsync(
                 $"{invitationRole} activation Link",
