@@ -22,7 +22,8 @@
 # User
 | Endpoint Name | Who can | Method type | Purpose |
 | ------- | ------------------------------- | ------- | ------------------------------- |
-| api/auth/user/{email} | LoggedIn | GET | get the data of user by id |
+| api/auth/user/{email} | LoggedIn | GET | get the data of user by email |
+| api/auth/user/by-id/{userId} | LoggedIn | GET | get the data of user by id |
 
 ## Member
 | Endpoint Name | Who can | Method type | Purpose |
