@@ -5,6 +5,7 @@
         None,
         SinglePaymentSuccess,
         SinglePaymentExpired,
+        SubscriptionCreated,
         SubscriptionPaid,
         SubscriptionDeleted
     }

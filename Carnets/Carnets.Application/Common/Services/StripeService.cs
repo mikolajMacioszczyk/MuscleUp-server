@@ -189,7 +189,7 @@ namespace Carnets.Application.Services
                 var stripeEvent = EventUtility.ConstructEvent(jsonBody, signature, WebhookSecret);
 
                 PaymentStatus paymentStatus = PaymentStatus.None;
-                Func<Event, (string, string, string, string)> eventAdapter = null;
+                Func<Event, StripeData> eventAdapter = null;
 
                 // Handle the event
                 if (stripeEvent.Type == Events.InvoicePaid)
@@ -218,13 +218,19 @@ namespace Carnets.Application.Services
                     return PaymentResult.Empty();
                 }
 
-                var (gympassId, customerId, paymentMethodId, subscriptionId) = eventAdapter(stripeEvent);
+                var stripeData = eventAdapter(stripeEvent);
 
-                if (!string.IsNullOrEmpty(gympassId))
+                if (stripeData.Mode == "subscription" && paymentStatus == PaymentStatus.SinglePaymentSuccess)
                 {
-                    return new PaymentResult(paymentStatus, gympassId, customerId, paymentMethodId, subscriptionId);
+                    paymentStatus = PaymentStatus.SubscriptionCreated;
                 }
-                return ServeMissingPlanMetadata();
+
+                return new PaymentResult(
+                    paymentStatus, 
+                    stripeData.PlanId, 
+                    stripeData.CustomerId, 
+                    stripeData.PaymentMethodId, 
+                    stripeData.SubscriptionId);
             }
             catch (StripeException e)
             {
@@ -233,7 +239,7 @@ namespace Carnets.Application.Services
             }
         }
 
-        private (string planId, string customerId, string paymentMethodId, string subscriptionId) GetDataFromSession(Event stripeEvent)
+        private StripeData GetDataFromSession(Event stripeEvent)
         {
             var session = stripeEvent.Data.Object as Session;
             string gympassId = string.Empty;
@@ -241,44 +247,56 @@ namespace Carnets.Application.Services
             var hasGympassIdMetadata = session.Metadata?.TryGetValue(CarnetsConsts.GympassIdKey, out gympassId) ?? false;
             if (hasGympassIdMetadata)
             {
-                return (gympassId, session.CustomerId, string.Empty, session.SubscriptionId);
+                return new StripeData(gympassId, session.CustomerId, string.Empty, session.SubscriptionId, session.Mode);
             }
 
-            return (string.Empty, string.Empty, string.Empty, string.Empty);
+            return StripeData.Empty();
         }
 
-        private (string planId, string customerId, string paymentMethodId, string subscriptionId) GetDataFromInvoice(Event stripeEvent)
+        private StripeData GetDataFromInvoice(Event stripeEvent)
         {
             var invoice = stripeEvent.Data.Object as Invoice;
             string gympassId = string.Empty;
 
             var hasGympassIdMetadata = invoice.Metadata?.TryGetValue(CarnetsConsts.GympassIdKey, out gympassId) ?? false;
-            if (hasGympassIdMetadata)
-            {
-                return (gympassId, invoice.CustomerId, invoice.DefaultPaymentMethodId, invoice.SubscriptionId);
-            }
 
-            return (string.Empty, string.Empty, string.Empty, string.Empty);
+            return new StripeData(gympassId, invoice.CustomerId, invoice.DefaultPaymentMethodId, invoice.SubscriptionId, string.Empty);
         }
 
-        private (string planId, string customerId, string paymentMethodId, string subscriptionId) GetDataFromSubscription(Event stripeEvent)
+        private StripeData GetDataFromSubscription(Event stripeEvent)
         {
             var subscription = stripeEvent.Data.Object as Stripe.Subscription;
             string gympassId = string.Empty;
 
             var hasGympassIdMetadata = subscription.Metadata?.TryGetValue(CarnetsConsts.GympassIdKey, out gympassId) ?? false;
-            if (hasGympassIdMetadata)
-            {
-                return (gympassId, subscription.CustomerId, subscription.DefaultPaymentMethodId, subscription.Id);
-            }
-
-            return (string.Empty, string.Empty, string.Empty, string.Empty);
+            return new StripeData(gympassId, subscription.CustomerId, subscription.DefaultPaymentMethodId, subscription.Id, string.Empty);
         }
 
         private PaymentResult ServeMissingPlanMetadata()
         {
             _logger.LogError($"Missing {CarnetsConsts.GympassIdKey} metadata");
             throw new ArgumentException($"Missing {CarnetsConsts.GympassIdKey} metadata");
+        }
+
+        private class StripeData
+        {
+            public string PlanId { get; set; }
+            public string CustomerId { get; set; }
+            public string PaymentMethodId { get; set; }
+            public string SubscriptionId { get; set; }
+            public string Mode { get; set; }
+
+            public StripeData(string planId, string customerId, string paymentMethodId, string subscriptionId, string mode)
+            {
+                PlanId = planId;
+                CustomerId = customerId;
+                PaymentMethodId = paymentMethodId;
+                SubscriptionId = subscriptionId;
+                Mode = mode;
+            }
+
+            public static StripeData Empty() =>
+                new StripeData(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
         }
     }
 }

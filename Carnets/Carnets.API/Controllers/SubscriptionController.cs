@@ -113,9 +113,18 @@ namespace Carnets.API.Controllers
                         return Ok();
                     }
                     return BadRequest(deactivationResult.ErrorCombined);
-                case PaymentStatus.SubscriptionPaid:
-                    var subscriptionResult = await Mediator.Send(new CreateOrExtendGympassSubscriptionCommand(
+                case PaymentStatus.SubscriptionCreated:
+                    var createSubscriptionResult = await Mediator.Send(new CreateSubscriptionCommand(
                         paymentResult.PlanId, paymentResult.CustomerId, paymentResult.PaymentMethodId, paymentResult.ExternalSubscriptionId));
+
+                    if (createSubscriptionResult.IsSuccess)
+                    {
+                        return Ok(createSubscriptionResult.Value);
+                    }
+                    return BadRequest(createSubscriptionResult.ErrorCombined);
+                case PaymentStatus.SubscriptionPaid:
+                    var subscriptionResult = await Mediator.Send(new CreateOrExtendGympassSubscriptionByExternalIdCommand(
+                        paymentResult.CustomerId, paymentResult.PaymentMethodId, paymentResult.ExternalSubscriptionId));
 
                     if (subscriptionResult.IsSuccess)
                     {

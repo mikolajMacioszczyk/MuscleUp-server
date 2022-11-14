@@ -2,6 +2,7 @@
 using Carnets.Domain.Models;
 using Common.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Carnets.Repo.Repositories
 {
@@ -25,7 +26,22 @@ namespace Carnets.Repo.Repositories
             }
 
             return query.FirstOrDefaultAsync(s => s.SubscriptionId == subcriptionId);
-        } 
+        }
+
+
+        public Task<Subscription> GetSubscription(Expression<Func<Subscription, bool>> predicate, bool asTracking)
+        {
+            IQueryable<Subscription> query = _context.Subscriptions
+               .Include(s => s.Gympass)
+               .Where(predicate);
+
+            if (!asTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return query.FirstOrDefaultAsync();
+        }
 
         public async Task<IEnumerable<Subscription>> GetAllGympassSubscriptions(IEnumerable<string> gympassIds, bool asTracking)
         {
