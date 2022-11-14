@@ -16,11 +16,9 @@ dependencies {
 	// core
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	//implementation 'org.springframework.boot:spring-boot-starter-security'
 
 	// core-test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	//testImplementation 'org.springframework.security:spring-security-test'
 
 	// database
 	runtimeOnly 'org.postgresql:postgresql'
@@ -37,6 +35,9 @@ dependencies {
 
 	// quartz
 	implementation 'org.quartz-scheduler:quartz:2.3.2'
+
+	// auth0 - jwt
+	implementation 'com.auth0:java-jwt:4.2.1'
 }
 
 tasks.named('test') {

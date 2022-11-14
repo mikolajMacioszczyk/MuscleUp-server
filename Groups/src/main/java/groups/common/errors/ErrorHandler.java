@@ -2,6 +2,7 @@ package groups.common.errors;
 
 import groups.common.innerCommunicators.errors.InnerCommunicationException;
 import groups.common.innerCommunicators.errors.AuthHeaderException;
+import groups.security.UnauthorizedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,6 +18,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
     private static final String INNER_COMMUNICATION_EXCEPTION_MESSAGE = "Connection to other service failed";
     private static final String AUTH_HEADER_EXCEPTION_MESSAGE = "Header with jwtToken not found";
+    private static final String UNAUTHORIZED_EXCEPTION_MESSAGE = "JWT token is incorrect";
 
 
     @ExceptionHandler(value = InnerCommunicationException.class)
@@ -37,6 +39,18 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(
                 exception,
                 AUTH_HEADER_EXCEPTION_MESSAGE,
+                new HttpHeaders(),
+                UNAUTHORIZED,
+                request
+        );
+    }
+
+    @ExceptionHandler(value = UnauthorizedException.class)
+    protected ResponseEntity<?> handleUnauthorizedException(RuntimeException exception, WebRequest request) {
+
+        return handleExceptionInternal(
+                exception,
+                UNAUTHORIZED_EXCEPTION_MESSAGE,
                 new HttpHeaders(),
                 UNAUTHORIZED,
                 request
