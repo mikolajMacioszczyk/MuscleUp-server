@@ -28,7 +28,7 @@ namespace Auth.Repo.Repositories
 
         public async Task<Result<Owner>> Register(RegisterOwnerDto registerDto, string userId, bool preventPasswordLogin)
         {
-            var userResult = await RegisterUser(registerDto, RoleType.Trainer, userId, preventPasswordLogin);
+            var userResult = await RegisterUser(registerDto, RoleType.Owner, userId, preventPasswordLogin);
             if (userResult.IsSuccess)
             {
                 var owner = new Owner()
