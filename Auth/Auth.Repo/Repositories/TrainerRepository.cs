@@ -60,10 +60,7 @@ namespace Auth.Repo.Repositories
                 throw new UnauthorizedAccessException();
             }
 
-            trainerFromDb.User.FirstName = trainer.User.FirstName;
-            trainerFromDb.User.LastName = trainer.User.LastName;
-            trainerFromDb.User.BirthDate = trainer.User.BirthDate;
-            trainerFromDb.User.AvatarUrl = trainer.User.AvatarUrl;
+            AssignBaseUserData(trainer, trainerFromDb);
 
             await _context.SaveChangesAsync();
             return new Result<Trainer>(trainerFromDb);

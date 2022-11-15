@@ -59,10 +59,7 @@ namespace Auth.Repo.Repositories
                 throw new UnauthorizedAccessException();
             }
 
-            ownerFromDb.User.FirstName = owner.User.FirstName;
-            ownerFromDb.User.LastName = owner.User.LastName;
-            ownerFromDb.User.BirthDate = owner.User.BirthDate;
-            ownerFromDb.User.AvatarUrl = owner.User.AvatarUrl;
+            AssignBaseUserData(owner, ownerFromDb);
 
             await _context.SaveChangesAsync();
             return new Result<Owner>(ownerFromDb);

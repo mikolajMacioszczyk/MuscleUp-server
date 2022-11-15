@@ -58,10 +58,7 @@ namespace Auth.Repo.Repositories
                 throw new UnauthorizedAccessException();
             }
 
-            workerFromDb.User.FirstName = worker.User.FirstName;
-            workerFromDb.User.LastName = worker.User.LastName;
-            workerFromDb.User.BirthDate = worker.User.BirthDate;
-            workerFromDb.User.AvatarUrl = worker.User.AvatarUrl;
+            AssignBaseUserData(worker, workerFromDb);
 
             await _context.SaveChangesAsync();
             return new Result<Worker>(workerFromDb);

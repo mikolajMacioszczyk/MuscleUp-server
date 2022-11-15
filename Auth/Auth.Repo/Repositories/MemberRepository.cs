@@ -63,10 +63,7 @@ namespace Auth.Repo.Repositories
 
             memberFromDb.WeightInKg = member.WeightInKg;
             memberFromDb.HeightInCm = member.HeightInCm;
-            memberFromDb.User.FirstName = member.User.FirstName;
-            memberFromDb.User.LastName = member.User.LastName;
-            memberFromDb.User.BirthDate = member.User.BirthDate;
-            memberFromDb.User.AvatarUrl = member.User.AvatarUrl;
+            AssignBaseUserData(member, memberFromDb);
 
             await _context.SaveChangesAsync();
             return new Result<Member>(memberFromDb);

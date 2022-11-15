@@ -91,5 +91,13 @@ namespace Auth.Repo.Repositories
 
             return new Result<ApplicationUser>(result.Errors.Select(e => e.Description).ToArray());
         }
+
+        protected void AssignBaseUserData(SpecificUserBase source, SpecificUserBase updated)
+        {
+            updated.User.FirstName = source.User.FirstName;
+            updated.User.LastName = source.User.LastName;
+            updated.User.BirthDate = source.User.BirthDate.ToUniversalTime();
+            updated.User.AvatarUrl = source.User.AvatarUrl;
+        }
     }
 }
