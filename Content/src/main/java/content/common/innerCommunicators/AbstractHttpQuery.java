@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.net.http.HttpResponse;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -25,6 +27,8 @@ public abstract class AbstractHttpQuery extends AbstractHttpCommunicator {
     public String getById(String path) {
 
         HttpResponse<String> response = sendInnerGetRequest(path);
+
+        Logger.getGlobal().log(Level.WARNING, response.toString());
 
         if (response.statusCode() == UNAUTHORIZED.value()) throw new AuthHeaderException();
         else if (response.statusCode() != OK.value()) throw new InnerCommunicationException();

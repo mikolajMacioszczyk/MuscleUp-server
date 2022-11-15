@@ -22,7 +22,7 @@ public class PerformedWorkout extends AbstractEntity {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "workout_id", nullable = false)
     private Workout workout;
 
@@ -32,25 +32,20 @@ public class PerformedWorkout extends AbstractEntity {
     @Column(name = "time", nullable = false)
     private ZonedDateTime time;
 
-    @Column(name = "entry_id")
-    private UUID entryId;
-
 
     @MustExist(reason = HIBERNATE)
     public PerformedWorkout() {
     }
 
-    public PerformedWorkout(Workout workout, UUID userId, ZonedDateTime time, UUID entryId) {
+    public PerformedWorkout(Workout workout, UUID userId, ZonedDateTime time) {
 
         Assert.notNull(workout, "workout must not be null");
         Assert.notNull(userId, "userId must not be null");
         Assert.notNull(time, "time must not be null");
-        Assert.notNull(entryId, "entryId must not be null");
 
         this.workout = workout;
         this. userId = userId;
         this.time = time;
-        this.entryId = entryId;
     }
 
     @Override
@@ -68,9 +63,5 @@ public class PerformedWorkout extends AbstractEntity {
 
     public ZonedDateTime getTime() {
         return time;
-    }
-
-    public UUID getEntryId() {
-        return entryId;
     }
 }

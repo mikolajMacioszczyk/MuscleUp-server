@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -30,9 +32,10 @@ class PerformedWorkoutEditController extends AbstractEditController {
 
 
     @PostMapping
-    protected ResponseEntity<?> savePerformedWorkout(@RequestBody PerformedWorkoutForm performedWorkoutForm) {
+    protected ResponseEntity<?> savePerformedWorkout(@RequestHeader(FITNESS_CLUB_HEADER) UUID fitnessClubId,
+                                                     @RequestBody PerformedWorkoutForm performedWorkoutForm) {
 
-        performedWorkoutValidator.validateBeforeSave(performedWorkoutForm, errors);
+        performedWorkoutValidator.validateBeforeSave(fitnessClubId, performedWorkoutForm, errors);
 
         return hasErrors()? errors() : response(OK, performedWorkoutService.savePerformedWorkout(performedWorkoutForm));
     }

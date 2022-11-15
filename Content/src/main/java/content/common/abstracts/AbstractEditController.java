@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public abstract class AbstractEditController {
 
+    protected static final String FITNESS_CLUB_HEADER = "FitnessClubId";
     protected ValidationErrors errors;
 
 

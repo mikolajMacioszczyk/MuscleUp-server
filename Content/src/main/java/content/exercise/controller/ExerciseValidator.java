@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,22 +42,22 @@ public class ExerciseValidator {
         checkFields(form, errors);
     }
 
-    void validateBeforeUpdate(UUID id, ExerciseForm form, ValidationErrors errors) {
+    void validateBeforeUpdate(UUID id, UUID fitnessClubId, ExerciseForm form, ValidationErrors errors) {
 
         Assert.notNull(id, "id must not be null");
         Assert.notNull(form, "form must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkExerciseId(id, errors);
+        checkExerciseId(id, fitnessClubId, errors);
         checkFields(form, errors);
     }
 
-    void validateBeforeDelete(UUID id, ValidationErrors errors) {
+    void validateBeforeDelete(UUID id, UUID fitnessClubId, ValidationErrors errors) {
 
         Assert.notNull(id, "id must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkExerciseId(id, errors);
+        checkExerciseId(id, fitnessClubId, errors);
     }
 
     void checkFields(ExerciseForm form, ValidationErrors errors) {
@@ -67,9 +68,9 @@ public class ExerciseValidator {
     }
 
 
-    public void checkExerciseId(UUID id, ValidationErrors errors) {
+    public void checkExerciseId(UUID id, UUID fitnessClubId, ValidationErrors errors) {
 
-        if (exerciseQuery.findById(id).isEmpty()) {
+        if (exerciseQuery.findById(id, fitnessClubId).isEmpty()) {
 
             errors.addError(new ValidationError(BAD_REQUEST, "Exercise with ID " + id + " does not exist"));
         }
@@ -94,6 +95,11 @@ public class ExerciseValidator {
     private void checkCriteria(List<UUID> criteria, ValidationErrors errors) {
 
         criteria.forEach(id -> criterionValidator.checkCriterionId(id, errors));
+
+        if (new HashSet<>(criteria).size() != criteria.size()) {
+
+            errors.addError(new ValidationError(BAD_REQUEST, "Criteria must be unique"));
+        }
     }
 }
 

@@ -40,27 +40,37 @@ public class ExerciseService {
     }
 
 
-    public UUID saveExercise(ExerciseForm form) {
+    public UUID saveExercise(UUID fitnessClubId, ExerciseForm form) {
 
         Assert.notNull(form, "form must not be null");
 
-        Exercise exercise = exerciseFactory.create(form);
+        Exercise exercise = exerciseFactory.create(fitnessClubId, form);
 
         return exerciseRepository.save(exercise);
     }
 
-    public UUID updateExercise(UUID id, ExerciseForm form) {
+    public UUID updateExercise(UUID id, UUID fitnessClubId, ExerciseForm form) {
 
         Assert.notNull(id, "id must not be null");
         Assert.notNull(form, "form must not be null");
 
         ExerciseDto exerciseDto = exerciseQuery.get(id);
 
-        if(exerciseDto.isDifferent(form)) {
+        if (exerciseDto.isSoftEditNeeded(form, fitnessClubId)) {
+
+            Exercise exercise = exerciseRepository.getById(id);
+
+            exercise.setName(form.name());
+            exercise.setDescription(form.description());
+            exercise.setImageUrl(form.imageUrl());
+
+            return exerciseRepository.update(exercise);
+        }
+        else if (exerciseDto.isHardEditNeeded(form, fitnessClubId)) {
 
             expire(id);
 
-            return saveExercise(form);
+            return saveExercise(fitnessClubId, form);
         }
 
         return id;

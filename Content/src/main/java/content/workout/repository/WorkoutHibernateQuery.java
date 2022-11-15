@@ -11,7 +11,6 @@ import org.springframework.util.Assert;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Optional.empty;
@@ -27,11 +26,13 @@ public class WorkoutHibernateQuery extends AbstractHibernateQuery<Workout> imple
 
 
     @Autowired
-    WorkoutHibernateQuery(SessionFactory sessionFactory) {
+    WorkoutHibernateQuery(SessionFactory sessionFactory, WorkoutDtoFactory workoutDtoFactory) {
 
         super(Workout.class, sessionFactory);
 
-        this.workoutDtoFactory = new WorkoutDtoFactory();
+        Assert.notNull(workoutDtoFactory, "workoutDtoFactory must not be null");
+
+        this.workoutDtoFactory = workoutDtoFactory;
         this.workoutComparisonDtoFactory = new WorkoutComparisonDtoFactory();
     }
 
@@ -43,21 +44,35 @@ public class WorkoutHibernateQuery extends AbstractHibernateQuery<Workout> imple
     }
 
     @Override
-    public Optional<WorkoutDto> findById(UUID id) {
+    public Optional<WorkoutDto> findById(UUID id, UUID fitnessClubId) {
 
         Assert.notNull(id, "id must not be null");
 
         Workout workout = getById(id);
 
-        return isNull(workout)? empty() :
-                of(workoutDtoFactory.create(workout));
+        if (isNull(workout)) return empty();
+
+        if (!workout.getFitnessClubId().equals(fitnessClubId)) return empty();
+
+        return of(workoutDtoFactory.create(workout, null));
     }
 
     @Override
-    public List<WorkoutDto> getAllWorkouts() {
+    public List<WorkoutDto> getAllWorkouts(UUID fitnessClubId) {
 
         return getAll().stream()
-                .map(workoutDtoFactory::create)
-                .collect(Collectors.toList());
+                .filter(workout -> workout.getFitnessClubId().equals(fitnessClubId))
+                .map(workout -> workoutDtoFactory.create(workout, null))
+                .toList();
+    }
+
+    @Override
+    public List<WorkoutDto> getAllActiveWorkouts(UUID fitnessClubId) {
+
+        return getAll().stream()
+                .filter(workout -> workout.getFitnessClubId().equals(fitnessClubId))
+                .filter(Workout::isActive)
+                .map(workout -> workoutDtoFactory.create(workout, null))
+                .toList();
     }
 }

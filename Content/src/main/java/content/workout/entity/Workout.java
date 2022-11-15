@@ -31,11 +31,17 @@ public class Workout extends AbstractEntity {
     @Column(name = "creator_id")
     private UUID creatorId;
 
+    @Column(name = "fitness_club_id", nullable = false)
+    private UUID fitnessClubId;
+
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "video_url")
-    private String videoUrl;
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "active", nullable = false)
+    private boolean active;
 
     @OneToMany(mappedBy = "workout", fetch = LAZY, cascade = ALL, orphanRemoval = true)
     private List<WorkoutExercise> workoutExercises = new ArrayList<>();
@@ -55,21 +61,27 @@ public class Workout extends AbstractEntity {
 
     public Workout(
             UUID creatorId,
+            UUID fitnessClubId,
             String description,
-            String videoUrl,
+            String name,
+            boolean active,
             List<WorkoutExercise> workoutExercises,
             List<BodyPart> bodyParts) {
 
         Assert.notNull(creatorId, "creatorId must not be null");
+        Assert.notNull(fitnessClubId, "fitnessClubId must not be null");
         Assert.notNull(description, "description must not be null");
+        Assert.notNull(name, "name must not be null");
         Assert.notNull(workoutExercises, "workoutExercises must not be null");
         Assert.notNull(bodyParts, "bodyParts must not be null");
         workoutExercises.forEach(workoutExercise -> Assert.notNull(workoutExercise, "workoutExercise must not be null"));
         bodyParts.forEach(workoutExercise -> Assert.notNull(workoutExercise, "workoutExercise must not be null"));
 
         this.creatorId = creatorId;
+        this.fitnessClubId = fitnessClubId;
         this.description = description;
-        this.videoUrl = videoUrl;
+        this.name = name;
+        this.active = active;
         this.workoutExercises = workoutExercises;
         this.bodyParts = bodyParts;
     }
@@ -84,24 +96,40 @@ public class Workout extends AbstractEntity {
         this.id = id;
     }
 
+    public UUID getFitnessClubId() {
+        return fitnessClubId;
+    }
+
     public UUID getCreatorId() {
         return creatorId;
+    }
+
+    public Workout(UUID fitnessClubId) {
+        this.fitnessClubId = fitnessClubId;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public String getVideoUrl() {
-        return videoUrl;
+    public String getName() {
+        return name;
     }
 
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<BodyPart> getBodyParts() {

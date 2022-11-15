@@ -12,15 +12,15 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
             )
             VALUES (
                 'aab9251c-5d4a-11ed-9b6a-0242ac120002',
-                'Bicepsy'
+                'Pectoralis major'
             ),
             (
                 'c28057f6-5d4a-11ed-9b6a-0242ac120002',
-                'Tricepsy'
+                'Biceps thigh'
             ),
             (
                 'd3d339ba-5d4a-11ed-9b6a-0242ac120002',
-                'Łydki'
+                'Quadriceps femoris'
             );
         </sql>
     </changeSet>

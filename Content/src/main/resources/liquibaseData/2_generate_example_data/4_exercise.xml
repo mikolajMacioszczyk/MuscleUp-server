@@ -9,34 +9,26 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
             INSERT INTO exercise (
                 exercise_id,
                 name,
+                fitness_club_id,
                 description,
                 image_url,
-                video_url,
                 latest
             )
             VALUES (
                 '4bfc16aa-5fad-11ed-9b6a-0242ac120002',
-                'Wyciskanie na ławce płaskiej',
-                'Wyciskasz najmocniej jak umiesz i nie puszczasz',
-                'https://www.google.com/url?sa=i&amp;url=https%3A%2F%2Fmemy.jeja.pl%2Fnowe%2C0%2C0%2C26081.html&amp;psig=AOvVaw15bZyNdx7bCtpSHe_VwmEe&amp;ust=1668029831520000&amp;source=images&amp;cd=vfe&amp;ved=0CA0QjRxqFwoTCNDWqcHFn_sCFQAAAAAdAAAAABAT',
-                null,
+                'Plank leg lifts',
+                '42b2ab44-d451-4f9d-9e98-c1734e6006f6',
+                'Regular planks target the upper body, core, and hips. You can add leg lifts to strengthen your butt and upper legs',
+                'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png',
                 true
             ),
             (
                 'd1873070-5fad-11ed-9b6a-0242ac120002',
-                'Biceps - wzniosy hantli z rotacją',
-                'Jak na filmach motywacyjnych, im więcej podniesiesz tym lepiej',
-                'https://www.google.com/url?sa=i&amp;url=https%3A%2F%2Fwww.budujmase.pl%2Ftrening%2Fcwiczenia-na-biceps-dla-dziewczyn.html&amp;psig=AOvVaw15bZyNdx7bCtpSHe_VwmEe&amp;ust=1668029831520000&amp;source=images&amp;cd=vfe&amp;ved=0CA0QjRxqFwoTCNDWqcHFn_sCFQAAAAAdAAAAABAx',
-                null,
+                'Single-leg deadlift',
+                '42b2ab44-d451-4f9d-9e98-c1734e6006f6',
+                'The squat is one of the best exercises to tone legs. It also sculpts the butt, hips, and abs.',
+                'https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png',
                 true
-            ),
-            (
-                '1d545960-5fae-11ed-9b6a-0242ac120002',
-                'Opierdzielanie się',
-                'Nie zapomnij strzelić selfie',
-                'https://www.google.com/url?sa=i&amp;url=https%3A%2F%2Fkwejk.pl%2Fobrazek%2F2691971%2Fdziewczyny-na-silowni-takie-sa.html&amp;psig=AOvVaw34lrNo0Ydo0gym6smRWOUa&amp;ust=1668030122229000&amp;source=images&amp;cd=vfe&amp;ved=0CA0QjRxqFwoTCPj4gs_Gn_sCFQAAAAAdAAAAABAD',
-                null,
-                false
             );
         </sql>
     </changeSet>

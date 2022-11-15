@@ -1,37 +1,29 @@
 package content.workout.controller.form;
 
 import content.workout.entity.WorkoutComparisonDto;
-import org.springframework.lang.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.util.Objects.isNull;
 
 public record WorkoutForm (
         UUID creatorId,
         String description,
-        @Nullable String videoUrl,
+        String name,
         List<UUID> bodyParts,
-        List<UUID> exercises
+        List<ExerciseValueForm> exercises
 ) {
+
+    public boolean sameCreator(WorkoutComparisonDto original) {
+
+        return creatorId.equals(original.creatorId());
+    }
 
     public boolean isSimpleChange(WorkoutComparisonDto original) {
 
-        return creatorId == original.creatorId()
-                && !hasIndividualFieldsChanged(original)
-                && (
-                        !Objects.equals(description, original.description())
-                        || videoUrl != original.videoUrl()
-                );
-    }
-
-    public boolean hasChanged(WorkoutComparisonDto original) {
-
-        return creatorId != original.creatorId()
-                || !Objects.equals(description, original.description())
-                || hasIndividualFieldsChanged(original);
-
+        return !hasIndividualFieldsChanged(original);
     }
 
     private boolean hasIndividualFieldsChanged(WorkoutComparisonDto original) {
@@ -62,14 +54,16 @@ public record WorkoutForm (
 
     private boolean hasExercisesChanged(WorkoutComparisonDto original) {
 
-        if (exercises.size() != original.exercises().size()) {
+        if (exercises.size() != original.workoutExercises().size()) return true;
 
-            return true;
-        }
+        return isNewExerciseAdded();
+    }
 
-        for(int i=0; i<exercises.size(); i++) {
+    private boolean isNewExerciseAdded() {
 
-            if(exercises.get(i) != original.exercises().get(i)) {
+        for (ExerciseValueForm exercise : exercises) {
+
+            if (isNull(exercise.workoutExerciseId())) {
 
                 return true;
             }

@@ -14,27 +14,27 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
             )
             VALUES (
                 '0f03be3e-6132-11ed-9b6a-0242ac120002',
-                'powtórzenia',
-                'szt.',
+                'Reps',
+                null,
                 true
             ),
             (
                 '280ac18e-6132-11ed-9b6a-0242ac120002',
-                'ciężar',
+                'Weight',
                 'kg',
                 true
             ),
             (
                 '3a0f2df2-6132-11ed-9b6a-0242ac120002',
-                'czas trwania',
-                'sek',
+                'Duration',
+                'sec',
                 true
             ),
             (
                 '4db41d18-6132-11ed-9b6a-0242ac120002',
-                'odległość',
+                'Distance',
                 'm',
-                false
+                true
             );
         </sql>
     </changeSet>

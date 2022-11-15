@@ -1,7 +1,5 @@
 package content.workout.entity;
 
-import org.springframework.lang.Nullable;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -10,7 +8,7 @@ public record WorkoutComparisonDto(
         UUID id,
         UUID creatorId,
         String description,
-        @Nullable String videoUrl,
+        String name,
         List<UUID> bodyParts,
-        List<UUID> exercises
+        List<UUID> workoutExercises
 ) { }

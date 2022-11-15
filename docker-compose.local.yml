@@ -12,20 +12,8 @@ services:
     ports:
       - "5432:5432"
 
-  broker:
-    container_name: "broker"
-    image: rabbitmq:3-management
-    environment:
-      - RABBITMQ_DEFAULT_USER=muscleUp
-      - RABBITMQ_DEFAULT_PASS=Pa55w0rd
-    ports:
-      # AMQP protocol port
-      - '5672:5672'
-      # HTTP management UI
-      - '15672:15672'
-
   auth:
-    build: 
+    build:
       context: .
       dockerfile: ./Auth/Auth.API/Dockerfile
     restart: always
@@ -35,36 +23,6 @@ services:
       - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
     depends_on:
       - postgres
-
-  carnets:
-    build:
-      context: .
-      dockerfile: ./Carnets/Carnets.API/Dockerfile
-    restart: always
-    environment:
-      - ASPNETCORE_ENVIRONMENT
-      - JwtSecret
-      - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=Carnets;User Id=postgres;Password=Pa55w0rd;
-      - Api:FitnessClubHost=http://fitnessclubs/
-      - Broker:Host:HostName=broker
-    depends_on:
-      - postgres
-      - broker
-
-  fitnessclubs:
-    build:
-      context: .
-      dockerfile: ./FitnessClubs/FitnessClubs.API/Dockerfile
-    restart: always
-    environment:
-      - ASPNETCORE_ENVIRONMENT
-      - JwtSecret
-      - ConnectionStrings:DefaultConnection=Server=postgres;Port=5432;Database=FitnessClubs;User Id=postgres;Password=Pa55w0rd;
-      - Broker:Host:HostName=broker
-      - Api:AuthHost=http://auth/
-    depends_on:
-      - postgres
-      - broker
 
   apigateway:
     build:
@@ -78,5 +36,3 @@ services:
       - "8082:443"
     depends_on:
       - auth
-      - carnets
-      - fitnessclubs

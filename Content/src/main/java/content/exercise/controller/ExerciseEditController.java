@@ -32,25 +32,29 @@ class ExerciseEditController extends AbstractEditController {
 
 
     @PostMapping
-    protected ResponseEntity<?> saveExercise(@RequestBody ExerciseForm exerciseForm) {
+    protected ResponseEntity<?> saveExercise(@RequestHeader(FITNESS_CLUB_HEADER) UUID fitnessClubId,
+                                             @RequestBody ExerciseForm exerciseForm) {
 
         exerciseValidator.validateBeforeSave(exerciseForm, errors);
 
-        return hasErrors()? errors() : response(OK, exerciseService.saveExercise(exerciseForm));
+        return hasErrors()? errors() : response(OK, exerciseService.saveExercise(fitnessClubId, exerciseForm));
     }
 
-    @PutMapping
-    protected ResponseEntity<?> updateExercise(@PathVariable("id") UUID id, @RequestBody ExerciseForm exerciseForm) {
+    @PostMapping("/{id}")
+    protected ResponseEntity<?> updateExercise(@RequestHeader(FITNESS_CLUB_HEADER) UUID fitnessClubId,
+                                               @PathVariable("id") UUID id,
+                                               @RequestBody ExerciseForm exerciseForm) {
 
-        exerciseValidator.validateBeforeUpdate(id, exerciseForm, errors);
+        exerciseValidator.validateBeforeUpdate(id, fitnessClubId, exerciseForm, errors);
 
-        return hasErrors()? errors() : response(OK, exerciseService.updateExercise(id, exerciseForm));
+        return hasErrors()? errors() : response(OK, exerciseService.updateExercise(id, fitnessClubId, exerciseForm));
     }
 
     @DeleteMapping("/{id}")
-    protected ResponseEntity<?> deleteExercise(@PathVariable("id") UUID id) {
+    protected ResponseEntity<?> deleteExercise(@RequestHeader(FITNESS_CLUB_HEADER) UUID fitnessClubId,
+                                               @PathVariable("id") UUID id) {
 
-        exerciseValidator.validateBeforeDelete(id, errors);
+        exerciseValidator.validateBeforeDelete(id, fitnessClubId, errors);
 
         if (hasErrors()) return errors();
 

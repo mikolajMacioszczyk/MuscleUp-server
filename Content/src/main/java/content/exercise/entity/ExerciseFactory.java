@@ -5,6 +5,8 @@ import content.exercise.controller.form.ExerciseForm;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.UUID;
+
 @Service
 public class ExerciseFactory {
 
@@ -18,13 +20,13 @@ public class ExerciseFactory {
     }
 
 
-    public Exercise create(ExerciseForm form) {
+    public Exercise create(UUID fitnessClubId, ExerciseForm form) {
 
         return new Exercise(
+                fitnessClubId,
                 form.name(),
                 form.description(),
                 form.imageUrl(),
-                form.videoUrl(),
                 true,
                 criterionRepository.getByIds(form.criteria())
         );

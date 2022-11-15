@@ -13,7 +13,7 @@ import java.util.UUID;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("group")
+@RequestMapping("body-part")
 class BodyPartEditController extends AbstractEditController {
 
     private final BodyPartService bodyPartService;

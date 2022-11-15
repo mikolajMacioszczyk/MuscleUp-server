@@ -8,9 +8,11 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
         <sql>
             CREATE TABLE IF NOT EXISTS workout (
                 workout_id uuid not null,
+                fitness_club_id uuid not null,
                 creator_id uuid not null,
                 description varchar(255) not null,
-                video_url varchar(255),
+                name varchar(255) not null,
+                active boolean not null,
 
                 PRIMARY KEY (workout_id)
             )

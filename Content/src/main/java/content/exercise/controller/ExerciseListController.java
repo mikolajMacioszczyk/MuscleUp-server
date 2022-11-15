@@ -6,10 +6,7 @@ import content.exercise.repository.ExerciseQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,25 +32,26 @@ public class ExerciseListController extends AbstractListController {
 
 
     @GetMapping("/{id}")
-    protected ResponseEntity<?> getExerciseById(@PathVariable("id") UUID id) {
+    protected ResponseEntity<?> getExerciseById(@RequestHeader(FITNESS_CLUB_HEADER) UUID fitnessClubId,
+                                                @PathVariable("id") UUID id) {
 
-        Optional<ExerciseDto> exerciseDto = exerciseQuery.findById(id);
+        Optional<ExerciseDto> exerciseDto = exerciseQuery.findById(id, fitnessClubId);
 
         return exerciseDto.isPresent() ? response(OK, exerciseDto.get()) : response(NOT_FOUND);
     }
 
     @GetMapping("/all")
-    protected ResponseEntity<?> getAllExercises() {
+    protected ResponseEntity<?> getAllExercises(@RequestHeader(FITNESS_CLUB_HEADER) UUID fitnessClubId) {
 
-        List<ExerciseDto> exercises = exerciseQuery.getAllExercises();
+        List<ExerciseDto> exercises = exerciseQuery.getAllExercises(fitnessClubId);
 
         return response(OK, exercises);
     }
 
     @GetMapping("/all-active")
-    protected ResponseEntity<?> getAllActiveExercises() {
+    protected ResponseEntity<?> getAllActiveExercises(@RequestHeader(FITNESS_CLUB_HEADER) UUID fitnessClubId) {
 
-        List<ExerciseDto> exercises = exerciseQuery.getAllActiveExercises();
+        List<ExerciseDto> exercises = exerciseQuery.getAllActiveExercises(fitnessClubId);
 
         return response(OK, exercises);
     }

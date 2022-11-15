@@ -11,7 +11,6 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
                 workout_id uuid not null,
                 user_id uuid not null,
                 time timestamp not null,
-                entry_id uuid,
 
                 PRIMARY KEY (performed_workout_id)
             )

@@ -1,13 +1,14 @@
 package content.performedWorkout.controller.form;
 
-import org.springframework.lang.Nullable;
+import content.workout.controller.form.ExerciseValueForm;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public record PerformedWorkoutForm(
         UUID workoutId,
         UUID userId,
         ZonedDateTime time,
-        @Nullable UUID entryId
+        List<ExerciseValueForm> exercises
 ) { }

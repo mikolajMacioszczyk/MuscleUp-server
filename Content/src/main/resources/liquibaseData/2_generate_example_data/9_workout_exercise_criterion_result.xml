@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_example_workout_exercise_criterion_result_data" author="Mateusz_Kleinowski">
+        <sql>
+            INSERT INTO workout_exercise_criterion_result (
+                workout_exercise_criterion_result_id,
+                user_id,
+                workout_exercise_id,
+                criterion_id,
+                value,
+                performed_workout_id
+            )
+            VALUES (
+                '6099d8aa-6416-11ed-81ce-0242ac120002',
+                '73d155d3-4138-4047-8d91-a933815a4a0a',
+                '6f331ed6-6415-11ed-81ce-0242ac120002',
+                '3a0f2df2-6132-11ed-9b6a-0242ac120002',
+                60,
+                null
+            ),
+            (
+                'c0a858ac-6416-11ed-81ce-0242ac120002',
+                '73d155d3-4138-4047-8d91-a933815a4a0a',
+                'd1873070-5fad-11ed-9b6a-0242ac120002',
+                '280ac18e-6132-11ed-9b6a-0242ac120002',
+                50,
+                null
+            ),
+            (
+                'c605b768-6416-11ed-81ce-0242ac120002',
+                '73d155d3-4138-4047-8d91-a933815a4a0a',
+                'd1873070-5fad-11ed-9b6a-0242ac120002',
+                '0f03be3e-6132-11ed-9b6a-0242ac120002',
+                8,
+                null
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

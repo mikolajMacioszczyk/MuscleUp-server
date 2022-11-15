@@ -4,7 +4,10 @@ import content.bodyPart.controller.BodyPartValidator;
 import content.common.errors.ValidationError;
 import content.common.wrappers.ValidationErrors;
 import content.exercise.controller.ExerciseValidator;
+import content.exercise.repository.ExerciseQuery;
 import content.performedWorkout.repository.PerformedWorkoutQuery;
+import content.workout.controller.form.CriterionValueForm;
+import content.workout.controller.form.ExerciseValueForm;
 import content.workout.controller.form.WorkoutForm;
 import content.workout.repository.WorkoutQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 public class WorkoutValidator {
 
     private final WorkoutQuery workoutQuery;
+    private final ExerciseQuery exerciseQuery;
     private final PerformedWorkoutQuery performedWorkoutQuery;
     private final BodyPartValidator bodyPartValidator;
     private final ExerciseValidator exerciseValidator;
@@ -29,57 +33,61 @@ public class WorkoutValidator {
 
     @Autowired
     private WorkoutValidator(WorkoutQuery workoutQuery,
+                             ExerciseQuery exerciseQuery,
                              PerformedWorkoutQuery performedWorkoutQuery,
                              BodyPartValidator bodyPartValidator,
                              ExerciseValidator exerciseValidator) {
 
         Assert.notNull(workoutQuery, "workoutQuery must not be null");
+        Assert.notNull(exerciseQuery, "exerciseQuery must not be null");
         Assert.notNull(performedWorkoutQuery, "performedWorkoutQuery must not be null");
         Assert.notNull(bodyPartValidator, "bodyPartValidator must not be null");
         Assert.notNull(exerciseValidator, "exerciseValidator must not be null");
 
         this.workoutQuery = workoutQuery;
+        this.exerciseQuery = exerciseQuery;
         this.performedWorkoutQuery = performedWorkoutQuery;
         this.bodyPartValidator = bodyPartValidator;
         this.exerciseValidator = exerciseValidator;
     }
 
 
-    void validateBeforeSave(WorkoutForm workoutForm, ValidationErrors errors) {
+    void validateBeforeSave(UUID fitnessClubId, WorkoutForm workoutForm, ValidationErrors errors) {
 
         Assert.notNull(workoutForm, "workoutForm must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkFields(workoutForm, errors);
+        checkFields(fitnessClubId, workoutForm, errors);
     }
 
-    void validateBeforeUpdate(UUID id, WorkoutForm workoutForm, ValidationErrors errors) {
+    void validateBeforeUpdate(UUID id, UUID fitnessClubId, WorkoutForm workoutForm, ValidationErrors errors) {
 
         Assert.notNull(workoutForm, "workoutForm must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkWorkoutId(id, errors);
-        checkFields(workoutForm, errors);
+        checkWorkoutId(id, fitnessClubId, errors);
+        checkFields(fitnessClubId, workoutForm, errors);
     }
 
-    void validateBeforeDelete(UUID id, ValidationErrors errors) {
+    void validateBeforeDelete(UUID id, UUID fitnessClubId, ValidationErrors errors) {
 
         Assert.notNull(id, "id must not be null");
         Assert.notNull(errors, "errors must not be null");
 
-        checkWorkoutId(id, errors);
+        checkWorkoutId(id, fitnessClubId, errors);
         checkWorkoutConnection(id, errors);
     }
 
-    private void checkFields(WorkoutForm workoutForm, ValidationErrors errors) {
+    private void checkFields(UUID fitnessClubId, WorkoutForm workoutForm, ValidationErrors errors) {
 
+        checkName(workoutForm.name(), errors);
         checkDescription(workoutForm.description(), errors);
         checkBodyParts(workoutForm.bodyParts(), errors);
-        checkExercises(workoutForm.exercises(), errors);
+        checkExercises(fitnessClubId, workoutForm.exercises(), errors);
     }
 
 
-    private void checkDescription(String name, ValidationErrors errors) {
+    private void checkName(String name, ValidationErrors errors) {
 
         if (isNullOrEmpty(name)) {
 
@@ -87,9 +95,17 @@ public class WorkoutValidator {
         }
     }
 
-    private void checkWorkoutId(UUID id, ValidationErrors errors) {
+    private void checkDescription(String description, ValidationErrors errors) {
 
-        if (workoutQuery.findById(id).isEmpty()) {
+        if (isNullOrEmpty(description)) {
+
+            errors.addError(new ValidationError(BAD_REQUEST, "Workout description can not be empty"));
+        }
+    }
+
+    private void checkWorkoutId(UUID id, UUID fitnessClubId, ValidationErrors errors) {
+
+        if (workoutQuery.findById(id, fitnessClubId).isEmpty()) {
 
             errors.addError(new ValidationError(BAD_REQUEST, "Workout with given ID does not exist"));
         }
@@ -116,8 +132,38 @@ public class WorkoutValidator {
         });
     }
 
-    private void checkExercises(List<UUID> exercises, ValidationErrors errors) {
+    private void checkExercises(UUID fitnessClubId, List<ExerciseValueForm> exercises, ValidationErrors errors) {
 
-        exercises.forEach(id -> exerciseValidator.checkExerciseId(id, errors));
+        exercises.forEach(exercise -> exerciseValidator.checkExerciseId(exercise.exerciseId(), fitnessClubId, errors));
+
+        if (errors.hasErrors()) return;
+
+        exercises.forEach(exercise -> checkExerciseCriteria(
+                exercise.exerciseId(),
+                exercise.criterionValues()
+                        .stream()
+                        .map(CriterionValueForm::criterionId)
+                        .toList(),
+                errors
+                )
+        );
+    }
+
+    private void checkExerciseCriteria(UUID exerciseId, List<UUID> criteria, ValidationErrors errors) {
+
+        List<UUID> appliedCriteria = exerciseQuery.getAllAppliedCriteriaById(exerciseId);
+
+        if (criteria.size() != appliedCriteria.size()) {
+
+            errors.addError(new ValidationError(BAD_REQUEST, "Criteria for " + exerciseId + " don't match the model"));
+        }
+
+        appliedCriteria.forEach(criterion -> {
+
+            if (!criteria.contains(criterion)) {
+
+                errors.addError(new ValidationError(BAD_REQUEST, "Criteria for " + exerciseId + " don't match the model"));
+            }
+        });
     }
 }

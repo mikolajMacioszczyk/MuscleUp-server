@@ -9,6 +9,7 @@ import content.workout.repository.WorkoutQuery;
 import content.workout.repository.WorkoutRepository;
 import content.workoutExercise.entity.WorkoutExercise;
 import content.workoutExercise.service.WorkoutExerciseService;
+import content.workoutExerciseCriterionResult.service.WorkoutExerciseCriterionResultUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -28,6 +29,7 @@ public class WorkoutService {
     private final WorkoutFactory workoutFactory;
     private final WorkoutQuery workoutQuery;
     private final PerformedWorkoutQuery performedWorkoutQuery;
+    private final WorkoutExerciseCriterionResultUpdater workoutExerciseCriterionResultUpdater;
 
 
     @Autowired
@@ -35,33 +37,42 @@ public class WorkoutService {
                           WorkoutExerciseService workoutExerciseService,
                           BodyPartRepository bodyPartRepository,
                           WorkoutQuery workoutQuery,
-                          PerformedWorkoutQuery performedWorkoutQuery) {
+                          PerformedWorkoutQuery performedWorkoutQuery,
+                          WorkoutExerciseCriterionResultUpdater workoutExerciseCriterionResultUpdater) {
 
         Assert.notNull(workoutRepository, "workoutRepository must not be null");
         Assert.notNull(workoutExerciseService, "workoutExerciseService must not be null");
         Assert.notNull(bodyPartRepository, "bodyPartRepository must not be null");
         Assert.notNull(workoutQuery, "workoutQuery must not be null");
         Assert.notNull(performedWorkoutQuery, "performedWorkoutQuery must not be null");
+        Assert.notNull(workoutExerciseCriterionResultUpdater, "workoutExerciseCriterionResultUpdater must not be null");
 
         this.workoutRepository = workoutRepository;
         this.workoutExerciseService = workoutExerciseService;
         this.bodyPartRepository = bodyPartRepository;
         this.workoutQuery = workoutQuery;
         this.performedWorkoutQuery = performedWorkoutQuery;
+        this.workoutExerciseCriterionResultUpdater = workoutExerciseCriterionResultUpdater;
         this.workoutFactory = new WorkoutFactory();
     }
 
 
-    public UUID saveWorkout(WorkoutForm workoutForm) {
+    public UUID saveWorkout(UUID fitnessClubId, WorkoutForm workoutForm) {
 
         Assert.notNull(workoutForm, "workoutForm must not be null");
 
-        Workout workout = workoutFactory.createWithoutConnections(workoutForm);
+        Workout workout = workoutFactory.createWithoutConnections(fitnessClubId, workoutForm);
 
         workout.setId(workoutRepository.save(workout));
 
-        List<WorkoutExercise> workoutExercises = workoutExerciseService.collectiveSave(workout, workoutForm.exercises());
-        List<BodyPart> bodyParts = bodyPartRepository.getByIds(workoutForm.bodyParts());
+        List<WorkoutExercise> workoutExercises = workoutExerciseService.collectiveSave(
+                workout,
+                workoutForm.exercises(),
+                workoutForm.creatorId()
+        );
+        List<BodyPart> bodyParts = bodyPartRepository.getByIds(
+                workoutForm.bodyParts()
+        );
 
         workoutExercises.forEach(workout::addWorkoutExercise);
         bodyParts.forEach(workout::addBodyPart);
@@ -69,25 +80,28 @@ public class WorkoutService {
         return workoutRepository.update(workout);
     }
 
-    public UUID updateWorkout(UUID id, WorkoutForm form) {
+    public UUID updateWorkout(UUID id, UUID fitnessClubId, WorkoutForm form) {
 
         WorkoutComparisonDto original = workoutQuery.getForComparison(id);
+        Workout workout = workoutRepository.getById(id);
 
-        if (form.isSimpleChange(original)) {
+        if (form.sameCreator(original)) {
 
-            Workout workout = workoutRepository.getById(id);
+            if (form.isSimpleChange(original)) {
 
-            workout.setDescription(form.description());
-            workout.setVideoUrl(form.videoUrl());
+                workout.setName(form.name());
+                workout.setDescription(form.description());
 
-            return workoutRepository.update(workout);
+                workoutExerciseCriterionResultUpdater.updateAll(workout, form);
+
+                return workoutRepository.update(workout);
+            }
+
+            workout.setActive(false);
+            workoutRepository.update(workout);
         }
-        else if (form.hasChanged(original)) {
 
-            return saveWorkout(form);
-        }
-
-        else return original.id();
+        return saveWorkout(fitnessClubId, form);
     }
 
     public void deleteWorkout(UUID id) {
@@ -97,16 +111,16 @@ public class WorkoutService {
         workoutRepository.delete(id);
     }
 
-    public List<WorkoutPopularDto> getPopularWorkouts(int pieces) {
+    public List<WorkoutPopularDto> getPopularWorkouts(int pieces, UUID fitnessClubId) {
 
         List<WorkoutPopularDto> popularityRanking = new ArrayList<>();
 
-        List<WorkoutDto> workouts = workoutQuery.getAllWorkouts();
+        List<WorkoutDto> workouts = workoutQuery.getAllWorkouts(fitnessClubId);
 
         workouts.forEach(workout ->
                 popularityRanking.add(
                         new WorkoutPopularDto(
-                                workout.description(),
+                                workout.workoutDescription(),
                                 performedWorkoutQuery.getPerformancesByWorkoutId(workout.id())
                         )
                 )

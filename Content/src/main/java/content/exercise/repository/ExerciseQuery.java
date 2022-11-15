@@ -14,9 +14,11 @@ public interface ExerciseQuery {
 
     ExerciseDto get(UUID id);
 
-    Optional<ExerciseDto> findById(UUID id);
+    Optional<ExerciseDto> findById(UUID id, UUID fitnessClubId);
 
-    List<ExerciseDto> getAllExercises();
+    List<ExerciseDto> getAllExercises(UUID fitnessClubId);
 
-    List<ExerciseDto> getAllActiveExercises();
+    List<ExerciseDto> getAllActiveExercises(UUID fitnessClubId);
+
+    List<UUID> getAllAppliedCriteriaById(UUID id);
 }

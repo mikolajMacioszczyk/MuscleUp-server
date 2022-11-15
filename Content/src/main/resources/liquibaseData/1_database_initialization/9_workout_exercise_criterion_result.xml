@@ -12,8 +12,10 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
                 workout_exercise_id uuid not null,
                 criterion_id uuid not null,
                 value int8 not null,
+                performed_workout_id uuid,
 
                 PRIMARY KEY (workout_exercise_criterion_result_id)
+
             )
         </sql>
     </changeSet>

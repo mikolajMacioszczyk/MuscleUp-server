@@ -35,7 +35,6 @@ public class CriterionValidator {
         Assert.notNull(errors, "errors must not be null");
 
         checkName(form.name(), errors);
-        checkUnit(form.unit(), errors);
     }
 
     void validateBeforeActivate(UUID id, ValidationErrors errors) {
@@ -68,14 +67,6 @@ public class CriterionValidator {
         if (isNullOrEmpty(name)) {
 
             errors.addError(new ValidationError(BAD_REQUEST, "Criterion name can not be empty"));
-        }
-    }
-
-    private void checkUnit(String name, ValidationErrors errors) {
-
-        if (isNullOrEmpty(name)) {
-
-            errors.addError(new ValidationError(BAD_REQUEST, "Criterion unit can not be empty"));
         }
     }
 }

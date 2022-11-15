@@ -1,14 +1,12 @@
 package content.performedWorkout.entity;
 
-import org.springframework.lang.Nullable;
+import content.workout.entity.WorkoutDto;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public record PerformedWorkoutDto(
-        UUID id,
-        String workoutName,
+        WorkoutDto workoutDto,
         UUID userId,
-        ZonedDateTime time,
-        @Nullable UUID entryId
+        ZonedDateTime time
 ) { }

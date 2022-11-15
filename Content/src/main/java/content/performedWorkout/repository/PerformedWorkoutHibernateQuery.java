@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,11 +23,13 @@ public class PerformedWorkoutHibernateQuery extends AbstractHibernateQuery<Perfo
 
 
     @Autowired
-    PerformedWorkoutHibernateQuery(SessionFactory sessionFactory) {
+    PerformedWorkoutHibernateQuery(SessionFactory sessionFactory, PerformedWorkoutDtoFactory performedWorkoutDtoFactory) {
 
         super(PerformedWorkout.class, sessionFactory);
 
-        this.performedWorkoutDtoFactory = new PerformedWorkoutDtoFactory();
+        Assert.notNull(performedWorkoutDtoFactory, "performedWorkoutDtoFactory must not be null");
+
+        this.performedWorkoutDtoFactory = performedWorkoutDtoFactory;
     }
 
 
@@ -48,7 +51,7 @@ public class PerformedWorkoutHibernateQuery extends AbstractHibernateQuery<Perfo
     public List<PerformedWorkoutDto> getAllPerformedWorkoutsByUserId(UUID userId) {
 
         return getAll().stream()
-                .filter(performedWorkout -> performedWorkout.getUserId() == userId)
+                .filter(performedWorkout -> performedWorkout.getUserId().equals(userId))
                 .map(performedWorkoutDtoFactory::create)
                 .toList();
     }
@@ -57,7 +60,7 @@ public class PerformedWorkoutHibernateQuery extends AbstractHibernateQuery<Perfo
     public List<PerformedWorkoutDto> getAllPerformedWorkoutsByCreatorId(UUID creatorId) {
 
         return getAll().stream()
-                .filter(performedWorkout -> performedWorkout.getWorkout().getCreatorId() == creatorId)
+                .filter(performedWorkout -> performedWorkout.getWorkout().getCreatorId().equals(creatorId))
                 .map(performedWorkoutDtoFactory::create)
                 .toList();
     }
@@ -66,7 +69,7 @@ public class PerformedWorkoutHibernateQuery extends AbstractHibernateQuery<Perfo
     public List<PerformedWorkoutDto> getAllPerformedWorkoutsByWorkoutId(UUID workoutId) {
 
         return getAll().stream()
-                .filter(performedWorkout -> performedWorkout.getWorkout().getId() == workoutId)
+                .filter(performedWorkout -> performedWorkout.getWorkout().getId().equals(workoutId))
                 .map(performedWorkoutDtoFactory::create)
                 .toList();
     }

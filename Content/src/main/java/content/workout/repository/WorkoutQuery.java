@@ -14,7 +14,9 @@ public interface WorkoutQuery {
 
     WorkoutComparisonDto getForComparison(UUID id);
 
-    Optional<WorkoutDto> findById(UUID id);
+    Optional<WorkoutDto> findById(UUID id, UUID fitnessClubId);
 
-    List<WorkoutDto> getAllWorkouts();
+    List<WorkoutDto> getAllWorkouts(UUID fitnessClubId);
+
+    List<WorkoutDto> getAllActiveWorkouts(UUID fitnessClubId);
 }

@@ -10,6 +10,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static content.common.utils.EnvironmentUtils.getApplicationContext;
 import static content.common.utils.JwtUtils.getRequestJwtToken;
@@ -40,6 +42,7 @@ public abstract class AbstractHttpCommunicator implements Communicator {
         try {
 
             URI uri = prepareUri(path);
+
             HttpRequest request = prepareRequest(uri);
 
             return client.send(request, HttpResponse.BodyHandlers.ofString());

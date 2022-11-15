@@ -27,6 +27,9 @@ public class Exercise extends AbstractEntity {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
+    @Column(name = "fitness_club_id", nullable = false)
+    private UUID fitnessClubId;
+
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -35,9 +38,6 @@ public class Exercise extends AbstractEntity {
 
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
-
-    @Column(name = "video_url")
-    private String videoUrl;
 
     @Column(name = "latest")
     private boolean latest;
@@ -59,22 +59,23 @@ public class Exercise extends AbstractEntity {
     }
 
     public Exercise(
+            UUID fitnessClubId,
             String name,
             String description,
             @Nullable String imageUrl,
-            @Nullable String videoUrl,
             boolean latest,
             List<Criterion> criteria) {
 
+        Assert.notNull(fitnessClubId, "fitnessClubId must not be null");
         Assert.notNull(name, "name must not be null");
         Assert.notNull(description, "description must not be null");
         Assert.notNull(criteria, "criteria must not be null");
         criteria.forEach( criterion -> Assert.notNull(criterion, "criterion must not be null"));
 
+        this.fitnessClubId = fitnessClubId;
         this.name = name;
         this.description = description;
         this.imageUrl = imageUrl;
-        this.videoUrl = videoUrl;
         this.latest = latest;
         this.criteria = criteria;
     }
@@ -85,8 +86,24 @@ public class Exercise extends AbstractEntity {
         return id;
     }
 
+    public UUID getFitnessClubId() {
+        return fitnessClubId;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getDescription() {
@@ -95,10 +112,6 @@ public class Exercise extends AbstractEntity {
 
     public String getImageUrl() {
         return imageUrl;
-    }
-
-    public String getVideoUrl() {
-        return videoUrl;
     }
 
     public boolean isLatest() {

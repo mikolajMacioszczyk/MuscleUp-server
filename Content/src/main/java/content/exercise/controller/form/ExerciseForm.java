@@ -9,6 +9,5 @@ public record ExerciseForm(
         String name,
         String description,
         @Nullable String imageUrl,
-        @Nullable String videoUrl,
         List<UUID> criteria
 ) { }

@@ -8,10 +8,7 @@ import content.workout.service.WorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,25 +37,27 @@ public class WorkoutListController extends AbstractListController {
 
 
     @GetMapping("/{id}")
-    protected ResponseEntity<?> getWorkoutById(@PathVariable("id") UUID id) {
+    protected ResponseEntity<?> getWorkoutById(@RequestHeader(FITNESS_CLUB_HEADER) UUID fitnessClubId,
+                                               @PathVariable("id") UUID id) {
 
-        Optional<WorkoutDto> workoutDto = workoutQuery.findById(id);
+        Optional<WorkoutDto> workoutDto = workoutQuery.findById(id, fitnessClubId);
 
         return workoutDto.isPresent() ? response(OK, workoutDto.get()) : response(NOT_FOUND);
     }
 
-    @GetMapping("/all")
-    protected ResponseEntity<?> getAllWorkouts() {
+    @GetMapping("/all-active")
+    protected ResponseEntity<?> getAllActiveWorkouts(@RequestHeader(FITNESS_CLUB_HEADER) UUID fitnessClubId) {
 
-        List<WorkoutDto> workouts = workoutQuery.getAllWorkouts();
+        List<WorkoutDto> workouts = workoutQuery.getAllActiveWorkouts(fitnessClubId);
 
         return response(OK, workouts);
     }
 
     @GetMapping("/most-popular/{pieces}")
-    protected ResponseEntity<?> getMostPopularWorkouts(@PathVariable("pieces") Integer pieces) {
+    protected ResponseEntity<?> getMostPopularWorkouts(@RequestHeader(FITNESS_CLUB_HEADER) UUID fitnessClubId,
+                                                       @PathVariable("pieces") Integer pieces) {
 
-        List<WorkoutPopularDto> workouts = workoutService.getPopularWorkouts(pieces);
+        List<WorkoutPopularDto> workouts = workoutService.getPopularWorkouts(pieces, fitnessClubId);
 
         return response(OK, workouts);
     }

@@ -1,24 +1,28 @@
 package content.exercise.entity;
 
-import content.criterion.entity.Criterion;
+import content.criterion.entity.CriterionDtoFactory;
 
 public class ExerciseDtoFactory {
+
+    private final CriterionDtoFactory criterionDtoFactory;
+
+    public ExerciseDtoFactory() {
+
+        this.criterionDtoFactory = new CriterionDtoFactory();
+    }
+
 
     public ExerciseDto create(Exercise exercise) {
 
         return new ExerciseDto(
                 exercise.getId(),
+                exercise.getFitnessClubId(),
                 exercise.getName(),
                 exercise.getDescription(),
                 exercise.getImageUrl(),
-                exercise.getVideoUrl(),
                 exercise.getCriteria()
                         .stream()
-                        .map(Criterion::getId)
-                        .toList(),
-                exercise.getCriteria()
-                        .stream()
-                        .map(Criterion::getName)
+                        .map(criterionDtoFactory::create)
                         .toList()
         );
     }

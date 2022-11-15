@@ -3,6 +3,7 @@ package content.criterion.entity;
 import content.common.abstracts.AbstractEntity;
 import content.common.annotation.MustExist;
 import content.exercise.entity.Exercise;
+import content.workoutExerciseCriterionResult.entity.WorkoutExerciseCriterionResult;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.Assert;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static content.common.annotation.MustExist.Reason.HIBERNATE;
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -45,6 +47,17 @@ public class Criterion extends AbstractEntity {
 
         Assert.notNull(name, "name must not be null");
 
+        this.name = name;
+        this.unit = unit;
+        this.active = active;
+    }
+
+    @MustExist(reason = HIBERNATE)
+    public Criterion(UUID id, String name, String unit, boolean active) {
+
+        Assert.notNull(name, "name must not be null");
+
+        this.id = id;
         this.name = name;
         this.unit = unit;
         this.active = active;

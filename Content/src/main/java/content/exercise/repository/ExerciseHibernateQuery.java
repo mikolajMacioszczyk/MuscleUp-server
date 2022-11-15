@@ -1,6 +1,7 @@
 package content.exercise.repository;
 
 import content.common.abstracts.AbstractHibernateQuery;
+import content.criterion.entity.Criterion;
 import content.exercise.entity.Exercise;
 import content.exercise.entity.ExerciseDto;
 import content.exercise.entity.ExerciseDtoFactory;
@@ -44,29 +45,48 @@ public class ExerciseHibernateQuery extends AbstractHibernateQuery<Exercise> imp
 
     @Override
     @Transactional
-    public Optional<ExerciseDto> findById(UUID id) {
+    public Optional<ExerciseDto> findById(UUID id, UUID fitnessClubId) {
 
         Assert.notNull(id, "id must not be null");
 
         Exercise exercise = getById(id);
 
-        return isNull(exercise)? empty() : of(exerciseDtoFactory.create(exercise));
+        if (isNull(exercise)) return empty();
+
+        if (!exercise.getFitnessClubId().equals(fitnessClubId)) return empty();
+
+        return of(exerciseDtoFactory.create(exercise));
     }
 
     @Override
-    public List<ExerciseDto> getAllExercises() {
+    public List<ExerciseDto> getAllExercises(UUID fitnessClubId) {
 
         return getAll().stream()
+                .filter(exercise -> exercise.getFitnessClubId().equals(fitnessClubId))
                 .map(exerciseDtoFactory::create)
                 .toList();
     }
 
     @Override
-    public List<ExerciseDto> getAllActiveExercises() {
+    public List<ExerciseDto> getAllActiveExercises(UUID fitnessClubId) {
 
         return getAll().stream()
+                .filter(exercise -> exercise.getFitnessClubId().equals(fitnessClubId))
                 .filter(Exercise::isLatest)
                 .map(exerciseDtoFactory::create)
+                .toList();
+    }
+
+    @Override
+    public List<UUID> getAllAppliedCriteriaById(UUID id) {
+
+        return getAll().stream()
+                .filter(exercise -> exercise.getId().equals(id))
+                .findFirst()
+                .get()
+                .getCriteria()
+                .stream()
+                .map(Criterion::getId)
                 .toList();
     }
 }

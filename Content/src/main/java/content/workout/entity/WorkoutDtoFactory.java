@@ -1,36 +1,46 @@
 package content.workout.entity;
 
 import content.bodyPart.entity.BodyPartNameDtoFactory;
-import content.exercise.entity.ExerciseNameAndImageDtoFactory;
-import content.workoutExercise.entity.WorkoutExercise;
+import content.common.user.UserQuery;
+import content.workoutExercise.entity.WorkoutExerciseDtoFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.UUID;
+
+@Service
 public class WorkoutDtoFactory {
 
     private final BodyPartNameDtoFactory bodyPartNameDtoFactory;
-    private final ExerciseNameAndImageDtoFactory exerciseNameAndImageDtoFactory;
+    private final WorkoutExerciseDtoFactory workoutExerciseDtoFactory;
+    private final UserQuery userQuery;
 
 
-    public WorkoutDtoFactory() {
+    @Autowired
+    public WorkoutDtoFactory(UserQuery userQuery, WorkoutExerciseDtoFactory workoutExerciseDtoFactory) {
 
+        Assert.notNull(userQuery, "userQuery must not be null");
+        Assert.notNull(workoutExerciseDtoFactory, "workoutExerciseDtoFactory must not be null");
+
+        this.userQuery = userQuery;
+        this.workoutExerciseDtoFactory = workoutExerciseDtoFactory;
         this.bodyPartNameDtoFactory = new BodyPartNameDtoFactory();
-        this.exerciseNameAndImageDtoFactory = new ExerciseNameAndImageDtoFactory();
     }
 
 
-    public WorkoutDto create(Workout workout) {
+    public WorkoutDto create(Workout workout, UUID performedWorkoutId) {
 
         Assert.notNull(workout, "workout must not be null");
 
         return new WorkoutDto(
                 workout.getId(),
-                workout.getCreatorId(),
+                userQuery.getUserById(workout.getCreatorId()),
                 workout.getDescription(),
-                workout.getVideoUrl(),
+                workout.getName(),
                 workout.getWorkoutExercises()
                         .stream()
-                        .map(WorkoutExercise::getExercise)
-                        .map(exerciseNameAndImageDtoFactory::create)
+                        .map(workoutExercise -> workoutExerciseDtoFactory.create(workoutExercise, workout.getCreatorId(), performedWorkoutId))
                         .toList(),
                 workout.getBodyParts()
                         .stream()

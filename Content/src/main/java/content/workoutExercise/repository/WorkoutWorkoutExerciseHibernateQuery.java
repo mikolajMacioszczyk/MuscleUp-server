@@ -13,7 +13,12 @@ import org.springframework.util.Assert;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.Optional;
 import java.util.UUID;
+
+import static java.util.Objects.isNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 
 @Primary
@@ -24,6 +29,14 @@ public class WorkoutWorkoutExerciseHibernateQuery extends AbstractHibernateQuery
     WorkoutWorkoutExerciseHibernateQuery(SessionFactory sessionFactory) {
 
         super(WorkoutExercise.class, sessionFactory);
+    }
+
+    @Override
+    public Optional<WorkoutExercise> findById(UUID id) {
+
+        WorkoutExercise workoutExercise = getById(id);
+
+        return isNull(workoutExercise)? empty() : of(workoutExercise);
     }
 
     @Override

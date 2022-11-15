@@ -19,6 +19,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
 public class JwtInterceptor implements HandlerInterceptor {
 
+    private static final String BEARER_PREFIX = "Bearer ";
     private static final List<String> AUTHORIZE_FREE = List.of(
             "/swagger",
             "/schedule/all",
@@ -47,6 +48,8 @@ public class JwtInterceptor implements HandlerInterceptor {
         String jwtToken = request.getHeader(AUTHORIZATION);
 
         if (isNull(jwtToken)) throw new AuthHeaderException();
+
+        if (jwtToken.contains(BEARER_PREFIX)) jwtToken = jwtToken.replace(BEARER_PREFIX, "");
 
         String secret = getJwtSecret();
         Algorithm algorithm = Algorithm.HMAC512(secret);

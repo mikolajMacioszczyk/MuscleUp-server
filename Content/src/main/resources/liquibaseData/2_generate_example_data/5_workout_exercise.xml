@@ -13,28 +13,16 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
                 workout_id
             )
             VALUES (
-                'f80d2b2c-5fae-11ed-9b6a-0242ac120002',
-                1,
+                '6f331ed6-6415-11ed-81ce-0242ac120002',
+                0,
                 '4bfc16aa-5fad-11ed-9b6a-0242ac120002',
-                '7c5229f6-5d4c-11ed-9b6a-0242ac120002'
+                '0429f8c2-6414-11ed-81ce-0242ac120002'
             ),
             (
-                'fb37b862-5fae-11ed-9b6a-0242ac120002',
-                2,
                 'd1873070-5fad-11ed-9b6a-0242ac120002',
-                '7c5229f6-5d4c-11ed-9b6a-0242ac120002'
-            ),
-            (
-                'fe81f082-5fae-11ed-9b6a-0242ac120002',
-                3,
-                '1d545960-5fae-11ed-9b6a-0242ac120002',
-                '7c5229f6-5d4c-11ed-9b6a-0242ac120002'
-            ),
-            (
-                '846f44f0-5fb0-11ed-9b6a-0242ac120002',
                 1,
                 'd1873070-5fad-11ed-9b6a-0242ac120002',
-                '4c545a32-5d4a-11ed-9b6a-0242ac120002'
+                '0429f8c2-6414-11ed-81ce-0242ac120002'
             );
         </sql>
     </changeSet>

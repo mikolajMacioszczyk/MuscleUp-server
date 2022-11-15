@@ -87,7 +87,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/Content/{everything}",
+      "UpstreamPathTemplate": "/api/content/{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
       "SwaggerKey": "content"
     },
@@ -100,7 +100,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/Content",
+      "UpstreamPathTemplate": "/api/content",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
 
@@ -139,7 +139,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/Notifications/{everything}",
+      "UpstreamPathTemplate": "/api/notifications/{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ],
       "SwaggerKey": "notifications"
     },
@@ -152,7 +152,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/Notifications",
+      "UpstreamPathTemplate": "/api/notifications",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     }
   ]
