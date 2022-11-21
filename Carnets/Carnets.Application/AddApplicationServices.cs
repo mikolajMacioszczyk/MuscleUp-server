@@ -36,7 +36,6 @@ namespace Carnets.Application
 
             // Add services
             services.AddScoped<JwtSecurityTokenHandler>();
-            services.AddScoped<IPaymentService, StripeService>();
             services.AddScoped<IMembershipService, MembershipService>();
             services.AddScoped<IEntryTokenService, EntryTokenService>();
 

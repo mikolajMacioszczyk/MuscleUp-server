@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Common\Common.csproj" />
-    <ProjectReference Include="..\FitnessClubs.Repo\FitnessClubs.Repo.csproj" />
+    <ProjectReference Include="..\FitnessClubs.Repo\FitnessClubs.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

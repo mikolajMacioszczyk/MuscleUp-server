@@ -11,7 +11,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Auth/Auth.API/Auth.API.csproj", "Auth/Auth.API/"]
-COPY ["Auth/Auth.Repo/Auth.Repo.csproj", "Auth/Auth.Repo/"]
+COPY ["Auth/Auth.Repo/Auth.Infrastructure.csproj", "Auth/Auth.Repo/"]
 COPY ["Auth/Auth.Domain/Auth.Domain.csproj", "Auth/Auth.Domain/"]
 COPY ["Common/Common/Common.csproj", "Common/Common/"]
 RUN dotnet restore "Auth/Auth.API/Auth.API.csproj"

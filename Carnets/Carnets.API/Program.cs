@@ -2,6 +2,7 @@ using Carnets.Application;
 using Carnets.Application.Interfaces;
 using Carnets.Application.Services;
 using Carnets.Domain.Models;
+using Carnets.Infrastructure.Services;
 using Carnets.Repo;
 using Carnets.Repo.Repositories;
 using Common.Extensions;
@@ -34,6 +35,7 @@ builder.Services.AddScoped<IGympassRepository, GympassRepository>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 builder.Services.AddScoped<IEntryRepository, EntryRepository>();
 builder.Services.AddScoped<IAuthService, AuthHttpService>();
+builder.Services.AddScoped<IPaymentService, StripeService>();
 
 // RabbitMq
 builder.Services.AddRabbitMqClient(builder.Configuration.GetSection("Broker:Host"))

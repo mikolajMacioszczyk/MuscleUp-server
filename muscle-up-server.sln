@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{FDA88487-A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Domain", "Auth\Auth.Domain\Auth.Domain.csproj", "{D733BF69-4712-489B-911C-6FF0D281E16A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Repo", "Auth\Auth.Repo\Auth.Repo.csproj", "{FA3963E6-FA1B-48DC-99DD-F5AC0582F448}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Infrastructure", "Auth\Auth.Repo\Auth.Infrastructure.csproj", "{FA3963E6-FA1B-48DC-99DD-F5AC0582F448}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Carnets", "Carnets", "{89D4072C-47D3-4474-93FC-53C88A5CCEB6}"
 EndProject
@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Carnets.API", "Carnets\Carn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Carnets.Domain", "Carnets\Carnets.Domain\Carnets.Domain.csproj", "{BE7BFC85-0C07-44E0-B83E-FCE1D5124E8D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Carnets.Repo", "Carnets\Carnets.Repo\Carnets.Repo.csproj", "{3B39D041-8B6C-4798-9E72-D95636FD76AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Carnets.Infrastructure", "Carnets\Carnets.Repo\Carnets.Infrastructure.csproj", "{3B39D041-8B6C-4798-9E72-D95636FD76AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", "{897C9A40-E6C9-4F55-AD38-4EB8000156B9}"
 EndProject
@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitnessClubs.API", "Fitness
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitnessClubs.Domain", "FitnessClubs\FitnessClubs.Domain\FitnessClubs.Domain.csproj", "{1944A1B2-DA2C-4CC4-BD2B-EEC2CB796F14}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitnessClubs.Repo", "FitnessClubs\FitnessClubs.Repo\FitnessClubs.Repo.csproj", "{8BCDACBF-2620-4E13-BD20-BDDBBF44A6D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitnessClubs.Infrastructure", "FitnessClubs\FitnessClubs.Repo\FitnessClubs.Infrastructure.csproj", "{8BCDACBF-2620-4E13-BD20-BDDBBF44A6D4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{8175CB57-8763-48CE-A151-A5393927CDAB}"
 EndProject
@@ -43,11 +43,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Carnets.Application", "Carn
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{ECD687A9-2357-4644-9D66-1DD6D7746FD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarnetsTests", "Tests\CarnetsTests\CarnetsTests.csproj", "{AFA1471B-D157-4163-9E70-8268BC30380D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarnetsTests", "Tests\CarnetsTests\CarnetsTests.csproj", "{AFA1471B-D157-4163-9E70-8268BC30380D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthTests", "Tests\AuthTests\AuthTests.csproj", "{5BECD3C2-FDC6-4FFB-94F0-1D932C54A056}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthTests", "Tests\AuthTests\AuthTests.csproj", "{5BECD3C2-FDC6-4FFB-94F0-1D932C54A056}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitnessClubsTests", "Tests\FitnessClubsTests\FitnessClubsTests.csproj", "{ECE333B7-51BE-4915-B135-9B77F8E0CD76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitnessClubsTests", "Tests\FitnessClubsTests\FitnessClubsTests.csproj", "{ECE333B7-51BE-4915-B135-9B77F8E0CD76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

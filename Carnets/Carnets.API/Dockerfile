@@ -11,7 +11,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Carnets/Carnets.API/Carnets.API.csproj", "Carnets/Carnets.API/"]
-COPY ["Carnets/Carnets.Repo/Carnets.Repo.csproj", "Carnets/Carnets.Repo/"]
+COPY ["Carnets/Carnets.Repo/Carnets.Infrastructure.csproj", "Carnets/Carnets.Repo/"]
 COPY ["Carnets/Carnets.Domain/Carnets.Domain.csproj", "Carnets/Carnets.Domain/"]
 COPY ["Common/Common/Common.csproj", "Common/Common/"]
 RUN dotnet restore "Carnets/Carnets.API/Carnets.API.csproj"

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Stripe;
 using Stripe.Checkout;
 
-namespace Carnets.Application.Services
+namespace Carnets.Infrastructure.Services
 {
     public class StripeService : IPaymentService
     {
@@ -167,8 +167,8 @@ namespace Carnets.Application.Services
                     },
                 },
                 Mode = param.PaymentModeType.ToString().ToLower(),
-                SuccessUrl = UriHelper.AppendQueryParamToUri(param.SuccessUrl, CarnetsConsts.GympassIdKey, param.GympassId),
-                CancelUrl = UriHelper.AppendQueryParamToUri(param.CancelUrl, CarnetsConsts.GympassIdKey, param.GympassId),
+                SuccessUrl = param.SuccessUrl.AppendQueryParamToUri(CarnetsConsts.GympassIdKey, param.GympassId),
+                CancelUrl = param.CancelUrl.AppendQueryParamToUri(CarnetsConsts.GympassIdKey, param.GympassId),
                 ClientReferenceId = param.CustomerId,
             };
             options.Metadata = new Dictionary<string, string>()
@@ -226,10 +226,10 @@ namespace Carnets.Application.Services
                 }
 
                 return new PaymentResult(
-                    paymentStatus, 
-                    stripeData.PlanId, 
-                    stripeData.CustomerId, 
-                    stripeData.PaymentMethodId, 
+                    paymentStatus,
+                    stripeData.PlanId,
+                    stripeData.CustomerId,
+                    stripeData.PaymentMethodId,
                     stripeData.SubscriptionId);
             }
             catch (StripeException e)

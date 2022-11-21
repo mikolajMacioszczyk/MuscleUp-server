@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Common\Common.csproj" />
-    <ProjectReference Include="..\Carnets.Repo\Carnets.Repo.csproj" />
+    <ProjectReference Include="..\Carnets.Repo\Carnets.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
