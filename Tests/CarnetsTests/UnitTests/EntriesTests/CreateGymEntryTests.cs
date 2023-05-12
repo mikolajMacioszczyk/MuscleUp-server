@@ -5,6 +5,7 @@ using Carnets.Domain.Enums;
 using Carnets.Domain.Models;
 using Common.Exceptions;
 using Common.Models;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -14,6 +15,7 @@ namespace CarnetsTests.UnitTests.EntriesTests
     {
         private readonly Mock<IGympassRepository> gympassRepositoryMock = new();
         private readonly Mock<IEntryRepository> entryRepositoryMock = new();
+        private readonly Mock<ILogger<EnterGymCommandHandler>> logger = new();
 
         [Fact]
         public async Task CreateGymEntry_ExpiredToken()
@@ -31,11 +33,7 @@ namespace CarnetsTests.UnitTests.EntriesTests
                     EntryExpirationTime = expirationDate,
                 });
 
-            var handler = new EnterGymCommandHandler(
-                    null, // logger
-                    gympassRepositoryMock.Object, // gympassRepository
-                    entryRepositoryMock.Object // entryRepository
-                );
+            var handler = CreateHandlerWithMocks();
 
             // act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -77,11 +75,7 @@ namespace CarnetsTests.UnitTests.EntriesTests
                     Gympass = returnedGympass
                 });
 
-            var handler = new EnterGymCommandHandler(
-                    null, // logger
-                    gympassRepositoryMock.Object, // gympassRepository
-                    entryRepositoryMock.Object // entryRepository
-                );
+            var handler = CreateHandlerWithMocks();
 
             // act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -124,11 +118,7 @@ namespace CarnetsTests.UnitTests.EntriesTests
                     Gympass = returnedGympass
                 });
 
-            var handler = new EnterGymCommandHandler(
-                    null, // logger
-                    gympassRepositoryMock.Object, // gympassRepository
-                    entryRepositoryMock.Object // entryRepository
-                );
+            var handler = CreateHandlerWithMocks();
 
             // assert
             await Assert.ThrowsAsync<BadRequestException>(
@@ -148,11 +138,7 @@ namespace CarnetsTests.UnitTests.EntriesTests
             entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
                 .ReturnsAsync(null as Entry);
 
-            var handler = new EnterGymCommandHandler(
-                    null, // logger
-                    null, // gympassRepository
-                    entryRepositoryMock.Object // entryRepository
-                );
+            var handler = CreateHandlerWithMocks();
 
             // act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -209,11 +195,7 @@ namespace CarnetsTests.UnitTests.EntriesTests
             entryRepositoryMock.Setup(m => m.UpdateEntry(entryToken, getEntry))
                 .ReturnsAsync(new Result<Entry>(getEntry));
 
-            var handler = new EnterGymCommandHandler(
-                    null, // logger
-                    gympassRepositoryMock.Object, // gympassRepository
-                    entryRepositoryMock.Object // entryRepository
-                );
+            var handler = CreateHandlerWithMocks();
 
             // act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -225,5 +207,12 @@ namespace CarnetsTests.UnitTests.EntriesTests
             Assert.True(result.Value.Entered);
             Assert.Equal(expectedRemainingEntries, returnedGympass.RemainingEntries);
         }
+
+        private EnterGymCommandHandler CreateHandlerWithMocks() =>
+            new EnterGymCommandHandler(
+                logger.Object,
+                gympassRepositoryMock.Object,
+                entryRepositoryMock.Object
+            );
     }
 }
