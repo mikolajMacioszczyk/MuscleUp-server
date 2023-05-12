@@ -30,7 +30,7 @@ namespace Carnets.Repo.Repositories
             return query.FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Entry>> GetGympassEntries(
+        public async Task<IEnumerable<Entry>> SearchEntries(
             Expression<Func<Entry, bool>> predicate, 
             int pageNumber, 
             int pageSize, 
@@ -64,6 +64,8 @@ namespace Carnets.Repo.Repositories
 
         public async Task<Result<Entry>> UpdateEntry(string entryId, Entry entry)
         {
+            if (entry is null) throw new ArgumentException(nameof(entry));
+
             var entryFromDb = await GetEntryById(entryId, true);
 
             if (entryFromDb is null)

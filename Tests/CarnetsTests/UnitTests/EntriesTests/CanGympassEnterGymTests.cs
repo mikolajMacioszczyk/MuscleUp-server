@@ -4,7 +4,7 @@ using Carnets.Domain.Enums;
 using Carnets.Domain.Models;
 using Xunit;
 
-namespace CarnetsTests.EntriesTests
+namespace CarnetsTests.UnitTests.EntriesTests
 {
     public class CanGympassEnterGymTests
     {

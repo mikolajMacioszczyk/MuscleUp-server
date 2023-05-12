@@ -8,10 +8,13 @@ using Common.Models;
 using Moq;
 using Xunit;
 
-namespace CarnetsTests.EntriesTests
+namespace CarnetsTests.UnitTests.EntriesTests
 {
     public class CreateGymEntryTests
     {
+        private readonly Mock<IGympassRepository> gympassRepositoryMock = new();
+        private readonly Mock<IEntryRepository> entryRepositoryMock = new();
+
         [Fact]
         public async Task CreateGymEntry_ExpiredToken()
         {
@@ -22,7 +25,6 @@ namespace CarnetsTests.EntriesTests
 
             var command = new EnterGymCommand(new EntryTokenDto() { EntryToken = entryToken }, string.Empty);
 
-            var entryRepositoryMock = new Mock<IEntryRepository>();
             entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
                 .ReturnsAsync(new Entry()
                 {
@@ -31,7 +33,7 @@ namespace CarnetsTests.EntriesTests
 
             var handler = new EnterGymCommandHandler(
                     null, // logger
-                    null, // gympassRepository
+                    gympassRepositoryMock.Object, // gympassRepository
                     entryRepositoryMock.Object // entryRepository
                 );
 
@@ -39,6 +41,7 @@ namespace CarnetsTests.EntriesTests
             var result = await handler.Handle(command, CancellationToken.None);
 
             // assert
+            Assert.NotNull(result);
             Assert.False(result.IsSuccess);
             Assert.Equal(expectedError, result.ErrorCombined);
         }
@@ -64,11 +67,9 @@ namespace CarnetsTests.EntriesTests
 
             var command = new EnterGymCommand(new EntryTokenDto() { EntryToken = entryToken }, fitnessClubIdParam);
 
-            var gympassRepositoryMock = new Mock<IGympassRepository>();
             gympassRepositoryMock.Setup(m => m.GetById(testGympassId, It.IsAny<bool>()))
                 .ReturnsAsync(returnedGympass);
 
-            var entryRepositoryMock = new Mock<IEntryRepository>();
             entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
                 .ReturnsAsync(new Entry()
                 {
@@ -86,6 +87,7 @@ namespace CarnetsTests.EntriesTests
             var result = await handler.Handle(command, CancellationToken.None);
 
             // assert
+            Assert.NotNull(result);
             Assert.False(result.IsSuccess);
             Assert.Equal(expectedError, result.ErrorCombined);
         }
@@ -112,11 +114,9 @@ namespace CarnetsTests.EntriesTests
 
             var command = new EnterGymCommand(new EntryTokenDto() { EntryToken = entryToken }, fitnessClubIdParam);
 
-            var gympassRepositoryMock = new Mock<IGympassRepository>();
             gympassRepositoryMock.Setup(m => m.GetById(testGympassId, It.IsAny<bool>()))
                 .ReturnsAsync(returnedGympass);
 
-            var entryRepositoryMock = new Mock<IEntryRepository>();
             entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
                 .ReturnsAsync(new Entry()
                 {
@@ -145,7 +145,6 @@ namespace CarnetsTests.EntriesTests
 
             var command = new EnterGymCommand(new EntryTokenDto() { EntryToken = entryToken }, string.Empty);
 
-            var entryRepositoryMock = new Mock<IEntryRepository>();
             entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
                 .ReturnsAsync(null as Entry);
 
@@ -159,6 +158,7 @@ namespace CarnetsTests.EntriesTests
             var result = await handler.Handle(command, CancellationToken.None);
 
             // assert
+            Assert.NotNull(result);
             Assert.False(result.IsSuccess);
             Assert.Equal(expectedError, result.ErrorCombined);
         }
@@ -198,13 +198,11 @@ namespace CarnetsTests.EntriesTests
 
             var command = new EnterGymCommand(new EntryTokenDto() { EntryToken = entryToken }, fitnessClubIdParam);
 
-            var gympassRepositoryMock = new Mock<IGympassRepository>();
             gympassRepositoryMock.Setup(m => m.GetById(testGympassId, It.IsAny<bool>()))
                 .ReturnsAsync(returnedGympass);
             gympassRepositoryMock.Setup(m => m.UpdateGympass(returnedGympass))
                 .ReturnsAsync(new Result<Gympass>(returnedGympass));
 
-            var entryRepositoryMock = new Mock<IEntryRepository>();
             entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
                 .ReturnsAsync(getEntry);
 
@@ -221,6 +219,7 @@ namespace CarnetsTests.EntriesTests
             var result = await handler.Handle(command, CancellationToken.None);
 
             // assert
+            Assert.NotNull(result);
             Assert.True(result.IsSuccess);
             Assert.Equal(entryToken, result.Value.EntryId);
             Assert.True(result.Value.Entered);

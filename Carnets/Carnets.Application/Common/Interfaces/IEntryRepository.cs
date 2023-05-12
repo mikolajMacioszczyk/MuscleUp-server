@@ -8,7 +8,7 @@ namespace Carnets.Application.Interfaces
     {
         Task<Entry> GetEntryById(string entryId, bool asTracking);
 
-        Task<IEnumerable<Entry>> GetGympassEntries(
+        Task<IEnumerable<Entry>> SearchEntries(
             Expression<Func<Entry, bool>> predicate, 
             int pageNumber, 
             int pageSize, 
