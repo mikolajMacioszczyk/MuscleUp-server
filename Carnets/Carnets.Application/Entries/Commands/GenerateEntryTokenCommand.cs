@@ -1,6 +1,5 @@
 ﻿using Carnets.Application.Consts;
 using Carnets.Application.Entries.Dtos;
-using Carnets.Application.Entries.Helpers;
 using Carnets.Application.Interfaces;
 using Carnets.Domain.Models;
 using Common;
@@ -39,11 +38,11 @@ namespace Carnets.Application.Entries.Commands
                 return new Result<GeneratedEndtryTokenDto>(CommonConsts.NOT_FOUND);
             }
 
-            var gympassValidationResult = EntryHelper.CanGympassEnterGym(gympass);
+            var gympassValidationResult = gympass.CanGympassEnterGym();
 
-            if (!gympassValidationResult.result)
+            if (!gympassValidationResult.IsSuccess)
             {
-                return new Result<GeneratedEndtryTokenDto>(gympassValidationResult.reason);
+                return new Result<GeneratedEndtryTokenDto>(gympassValidationResult.ErrorCombined);
             }
 
             var entry = await CreateEntry(gympass);

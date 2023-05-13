@@ -1,5 +1,4 @@
 ﻿using Carnets.Application.Entries.Dtos;
-using Carnets.Application.Entries.Helpers;
 using Carnets.Application.Interfaces;
 using Carnets.Domain.Models;
 using Common.BaseClasses;
@@ -106,11 +105,17 @@ namespace Carnets.Application.Entries.Commands
 
         private async Task ReduceGympassEntries(Entry entry)
         {
-            var reduceEntriesResult = await EntryHelper.ReduceGympassEntries(entry.Gympass, _gympassRepository);
+            var gympass = entry.Gympass;
+            var reduceEntriesResult = gympass.ReduceEntries();
 
             if (!reduceEntriesResult.IsSuccess)
             {
                 throw new InvalidInputException(reduceEntriesResult.ErrorCombined);
+            }
+            var updateResult = await _gympassRepository.UpdateGympass(gympass);
+            if (!updateResult.IsSuccess)
+            {
+                throw new InvalidInputException(updateResult.ErrorCombined);
             }
         }
 

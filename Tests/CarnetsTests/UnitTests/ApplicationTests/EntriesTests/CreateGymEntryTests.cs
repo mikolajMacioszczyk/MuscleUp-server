@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
-namespace CarnetsTests.UnitTests.EntriesTests
+namespace CarnetsTests.UnitTests.ApplicationTests.EntriesTests
 {
     public class CreateGymEntryTests
     {

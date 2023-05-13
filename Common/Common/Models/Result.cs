@@ -8,7 +8,7 @@
 
         public string[] Errors { get; private set; }
 
-        public string ErrorCombined => string.Join(",", Errors);
+        public string ErrorCombined => string.Join(",", Errors ?? Array.Empty<string>());
 
         public Result(T value)
         {

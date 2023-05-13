@@ -1,10 +1,9 @@
-﻿using Carnets.Application.Consts;
-using Carnets.Application.Entries.Helpers;
-using Carnets.Domain.Enums;
+﻿using Carnets.Domain.Enums;
 using Carnets.Domain.Models;
+using Common.Models;
 using Xunit;
 
-namespace CarnetsTests.UnitTests.EntriesTests
+namespace CarnetsTests.UnitTests.DomianTests.EntriesTests
 {
     public class CanGympassEnterGymTests
     {
@@ -22,14 +21,13 @@ namespace CarnetsTests.UnitTests.EntriesTests
             {
                 Status = gympassStatus
             };
-            var expectedReason = CarnetsConsts.GympassNotActive;
+            var expectedReason = "Gympass not active";
 
             // act
-            var (predicateResult, reason) = EntryHelper.CanGympassEnterGym(gympass);
+            var canEnterResult = gympass.CanGympassEnterGym();
 
             // assert
-            Assert.False(predicateResult);
-            Assert.Equal(expectedReason, reason);
+            AssertFailedWithReason(canEnterResult, expectedReason);
         }
 
 
@@ -49,14 +47,13 @@ namespace CarnetsTests.UnitTests.EntriesTests
                     ValidationType = validationType
                 }
             };
-            var expectedReason = CarnetsConsts.GympassValidityEnded;
+            var expectedReason = "Gympass validity ended";
 
             // act
-            var (predicateResult, reason) = EntryHelper.CanGympassEnterGym(gympass);
+            var canEnterResult = gympass.CanGympassEnterGym();
 
             // assert
-            Assert.False(predicateResult);
-            Assert.Equal(expectedReason, reason);
+            AssertFailedWithReason(canEnterResult, expectedReason);
         }
 
         [Fact]
@@ -73,14 +70,13 @@ namespace CarnetsTests.UnitTests.EntriesTests
                     ValidationType = GympassTypeValidation.Entries
                 }
             };
-            var expectedReason = CarnetsConsts.GympassNoMoreEntries;
+            var expectedReason = "Gympass has not enought entries";
 
             // act
-            var (predicateResult, reason) = EntryHelper.CanGympassEnterGym(gympass);
+            var canEnterResult = gympass.CanGympassEnterGym();
 
             // assert
-            Assert.False(predicateResult);
-            Assert.Equal(expectedReason, reason);
+            AssertFailedWithReason(canEnterResult, expectedReason);
         }
 
         [Fact]
@@ -102,14 +98,13 @@ namespace CarnetsTests.UnitTests.EntriesTests
                     EnableEntryToInMinutes = int.MaxValue,
                 }
             };
-            var expectedReason = CarnetsConsts.GympassEntryMinuteNotAllowed;
+            var expectedReason = "Gympass entry minute not allowed";
 
             // act
-            var (predicateResult, reason) = EntryHelper.CanGympassEnterGym(gympass);
+            var canEnterResult = gympass.CanGympassEnterGym();
 
             // assert
-            Assert.False(predicateResult);
-            Assert.Equal(expectedReason, reason);
+            AssertFailedWithReason(canEnterResult, expectedReason);
         }
 
         [Fact]
@@ -131,14 +126,13 @@ namespace CarnetsTests.UnitTests.EntriesTests
                     EnableEntryToInMinutes = closingMinute,
                 }
             };
-            var expectedReason = CarnetsConsts.GympassEntryMinuteNotAllowed;
+            var expectedReason = "Gympass entry minute not allowed";
 
             // act
-            var (predicateResult, reason) = EntryHelper.CanGympassEnterGym(gympass);
+            var canEnterResult = gympass.CanGympassEnterGym();
 
             // assert
-            Assert.False(predicateResult);
-            Assert.Equal(expectedReason, reason);
+            AssertFailedWithReason(canEnterResult, expectedReason);
         }
 
         [Theory]
@@ -162,11 +156,18 @@ namespace CarnetsTests.UnitTests.EntriesTests
             };
 
             // act
-            var (predicateResult, reason) = EntryHelper.CanGympassEnterGym(gympass);
+            var canEnterResult = gympass.CanGympassEnterGym();
 
             // assert
-            Assert.True(predicateResult);
-            Assert.Empty(reason);
+            Assert.True(canEnterResult.IsSuccess);
+            Assert.True(canEnterResult.Value);
+            Assert.Empty(canEnterResult.ErrorCombined);
+        }
+
+        private void AssertFailedWithReason(Result<bool> result, string expectedReason)
+        {
+            Assert.False(result.IsSuccess);
+            Assert.Equal(expectedReason, result.ErrorCombined);
         }
     }
 }
