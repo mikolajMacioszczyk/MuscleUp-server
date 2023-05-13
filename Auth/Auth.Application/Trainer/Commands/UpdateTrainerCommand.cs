@@ -43,7 +43,7 @@ namespace Auth.Application.Trainer.Commands
                 return _mapper.Map<TrainerDto>(trainerResult.Value);
             }
 
-            throw new BadRequestException(trainerResult.ErrorCombined);
+            throw new InvalidInputException(trainerResult.ErrorCombined);
         }
     }
 }

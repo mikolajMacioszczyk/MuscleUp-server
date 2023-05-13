@@ -28,8 +28,8 @@ namespace Auth.Application.Trainer.Queries
 
         public async Task<IEnumerable<TrainerDto>> Handle(GetAllTrainersWithIdsQuery request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.UserIds)) throw new BadRequestException($"{nameof(request.UserIds)} cannot be empty string");
-            if (string.IsNullOrEmpty(request.Separator)) throw new BadRequestException($"{nameof(request.Separator)} cannot be empty string");
+            if (string.IsNullOrEmpty(request.UserIds)) throw new InvalidInputException($"{nameof(request.UserIds)} cannot be empty string");
+            if (string.IsNullOrEmpty(request.Separator)) throw new InvalidInputException($"{nameof(request.Separator)} cannot be empty string");
 
             var userIds = request.UserIds.Split(request.Separator);
 

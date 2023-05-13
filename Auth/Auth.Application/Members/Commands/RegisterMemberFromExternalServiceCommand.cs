@@ -52,7 +52,7 @@ namespace Auth.Application.Members.Commands
                 return memberResult.Value;
             }
 
-            throw new BadRequestException(memberResult.ErrorCombined);
+            throw new InvalidInputException(memberResult.ErrorCombined);
         }
     }
 }

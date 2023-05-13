@@ -58,25 +58,25 @@ namespace Carnets.Application.Helpers
             if (gympassType.Interval == Domain.Enums.IntervalType.Day
                 && gympassType.IntervalCount > 365)
             {
-                throw new BadRequestException("Interval count for daily subscription must be less than 365");
+                throw new InvalidInputException("Interval count for daily subscription must be less than 365");
             };
 
             if (gympassType.Interval == Domain.Enums.IntervalType.Week
                 && gympassType.IntervalCount > 52)
             {
-                throw new BadRequestException("Interval count for weekly subscription must be less than 53");
+                throw new InvalidInputException("Interval count for weekly subscription must be less than 53");
             };
 
             if (gympassType.Interval == Domain.Enums.IntervalType.Month
                 && gympassType.IntervalCount > 12)
             {
-                throw new BadRequestException("Interval count for monthly subscription must be less than 13");
+                throw new InvalidInputException("Interval count for monthly subscription must be less than 13");
             };
 
             if (gympassType.Interval == Domain.Enums.IntervalType.Year
                 && gympassType.IntervalCount > 1)
             {
-                throw new BadRequestException("Interval count for yearly subscription must be 1");
+                throw new InvalidInputException("Interval count for yearly subscription must be 1");
             };
         }
     }

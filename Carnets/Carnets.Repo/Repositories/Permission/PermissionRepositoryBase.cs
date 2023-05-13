@@ -77,7 +77,7 @@ namespace Carnets.Repo.Repositories
 
             if (permissionFromDb.FitnessClubId != fitnessClubId)
             {
-                throw new BadRequestException("Cannot manage permission");
+                throw new InvalidInputException("Cannot manage permission");
             }
 
             PermissionDbSet.Remove(permissionFromDb);

@@ -54,11 +54,11 @@ namespace Auth.Application.Common.Managers
         {
             if (result.UserNotFound)
             {
-                throw new BadRequestException($"Username doesn't exists. {logData}");
+                throw new InvalidInputException($"Username doesn't exists. {logData}");
             }
             if (result.IsInvalidPassword)
             {
-                throw new BadRequestException($"Invalid password. {logData}");
+                throw new InvalidInputException($"Invalid password. {logData}");
             }
         }
 

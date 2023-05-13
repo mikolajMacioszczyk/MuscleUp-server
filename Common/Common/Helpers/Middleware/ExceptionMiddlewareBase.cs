@@ -23,7 +23,7 @@ namespace Common.Helpers
             {
                 await _next(httpContext);
             }
-            catch (BadRequestException ex)
+            catch (InvalidInputException ex)
             {
                 await HandleBadRequestExceptionAsync(httpContext, ex);
             }
@@ -47,7 +47,7 @@ namespace Common.Helpers
             await context.Response.WriteAsync(sb.ToString());
         }
 
-        protected async Task HandleBadRequestExceptionAsync(HttpContext context, BadRequestException exception)
+        protected async Task HandleBadRequestExceptionAsync(HttpContext context, InvalidInputException exception)
         {
             context.Response.ContentType = "application/json";
             _logger.LogInformation(exception.Message);

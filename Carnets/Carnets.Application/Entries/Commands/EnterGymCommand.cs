@@ -110,7 +110,7 @@ namespace Carnets.Application.Entries.Commands
 
             if (!reduceEntriesResult.IsSuccess)
             {
-                throw new BadRequestException(reduceEntriesResult.ErrorCombined);
+                throw new InvalidInputException(reduceEntriesResult.ErrorCombined);
             }
         }
 
@@ -122,7 +122,7 @@ namespace Carnets.Application.Entries.Commands
             var updateResult = await _entryRepository.UpdateEntry(entry.EntryId, entry);
             if (!updateResult.IsSuccess)
             {
-                throw new BadRequestException(updateResult.ErrorCombined);
+                throw new InvalidInputException(updateResult.ErrorCombined);
             }
         }
     }

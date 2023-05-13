@@ -111,7 +111,7 @@ namespace FitnessClubs.Application.UserInvitations.Commands
             var trainersReult = (await _authService.GetAllTrainersWithIds(new string[] { trainerId }));
             if (!trainersReult.IsSuccess)
             {
-                throw new BadRequestException(trainersReult.ErrorCombined);
+                throw new InvalidInputException(trainersReult.ErrorCombined);
             }
             var trainer = trainersReult.Value.FirstOrDefault();
 

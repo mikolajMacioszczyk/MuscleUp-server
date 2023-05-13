@@ -34,7 +34,7 @@ namespace Auth.Application.Workers.Commands
                 return _mapper.Map<WorkerDto>(workerResult.Value);
             }
 
-            throw new BadRequestException(workerResult.ErrorCombined);
+            throw new InvalidInputException(workerResult.ErrorCombined);
         }
     }
 }

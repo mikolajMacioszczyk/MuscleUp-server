@@ -112,7 +112,7 @@ namespace FitnessClubs.Application.UserInvitations.Commands
             var workersResult = (await _authService.GetAllWorkersWithIds(new string[] { workerId }));
             if (!workersResult.IsSuccess)
             {
-                throw new BadRequestException(workersResult.ErrorCombined);
+                throw new InvalidInputException(workersResult.ErrorCombined);
             }
             var worker = workersResult.Value.FirstOrDefault();
 

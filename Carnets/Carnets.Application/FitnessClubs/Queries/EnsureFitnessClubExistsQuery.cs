@@ -24,7 +24,7 @@ namespace Carnets.Application.FitnessClubs.Queries
             var fitnessClubResult = await _fitnessClubHttpService.GetFitnessClubById(request.FitnessClubId);
             if (!fitnessClubResult.IsSuccess)
             {
-                throw new BadRequestException($"Fitness club with id {request.FitnessClubId} does not exists");
+                throw new InvalidInputException($"Fitness club with id {request.FitnessClubId} does not exists");
             }
             return fitnessClubResult.Value;
         }

@@ -24,7 +24,7 @@ namespace Carnets.Application.FitnessClubs.Queries
             var fitnessClubResult = await _fitnessClubHttpService.GetFitnessClubOfWorker(request.WorkerId);
             if (!fitnessClubResult.IsSuccess)
             {
-                throw new BadRequestException("Cannot determine worker's fitness club");
+                throw new InvalidInputException("Cannot determine worker's fitness club");
             }
             return fitnessClubResult.Value;
         }

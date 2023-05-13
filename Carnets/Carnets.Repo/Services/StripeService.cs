@@ -235,7 +235,7 @@ namespace Carnets.Infrastructure.Services
             catch (StripeException e)
             {
                 _logger.LogError($"Unhandled Stripe error = {e.Message}");
-                throw new BadRequestException(e.StackTrace);
+                throw new InvalidInputException(e.StackTrace);
             }
         }
 

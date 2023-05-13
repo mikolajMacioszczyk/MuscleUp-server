@@ -36,7 +36,7 @@ namespace FitnessClubs.Application.TrainerEmployments.Queries
                 return trainersResult.Value;
             }
 
-            throw new BadRequestException(trainersResult.ErrorCombined);
+            throw new InvalidInputException(trainersResult.ErrorCombined);
         }
     }
 }

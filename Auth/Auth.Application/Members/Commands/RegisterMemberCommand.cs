@@ -33,7 +33,7 @@ namespace Auth.Application.Members.Commands
                 return _mapper.Map<MemberDto>(memberResult.Value);
             }
 
-            throw new BadRequestException(memberResult.ErrorCombined);
+            throw new InvalidInputException(memberResult.ErrorCombined);
         }
     }
 }

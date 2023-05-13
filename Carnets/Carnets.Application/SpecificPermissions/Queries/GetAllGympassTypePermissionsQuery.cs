@@ -36,7 +36,7 @@ namespace Carnets.Application.SpecificPermissions.Queries
                 return await _permissionRepository.GetPermissionByIds(allIds, false);
             }
 
-            throw new BadRequestException(allResult.ErrorCombined);
+            throw new InvalidInputException(allResult.ErrorCombined);
         }
     }
 }

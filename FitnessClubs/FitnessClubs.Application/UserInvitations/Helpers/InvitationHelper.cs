@@ -15,7 +15,7 @@ namespace FitnessClubs.Application.UserInvitations.Helpers
 
             if (!updateResult.IsSuccess)
             {
-                throw new BadRequestException(updateResult.ErrorCombined);
+                throw new InvalidInputException(updateResult.ErrorCombined);
             }
 
             return updateResult.Value;
@@ -38,7 +38,7 @@ namespace FitnessClubs.Application.UserInvitations.Helpers
 
             if (!employmentResult.IsSuccess)
             {
-                throw new BadRequestException(employmentResult.ErrorCombined);
+                throw new InvalidInputException(employmentResult.ErrorCombined);
             }
 
             return employmentResult.Value;

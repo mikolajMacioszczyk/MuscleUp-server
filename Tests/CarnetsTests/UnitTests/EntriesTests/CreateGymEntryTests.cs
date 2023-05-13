@@ -121,7 +121,7 @@ namespace CarnetsTests.UnitTests.EntriesTests
             var handler = CreateHandlerWithMocks();
 
             // assert
-            await Assert.ThrowsAsync<BadRequestException>(
+            await Assert.ThrowsAsync<InvalidInputException>(
                 async () => await handler.Handle(command, CancellationToken.None));
         }
 

@@ -85,11 +85,11 @@ namespace Carnets.Repo.Repositories
 
             if (assignedPermissionFromDb.Permission.FitnessClubId != fitnessClubId)
             {
-                throw new BadRequestException("Cannot manage Permission from other FitnessClub");
+                throw new InvalidInputException("Cannot manage Permission from other FitnessClub");
             }
             else if (assignedPermissionFromDb.GympassType.FitnessClubId != fitnessClubId)
             {
-                throw new BadRequestException("Cannot manage GympassType from other FitnessClub");
+                throw new InvalidInputException("Cannot manage GympassType from other FitnessClub");
             }
 
             _context.AssignedPermissions.Remove(assignedPermissionFromDb);

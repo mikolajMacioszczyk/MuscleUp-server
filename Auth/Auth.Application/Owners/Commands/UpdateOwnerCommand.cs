@@ -36,7 +36,7 @@ namespace Auth.Application.Owners.Commands
                 return _mapper.Map<OwnerDto>(ownerResult.Value);
             }
 
-            throw new BadRequestException(ownerResult.ErrorCombined);
+            throw new InvalidInputException(ownerResult.ErrorCombined);
         }
     }
 }

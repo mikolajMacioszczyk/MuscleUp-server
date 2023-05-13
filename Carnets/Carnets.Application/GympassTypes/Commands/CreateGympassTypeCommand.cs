@@ -47,7 +47,7 @@ namespace Carnets.Application.GympassTypes.Commands
 
             if (!createResult.IsSuccess)
             {
-                throw new BadRequestException(createResult.ErrorCombined);
+                throw new InvalidInputException(createResult.ErrorCombined);
             }
 
             await AssignAllGympassPermissions(classPermissions, perkPermissions, createResult.Value);
@@ -72,7 +72,7 @@ namespace Carnets.Application.GympassTypes.Commands
             var allPermissionResult = await _mediator.Send(getPermissionsQuery);
             if (!allPermissionResult.IsSuccess)
             {
-                throw new BadRequestException(allPermissionResult.ErrorCombined);
+                throw new InvalidInputException(allPermissionResult.ErrorCombined);
             }
             return allPermissionResult.Value;
         }
@@ -87,7 +87,7 @@ namespace Carnets.Application.GympassTypes.Commands
 
             if (!assignResult.IsSuccess)
             {
-                throw new BadRequestException(assignResult.ErrorCombined);
+                throw new InvalidInputException(assignResult.ErrorCombined);
             }
         }
     }

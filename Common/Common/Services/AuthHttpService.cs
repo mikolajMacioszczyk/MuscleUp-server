@@ -106,7 +106,7 @@ namespace Common.Services
                 {
                     return false;
                 }
-                throw new BadRequestException(userData.ErrorCombined);
+                throw new InvalidInputException(userData.ErrorCombined);
             }
 
             return userData.Value != null;
