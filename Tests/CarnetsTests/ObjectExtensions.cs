@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+﻿using Newtonsoft.Json;
 
 namespace CarnetsTests
 {
@@ -6,7 +6,7 @@ namespace CarnetsTests
     {
         public static string AsJson(this object obj)
         {
-            return JsonSerializer.Serialize(obj);
+            return JsonConvert.SerializeObject(obj);
         }
     }
 }

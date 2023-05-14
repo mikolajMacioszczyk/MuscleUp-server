@@ -51,7 +51,15 @@ namespace Carnets.Repo
                 PermissionName = "Default Class Permission",
             };
 
+            var defaultClassPermission2 = new ClassPermission()
+            {
+                PermissionId = SeedConsts.DefaultClassPermissionId2,
+                FitnessClubId = SeedConsts.DefaultFitnessClubId,
+                PermissionName = "Default Class Permission 2",
+            };
+
             await context.ClassPermissions.AddAsync(defaultClassPermission);
+            await context.ClassPermissions.AddAsync(defaultClassPermission2);
 
             // seed gympass assigned permission data
             var defaultPermissionAssigement = new AssignedPermission()
@@ -63,6 +71,16 @@ namespace Carnets.Repo
             };
 
             await context.AssignedPermissions.AddAsync(defaultPermissionAssigement);
+
+            var defaultPermissionAssigement2 = new AssignedPermission()
+            {
+                GympassTypeId = SeedConsts.DefaultGympassTypeId,
+                GympassType = defaultGympassType,
+                PermissionId = SeedConsts.DefaultClassPermissionId2,
+                Permission = defaultClassPermission2
+            };
+
+            await context.AssignedPermissions.AddAsync(defaultPermissionAssigement2);
 
             // seed gympass data
             var defaultGympass = new Gympass()

@@ -56,6 +56,8 @@
 
         public const string DefaultClassPermissionId = "0e737124-da70-40d5-b3fb-37f474050240";
 
+        public const string DefaultClassPermissionId2 = "735f1296-824c-401a-b0b4-7d4bd35a5a27";
+
         public const string DefaultSubscriptionId = "9e2e85f7-5161-4dba-8674-96ba03de7098";
 
         #endregion
