@@ -3,7 +3,7 @@ using Carnets.Domain.Models;
 using Common.Models;
 using Xunit;
 
-namespace CarnetsTests.UnitTests.DomianTests.EntriesTests
+namespace CarnetsTests.UnitTests.DomianTests.GympassTests
 {
     public class CanGympassEnterGymTests
     {
@@ -21,7 +21,7 @@ namespace CarnetsTests.UnitTests.DomianTests.EntriesTests
             {
                 Status = gympassStatus
             };
-            var expectedReason = "Gympass not active";
+            const string expectedReason = "Gympass not active";
 
             // act
             var canEnterResult = gympass.CanGympassEnterGym();
@@ -47,7 +47,7 @@ namespace CarnetsTests.UnitTests.DomianTests.EntriesTests
                     ValidationType = validationType
                 }
             };
-            var expectedReason = "Gympass validity ended";
+            const string expectedReason = "Gympass validity ended";
 
             // act
             var canEnterResult = gympass.CanGympassEnterGym();
@@ -57,7 +57,7 @@ namespace CarnetsTests.UnitTests.DomianTests.EntriesTests
         }
 
         [Fact]
-        public void CanGympassEnterGym_NotEnoughtEntries()
+        public void CanGympassEnterGym_NotEnoughEntries()
         {
             // arrange
             var gympass = new Gympass()
@@ -70,7 +70,7 @@ namespace CarnetsTests.UnitTests.DomianTests.EntriesTests
                     ValidationType = GympassTypeValidation.Entries
                 }
             };
-            var expectedReason = "Gympass has not enought entries";
+            const string expectedReason = "Gympass has not enough entries";
 
             // act
             var canEnterResult = gympass.CanGympassEnterGym();
@@ -83,7 +83,7 @@ namespace CarnetsTests.UnitTests.DomianTests.EntriesTests
         public void CanGympassEnterGym_BeforeEntryMinute()
         {
             // arrange
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var bottomMinute = now.Hour * MinutesInHour + now.Minute + 1;
 
             var gympass = new Gympass()
@@ -98,7 +98,7 @@ namespace CarnetsTests.UnitTests.DomianTests.EntriesTests
                     EnableEntryToInMinutes = int.MaxValue,
                 }
             };
-            var expectedReason = "Gympass entry minute not allowed";
+            const string expectedReason = "Gympass entry minute not allowed";
 
             // act
             var canEnterResult = gympass.CanGympassEnterGym();
@@ -111,7 +111,7 @@ namespace CarnetsTests.UnitTests.DomianTests.EntriesTests
         public void CanGympassEnterGym_AfterEntryMinute()
         {
             // arrange
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var closingMinute = now.Hour * MinutesInHour + now.Minute - 1;
 
             var gympass = new Gympass()
@@ -126,7 +126,7 @@ namespace CarnetsTests.UnitTests.DomianTests.EntriesTests
                     EnableEntryToInMinutes = closingMinute,
                 }
             };
-            var expectedReason = "Gympass entry minute not allowed";
+            const string expectedReason = "Gympass entry minute not allowed";
 
             // act
             var canEnterResult = gympass.CanGympassEnterGym();

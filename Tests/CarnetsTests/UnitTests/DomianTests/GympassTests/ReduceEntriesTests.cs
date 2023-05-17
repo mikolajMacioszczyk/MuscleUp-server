@@ -36,7 +36,7 @@ namespace CarnetsTests.UnitTests.DomianTests.GympassTests
         public void ReduceEntries_NotEnoughtEntries(int initialGympassEntries)
         {
             // arrange
-            var expectedReason = "Remaining gympass entries cannot be less than 0";
+            const string expectedReason = "Remaining gympass entries cannot be less than 0";
             var gympass = new Gympass()
             {
                 RemainingEntries = initialGympassEntries,
@@ -78,12 +78,12 @@ namespace CarnetsTests.UnitTests.DomianTests.GympassTests
             Assert.Empty(reduceEntriesResult.ErrorCombined);
         }
 
-        private GympassType GetGympassTypeWithEntriesValidation() => new GympassType()
+        private GympassType GetGympassTypeWithEntriesValidation() => new()
             {
                 ValidationType = GympassTypeValidation.Entries
             };
 
-        private GympassType GetGympassTypeWithTimeValidation() => new GympassType()
+        private GympassType GetGympassTypeWithTimeValidation() => new()
         {
             ValidationType = GympassTypeValidation.Time
         };

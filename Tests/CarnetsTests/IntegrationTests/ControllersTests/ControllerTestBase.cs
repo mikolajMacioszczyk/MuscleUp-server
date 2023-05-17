@@ -65,12 +65,6 @@ namespace CarnetsTests.IntegrationTests.ControllersTests
             return JsonConvert.DeserializeObject<T>(content);
         }
 
-        protected void AddAdminBearerToken() => AddBearerToken(AdminToken);
-        protected void AddOwnerBearerToken() => AddBearerToken(OwnerToken);
-        protected void AddWorkerBearerToken() => AddBearerToken(WorkerToken);
-        protected void AddTrainerBearerToken() => AddBearerToken(TrainerToken);
-        protected void AddMemberBearerToken() => AddBearerToken(MemberToken);
-
         protected void AddBearerToken(string token)
         {
             _client.DefaultRequestHeaders.Add(HeaderNames.Authorization, $"Bearer {token}");

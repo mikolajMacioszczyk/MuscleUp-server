@@ -46,11 +46,11 @@ namespace Carnets.Domain.Models
             if (GympassType.ValidationType == GympassTypeValidation.Entries
                 && RemainingEntries <= 0)
             {
-                return new Result<bool>("Gympass has not enought entries");
+                return new Result<bool>("Gympass has not enough entries");
             }
 
             // validate entry minute
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var minutesInHour = 60;
             var currentMinute = now.Hour * minutesInHour + now.Minute;
 

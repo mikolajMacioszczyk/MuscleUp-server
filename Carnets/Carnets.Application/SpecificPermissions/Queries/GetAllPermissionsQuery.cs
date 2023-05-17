@@ -4,23 +4,23 @@ using MediatR;
 
 namespace Carnets.Application.SpecificPermissions.Queries
 {
-    public record GetAllPermisionsQuery<TPermission> : IRequest<IEnumerable<TPermission>>
+    public record GetAllPermissionsQuery<TPermission> : IRequest<IEnumerable<TPermission>>
         where TPermission : PermissionBase
     {
         public string FitnessClubId { get; init; }
     }
 
-    public class GetAllPermisionsQueryHandler<TPermission> : IRequestHandler<GetAllPermisionsQuery<TPermission>, IEnumerable<TPermission>>
+    public class GetAllPermissionsQueryHandler<TPermission> : IRequestHandler<GetAllPermissionsQuery<TPermission>, IEnumerable<TPermission>>
         where TPermission : PermissionBase
     {
         private readonly IPermissionRepository<TPermission> _permissionRepository;
 
-        public GetAllPermisionsQueryHandler(IPermissionRepository<TPermission> permissionRepository)
+        public GetAllPermissionsQueryHandler(IPermissionRepository<TPermission> permissionRepository)
         {
             _permissionRepository = permissionRepository;
         }
 
-        public Task<IEnumerable<TPermission>> Handle(GetAllPermisionsQuery<TPermission> request, CancellationToken cancellationToken)
+        public Task<IEnumerable<TPermission>> Handle(GetAllPermissionsQuery<TPermission> request, CancellationToken cancellationToken)
         {
             return _permissionRepository.GetAll(request.FitnessClubId, false);
         }

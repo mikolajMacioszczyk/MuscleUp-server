@@ -27,13 +27,13 @@ namespace Carnets.API.Controllers
 
         [HttpGet()]
         [AuthorizeRoles(RoleType.Worker)]
-        public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllPermisions()
+        public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllPermissions()
         {
             var workerId = _httpAuthContext.UserId;
             var fitnessClub = await Mediator.Send(new EnsureWorkerCanManageFitnessClubQuery() { WorkerId = workerId });
             var fitnessClubId = fitnessClub.FitnessClubId;
 
-            var allPermissions = await Mediator.Send(new GetAllPermisionsQuery<TPermission>()
+            var allPermissions = await Mediator.Send(new GetAllPermissionsQuery<TPermission>()
             {
                 FitnessClubId = fitnessClubId
             });
@@ -43,9 +43,9 @@ namespace Carnets.API.Controllers
 
         [HttpGet("all-from-fitness-club/{fitnessClubId}")]
         [AuthorizeRoles(RoleType.Administrator, RoleType.Member)]
-        public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllPermisions([FromRoute] string fitnessClubId)
+        public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllPermissions([FromRoute] string fitnessClubId)
         {
-            var allPermissions = await Mediator.Send(new GetAllPermisionsQuery<TPermission>()
+            var allPermissions = await Mediator.Send(new GetAllPermissionsQuery<TPermission>()
             {
                 FitnessClubId = fitnessClubId
             });
@@ -71,7 +71,7 @@ namespace Carnets.API.Controllers
 
         [HttpGet("by-gympass-type/{gympassTypeId}")]
         [AuthorizeRoles(AuthHelper.RoleAll)]
-        public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllGympassTypePermisions([FromRoute] string gympassTypeId)
+        public async Task<ActionResult<IEnumerable<TPermissionDto>>> GetAllGympassTypePermissions([FromRoute] string gympassTypeId)
         {
             var allPermissions = await Mediator.Send(new GetAllGympassTypePermissionsQuery<TPermission>()
             {

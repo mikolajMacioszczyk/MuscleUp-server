@@ -22,7 +22,7 @@ namespace CarnetsTests.IntegrationTests.ControllersTests.ClassPermissionControll
         {
             //arrange
             AddBearerToken(token);
-            var expectedStatusCode = HttpStatusCode.OK;
+            const HttpStatusCode expectedStatusCode = HttpStatusCode.OK;
 
             //act
             var response = await _client.DeleteAsync(Endpoint + permissionId);
@@ -39,8 +39,8 @@ namespace CarnetsTests.IntegrationTests.ControllersTests.ClassPermissionControll
         {
             //arrange
             AddBearerToken(token);
-            string permissionId = "Not exisiting id";
-            var expectedStatusCode = HttpStatusCode.NotFound;
+            const string permissionId = "Not existing id";
+            const HttpStatusCode expectedStatusCode = HttpStatusCode.NotFound;
 
             //act
             var response = await _client.DeleteAsync(Endpoint + permissionId);
@@ -55,14 +55,14 @@ namespace CarnetsTests.IntegrationTests.ControllersTests.ClassPermissionControll
         [InlineData(MemberToken, SeedConsts.DefaultClassPermissionId)]
         [InlineData(TrainerToken, SeedConsts.DefaultClassPermissionId)]
         [InlineData(AdminToken, SeedConsts.DefaultClassPermissionId)]
-        [InlineData(MemberToken, "Not exisiting id")]
-        [InlineData(TrainerToken, "Not exisiting id")]
-        [InlineData(AdminToken, "Not exisiting id")]
+        [InlineData(MemberToken, "Not existing id")]
+        [InlineData(TrainerToken, "Not existing id")]
+        [InlineData(AdminToken, "Not existing id")]
         public async Task DeleteClassPermission_AsOtherUser_Forbiddent(string token, string permissionId)
         {
             //arrange
             AddBearerToken(token);
-            var expectedStatusCode = HttpStatusCode.Forbidden;
+            const HttpStatusCode expectedStatusCode = HttpStatusCode.Forbidden;
 
             //act
             var response = await _client.DeleteAsync(Endpoint + permissionId);

@@ -6,31 +6,31 @@ using Xunit;
 
 namespace CarnetsTests.IntegrationTests.ControllersTests.ClassPermissionController
 {
-    public class GetAllClassPermisionsTests : ClassPermissionControllerTestBase
+    public class GetAllClassPermissionsTests : ClassPermissionControllerTestBase
     {
         private const string Endpoint = "/class-permission";
 
-        public GetAllClassPermisionsTests(CustomWebApplicationFactory<Startup> factory) : base(factory)
+        public GetAllClassPermissionsTests(CustomWebApplicationFactory<Startup> factory) : base(factory)
         {
         }
 
         [Theory]
         [InlineData(OwnerToken)]
         [InlineData(WorkerToken)]
-        public async Task GetAllPermisions_AsWorkerAndOwner_Ok(string token)
+        public async Task GetAllPermissions_AsWorkerAndOwner_Ok(string token)
         {
             //arrange
             AddBearerToken(token);
-            var expectedStatusCode = HttpStatusCode.OK;
-            var expectedCount = 2;
+            const HttpStatusCode expectedStatusCode = HttpStatusCode.OK;
+            const int expectedCount = 2;
             var expectedPermissions = new List<ClassPermissionDto>()
             {
-                new ClassPermissionDto()
+                new()
                 {
                     PermissionId = SeedConsts.DefaultClassPermissionId,
                     PermissionName = "Default Class Permission",
                 },
-                new ClassPermissionDto()
+                new()
                 {
                     PermissionId = SeedConsts.DefaultClassPermissionId2,
                     PermissionName = "Default Class Permission 2",
@@ -45,6 +45,7 @@ namespace CarnetsTests.IntegrationTests.ControllersTests.ClassPermissionControll
             Assert.Equal(expectedStatusCode, response.StatusCode);
 
             var list = await DeserializeMessageContent<List<ClassPermissionDto>>(response);
+            Assert.NotNull(list);
             Assert.Equal(expectedCount, list.Count);
             Assert.Equal(expectedPermissions.OrderBy(p => p.PermissionId).AsJson(), list.OrderBy(p => p.PermissionId).AsJson());
         }
@@ -53,11 +54,11 @@ namespace CarnetsTests.IntegrationTests.ControllersTests.ClassPermissionControll
         [InlineData(AdminToken)]
         [InlineData(MemberToken)]
         [InlineData(TrainerToken)]
-        public async Task GetAllPermisions_AsWorkerAndOwner_Forbidden(string token)
+        public async Task GetAllPermissions_AsWorkerAndOwner_Forbidden(string token)
         {
             //arrange
             AddBearerToken(token);
-            var expectedStatusCode = HttpStatusCode.Forbidden;
+            const HttpStatusCode expectedStatusCode = HttpStatusCode.Forbidden;
 
             //act
             var response = await _client.GetAsync(Endpoint);

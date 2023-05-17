@@ -13,21 +13,21 @@ namespace CarnetsTests.UnitTests.ApplicationTests.EntriesTests
 {
     public class CreateGymEntryTests
     {
-        private readonly Mock<IGympassRepository> gympassRepositoryMock = new();
-        private readonly Mock<IEntryRepository> entryRepositoryMock = new();
-        private readonly Mock<ILogger<EnterGymCommandHandler>> logger = new();
+        private readonly Mock<IGympassRepository> _gympassRepositoryMock = new();
+        private readonly Mock<IEntryRepository> _entryRepositoryMock = new();
+        private readonly Mock<ILogger<EnterGymCommandHandler>> _logger = new();
 
         [Fact]
         public async Task CreateGymEntry_ExpiredToken()
         {
             // arrange
-            var entryToken = "Entry Token";
+            const string entryToken = "Entry Token";
             var expirationDate = DateTime.UtcNow.AddMinutes(-1);
-            var expectedError = "Entry token expired";
+            const string expectedError = "Entry token expired";
 
             var command = new EnterGymCommand(new EntryTokenDto() { EntryToken = entryToken }, string.Empty);
 
-            entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
+            _entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
                 .ReturnsAsync(new Entry()
                 {
                     EntryExpirationTime = expirationDate,
@@ -48,12 +48,12 @@ namespace CarnetsTests.UnitTests.ApplicationTests.EntriesTests
         public async Task CreateGymEntry_GympassNotFromFitnessClub()
         {
             // arrange
-            var entryToken = "Entry Token";
+            const string entryToken = "Entry Token";
             var expirationDate = DateTime.UtcNow.AddHours(1);
-            var testGympassId = "e5d0115f-7ba2-423d-8cf9-959ae4e4cad5";
-            var fitnessClubIdParam = "6dfbdddb-c856-4cf2-90c7-07e3addba596";
-            var otherFitnessClubIdParam = "a36034f2-8c24-46e3-931f-6b7875852c35";
-            var expectedError = "Gympass does not belongs to fitness club";
+            const string testGympassId = "e5d0115f-7ba2-423d-8cf9-959ae4e4cad5";
+            const string fitnessClubIdParam = "6dfbdddb-c856-4cf2-90c7-07e3addba596";
+            const string otherFitnessClubIdParam = "a36034f2-8c24-46e3-931f-6b7875852c35";
+            const string expectedError = "Gympass does not belongs to fitness club";
             var returnedGympass = new Gympass()
             {
                 GympassId = testGympassId,
@@ -65,10 +65,10 @@ namespace CarnetsTests.UnitTests.ApplicationTests.EntriesTests
 
             var command = new EnterGymCommand(new EntryTokenDto() { EntryToken = entryToken }, fitnessClubIdParam);
 
-            gympassRepositoryMock.Setup(m => m.GetById(testGympassId, It.IsAny<bool>()))
+            _gympassRepositoryMock.Setup(m => m.GetById(testGympassId, It.IsAny<bool>()))
                 .ReturnsAsync(returnedGympass);
 
-            entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
+            _entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
                 .ReturnsAsync(new Entry()
                 {
                     EntryExpirationTime = expirationDate,
@@ -90,10 +90,10 @@ namespace CarnetsTests.UnitTests.ApplicationTests.EntriesTests
         public async Task CreateGymEntry_NotEnoughtEntries()
         {
             // arrange
-            var entryToken = "Entry Token";
+            const string entryToken = "Entry Token";
             var expirationDate = DateTime.UtcNow.AddHours(1);
-            var testGympassId = "e5d0115f-7ba2-423d-8cf9-959ae4e4cad5";
-            var fitnessClubIdParam = "6dfbdddb-c856-4cf2-90c7-07e3addba596";
+            const string testGympassId = "e5d0115f-7ba2-423d-8cf9-959ae4e4cad5";
+            const string fitnessClubIdParam = "6dfbdddb-c856-4cf2-90c7-07e3addba596";
             var returnedGympass = new Gympass()
             {
                 GympassId = testGympassId,
@@ -108,10 +108,10 @@ namespace CarnetsTests.UnitTests.ApplicationTests.EntriesTests
 
             var command = new EnterGymCommand(new EntryTokenDto() { EntryToken = entryToken }, fitnessClubIdParam);
 
-            gympassRepositoryMock.Setup(m => m.GetById(testGympassId, It.IsAny<bool>()))
+            _gympassRepositoryMock.Setup(m => m.GetById(testGympassId, It.IsAny<bool>()))
                 .ReturnsAsync(returnedGympass);
 
-            entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
+            _entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
                 .ReturnsAsync(new Entry()
                 {
                     EntryExpirationTime = expirationDate,
@@ -129,13 +129,13 @@ namespace CarnetsTests.UnitTests.ApplicationTests.EntriesTests
         public async Task CreateGymEntry_InvalidToken()
         {
             // arrange
-            var entryToken = "Invalid Entry Token";
+            const string entryToken = "Invalid Entry Token";
             var exirationDate = DateTime.UtcNow.AddMinutes(-1);
-            var expectedError = "Invalid entry token";
+            const string expectedError = "Invalid entry token";
 
             var command = new EnterGymCommand(new EntryTokenDto() { EntryToken = entryToken }, string.Empty);
 
-            entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
+            _entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
                 .ReturnsAsync(null as Entry);
 
             var handler = CreateHandlerWithMocks();
@@ -157,10 +157,10 @@ namespace CarnetsTests.UnitTests.ApplicationTests.EntriesTests
             int remainingEntries, int expectedRemainingEntries)
         {
             // arrange
-            var entryToken = "Entry Token";
+            const string entryToken = "Entry Token";
             var exirationDate = DateTime.UtcNow.AddHours(1);
-            var testGympassId = "e5d0115f-7ba2-423d-8cf9-959ae4e4cad5";
-            var fitnessClubIdParam = "6dfbdddb-c856-4cf2-90c7-07e3addba596";
+            const string testGympassId = "e5d0115f-7ba2-423d-8cf9-959ae4e4cad5";
+            const string fitnessClubIdParam = "6dfbdddb-c856-4cf2-90c7-07e3addba596";
             var returnedGympass = new Gympass()
             {
                 GympassId = testGympassId,
@@ -184,15 +184,15 @@ namespace CarnetsTests.UnitTests.ApplicationTests.EntriesTests
 
             var command = new EnterGymCommand(new EntryTokenDto() { EntryToken = entryToken }, fitnessClubIdParam);
 
-            gympassRepositoryMock.Setup(m => m.GetById(testGympassId, It.IsAny<bool>()))
+            _gympassRepositoryMock.Setup(m => m.GetById(testGympassId, It.IsAny<bool>()))
                 .ReturnsAsync(returnedGympass);
-            gympassRepositoryMock.Setup(m => m.UpdateGympass(returnedGympass))
+            _gympassRepositoryMock.Setup(m => m.UpdateGympass(returnedGympass))
                 .ReturnsAsync(new Result<Gympass>(returnedGympass));
 
-            entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
+            _entryRepositoryMock.Setup(m => m.GetEntryById(entryToken, It.IsAny<bool>()))
                 .ReturnsAsync(getEntry);
 
-            entryRepositoryMock.Setup(m => m.UpdateEntry(entryToken, getEntry))
+            _entryRepositoryMock.Setup(m => m.UpdateEntry(entryToken, getEntry))
                 .ReturnsAsync(new Result<Entry>(getEntry));
 
             var handler = CreateHandlerWithMocks();
@@ -210,9 +210,9 @@ namespace CarnetsTests.UnitTests.ApplicationTests.EntriesTests
 
         private EnterGymCommandHandler CreateHandlerWithMocks() =>
             new EnterGymCommandHandler(
-                logger.Object,
-                gympassRepositoryMock.Object,
-                entryRepositoryMock.Object
+                _logger.Object,
+                _gympassRepositoryMock.Object,
+                _entryRepositoryMock.Object
             );
     }
 }

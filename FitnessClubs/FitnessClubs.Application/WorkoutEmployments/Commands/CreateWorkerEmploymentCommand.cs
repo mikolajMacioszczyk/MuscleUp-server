@@ -45,10 +45,10 @@ namespace FitnessClubs.Application.WorkoutEmployments.Commands
             workerEmployment.FitnessClub = fitnessClubFromDb;
             workerEmployment.FitnessClubId = fitnessClubFromDb.FitnessClubId;
 
-            var exisitingEmployment = 
+            var existingEmployment = 
                 await _workerEmploymentRepository.GetFitnessClubOfEmployee(request.WorkerEmployment.UserId, false);
 
-            if (exisitingEmployment.IsSuccess && exisitingEmployment.Value != null)
+            if (existingEmployment.IsSuccess && existingEmployment.Value != null)
             {
                 return new Result<WorkerEmployment>("Worker have active employment");
             }

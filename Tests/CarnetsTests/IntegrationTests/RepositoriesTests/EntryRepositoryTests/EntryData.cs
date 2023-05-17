@@ -45,11 +45,11 @@ namespace CarnetsTests.IntegrationTests.RepositoriesTests.EntryRepositoryTests
                 GympassId = Gympass1Id,
                 GympassType = DefaultGympassType,
                 UserId = Guid.NewGuid().ToString(),
-                ActivationDate = DateTime.Now.AddDays(-2),
+                ActivationDate = DateTime.UtcNow.AddDays(-2),
                 PaymentType = PaymentType.OneTime,
                 RemainingEntries = 10,
                 Status = GympassStatus.Active,
-                ValidityDate = DateTime.Now.AddDays(1),
+                ValidityDate = DateTime.UtcNow.AddDays(1),
             };
 
             DefaultGympass2 = new Gympass()
@@ -57,18 +57,18 @@ namespace CarnetsTests.IntegrationTests.RepositoriesTests.EntryRepositoryTests
                 GympassId = Gympass2Id,
                 GympassType = DefaultGympassType,
                 UserId = Guid.NewGuid().ToString(),
-                ActivationDate = DateTime.Now.AddDays(-1),
+                ActivationDate = DateTime.UtcNow.AddDays(-1),
                 PaymentType = PaymentType.Recurring,
                 RemainingEntries = 12,
                 Status = GympassStatus.Inactive,
-                ValidityDate = DateTime.Now.AddDays(-1),
+                ValidityDate = DateTime.UtcNow.AddDays(-1),
             };
 
             DefaultEntries = new List<Entry>
             {
-                new Entry(){ EntryId = Entry1Id, Gympass = DefaultGympass1, CheckInTime = DateTime.Now.AddMinutes(-5), Entered = true, EntryExpirationTime = DateTime.Now.AddDays(1) },
-                new Entry(){ EntryId = Entry2Id, Gympass = DefaultGympass1, Entered = false, EntryExpirationTime = DateTime.Now.AddDays(1) },
-                new Entry(){ EntryId = Entry3Id, Gympass = DefaultGympass1, CheckInTime = DateTime.Now.AddMinutes(-50), CheckOutTime = DateTime.Now.AddMinutes(-10), Entered = true, EntryExpirationTime = DateTime.Now.AddDays(1) }
+                new Entry(){ EntryId = Entry1Id, Gympass = DefaultGympass1, CheckInTime = DateTime.UtcNow.AddMinutes(-5), Entered = true, EntryExpirationTime = DateTime.UtcNow.AddDays(1) },
+                new Entry(){ EntryId = Entry2Id, Gympass = DefaultGympass1, Entered = false, EntryExpirationTime = DateTime.UtcNow.AddDays(1) },
+                new Entry(){ EntryId = Entry3Id, Gympass = DefaultGympass1, CheckInTime = DateTime.UtcNow.AddMinutes(-50), CheckOutTime = DateTime.UtcNow.AddMinutes(-10), Entered = true, EntryExpirationTime = DateTime.UtcNow.AddDays(1) }
             };
         }
     }

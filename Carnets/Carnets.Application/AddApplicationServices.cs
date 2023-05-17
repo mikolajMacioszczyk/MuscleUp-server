@@ -28,8 +28,8 @@ namespace Carnets.Application
             services.AddScoped<IRequestHandler<GetAllGympassTypePermissionsQuery<ClassPermission>, IEnumerable<ClassPermission>>, GetAllGympassTypePermissionsQueryHandler<ClassPermission>>();
             services.AddScoped<IRequestHandler<GetAllGympassTypePermissionsQuery<PerkPermission>, IEnumerable<PerkPermission>>, GetAllGympassTypePermissionsQueryHandler<PerkPermission>>();
 
-            services.AddScoped<IRequestHandler<GetAllPermisionsQuery<ClassPermission>, IEnumerable<ClassPermission>>, GetAllPermisionsQueryHandler<ClassPermission>>();
-            services.AddScoped<IRequestHandler<GetAllPermisionsQuery<PerkPermission>, IEnumerable<PerkPermission>>, GetAllPermisionsQueryHandler<PerkPermission>>();
+            services.AddScoped<IRequestHandler<GetAllPermissionsQuery<ClassPermission>, IEnumerable<ClassPermission>>, GetAllPermissionsQueryHandler<ClassPermission>>();
+            services.AddScoped<IRequestHandler<GetAllPermissionsQuery<PerkPermission>, IEnumerable<PerkPermission>>, GetAllPermissionsQueryHandler<PerkPermission>>();
 
             services.AddScoped<IRequestHandler<GetPermissionById<ClassPermission>, ClassPermission>, GetPermissionByIdHandler<ClassPermission>>();
             services.AddScoped<IRequestHandler<GetPermissionById<PerkPermission>, PerkPermission>, GetPermissionByIdHandler<PerkPermission>>();

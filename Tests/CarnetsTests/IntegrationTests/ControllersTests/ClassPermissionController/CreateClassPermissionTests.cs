@@ -21,9 +21,9 @@ namespace CarnetsTests.IntegrationTests.ControllersTests.ClassPermissionControll
         {
             //arrange
             AddBearerToken(token);
-            var permissionName = "Test permission name";
+            const string permissionName = "Test permission name";
             var expectedPermissionType = PermissionType.ClassPermission.ToString();
-            var expectedStatusCode = HttpStatusCode.OK;
+            const HttpStatusCode expectedStatusCode = HttpStatusCode.OK;
             var payload = PayloadBuilder.GetPayload(new CreateClassPermissionDto()
             {
                 PermissionName = permissionName
@@ -49,8 +49,8 @@ namespace CarnetsTests.IntegrationTests.ControllersTests.ClassPermissionControll
         {
             //arrange
             AddBearerToken(token);
-            var expectedError = "The PermissionName field is required";
-            var expectedStatusCode = HttpStatusCode.BadRequest;
+            const string expectedError = "The PermissionName field is required";
+            const HttpStatusCode expectedStatusCode = HttpStatusCode.BadRequest;
             var payload = PayloadBuilder.GetPayload(new CreateClassPermissionDto()
             {
                 PermissionName = null
@@ -75,8 +75,8 @@ namespace CarnetsTests.IntegrationTests.ControllersTests.ClassPermissionControll
         {
             //arrange
             AddBearerToken(token);
-            var expectedStatusCode = HttpStatusCode.Forbidden;
-            var permissionName = "Test permission name";
+            const HttpStatusCode expectedStatusCode = HttpStatusCode.Forbidden;
+            const string permissionName = "Test permission name";
             var payload = PayloadBuilder.GetPayload(new CreateClassPermissionDto()
             {
                 PermissionName = permissionName

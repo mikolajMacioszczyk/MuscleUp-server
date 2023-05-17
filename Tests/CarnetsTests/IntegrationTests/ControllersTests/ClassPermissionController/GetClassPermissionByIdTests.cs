@@ -25,7 +25,7 @@ namespace CarnetsTests.IntegrationTests.ControllersTests.ClassPermissionControll
         {
             //arrange
             AddBearerToken(token);
-            var expectedStatusCode = HttpStatusCode.OK;
+            const HttpStatusCode expectedStatusCode = HttpStatusCode.OK;
             var expectedPermission = new ClassPermissionDto()
             {
                 PermissionId = permissionId,
@@ -51,7 +51,7 @@ namespace CarnetsTests.IntegrationTests.ControllersTests.ClassPermissionControll
         {
             //arrange
             AddBearerToken(token);
-            string permissionId = "Not exisiting id";
+            string permissionId = "Not existing id";
             var expectedStatusCode = HttpStatusCode.NotFound;
             
             //act
@@ -65,8 +65,8 @@ namespace CarnetsTests.IntegrationTests.ControllersTests.ClassPermissionControll
         [Theory]
         [InlineData(MemberToken, SeedConsts.DefaultClassPermissionId)]
         [InlineData(TrainerToken, SeedConsts.DefaultClassPermissionId)]
-        [InlineData(MemberToken, "Not exisiting id")]
-        [InlineData(TrainerToken, "Not exisiting id")]
+        [InlineData(MemberToken, "Not existing id")]
+        [InlineData(TrainerToken, "Not existing id")]
         public async Task GetClassPermissionById_AsOtherUser_Forbiddent(string token, string permissionId)
         {
             //arrange

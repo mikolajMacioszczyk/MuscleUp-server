@@ -7,7 +7,7 @@ namespace Carnets.Repo
 {
     public static class CarnetsDbContextSeed
     {
-        public static async Task SeedDefaultCarnetsDataAsync(CarnetsDbContext context, IPaymentService _paymentService)
+        public static async Task SeedDefaultCarnetsDataAsync(CarnetsDbContext context, IPaymentService paymentService)
         {
             if (await context.GympassTypes.AnyAsync())
             {
@@ -31,7 +31,7 @@ namespace Carnets.Repo
 
             await context.GympassTypes.AddAsync(defaultGympassType);
 
-            await _paymentService.EnsureProductCreated(defaultGympassType);
+            await paymentService.EnsureProductCreated(defaultGympassType);
             if (string.IsNullOrEmpty(defaultGympassType.OneTimePriceId))
             {
                 // From stripe

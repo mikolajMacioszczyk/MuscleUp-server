@@ -135,7 +135,7 @@ namespace CarnetsTests.IntegrationTests.RepositoriesTests.EntryRepositoryTests
         public async Task CreateEntry_Valid()
         {
             // arrange
-            var initialEntryId = "ced8d17f-f704-4e63-8892-f2a6e4b0142f";
+            const string initialEntryId = "ced8d17f-f704-4e63-8892-f2a6e4b0142f";
             var entry = new Entry()
             {
                 EntryId = initialEntryId,
@@ -173,14 +173,14 @@ namespace CarnetsTests.IntegrationTests.RepositoriesTests.EntryRepositoryTests
             var checkOutTime = DateTime.UtcNow.AddDays(11);
             var entryExpirationTime = DateTime.UtcNow.AddDays(12);
 
-            Entry updateEntry = new Entry()
+            Entry updateEntry = new()
             {
                 Entered = false,
                 CheckInTime = checkInTime,
                 CheckOutTime = checkOutTime,
                 EntryExpirationTime = entryExpirationTime,
             };
-            var expectedModel = new Entry()
+            Entry expectedModel = new()
             {
                 EntryId = entryToUpdateId,
                 Entered = false,
@@ -210,7 +210,7 @@ namespace CarnetsTests.IntegrationTests.RepositoriesTests.EntryRepositoryTests
             var checkOutTime = DateTime.UtcNow.AddDays(11);
             var entryExpirationTime = DateTime.UtcNow.AddDays(12);
 
-            Entry updateEntry = new Entry()
+            Entry updateEntry = new()
             {
                 EntryId = "Updated",
                 Entered = false,
@@ -219,7 +219,7 @@ namespace CarnetsTests.IntegrationTests.RepositoriesTests.EntryRepositoryTests
                 EntryExpirationTime = entryExpirationTime,
                 Gympass = _entryData.DefaultGympass2
             };
-            var expectedModel = new Entry()
+            Entry expectedModel = new()
             {
                 EntryId = entryToUpdateId,
                 Entered = false,
@@ -244,13 +244,13 @@ namespace CarnetsTests.IntegrationTests.RepositoriesTests.EntryRepositoryTests
         public async Task UpdateEntry_NotFound()
         {
             // arrange
-            var entryToUpdateId = "Not existing";
+            const string entryToUpdateId = "Not existing";
             var checkInTime = DateTime.UtcNow.AddDays(10);
             var checkOutTime = DateTime.UtcNow.AddDays(11);
             var entryExpirationTime = DateTime.UtcNow.AddDays(12);
             string error = Common.CommonConsts.NOT_FOUND;
 
-            Entry updateEntry = new Entry()
+            Entry updateEntry = new()
             {
                 Entered = false,
                 CheckInTime = checkInTime,
@@ -279,7 +279,7 @@ namespace CarnetsTests.IntegrationTests.RepositoriesTests.EntryRepositoryTests
             var entryExpirationTime = DateTime.UtcNow.AddDays(12);
             string error = Common.CommonConsts.NOT_FOUND;
 
-            Entry updateEntry = new Entry()
+            Entry updateEntry = new()
             {
                 Entered = false,
                 CheckInTime = checkInTime,
