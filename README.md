@@ -1,5 +1,23 @@
 # Muscle Up Server
 
+## Project Description
+
+The "Muscle Up" project is an application aimed at club members of sports centers, their owners, employees and trainers. 
+The list of requirements defined by the project is as follows:
+- Each user has the ability to log in online to their account. The exception is a non-logged-in user, who can register.
+- Each user can be assigned to more than one club.
+- The option to open new clubs and close already open ones, resulting from the possibility of the owner having more than one club.
+- Providing an option to manage the types of passes that can be purchased within the created club.
+- Enabling club employees to edit passes manually.
+- The ability to perform through the application: purchase a pass (membership) online, cancel a pass, or terminate a subscription.
+- The club's schedule in the form of a weekly plan, available to logged-in users, which is updated live, so it always provides up-to-date information.
+- Each class provides information such as the time, location, number of people who can sign up, who is leading the class and what kind of training will be done at the class.
+- Class enrollment system. The clubber, after checking the details of the activities he is interested in, can sign up for them through the app.
+- A logged-in clubber can see in his account the upcoming workouts at the club and the activity status of his passes.
+- Admission to a given fitness club is to be accessed via a generated QR code.
+- The ability to manage both workouts and individual exercises that are available at the selected fitness club, including a system for programming the workouts that will be performed as part of the class.
+- A workout can consist of many of the same exercises. 
+
 ## Project structure
 * apiGateway - Service that works as an api entrypoint. Distributes packages to the appropriate services based on path mapping. The swagger running at url "{{Base Address}}/swagger/index.html" contains the configuration of all api endpoints.
 * auth - User Managment service. Works under the path "{{Base Address}}/auth/...". Consists of 3 sub-projects:
